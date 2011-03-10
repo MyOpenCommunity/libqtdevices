@@ -35,6 +35,13 @@ class TreeBrowser : public QObject
 {
 Q_OBJECT
 public:
+
+	enum Types
+	{
+		DIRECTORY,
+		UPNP
+	};
+
 	/*!
 		\brief Set the root navigation path for the browser
 
@@ -86,11 +93,6 @@ public:
 	 */
 	virtual QString pathKey() = 0;
 
-	/*!
-		\brief Reset the state.
-		\note The default implementation does nothing.
-	*/
-	virtual void cleanUp() {}
 
 	/*!
 		\brief Sets \a mask to filter file listing results.
@@ -98,6 +100,21 @@ public:
 		\note The \a mask must be a bitwise-OR between MultimediaFileTypes values.
 	*/
 	void setFilter(int mask);
+
+	/*!
+		\brief Set the list of albums/directories as the context
+
+		This command is a shortcut to re-enter in a directory or album even
+		if is inside others directories/albums.
+	*/
+	virtual void setContext(const QStringList &context) = 0;
+
+	/*!
+		\brief Reset the status of the browser
+
+		This command can ben used to re-start the navigation from the beginning.
+	*/
+	virtual void reset() = 0;
 
 protected:
 	/*!
@@ -137,6 +154,11 @@ signals:
 		\brief Emitted when an error occours during entry listing.
 	*/
 	void listRetrieveError();
+
+	/*!
+		\brief Emitted when we try to change the current directory but the new dir is empty.
+	*/
+	void emptyDirectory();
 };
 
 
@@ -156,6 +178,8 @@ public:
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
+	virtual void setContext(const QStringList &context);
+	virtual void reset();
 
 private:
 	int level;
@@ -171,22 +195,25 @@ private:
 class UPnpClientBrowser : public TreeBrowser
 {
 Q_OBJECT
+friend class TestUPnpClientBrowser;
 public:
-	UPnpClientBrowser();
-	~UPnpClientBrowser();
+	UPnpClientBrowser(XmlDevice *dev);
 
 	virtual void enterDirectory(const QString &name);
 	virtual void exitDirectory();
 	virtual void getFileList();
 	virtual bool isRoot();
 	virtual QString pathKey();
-	virtual void cleanUp();
+	virtual void setContext(const QStringList &context);
+	virtual void reset();
 
+	// Specific UPnpClientBrowser methods
 	void getPreviousFileList();
 	void getNextFileList();
 	int getNumElements();
 	int getStartingElement();
 	void getFileList(int starting_element);
+
 
 private slots:
 	void handleResponse(const XmlResponse &response);
@@ -195,6 +222,7 @@ private slots:
 private:
 	XmlDevice *dev;
 	int level;
+	int context_new_level;
 
 	// To manage the 'lazy' loading of the elements
 	int starting_element;

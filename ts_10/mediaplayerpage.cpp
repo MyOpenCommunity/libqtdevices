@@ -23,7 +23,6 @@
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
 #include "mount_watcher.h"
-#include "pagestack.h"
 #include "audiostatemachine.h"
 
 
@@ -50,7 +49,7 @@ void FileListManager::nextFile()
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	++index;
-	if (index > total_files)
+	if (index >= total_files)
 		index = 0;
 	emit currentFileChanged();
 }
@@ -107,13 +106,6 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	connect(player, SIGNAL(mplayerDone()), SLOT(playbackStopped()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playbackStopped()));
 	connect(player, SIGNAL(mplayerPaused()), SLOT(playbackStopped()));
-}
-
-void MediaPlayerPage::showPage()
-{
-	bt_global::page_stack.showUserPage(this);
-
-	Page::showPage();
 }
 
 bool MediaPlayerPage::isPlayerInstanceRunning() const

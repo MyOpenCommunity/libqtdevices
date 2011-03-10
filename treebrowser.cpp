@@ -79,6 +79,12 @@ void DirectoryTreeBrowser::setRootPath(const QStringList &path)
 	level = 0;
 }
 
+void DirectoryTreeBrowser::reset()
+{
+	level = 0;
+	current_dir.setPath(root_path);
+}
+
 QStringList DirectoryTreeBrowser::getRootPath()
 {
 	return root_path.split("/", QString::SkipEmptyParts);
@@ -136,10 +142,25 @@ QString DirectoryTreeBrowser::pathKey()
 	return QString::number(level);
 }
 
-
-UPnpClientBrowser::UPnpClientBrowser()
+void DirectoryTreeBrowser::setContext(const QStringList &context)
 {
-	dev = bt_global::xml_device;
+	current_dir.setPath(root_path);
+	foreach (const QString &dir, context)
+	{
+		if (!current_dir.cd(dir))
+		{
+			emit directoryChangeError();
+			return;
+		}
+		++level;
+	}
+	emit directoryChanged();
+}
+
+
+UPnpClientBrowser::UPnpClientBrowser(XmlDevice *d)
+{
+	dev = d;
 	starting_element = 1;
 	level = 0;
 
@@ -147,9 +168,10 @@ UPnpClientBrowser::UPnpClientBrowser()
 	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
-UPnpClientBrowser::~UPnpClientBrowser()
+void UPnpClientBrowser::reset()
 {
-	dev->deleteLater();
+	level = 0;
+	starting_element = 1;
 }
 
 void UPnpClientBrowser::enterDirectory(const QString &name)
@@ -166,7 +188,10 @@ void UPnpClientBrowser::exitDirectory()
 		return;
 
 	if (level == 1)
+	{
+		starting_element = 1;
 		dev->requestUPnPServers();
+	}
 	else
 		dev->browseUp();
 }
@@ -232,12 +257,6 @@ QString UPnpClientBrowser::pathKey()
 	return QString::number(level);
 }
 
-void UPnpClientBrowser::cleanUp()
-{
-	level = 0;
-	dev->reset();
-}
-
 void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 {
 	foreach (int key, response.keys())
@@ -255,10 +274,13 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 
 			num_elements = cached_elements.size();
 			level = 0;
+			EntryInfoList entry_list;
 
-			emit listReceived(cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED));
-		}
+			if (num_elements > 0)
+				entry_list = cached_elements.mid(starting_element - 1, ELEMENTS_DISPLAYED);
+			emit listReceived(entry_list);
 			break;
+		}
 		case XmlResponses::SERVER_SELECTION:
 		case XmlResponses::CHDIR:
 			++level;
@@ -282,10 +304,14 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 					infos << entry;
 			}
 			emit listReceived(infos);
+			break;
 		}
+		case XmlResponses::SET_CONTEXT:
+			level = context_new_level;
+			emit directoryChanged();
 			break;
 		default:
-			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
+			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled response.");
 		}
 	}
 }
@@ -295,17 +321,26 @@ void UPnpClientBrowser::handleError(int response, int code)
 	switch (response)
 	{
 	case XmlResponses::WELCOME:
+		emit genericError();
 		break;
 	case XmlResponses::SERVER_LIST:
 	case XmlResponses::LIST_ITEMS:
 		emit listRetrieveError();
 		break;
 	case XmlResponses::SERVER_SELECTION:
+	case XmlResponses::SET_CONTEXT:
 	case XmlResponses::CHDIR:
-		emit directoryChangeError();
+		if (code == XmlError::BROWSING)
+			emit directoryChangeError();
+		else if (code == XmlError::EMPTY_CONTENT)
+			emit emptyDirectory();
+		else
+			emit genericError();
 		break;
 	case XmlResponses::BROWSE_UP:
-		if (level == 1)
+		if (code == XmlError::SERVER_DOWN)
+			emit genericError();
+		else if (level == 1)
 		{
 			--level;
 			emit directoryChanged();
@@ -314,11 +349,19 @@ void UPnpClientBrowser::handleError(int response, int code)
 			emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
+		emit genericError();
 		break;
 	case XmlResponses::INVALID:
 		emit genericError();
 		break;
 	default:
-		Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled resposne.");
+		Q_ASSERT_X(false, "UPnpClientBrowser::handleError", "Unhandled response.");
 	}
 }
+
+void UPnpClientBrowser::setContext(const QStringList &context)
+{
+	context_new_level = context.size();
+	dev->setContext(context[0], context.mid(1));
+}
+

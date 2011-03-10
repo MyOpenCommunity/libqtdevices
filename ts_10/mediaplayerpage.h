@@ -98,8 +98,6 @@ public:
 
 	MediaPlayerPage();
 
-	virtual void showPage();
-
 	bool isPlayerInstanceRunning() const;
 	bool isPlayerPaused() const;
 

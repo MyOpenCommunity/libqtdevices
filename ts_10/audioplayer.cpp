@@ -35,7 +35,6 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
-#include "pagestack.h" // bt_global::page_stack
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"
@@ -79,10 +78,11 @@ namespace
 }
 
 
-UPnpListManager::UPnpListManager()
+UPnpListManager::UPnpListManager(XmlDevice *d)
 {
-	dev = bt_global::xml_device;
+	dev = d;
 	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
+	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
 }
 
 QString UPnpListManager::currentFilePath()
@@ -100,6 +100,12 @@ void UPnpListManager::handleResponse(const XmlResponse &response)
 	}
 }
 
+void UPnpListManager::handleError(int response, int code)
+{
+	if (response == XmlResponses::TRACK_SELECTION && code == XmlError::SERVER_DOWN)
+		emit serverDown();
+}
+
 void UPnpListManager::nextFile()
 {
 	if (++index >= total_files)
@@ -109,7 +115,7 @@ void UPnpListManager::nextFile()
 
 void UPnpListManager::previousFile()
 {
-	if (--index < 1)
+	if (--index < 0)
 		index = total_files - 1;
 	dev->previousFile();
 }
@@ -175,7 +181,11 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
 	if (type == AudioPlayerPage::UPNP_FILE)
-		list_manager = new UPnpListManager;
+	{
+		UPnpListManager* upnp = new UPnpListManager(bt_global::xml_device);
+		connect(upnp, SIGNAL(serverDown()), SLOT(handleServerDown()));
+		list_manager = upnp;
+	}
 	else
 		list_manager = new FileListManager;
 
@@ -279,6 +289,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	}
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
+	connect(player, SIGNAL(mplayerStopped()), SLOT(refreshPlayInfo()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(playerStopped()));
 }
 
@@ -381,6 +392,14 @@ void AudioPlayerPage::resetLoopCheck()
 	loop_starting_file = -1;
 }
 
+void AudioPlayerPage::handleServerDown()
+{
+	playerStopped();
+
+	if (isVisible())
+		emit Closed();
+}
+
 void AudioPlayerPage::quit()
 {
 	stop();
@@ -414,7 +433,9 @@ void AudioPlayerPage::mplayerDone()
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
 			qWarning() << "MediaPlayer: loop detected, force stop";
-			quit();
+			player->stop();
+			playerStopped();
+			emit loopDetected();
 			return;
 		}
 		else
@@ -524,6 +545,9 @@ void AudioPlayerPage::playerStopped()
 		return;
 
 	if (MultimediaSectionPage::current_player == this)
+	{
+		emit playerExited();
 		MultimediaSectionPage::current_player = 0;
+	}
 	tray_icon->setVisible(false);
 }

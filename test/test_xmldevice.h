@@ -27,21 +27,39 @@ class XmlDevice;
 
 class TestXmlDevice : public QObject
 {
-    Q_OBJECT
-public:
-	explicit TestXmlDevice();
+Q_OBJECT
 
 private slots:
+	void initTestCase();
+	void cleanupTestCase();
+
 	void testHeader();
 	void testWelcome();
 	void testServerList();
+	void testServerListEmpty();
 	void testServerSelection();
+	void testServerSelectionServerDown();
+	void testServerSelectionEmpty();
+	void testServerSelectionNoAnswer();
 	void testChdir();
+	void testChdirServerDown();
+	void testChdirEmpty();
+	void testChdirNotFound();
 	void testTrackSelection();
+	void testTrackSelectionServerDown();
+	void testNextTrack();
+	void testNextTrackServerDown();
+	void testPrevTrack();
+	void testPrevTrackServerDown();
 	void testBrowseUpSuccess();
 	void testBrowseUpFail();
+	void testBrowseUpServerDown();
 	void testListItems();
+	void testListItemsServerDown();
 	void testResetWithAck();
+	void testSetContextSuccess();
+	void testSetContextFail();
+	void testSetContextServerDown();
 
 	void testBuildCommand();
 	void testBuildCommandWithArg();

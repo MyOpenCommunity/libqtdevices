@@ -42,7 +42,7 @@ class UPnpListManager : public ListManager
 {
 Q_OBJECT
 public:
-	UPnpListManager();
+	UPnpListManager(XmlDevice *dev);
 	virtual QString currentFilePath();
 
 	virtual void nextFile();
@@ -58,8 +58,12 @@ public:
 	void setCurrentIndex(int i);
 	void setTotalFiles(int n);
 
+signals:
+	void serverDown();
+
 private slots:
 	void handleResponse(const XmlResponse &response);
+	void handleError(int response, int code);
 
 private:
 	int index, total_files;
@@ -95,6 +99,10 @@ public:
 	void showNextButton(bool show);
 	void showPrevButton(bool show);
 
+signals:
+	void loopDetected();
+	void playerExited();
+
 protected:
 	virtual void startPlayback();
 
@@ -120,6 +128,7 @@ private slots:
 	void resetLoopCheck();
 	void mplayerDone();
 	void currentFileChanged();
+	void handleServerDown();
 
 private:
 	AudioPlayerPage(MediaType type);

@@ -75,6 +75,7 @@ namespace XmlResponses
 		TRACK_SELECTION,
 		BROWSE_UP,
 		LIST_ITEMS,
+		SET_CONTEXT,
 	};
 }
 
@@ -95,9 +96,11 @@ struct XmlError
 	*/
 	enum Code
 	{
-		PARSE = 0, /*!< Error during the parsing of the response's XML */
-		BROWSING,  /*!< Error during the browsing of the UPnP resource */
-		CLIENT,    /*!< Error in XmlClient */
+		PARSE = 0,     /*!< Error during the parsing of the response's XML */
+		BROWSING,      /*!< Error during the browsing of the UPnP resource */
+		SERVER_DOWN,   /*!< The upnp server is down */
+		EMPTY_CONTENT, /*!< The content that we want to browse (a server or an album) is empty.*/
+		CLIENT,        /*!< Error in XmlClient */
 	};
 
 	/*!
@@ -220,6 +223,11 @@ public:
 		\brief Requests the list of the items of the current directory.
 	*/
 	void listItems(unsigned int starting_element, unsigned int max_elements);
+
+	/*!
+		\brief Set the navigation path.
+	*/
+	void setContext(const QString &server, const QStringList &path);
 
 signals:
 	/*!

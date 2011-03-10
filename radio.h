@@ -96,9 +96,9 @@ private:
 	QString manual_off, manual_on, auto_off, auto_on;
 	RadioInfo *radio_info;
 	RadioSourceDevice *dev;
+	static int save_sound_delay;
 
 private slots:
-
 	void frequencyUp();
 	void frequencyDown();
 	void requestFrequency();
@@ -110,8 +110,11 @@ private slots:
 	void previousStation();
 	void nextStation();
 
-	void playSaveSound(int new_state);
-	void saveSoundFinished();
+	void enterBeepState(int new_state);
+	void exitBeepState();
+
+	// Play a "beep" to notifies that the radio is saved.
+	void playSaveSound();
 
 	/*!
 	 * \brief Changes the state to automatic search

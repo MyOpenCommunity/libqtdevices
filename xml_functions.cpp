@@ -24,19 +24,6 @@
 #include <QStringList>
 
 
-QDomNode getChildWithName(const QDomNode &parent, const QString &name)
-{
-	QDomNode n = parent.firstChild();
-	while (!n.isNull())
-	{
-		if (n.isElement() && n.nodeName() == name)
-			return n;
-
-		n = n.nextSibling();
-	}
-	return QDomNode();
-}
-
 QDomElement getElement(const QDomNode &root, const QString &path)
 {
 	QStringList sl = path.split('/');
@@ -45,7 +32,7 @@ QDomElement getElement(const QDomNode &root, const QString &path)
 	{
 		QString str = sl.first();
 		if (!node.isNull())
-			node = getChildWithName(node, str);
+			node = node.namedItem(str);
 		sl.pop_front();
 	}
 	return node.toElement();
@@ -117,7 +104,7 @@ QList<QDomNode> getChildren(const QDomNode &parent, const QString &name)
 
 QString getTextChild(const QDomNode &parent, const QString &name)
 {
-	QDomNode n = getChildWithName(parent, name);
+	QDomNode n = parent.namedItem(name);
 	if (n.isNull())
 		return QString();
 	return n.toElement().text();

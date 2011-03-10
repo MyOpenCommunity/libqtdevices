@@ -81,10 +81,8 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 #ifdef LAYOUT_TS_10
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));
 	addBanner(b, ScreenSaver::SLIDESHOW);
-	Page *p = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
-										MultimediaSectionPage::ITEMS_FILESYSTEM,
-										new SlideshowSelector,
-										tr("Slideshow"));
+	Page *p = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_FILESYSTEM,
+					new SlideshowSelectorFactory, tr("Slideshow"));
 	b->connectRightButton(p);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 
@@ -316,6 +314,12 @@ void SlideshowSelector::saveFileList()
 	Q_ASSERT_X(handler, "SlideshowSelector::saveFileList()", "handler is null");
 
 	handler->saveSlideshowToFile();
+}
+
+
+FileSelector* SlideshowSelectorFactory::getFileSelector()
+{
+	return new SlideshowSelector;
 }
 
 #endif

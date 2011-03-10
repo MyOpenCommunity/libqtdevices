@@ -25,6 +25,7 @@
 #include "bannerpage.h"
 #include "iconpage.h"
 #include "bann2_buttons.h"
+#include "videodoorentry_device.h" // VideoDoorEntryDevice::VctMode
 
 #include <QWidget>
 #include <QHash>
@@ -138,6 +139,19 @@ private:
 	VideoDoorEntry(); // available only for BtMain
 	void loadItems(const QDomNode &config_node);
 	void createVctElements();
+};
+
+
+// Init the echo canceller.
+class EchoCanceller : public QObject
+{
+Q_OBJECT
+public:
+	EchoCanceller(VideoDoorEntryDevice::VctMode mode);
+
+private:
+	static void initScs();
+	static void initIp();
 };
 
 

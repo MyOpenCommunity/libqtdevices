@@ -125,7 +125,7 @@ namespace
 	{
 		QHash<int,QVariant> result;
 
-		QString tag_name = node.childNodes().at(0).toElement().tagName();
+		QString tag_name = node.firstChildElement().tagName();
 
 		if (tag_name == "current_server")
 		{
@@ -135,6 +135,8 @@ namespace
 				qWarning() << "handle_selection: current_server not found";
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::PARSE));
 			}
+			else if (current_server == "no_answer_has_been_received")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::SERVER_DOWN));
 			else
 				result[XmlResponses::SERVER_SELECTION] = current_server;
 		}
@@ -148,9 +150,11 @@ namespace
 			}
 			else if (status_browse == "browse_okay")
 				result[XmlResponses::CHDIR] = true;
+			else if (status_browse == "empty_directory")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::EMPTY_CONTENT));
 			else
 			{
-				qWarning() << "handle_selection: status_browse unknown";
+				qWarning() << QString("handle_selection: status_browse unknown %1").arg(status_browse);
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
 			}
 		}
@@ -178,33 +182,99 @@ namespace
 				result[XmlResponses::TRACK_SELECTION] = value;
 			}
 		}
+		else if (tag_name == "error")
+		{
+			QString error_string = getTextChild(node, "error");
+			if (error_string.contains("server down"))
+			{
+				QString error_type = error_string.split(":")[0];
+				XmlResponses::Type response_type;
+				if (error_type == "no server loaded")
+					response_type = XmlResponses::SERVER_SELECTION;
+				else if (error_type == "browse failed")
+					response_type = XmlResponses::CHDIR;
+				else if (error_type == "track not loaded")
+					response_type = XmlResponses::TRACK_SELECTION;
 
+				result[XmlResponses::INVALID].setValue(XmlError(response_type, XmlError::SERVER_DOWN));
+			}
+			else if (error_string.contains("is empty"))
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::EMPTY_CONTENT));
+			else if (error_string == "directory not found")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
+			else
+			{
+				qWarning() << QString("handle_selection: unknown error %1").arg(error_string);
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::PARSE));
+			}
+		}
+
+		return result;
+	}
+
+	QHash<int,QVariant> handle_browsing(const QDomNode &node, const QString cmdname, XmlResponses::Type cmdtype)
+	{
+		QHash<int,QVariant> result;
+
+		QString status_browse = getTextChild(node, "status_browse");
+		if (!status_browse.isEmpty())
+		{
+			if (status_browse == "browse_okay")
+				result[cmdtype] = true;
+			else if (status_browse == "no_such_directory" || status_browse == "already_at_root")
+				result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::BROWSING));
+			else
+			{
+				qWarning() << QString("%1: status_browse unknown %2").arg(cmdname).arg(status_browse);
+				result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::BROWSING));
+			}
+		}
+		else
+		{
+			QString error_string = getTextChild(node, "error");
+			if (error_string.contains("server down"))
+				result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::SERVER_DOWN));
+			else if (!error_string.isEmpty())
+			{
+				qWarning() << QString("%1: unknown error %2").arg(cmdname).arg(error_string);
+				result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::PARSE));
+			}
+			else
+			{
+				qWarning() << QString("%1: unknown tagname %2").arg(cmdname).arg(node.firstChildElement().tagName());
+				result[XmlResponses::INVALID].setValue(XmlError(cmdtype, XmlError::PARSE));
+			}
+		}
 		return result;
 	}
 
 	QHash<int,QVariant> handle_browseup(const QDomNode &node)
 	{
-		QHash<int,QVariant> result;
+		return handle_browsing(node, "handle_browseup", XmlResponses::BROWSE_UP);
+	}
 
-		QString status_browse = getTextChild(node, "status_browse");
-		if (status_browse.isEmpty())
-		{
-			qWarning() << "handle_browseup: status_browse not found";
-			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::PARSE));
-		}
-		else if (status_browse == "browse_okay")
-			result[XmlResponses::BROWSE_UP] = true;
-		else
-		{
-			qWarning() << "handle_browseup: status_browse unknown";
-			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::BROWSE_UP, XmlError::BROWSING));
-		}
-		return result;
+	QHash<int,QVariant> handle_setcontext(const QDomNode &node)
+	{
+		return handle_browsing(node, "handle_setcontext", XmlResponses::SET_CONTEXT);
 	}
 
 	QHash<int,QVariant> handle_listitems(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
+
+		QString error_string = getTextChild(node, "error");
+		if (error_string == "detailed ls failed: current server down")
+		{
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::LIST_ITEMS, XmlError::SERVER_DOWN));
+			return result;
+		}
+		else if (!error_string.isEmpty())
+		{
+			qWarning() << QString("handle_listitems: unknown error %1").arg(error_string);
+			result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::LIST_ITEMS, XmlError::PARSE));
+		}
+
+		QString status_browse = getTextChild(node, "status_browse");
 		UPnpEntryList list;
 
 		list.total = getTextChild(node, "total").toUInt();
@@ -296,6 +366,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C15"] = handle_listitems;
 	xml_handlers["AW26C11"] = handle_selection;
 	xml_handlers["AW26C10"] = handle_selection;
+	xml_handlers["AW26C16"] = handle_setcontext;
 }
 
 XmlDevice::~XmlDevice()
@@ -341,6 +412,14 @@ void XmlDevice::nextFile()
 void XmlDevice::browseUp()
 {
 	sendCommand("CW26C7");
+}
+
+void XmlDevice::setContext(const QString &server, const QStringList &path)
+{
+	XmlArguments arg;
+	arg["server"] = server;
+	arg["path"] = path.join("/");
+	sendCommand("CW26C16", arg);
 }
 
 void XmlDevice::listItems(unsigned int starting_element, unsigned int max_elements)
@@ -403,7 +482,8 @@ void XmlDevice::sendCommand(const QString &message, const XmlArguments &argument
 		message_queue << qMakePair<QString, XmlArguments>(message, arguments);
 		xml_client->connectToHost();
 	}
-	else {
+	else
+	{
 		++pid;
 		xml_client->sendCommand(buildCommand(message, arguments));
 	}
@@ -439,7 +519,7 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 		QDomNode command_container = getChildWithName(root, "Cmd");
 		if (!command_container.isNull() && command_container.childNodes().size() == 1)
 		{
-			QDomNode command = command_container.childNodes().at(0);
+			QDomNode command = command_container.firstChild();
 			QString command_name = command.toElement().tagName();
 
 			if (!command_name.isEmpty())

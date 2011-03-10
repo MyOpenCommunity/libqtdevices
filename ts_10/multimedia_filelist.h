@@ -58,12 +58,21 @@ public:
 protected:
 	virtual int currentPage();
 
+protected slots:
+	virtual void browseUp();
+	virtual void pageUp();
+	virtual void pageDown();
+	virtual void itemIsClicked(int item);
+	virtual void emptyDirectory();
+	virtual void directoryChangeError();
+	virtual void handleError();
+
 private slots:
 	void startPlayback(int item);
 	void displayFiles(const EntryInfoList &list);
 
-	void upnpPgUp();
-	void upnpPgDown();
+	void audioPageClosed();
+	void loopDetected();
 
 private:
 	// icons for different file type
@@ -86,9 +95,29 @@ private:
 	NavigationBar *nav_bar;
 	PageTitleWidget *title_widget;
 
+	QStringList navigation_context;
+
+	QHash<QString, unsigned>  playing_pages_indexes;
+	QStringList playing_navigation_context;
+
 #ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;
 #endif
+};
+
+
+// Used in MultimediaSectionPage to create more instances with the same type and
+// filters.
+class MultimediaFileListFactory : public FileSelectorFactory
+{
+public:
+	MultimediaFileListFactory(TreeBrowser::Types type, int filters = EntryInfo::ALL, bool mount_enabled = true);
+	virtual FileSelector* getFileSelector();
+
+private:
+	int filters;
+	TreeBrowser::Types type;
+	bool mount_enabled;
 };
 
 #endif // MULTIMEDIA_FILELIST_H

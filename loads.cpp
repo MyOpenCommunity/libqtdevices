@@ -73,7 +73,7 @@ void Loads::loadItems(const QDomNode &config_node)
 		Q_ASSERT_X(id == LOAD, "Loads::loadItems", "Type of item not handled on loads page!");
 		QString where = getTextChild(item, "where");
 
-		bannLoads *b = new bannLoads(this, where, bt_global::skin->getImage("ok"));
+		bannLoads *b = new bannLoads(this, where, bt_global::skin->getImage("on"));
 		b->setText(getTextChild(item, "descr"));
 		b->setId(id);
 		b->Draw();

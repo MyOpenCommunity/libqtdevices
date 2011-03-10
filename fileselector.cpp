@@ -54,16 +54,16 @@ inline void waitTimeCounter(const QTime& timer, int msec)
 FileSelector::FileSelector(TreeBrowser *_browser)
 {
 	browser = _browser;
+
 	working = NULL;
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
 	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
 	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 
-	// maybe it's a bit harsh to close the navigation for all errors, but it's
-	// probably the safest choice
-	connect(browser, SIGNAL(directoryChangeError()), SLOT(handleError()));
+	connect(browser, SIGNAL(directoryChangeError()), SLOT(directoryChangeError()));
 	connect(browser, SIGNAL(listRetrieveError()), SLOT(handleError()));
+	connect(browser, SIGNAL(emptyDirectory()), SLOT(emptyDirectory()));
 	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
 #ifdef BT_HARDWARE_TS_10
@@ -82,14 +82,6 @@ void FileSelector::screenSaverStarted(Page *curr)
 	}
 }
 
-void FileSelector::browse(const QString &dir)
-{
-	setRootPath(dir);
-
-	// showPage automatically refreshes the file list
-	showPage();
-}
-
 void FileSelector::cleanUp()
 {
 	if (working)
@@ -97,7 +89,6 @@ void FileSelector::cleanUp()
 		working->abort();
 		working = 0;
 	}
-	browser->cleanUp();
 }
 
 const EntryInfoList &FileSelector::getFiles() const
@@ -117,22 +108,20 @@ void FileSelector::showPage()
 		// unmounted file system
 		emit Closed();
 	}
-	else if (files_list.size() == 0)
+	else
 	{
 		ScrollablePage::showPage();
 
-		// refresh directory information if the file list is empty
+		// refresh directory information
 		startOperation();
 		browser->getFileList();
 	}
-	else
-		ScrollablePage::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
 {
 	const EntryInfo& clicked_element = files_list[item];
-	qDebug() << "[AUDIO] FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
+	qDebug() << "FileSelector::itemIsClicked " << item << "-> " << clicked_element.name;
 
 	// save the info of old directory
 	pages_indexes[browser->pathKey()] = currentPage();
@@ -161,10 +150,21 @@ void FileSelector::browseUp()
 	if (!browser->isRoot())
 	{
 		startOperation();
+		resetDisplayedPage();
 		browser->exitDirectory();
 	}
 	else
 		emit Closed();
+}
+
+void FileSelector::pageDown()
+{
+	pages_indexes[browser->pathKey()] = currentPage();
+}
+
+void FileSelector::pageUp()
+{
+	pages_indexes[browser->pathKey()] = currentPage();
 }
 
 void FileSelector::directoryChanged()
@@ -174,8 +174,28 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
+	// An error can arrive even if the page currently showed is the player page.
+	// In this case, we ignore the error, and we manage the error in that page.
+	if (isVisible())
+	{
+		operationCompleted();
+		pages_indexes.clear();
+		files_list.clear();
+		browser->reset();
+		emit Closed();
+	}
+}
+
+void FileSelector::emptyDirectory()
+{
+	// Because the bt_contropoint process does not change the directory if it
+	// is empty we only re-show the page.
 	operationCompleted();
-	emit Closed();
+}
+
+void FileSelector::directoryChangeError()
+{
+	browser->getFileList();
 }
 
 void FileSelector::setRootPath(const QString &start_path)
@@ -203,7 +223,6 @@ void FileSelector::startOperation()
 	Q_ASSERT_X(working == NULL, "FileSelector::startOperation", "Multiple operations in progress");
 
 	working = new FileSelectorWaitDialog(this, MEDIASERVER_MSEC_WAIT_TIME);
-
 	connect(this, SIGNAL(Closed()), working, SLOT(abort()));
 }
 

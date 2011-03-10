@@ -31,7 +31,8 @@
 #include <QTime>
 
 class FileSelectorWaitDialog;
-
+class QShowEvent;
+class QHideEvent;
 
 /*!
 	\ingroup Core
@@ -45,14 +46,8 @@ class FileSelectorWaitDialog;
 class FileSelector : public ScrollablePage
 {
 Q_OBJECT
-public:
-	FileSelector(TreeBrowser *browser);
-
 public slots:
-	void itemIsClicked(int item);
-	void browseUp();
 	virtual void showPage();
-	virtual void browse(const QString &start_path);
 	virtual void cleanUp();
 
 #ifdef BT_HARDWARE_TS_10
@@ -60,11 +55,14 @@ public slots:
 	void unmount();
 #endif
 
+public:
+	void setRootPath(const QString &start_path);
+
 signals:
 	void fileClicked(int item);
 
 protected:
-	void setRootPath(const QString &start_path);
+	FileSelector(TreeBrowser *browser);
 	QString getRootPath();
 
 	/// returns the list of currently displayed files
@@ -81,17 +79,24 @@ protected:
 
 	virtual int currentPage();
 
+	TreeBrowser *browser;
+	QHash<QString, unsigned>  pages_indexes;
+
 	void resetDisplayedPage();
 
-	TreeBrowser *browser;
+protected slots:
+	virtual void itemIsClicked(int item);
+	virtual void emptyDirectory();
+	virtual void handleError();
+	virtual void directoryChangeError();
 
-private:
-	/// Change the current dir, return false in case of error.
-	bool changePath(QString new_path);
+	// Subclasses should call this method when the user clicks on the navbar.
+	virtual void browseUp();
+	virtual void pageUp();
+	virtual void pageDown();
 
 private slots:
 	void directoryChanged();
-	void handleError();
 	void screenSaverStarted(Page *curr);
 
 #ifdef BT_HARDWARE_TS_10
@@ -99,9 +104,11 @@ private slots:
 #endif
 
 private:
+	/// Change the current dir, return false in case of error.
+	bool changePath(QString new_path);
+
 	FileSelectorWaitDialog *working;
 	EntryInfoList files_list;
-	QHash<QString, unsigned>  pages_indexes;
 };
 
 
@@ -120,6 +127,16 @@ private:
 	QTime elapsed;
 	int timeout;
 };
+
+
+// A factory class that can be used to generate new instances of a FileSelector
+// (or one of its children) class.
+class FileSelectorFactory
+{
+public:
+	virtual FileSelector* getFileSelector() = 0;
+};
+
 
 #endif // FILE_SELECTOR_H
 

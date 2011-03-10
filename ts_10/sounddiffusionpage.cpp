@@ -162,9 +162,11 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 			    s.where == (*bt_global::config)[SOURCE_ADDRESS])
 			{
 				if (!s.details)
-					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA),
-									      MultimediaSectionPage::ITEMS_AUDIO,
-										  new MultimediaFileListPage(new DirectoryTreeBrowser, EntryInfo::DIRECTORY | EntryInfo::AUDIO));
+				{
+					MultimediaFileListFactory *factory = new MultimediaFileListFactory(TreeBrowser::DIRECTORY,
+						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
+					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
+				}
 
 				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
 
