@@ -108,16 +108,14 @@ void FileSelector::showPage()
 		// unmounted file system
 		emit Closed();
 	}
-	else if (files_list.size() == 0)
+	else
 	{
 		ScrollablePage::showPage();
 
-		// refresh directory information if the file list is empty
+		// refresh directory information
 		startOperation();
 		browser->getFileList();
 	}
-	else
-		ScrollablePage::showPage();
 }
 
 void FileSelector::itemIsClicked(int item)
