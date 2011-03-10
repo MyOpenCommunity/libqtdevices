@@ -200,6 +200,8 @@ namespace
 			}
 			else if (error_string.contains("is empty"))
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::SERVER_SELECTION, XmlError::EMPTY_CONTENT));
+			else if (error_string == "directory not found")
+				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::BROWSING));
 			else
 			{
 				qWarning() << QString("handle_selection: unknown error %1").arg(error_string);

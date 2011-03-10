@@ -101,7 +101,7 @@ void XmlClient::parseData()
 		{
 			// Remove the useless data.
 			buffer = buffer.right(buffer.length() - end);
-			emit dataReceived(data.simplified());
+			emit dataReceived(data.trimmed());
 		}
 	}
 }

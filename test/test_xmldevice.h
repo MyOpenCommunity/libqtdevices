@@ -44,6 +44,7 @@ private slots:
 	void testChdir();
 	void testChdirServerDown();
 	void testChdirEmpty();
+	void testChdirNotFound();
 	void testTrackSelection();
 	void testTrackSelectionServerDown();
 	void testNextTrack();

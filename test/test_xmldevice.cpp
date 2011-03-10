@@ -350,6 +350,33 @@ void TestXmlDevice::testChdirEmpty()
 	t.checkError(data, XmlError::EMPTY_CONTENT);
 }
 
+void TestXmlDevice::testChdirNotFound()
+{
+	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
+				 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
+				 "	<Hdr>"
+				 "		<MsgID>"
+				 "			<SID>1CE5A46E-D2C0-4789-8D58-8A4D364B938E</SID>"
+				 "			<PID>3</PID>"
+				 "		</MsgID>"
+				 "		<Dst>"
+				 "			<IP>10.3.3.245</IP>"
+				 "		</Dst>"
+				 "		<Src>"
+				 "			<IP>10.3.3.98</IP>"
+				 "		</Src>"
+				 "	</Hdr>"
+				 "	<Cmd>"
+				 "		<AW26C2>"
+				 "			<error>directory not found</error>"
+				 "		</AW26C2>"
+				 "	</Cmd>"
+				 "</OWNxml>");
+
+	XmlDeviceTester t(dev, XmlResponses::CHDIR);
+	t.checkError(data, XmlError::BROWSING);
+}
+
 void TestXmlDevice::testTrackSelection()
 {
 	QString data("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\""
