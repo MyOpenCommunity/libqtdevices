@@ -155,6 +155,21 @@ void MultimediaFileListPage::emptyDirectory()
 	FileSelector::emptyDirectory();
 }
 
+void MultimediaFileListPage::directoryChangeError()
+{
+	navigation_context.removeLast();
+	FileSelector::directoryChangeError();
+}
+
+void MultimediaFileListPage::handleError()
+{
+	if (isVisible())
+	{
+		navigation_context.clear();
+		FileSelector::handleError();
+	}
+}
+
 void MultimediaFileListPage:: browseUp()
 {
 	FileSelector::browseUp();
