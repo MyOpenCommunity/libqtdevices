@@ -86,6 +86,8 @@ protected:
 
 protected slots:
 	virtual void itemIsClicked(int item);
+	virtual void emptyDirectory();
+
 	// Subclasses should call this method when the user clicks on the navbar.
 	virtual void browseUp();
 	virtual void pageUp();
@@ -95,7 +97,6 @@ private slots:
 	void directoryChanged();
 	void handleError();
 	void directoryChangeError();
-	void emptyDirectory();
 	void screenSaverStarted(Page *curr);
 
 #ifdef BT_HARDWARE_TS_10

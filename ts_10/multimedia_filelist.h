@@ -63,6 +63,7 @@ protected slots:
 	virtual void pageUp();
 	virtual void pageDown();
 	virtual void itemIsClicked(int item);
+	virtual void emptyDirectory();
 
 private slots:
 	void startPlayback(int item);

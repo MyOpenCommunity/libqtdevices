@@ -149,6 +149,12 @@ void MultimediaFileListPage::itemIsClicked(int item)
 	FileSelector::itemIsClicked(item);
 }
 
+void MultimediaFileListPage::emptyDirectory()
+{
+	navigation_context.removeLast();
+	FileSelector::emptyDirectory();
+}
+
 void MultimediaFileListPage:: browseUp()
 {
 	FileSelector::browseUp();
