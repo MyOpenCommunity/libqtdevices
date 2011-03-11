@@ -151,7 +151,12 @@ namespace
 			else if (status_browse == "browse_okay")
 				result[XmlResponses::CHDIR] = true;
 			else if (status_browse == "empty_directory")
+			{
+#if DEBUG_EMPTYDIR
+				qDebug() << "handle_selection: Received empty directory";
+#endif
 				result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::CHDIR, XmlError::EMPTY_CONTENT));
+			}
 			else
 			{
 				qWarning() << QString("handle_selection: status_browse unknown %1").arg(status_browse);
@@ -432,7 +437,14 @@ void XmlDevice::listItems(unsigned int starting_element, unsigned int max_elemen
 
 void XmlDevice::handleData(const QString &data)
 {
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlDevice::handleData" << __LINE__;
+#endif
 	XmlResponse response = parseXml(data);
+
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlDevice::handleData" << __LINE__;
+#endif
 
 	if (response.contains(XmlResponses::INVALID))
 	{
@@ -441,6 +453,9 @@ void XmlDevice::handleData(const QString &data)
 	}
 	else
 		emit responseReceived(response);
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlDevice::handleData" << __LINE__;
+#endif
 }
 
 void XmlDevice::handleClientError()

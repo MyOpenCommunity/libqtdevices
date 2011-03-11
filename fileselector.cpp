@@ -174,6 +174,9 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::handleError" << __LINE__;
+#endif
 	// An error can arrive even if the page currently showed is the player page.
 	// In this case, we ignore the error, and we manage the error in that page.
 	if (isVisible())
@@ -184,18 +187,33 @@ void FileSelector::handleError()
 		browser->reset();
 		emit Closed();
 	}
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::handleError" << __LINE__;
+#endif
 }
 
 void FileSelector::emptyDirectory()
 {
 	// Because the bt_contropoint process does not change the directory if it
 	// is empty we only re-show the page.
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::emptyDirectory" << __LINE__;
+#endif
 	operationCompleted();
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::emptyDirectory" << __LINE__;
+#endif
 }
 
 void FileSelector::directoryChangeError()
 {
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::directoryChangeError" << __LINE__;
+#endif
 	browser->getFileList();
+#if DEBUG_EMPTYDIR
+	qDebug() << "FileSelector::directoryChangeError" << __LINE__;
+#endif
 }
 
 void FileSelector::setRootPath(const QString &start_path)

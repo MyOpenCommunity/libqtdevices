@@ -5,6 +5,8 @@
 # for the BTicino touchscreen 10''. It shares large pieces of code with
 # the BTicino touchscreen 3.5'' code.
 
+#DEFINES += DEBUG_EMPTYDIR
+
 LAYOUT = ts_10
 CONF_FILE = ts_10
 

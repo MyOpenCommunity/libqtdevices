@@ -335,7 +335,15 @@ void UPnpClientBrowser::handleError(int response, int code)
 		if (code == XmlError::BROWSING)
 			emit directoryChangeError();
 		else if (code == XmlError::EMPTY_CONTENT)
+		{
+#if DEBUG_EMPTYDIR
+			qDebug() << "UPnpClientBrowser::handleError" << __LINE__;
+#endif
 			emit emptyDirectory();
+#if DEBUG_EMPTYDIR
+			qDebug() << "UPnpClientBrowser::handleError" << __LINE__;
+#endif
+		}
 		else
 			emit genericError();
 		break;

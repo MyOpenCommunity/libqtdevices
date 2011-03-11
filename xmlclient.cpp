@@ -65,6 +65,9 @@ void XmlClient::sendCommand(const QString &command)
 
 void XmlClient::receiveData()
 {
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::receiveData" << __LINE__;
+#endif
 	if (socket->bytesAvailable() <= 0)
 		return;
 
@@ -72,7 +75,14 @@ void XmlClient::receiveData()
 	// the xml read is utf8, we need to preserve that.
 	buffer.append(QString::fromUtf8(ba.constData(), ba.size()));
 
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::receiveData" << __LINE__;
+#endif
 	parseData();
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::receiveData" << __LINE__;
+#endif
+
 }
 
 void XmlClient::socketError()
@@ -83,6 +93,10 @@ void XmlClient::socketError()
 
 void XmlClient::parseData()
 {
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::parseData" << __LINE__;
+#endif
+
 	for (;;)
 	{
 		// Look for start and end tags.
@@ -97,6 +111,9 @@ void XmlClient::parseData()
 		// Get the data between the tags comprending them.
 		QString data = buffer.mid(start, end + QByteArray(END_TAG).length() - start);
 
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::parseData" << __LINE__;
+#endif
 		if (!data.isEmpty())
 		{
 			// Remove the useless data.
@@ -104,4 +121,7 @@ void XmlClient::parseData()
 			emit dataReceived(data.trimmed());
 		}
 	}
+#if DEBUG_EMPTYDIR
+	qDebug() << "XmlClient::parseData" << __LINE__;
+#endif
 }
