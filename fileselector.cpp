@@ -177,16 +177,13 @@ void FileSelector::handleError()
 #if DEBUG_EMPTYDIR
 	qDebug() << "FileSelector::handleError" << __LINE__;
 #endif
-	// An error can arrive even if the page currently showed is the player page.
-	// In this case, we ignore the error, and we manage the error in that page.
-	if (isVisible())
-	{
-		operationCompleted();
-		pages_indexes.clear();
-		files_list.clear();
-		browser->reset();
-		emit Closed();
-	}
+
+	operationCompleted();
+	pages_indexes.clear();
+	files_list.clear();
+	browser->reset();
+	emit Closed();
+
 #if DEBUG_EMPTYDIR
 	qDebug() << "FileSelector::handleError" << __LINE__;
 #endif

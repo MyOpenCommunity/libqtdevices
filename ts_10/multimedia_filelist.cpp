@@ -122,7 +122,6 @@ void MultimediaFileListPage::audioPageClosed()
 	else
 	{
 		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-		setFiles(EntryInfoList()); // force the refresh of the file list.
 		showPage();
 	}
 }
@@ -178,11 +177,9 @@ void MultimediaFileListPage::handleError()
 #if DEBUG_EMPTYDIR
 	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
 #endif
-	if (isVisible())
-	{
-		navigation_context.clear();
-		FileSelector::handleError();
-	}
+	navigation_context.clear();
+	FileSelector::handleError();
+
 #if DEBUG_EMPTYDIR
 	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
 #endif
@@ -350,6 +347,25 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 #endif
 }
 
+void MultimediaFileListPage::connectAudioPage()
+{
+	// disconnect & connect to avoid multiple connect
+	disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+	connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+
+	disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+	connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+
+	disconnect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+	connect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+}
+
+void MultimediaFileListPage::handleServerDown()
+{
+	disconnect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+	handleError();
+}
+
 void MultimediaFileListPage::startPlayback(int item)
 {
 	playing_navigation_context = navigation_context;
@@ -367,12 +383,7 @@ void MultimediaFileListPage::startPlayback(int item)
 		// one per type of AudioPlayerPage we have to connect the last with
 		// the right MultimediaFileListPage instance.
 
-		// disconnect & connect to avoid multiple connect
-		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-
-		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+		connectAudioPage();
 		return;
 	}
 
@@ -402,14 +413,7 @@ void MultimediaFileListPage::startPlayback(int item)
 	else if (last_clicked_type == EntryInfo::AUDIO)
 	{
 		audioplayer->playAudioFiles(filtered, last_clicked);
-
-		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-
-		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed())); // avoid multiple connect
-		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-
-
+		connectAudioPage();
 	}
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)

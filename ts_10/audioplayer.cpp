@@ -398,6 +398,8 @@ void AudioPlayerPage::handleServerDown()
 
 	if (isVisible())
 		emit Closed();
+	else
+		emit serverDown();
 }
 
 void AudioPlayerPage::quit()
