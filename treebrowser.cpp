@@ -149,7 +149,7 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 	{
 		if (!current_dir.cd(dir))
 		{
-			emit directoryChangeError();
+			emit genericError();
 			return;
 		}
 		++level;
@@ -327,8 +327,10 @@ void UPnpClientBrowser::handleError(int response, int code)
 	case XmlResponses::LIST_ITEMS:
 		emit listRetrieveError();
 		break;
-	case XmlResponses::SERVER_SELECTION:
 	case XmlResponses::SET_CONTEXT:
+			emit genericError();
+		break;
+	case XmlResponses::SERVER_SELECTION:
 	case XmlResponses::CHDIR:
 		if (code == XmlError::BROWSING)
 			emit directoryChangeError();

@@ -214,7 +214,6 @@ public:
 	int getStartingElement();
 	void getFileList(int starting_element);
 
-
 private slots:
 	void handleResponse(const XmlResponse &response);
 	void handleError(int response, int code);
