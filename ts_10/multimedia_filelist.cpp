@@ -150,39 +150,20 @@ void MultimediaFileListPage::itemIsClicked(int item)
 
 void MultimediaFileListPage::emptyDirectory()
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::emptyDirectory" << __LINE__;
-#endif
 	navigation_context.removeLast();
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::emptyDirectory" << __LINE__;
-#endif
 	FileSelector::emptyDirectory();
 }
 
 void MultimediaFileListPage::directoryChangeError()
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::directoryChangeError" << __LINE__;
-#endif
 	navigation_context.removeLast();
 	FileSelector::directoryChangeError();
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::directoryChangeError" << __LINE__;
-#endif
 }
 
 void MultimediaFileListPage::handleError()
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
-#endif
 	navigation_context.clear();
 	FileSelector::handleError();
-
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
-#endif
 }
 
 void MultimediaFileListPage:: browseUp()
@@ -225,13 +206,7 @@ int MultimediaFileListPage::currentPage()
 
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 	int page_index = displayedPage(browser->pathKey());
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 
 	if (list.empty())
 	{
@@ -244,9 +219,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			browser->getFileList();
 			return;
 		}
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
+
 		if (browser->isRoot()) // Special case empty root directory
 		{
 			operationCompleted();
@@ -258,9 +231,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		browser->exitDirectory();
 		return;
 	}
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
+
 	static int loop_counter = 0;
 
 	if (UPnpClientBrowser *b = qobject_cast<UPnpClientBrowser*>(browser))
@@ -285,9 +256,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 				return;
 			}
 		}
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
+
 		loop_counter = 0;
 		page_index = 0;
 
@@ -299,9 +268,6 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		title_widget->setCurrentPage(current_page, total_pages);
 	}
 
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 	EntryInfoList filtered_list;
 
 	QList<ItemList::ItemInfo> names_list;
@@ -331,20 +297,11 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		filtered_list.append(f);
 	}
 
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 	setFiles(filtered_list);
 	page_content->setList(names_list, page_index);
 	page_content->showList();
 
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 	operationCompleted();
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
-#endif
 }
 
 void MultimediaFileListPage::connectAudioPage()

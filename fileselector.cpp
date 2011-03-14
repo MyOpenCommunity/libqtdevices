@@ -174,43 +174,23 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::handleError" << __LINE__;
-#endif
-
 	operationCompleted();
 	pages_indexes.clear();
 	files_list.clear();
 	browser->reset();
 	emit Closed();
-
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::handleError" << __LINE__;
-#endif
 }
 
 void FileSelector::emptyDirectory()
 {
 	// Because the bt_contropoint process does not change the directory if it
 	// is empty we only re-show the page.
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::emptyDirectory" << __LINE__;
-#endif
 	operationCompleted();
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::emptyDirectory" << __LINE__;
-#endif
 }
 
 void FileSelector::directoryChangeError()
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::directoryChangeError" << __LINE__;
-#endif
 	browser->getFileList();
-#if DEBUG_EMPTYDIR
-	qDebug() << "FileSelector::directoryChangeError" << __LINE__;
-#endif
 }
 
 void FileSelector::setRootPath(const QString &start_path)
