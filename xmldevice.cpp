@@ -188,7 +188,7 @@ namespace
 			if (error_string.contains("server down"))
 			{
 				QString error_type = error_string.split(":")[0];
-				XmlResponses::Type response_type;
+				XmlResponses::Type response_type = XmlResponses::INVALID;
 				if (error_type == "no server loaded")
 					response_type = XmlResponses::SERVER_SELECTION;
 				else if (error_type == "browse failed")
