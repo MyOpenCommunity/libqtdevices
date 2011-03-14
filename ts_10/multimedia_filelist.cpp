@@ -447,6 +447,8 @@ void MultimediaFileListPage::cleanUp()
 }
 
 
+MultimediaFileListPage *MultimediaFileListFactory::upnp_page = 0;
+
 MultimediaFileListFactory::MultimediaFileListFactory(TreeBrowser::Types _type, int _filters, bool _mount_enabled)
 {
 	filters = _filters;
@@ -456,19 +458,16 @@ MultimediaFileListFactory::MultimediaFileListFactory(TreeBrowser::Types _type, i
 
 FileSelector* MultimediaFileListFactory::getFileSelector()
 {
-	TreeBrowser *b = 0;
-	switch (type)
-	{
-	case TreeBrowser::DIRECTORY:
-		b = new DirectoryTreeBrowser;
-		break;
-	case TreeBrowser::UPNP:
-		b = new UPnpClientBrowser(bt_global::xml_device);
-		break;
-	default:
+	if (type == TreeBrowser::DIRECTORY)
+		return new MultimediaFileListPage(new DirectoryTreeBrowser, filters, mount_enabled);
+	else if (type != TreeBrowser::UPNP)
 		Q_ASSERT(qPrintable(QString("MultimediaFileListFactory::getFileSelector -> cannot create browser of unknown type %d").arg(type)));
-	}
 
-	return new MultimediaFileListPage(b, filters, mount_enabled);
+	// Because bt_controlpoint supports only one client, we use an unique instance of the related MultimediaFileListPage
+	// (now shared between the multimedia and the sound diffusion section).
+	if (!upnp_page)
+		upnp_page = new MultimediaFileListPage(new UPnpClientBrowser(bt_global::xml_device), filters, mount_enabled);
+
+	return upnp_page;
 }
 

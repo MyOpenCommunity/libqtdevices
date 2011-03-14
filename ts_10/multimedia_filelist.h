@@ -121,6 +121,7 @@ private:
 	int filters;
 	TreeBrowser::Types type;
 	bool mount_enabled;
+	static MultimediaFileListPage *upnp_page;
 };
 
 #endif // MULTIMEDIA_FILELIST_H
