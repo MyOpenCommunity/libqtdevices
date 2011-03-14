@@ -141,17 +141,9 @@ void MultimediaFileListPage::loopDetected()
 
 void MultimediaFileListPage::itemIsClicked(int item)
 {
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::itemIsClicked" << __LINE__;
-#endif
 	const EntryInfo &current_file = getFiles()[item];
 	if (current_file.type == EntryInfo::DIRECTORY) // we add only albums or directories
-	{
 		navigation_context << current_file.name;
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::itemIsClicked NAVIGATION CONTEXT" << navigation_context;
-#endif
-	}
 
 	FileSelector::itemIsClicked(item);
 }
@@ -160,7 +152,6 @@ void MultimediaFileListPage::emptyDirectory()
 {
 #if DEBUG_EMPTYDIR
 	qDebug() << "MultimediaFileListPage::emptyDirectory" << __LINE__;
-	qDebug() << "MultimediaFileListPage::emptyDirectory NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.removeLast();
 #if DEBUG_EMPTYDIR
@@ -173,7 +164,6 @@ void MultimediaFileListPage::directoryChangeError()
 {
 #if DEBUG_EMPTYDIR
 	qDebug() << "MultimediaFileListPage::directoryChangeError" << __LINE__;
-	qDebug() << " MultimediaFileListPage::directoryChangeError NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.removeLast();
 	FileSelector::directoryChangeError();
@@ -186,7 +176,6 @@ void MultimediaFileListPage::handleError()
 {
 #if DEBUG_EMPTYDIR
 	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
-	qDebug() << " MultimediaFileListPage::handleError NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.clear();
 	FileSelector::handleError();
@@ -200,9 +189,6 @@ void MultimediaFileListPage:: browseUp()
 {
 	FileSelector::browseUp();
 
-#if DEBUG_EMPTYDIR
-	qDebug() << " MultimediaFileListPage::browseUp NAVIGATION CONTEXT:" << navigation_context;
-#endif
 	if (!navigation_context.isEmpty())
 		navigation_context.removeLast();
 }
