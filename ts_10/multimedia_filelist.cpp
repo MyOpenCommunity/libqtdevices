@@ -114,9 +114,6 @@ void MultimediaFileListPage::audioPageClosed()
 		ScrollablePage::showPage();
 		startOperation();
 
-#if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::itemIsClicked" << __LINE__ << this;
-#endif
 		navigation_context = playing_navigation_context;
 		pages_indexes = playing_pages_indexes;
 		// the directoryChanged signal trigger a call to the displayFiles
@@ -145,7 +142,7 @@ void MultimediaFileListPage::loopDetected()
 void MultimediaFileListPage::itemIsClicked(int item)
 {
 #if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::itemIsClicked" << __LINE__ << this;
+	qDebug() << "MultimediaFileListPage::itemIsClicked" << __LINE__;
 #endif
 	const EntryInfo &current_file = getFiles()[item];
 	if (current_file.type == EntryInfo::DIRECTORY) // we add only albums or directories
@@ -162,7 +159,7 @@ void MultimediaFileListPage::itemIsClicked(int item)
 void MultimediaFileListPage::emptyDirectory()
 {
 #if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::emptyDirectory" << __LINE__ << this;
+	qDebug() << "MultimediaFileListPage::emptyDirectory" << __LINE__;
 	qDebug() << "MultimediaFileListPage::emptyDirectory NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.removeLast();
@@ -175,7 +172,7 @@ void MultimediaFileListPage::emptyDirectory()
 void MultimediaFileListPage::directoryChangeError()
 {
 #if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::directoryChangeError" << __LINE__ << this;
+	qDebug() << "MultimediaFileListPage::directoryChangeError" << __LINE__;
 	qDebug() << " MultimediaFileListPage::directoryChangeError NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.removeLast();
@@ -188,7 +185,7 @@ void MultimediaFileListPage::directoryChangeError()
 void MultimediaFileListPage::handleError()
 {
 #if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::handleError" << __LINE__ << this;
+	qDebug() << "MultimediaFileListPage::handleError" << __LINE__;
 	qDebug() << " MultimediaFileListPage::handleError NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	navigation_context.clear();
@@ -204,7 +201,7 @@ void MultimediaFileListPage:: browseUp()
 	FileSelector::browseUp();
 
 #if DEBUG_EMPTYDIR
-	qDebug() << " MultimediaFileListPage::browseUp NAVIGATION CONTEXT:" << navigation_context << this;
+	qDebug() << " MultimediaFileListPage::browseUp NAVIGATION CONTEXT:" << navigation_context;
 #endif
 	if (!navigation_context.isEmpty())
 		navigation_context.removeLast();
@@ -243,7 +240,7 @@ int MultimediaFileListPage::currentPage()
 void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 {
 #if DEBUG_EMPTYDIR
-	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__ << this;
+	qDebug() << "MultimediaFileListPage::displayFiles" << __LINE__;
 #endif
 	int page_index = displayedPage(browser->pathKey());
 #if DEBUG_EMPTYDIR
