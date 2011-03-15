@@ -601,6 +601,18 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 		sidebar->addSpacing(vct_call->setup_vct->height());
 
 		vct_call->video_box->setFixedSize(320, 240);
+
+		system("echo 1 > /proc/sys/dev/btweb/reset_ZL2");
+		usleep(200000);
+		system("/home/bticino/bin/zarlink2 0420 210C WR > /dev/null 2>&1");
+		system("/home/bticino/bin/zarlink2 04D0 0003 WR > /dev/null 2>&1");
+		system("/home/bticino/bin/zarlink2 0401 4800 WR > /dev/null 2>&1");
+		system("/home/bticino/bin/zarlink2 0400 0206 WR > /dev/null 2>&1");
+		usleep(100000);
+		system("/home/bticino/bin/zarlink 0420 210C WR > /dev/null 2>&1");
+		system("/home/bticino/bin/zarlink 0401 4800 WR > /dev/null 2>&1");
+		system("/home/bticino/bin/zarlink 0400 0206 WR > /dev/null 2>&1");
+		usleep(100000);
 	}
 
 	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
