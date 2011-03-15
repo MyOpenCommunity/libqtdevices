@@ -34,7 +34,7 @@
 #include <QVariant>
 
 
-#define MEDIASERVER_MSEC_WAIT_TIME 2000
+#define MEDIASERVER_MSEC_WAIT_TIME 300
 
 inline QTime startTimeCounter()
 {
