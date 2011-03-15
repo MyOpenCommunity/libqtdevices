@@ -58,7 +58,14 @@
 
 // The keys used to update the e2, the eeprom memory where is stored the zarlink
 // configuration.
-#define ZARLINK_KEY 0x63
+#define ZARLINK_KEY_SCS 0x72
+#define ZARLINK_KEY_IP 0x82
+
+// The executable of zarlink (the echo canceller)
+#define ZARLINK_BIN "/home/bticino/bin/zarlink"
+
+// Another executable of zarlink, used in a pipeline to adjust the volume of the call.
+#define ZARLINK_VOLUME  "/home/bticino/bin/zarlink2"
 
 
 #define CALL_NOTIFIER_TIMEOUT 30000
@@ -321,7 +328,7 @@ EchoCanceller::EchoCanceller(VideoDoorEntryDevice::VctMode mode)
 void EchoCanceller::initScs()
 {
 	qDebug() << "EchoCanceller::initScs";
-	char init = 0;
+	unsigned char init = 0;
 	bool need_reset = false;
 
 	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
@@ -330,23 +337,32 @@ void EchoCanceller::initScs()
 		qWarning() << "Unable to open E2 device";
 		return;
 	}
-	lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
-	read(eeprom, &init, 1);
-
-	if (init != ZARLINK_KEY) // different versions, update the zarlink configuration
+	char read_value = '\0';
+	while (1)
 	{
-		for (int i = 0; i < 5; ++i)
+		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+		read(eeprom, &init, 1);
+
+		if (read_value == init)
+			break;
+		read_value = init;
+	}
+
+	if (init != ZARLINK_KEY_SCS) // different versions, update the zarlink configuration
+	{
+		while (1)
 		{
-			if (!silentExecute("/home/bticino/bin/zarlink 0400 0001 CONF /home/bticino/cfg/zle38004.cr"))
+			int dummy = system(ZARLINK_BIN " 0400 0001 CONF /home/bticino/cfg/zle38004_scs.cr > /dev/null 2>&1");
+			if (dummy == 0)
 			{
-				init = ZARLINK_KEY;
+				init = ZARLINK_KEY_SCS;
 				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
 				write(eeprom, &init, 1);
 				need_reset = true;
 				break;
 			}
 			// We don't care about blocking the UI, because we are in a separate thread.
-			usleep(500000);
+			usleep(1500000);
 		}
 	}
 
@@ -362,6 +378,85 @@ void EchoCanceller::initScs()
 void EchoCanceller::initIp()
 {
 	qDebug() << "EchoCanceller::initIp";
+	unsigned char init = 0;
+	bool need_reset = false;
+
+	system("echo 1 > /proc/sys/dev/btweb/reset_ZL2");
+	usleep(200000);
+
+	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
+	if (eeprom == -1)
+	{
+		qWarning() << "Unable to open E2 device";
+		return;
+	}
+	char read_value = '\0';
+	while (1)
+	{
+		lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+		read(eeprom, &init, 1);
+
+		if (read_value == init)
+			break;
+		read_value = init;
+	}
+
+	if (init != ZARLINK_KEY_IP) // different versions, update the zarlink configuration
+	{
+		while (1)
+		{
+			int dummy = system(ZARLINK_BIN " 0400 0001 CONF /home/bticino/cfg/zle38004_ip.cr > /dev/null 2>&1");
+			if (dummy == 0)
+			{
+				init = ZARLINK_KEY_IP;
+				lseek(eeprom, E2_BASE_CONF_ZARLINK, SEEK_SET);
+				write(eeprom, &init, 1);
+				need_reset = true;
+				break;
+			}
+			// We don't care about blocking the UI, because we are in a separate thread.
+			usleep(1500000);
+		}
+	}
+
+	silentExecute(QString("echo %1 > /home/bticino/cfg/vers_conf_zarlink").arg(init));
+	if (need_reset)
+	{
+		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
+		usleep(100000);
+		silentExecute("echo 0 > /proc/sys/dev/btweb/reset_ZL2");
+		usleep(100000);
+		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL2");
+	}
+
+	// In IP always do these initializations
+	usleep(200000);
+
+	QStringList volume_params;
+	volume_params << "05E8 2d4b WR" << "044D 9C05 WR" << "0529 7fff WR" << "0472 7fff WR";
+	volume_params << "0473 7fff WR" << "0451 1f40 WR" << "0453 7fff WR" << "0474 7fff WR";
+	volume_params << "044a 7e00 WR" << "044b 1072 WR" << "047b 0072 WR" << "04d0 0003 WR";
+	volume_params << "04d5 0004 WR" << "0420 210c WR" << "0401 4800 WR" << "0400 0206 WR";
+
+	foreach (const QString &param, volume_params)
+	{
+		system(qPrintable(QString("%1 %2 >/dev/null 2>&1").arg(ZARLINK_VOLUME).arg(param)));
+		usleep(100000);
+	}
+
+	QStringList echo_params;
+	echo_params << "04D0 0004 WR" << "0420 210C WR" << "0401 4800 WR" << "0400 0206 WR";
+
+	foreach (const QString &param, echo_params)
+	{
+		system(qPrintable(QString("%1 %2 >/dev/null 2>&1").arg(ZARLINK_BIN).arg(param)));
+		usleep(100000);
+	}
+
+	system("/devmem2/devmem2 0x41000030 w 0x08 check > /dev/null 2>&1");
+	usleep(100000);
 }
 
 

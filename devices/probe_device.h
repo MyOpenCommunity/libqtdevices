@@ -174,13 +174,6 @@ public:
 	void setFancoilSpeed(int speed);
 	void requestFancoilStatus();
 
-	/*!
-		\brief Request a status update.
-
-		It should never be necessary to call this function explicitly.
-	 */
-	void requestStatus();
-
 public slots:
 	/*!
 		\brief Set zone in manual mode with the given target temperature (99-zone controller).
@@ -223,7 +216,8 @@ private:
 	ProbeStatus local_status;
 	int local_offset, set_point;
 
-private:
+	void requestStatus();
+
 	static const int TIMEOUT_TIME = 10000;
 };
 

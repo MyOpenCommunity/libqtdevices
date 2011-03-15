@@ -34,7 +34,7 @@
 #include <QVariant>
 
 
-#define MEDIASERVER_MSEC_WAIT_TIME 2000
+#define MEDIASERVER_MSEC_WAIT_TIME 300
 
 inline QTime startTimeCounter()
 {
@@ -174,16 +174,11 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
-	// An error can arrive even if the page currently showed is the player page.
-	// In this case, we ignore the error, and we manage the error in that page.
-	if (isVisible())
-	{
-		operationCompleted();
-		pages_indexes.clear();
-		files_list.clear();
-		browser->reset();
-		emit Closed();
-	}
+	operationCompleted();
+	pages_indexes.clear();
+	files_list.clear();
+	browser->reset();
+	emit Closed();
 }
 
 void FileSelector::emptyDirectory()

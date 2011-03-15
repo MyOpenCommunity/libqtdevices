@@ -599,7 +599,6 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 		// replace it with a spacer.
 		vct_call->setup_vct->hide();
 		sidebar->addSpacing(vct_call->setup_vct->height());
-
 		vct_call->video_box->setFixedSize(320, 240);
 	}
 

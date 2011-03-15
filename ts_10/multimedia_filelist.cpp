@@ -122,7 +122,6 @@ void MultimediaFileListPage::audioPageClosed()
 	else
 	{
 		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-		setFiles(EntryInfoList()); // force the refresh of the file list.
 		showPage();
 	}
 }
@@ -163,11 +162,8 @@ void MultimediaFileListPage::directoryChangeError()
 
 void MultimediaFileListPage::handleError()
 {
-	if (isVisible())
-	{
-		navigation_context.clear();
-		FileSelector::handleError();
-	}
+	navigation_context.clear();
+	FileSelector::handleError();
 }
 
 void MultimediaFileListPage:: browseUp()
@@ -308,6 +304,25 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 	operationCompleted();
 }
 
+void MultimediaFileListPage::connectAudioPage()
+{
+	// disconnect & connect to avoid multiple connect
+	disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+	connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
+
+	disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+	connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+
+	disconnect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+	connect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+}
+
+void MultimediaFileListPage::handleServerDown()
+{
+	disconnect(audioplayer, SIGNAL(serverDown()), this, SLOT(handleServerDown()));
+	handleError();
+}
+
 void MultimediaFileListPage::startPlayback(int item)
 {
 	playing_navigation_context = navigation_context;
@@ -325,12 +340,7 @@ void MultimediaFileListPage::startPlayback(int item)
 		// one per type of AudioPlayerPage we have to connect the last with
 		// the right MultimediaFileListPage instance.
 
-		// disconnect & connect to avoid multiple connect
-		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-
-		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
+		connectAudioPage();
 		return;
 	}
 
@@ -360,14 +370,7 @@ void MultimediaFileListPage::startPlayback(int item)
 	else if (last_clicked_type == EntryInfo::AUDIO)
 	{
 		audioplayer->playAudioFiles(filtered, last_clicked);
-
-		disconnect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-		connect(audioplayer, SIGNAL(loopDetected()), this, SLOT(loopDetected()));
-
-		disconnect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed())); // avoid multiple connect
-		connect(audioplayer, SIGNAL(Closed()), this, SLOT(audioPageClosed()));
-
-
+		connectAudioPage();
 	}
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
@@ -384,6 +387,8 @@ void MultimediaFileListPage::cleanUp()
 }
 
 
+MultimediaFileListPage *MultimediaFileListFactory::upnp_page = 0;
+
 MultimediaFileListFactory::MultimediaFileListFactory(TreeBrowser::Types _type, int _filters, bool _mount_enabled)
 {
 	filters = _filters;
@@ -393,19 +398,16 @@ MultimediaFileListFactory::MultimediaFileListFactory(TreeBrowser::Types _type, i
 
 FileSelector* MultimediaFileListFactory::getFileSelector()
 {
-	TreeBrowser *b = 0;
-	switch (type)
-	{
-	case TreeBrowser::DIRECTORY:
-		b = new DirectoryTreeBrowser;
-		break;
-	case TreeBrowser::UPNP:
-		b = new UPnpClientBrowser(bt_global::xml_device);
-		break;
-	default:
+	if (type == TreeBrowser::DIRECTORY)
+		return new MultimediaFileListPage(new DirectoryTreeBrowser, filters, mount_enabled);
+	else if (type != TreeBrowser::UPNP)
 		Q_ASSERT(qPrintable(QString("MultimediaFileListFactory::getFileSelector -> cannot create browser of unknown type %d").arg(type)));
-	}
 
-	return new MultimediaFileListPage(b, filters, mount_enabled);
+	// Because bt_controlpoint supports only one client, we use an unique instance of the related MultimediaFileListPage
+	// (now shared between the multimedia and the sound diffusion section).
+	if (!upnp_page)
+		upnp_page = new MultimediaFileListPage(new UPnpClientBrowser(bt_global::xml_device), filters, mount_enabled);
+
+	return upnp_page;
 }
 

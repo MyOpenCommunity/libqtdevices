@@ -73,6 +73,7 @@ private slots:
 
 	void audioPageClosed();
 	void loopDetected();
+	void handleServerDown();
 
 private:
 	// icons for different file type
@@ -100,6 +101,8 @@ private:
 	QHash<QString, unsigned>  playing_pages_indexes;
 	QStringList playing_navigation_context;
 
+	void connectAudioPage();
+
 #ifdef PDF_EXAMPLE
 	PdfPage *pdfdisplay;
 #endif
@@ -118,6 +121,7 @@ private:
 	int filters;
 	TreeBrowser::Types type;
 	bool mount_enabled;
+	static MultimediaFileListPage *upnp_page;
 };
 
 #endif // MULTIMEDIA_FILELIST_H
