@@ -702,8 +702,11 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 
 	// Check for the month that has an invalid value
 	int d = invalid_month - QDate::currentDate().month();
-	int invalid_index = d < 0 ? d + 12 : d;
-	data.graph[invalid_index] = 0;
+	if (d != 0) // discard a frame for the current month that use the 52 as what.
+	{
+		int invalid_index = d < 0 ? d + 12 : d;
+		data.graph[invalid_index] = 0;
+	}
 
 	t.check(frames, data);
 }

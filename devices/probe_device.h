@@ -113,6 +113,7 @@ private:
  */
 class ControlledProbeDevice : public device
 {
+friend class TestControlledProbeDevice;
 Q_OBJECT
 public:
 	enum ProbeType
