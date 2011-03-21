@@ -341,6 +341,7 @@ void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned el
 	lm->setCurrentIndex(element);
 
 	loop_starting_file = -1;
+	qDebug() << "AudioPlayerPage::playAudioFilesBackground";
 
 	startPlayback();
 }
@@ -357,6 +358,7 @@ void AudioPlayerPage::playAudioFile(EntryInfo starting_file, int file_index, int
 
 	showPage();
 	loop_starting_file = -1;
+	qDebug() << "AudioPlayerPage::playAudioFile";
 
 	startPlayback();
 }
@@ -381,6 +383,7 @@ void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 	lm->setCurrentIndex(element);
 
 	showPage();
+	qDebug() << "AudioPlayerPage::playAudioFiles";
 	loop_starting_file = -1;
 
 	startPlayback();
@@ -389,6 +392,7 @@ void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 void AudioPlayerPage::resetLoopCheck()
 {
 	// avoid the loop-detection code kicking in
+	qDebug() << "AudioPlayerPage::resetLoopCheck";
 	loop_starting_file = -1;
 }
 
@@ -425,6 +429,7 @@ void AudioPlayerPage::mplayerDone()
 {
 	if (loop_starting_file == -1)
 	{
+		qDebug() << "AudioPlayerPage::mplayerDone loop starting file:" << list_manager->currentIndex();
 		loop_starting_file = list_manager->currentIndex();
 		loop_total_time = list_manager->totalFiles() * LOOP_TIMEOUT;
 
@@ -432,6 +437,7 @@ void AudioPlayerPage::mplayerDone()
 	}
 	else if (loop_starting_file == list_manager->currentIndex())
 	{
+		qDebug() << "AudioPlayerPage::mplayerDone loop elapsed:" << loop_time_counter.elapsed() << "total time:" << loop_total_time;
 		if (loop_time_counter.elapsed() < loop_total_time)
 		{
 			qWarning() << "MediaPlayer: loop detected, force stop";
