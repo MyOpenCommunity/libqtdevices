@@ -59,11 +59,14 @@ AntintrusionDevice::AntintrusionDevice(int openserver_id) : device("5", WHERE_CE
 	status_request_timer->setSingleShot(true);
 	status_request_timer->setInterval(STATUS_REQUEST_DELAY_SECS * 1000);
 	connect(status_request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
+	partialization_needed = false;
+	is_inserted = false;
 }
 
 void AntintrusionDevice::toggleActivation(const QString &password)
 {
 	sendCommand(QString::number(REQ_TOGGLE_ACTIVATION) + "#" + password);
+	is_inserted = !is_inserted;
 }
 
 void AntintrusionDevice::setPartialization(const QString &password)
@@ -78,10 +81,20 @@ void AntintrusionDevice::setPartialization(const QString &password)
 
 void AntintrusionDevice::partializeZone(int num_zone, bool partialize)
 {
+	partialization_needed = true;
+	_partializeZone(num_zone, partialize);
+}
+
+bool AntintrusionDevice::_partializeZone(int num_zone, bool partialize)
+{
 	if (num_zone > 0 && num_zone <= NUM_ZONES)
+	{
 		zones[num_zone - 1] = partialize;
-	else
-		qWarning() << "Zone number " << num_zone << "out of range";
+		return true;
+	}
+
+	qWarning() << "Zone number " << num_zone << "out of range";
+	return false;
 }
 
 void AntintrusionDevice::requestStatus()
@@ -97,12 +110,18 @@ bool AntintrusionDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	int what = msg.what();
 
 	if (what == DIM_SYSTEM_ON || what == DIM_SYSTEM_OFF)
-		values_list[DIM_SYSTEM_INSERTED] = (what == DIM_SYSTEM_ON);
+	{
+		is_inserted = (what == DIM_SYSTEM_ON);
+		values_list[DIM_SYSTEM_INSERTED] = is_inserted;
+	}
 	else if (what == DIM_ZONE_PARTIALIZED || what == DIM_ZONE_INSERTED)
 	{
 		int zone = zoneNumber(msg.whereFull());
-		if (zone >= 1 && zone <= NUM_ZONES)
+		if (_partializeZone(zone, what == DIM_ZONE_PARTIALIZED))
+		{
 			values_list[what] = zone;
+			partialization_needed = false;
+		}
 	}
 	else if (what == DIM_ANTIPANIC_ALARM || what == DIM_INTRUSION_ALARM ||
 				what == DIM_TAMPER_ALARM || what == DIM_TECHNICAL_ALARM ||

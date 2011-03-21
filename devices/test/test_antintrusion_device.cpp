@@ -87,9 +87,15 @@ void TestAntintrusionDevice::receiveSystemMaintenance()
 
 void TestAntintrusionDevice::receiveZonePartialized()
 {
+	for (int i = 0; i < NUM_ZONES; ++i)
+		dev->zones[i] = false;
+
 	DeviceTester t(dev, AntintrusionDevice::DIM_ZONE_PARTIALIZED);
 	t.check("*5*18*#2##", 2);
+	QCOMPARE(dev->zones[1], true);
 	t.check("*5*18*#8##", 8);
+	QCOMPARE(dev->zones[7], true);
+
 	// invalid zones
 	t.checkSignals("*5*18*#16##", 0);
 	t.checkSignals("*5*18*#-1##", 0);
@@ -97,9 +103,14 @@ void TestAntintrusionDevice::receiveZonePartialized()
 
 void TestAntintrusionDevice::receiveZoneInserted()
 {
+	for (int i = 0; i < NUM_ZONES; ++i)
+		dev->zones[i] = true;
+
 	DeviceTester t(dev, AntintrusionDevice::DIM_ZONE_INSERTED);
 	t.check("*5*11*#1##", 1);
+	QCOMPARE(dev->zones[0], false);
 	t.check("*5*11*#5##", 5);
+	QCOMPARE(dev->zones[4], false);
 	// invalid zones
 	t.checkSignals("*5*11*#16##", 0);
 	t.checkSignals("*5*11*#-1##", 0);

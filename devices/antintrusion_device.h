@@ -52,6 +52,7 @@ class QTimer;
 */
 class AntintrusionDevice : public device
 {
+friend class TestAntintrusionDevice;
 Q_OBJECT
 public:
 	AntintrusionDevice(int openserver_id = 0);
@@ -103,8 +104,13 @@ public slots:
 	void requestStatus();
 
 private:
-	bool zones[NUM_ZONES];
+	bool _partializeZone(int num_zone, bool partialize);
+
+	bool zones[NUM_ZONES]; // true if a zone is partialized
+
 	QTimer *status_request_timer;
+	bool partialization_needed;
+	bool is_inserted;
 };
 
 #endif
