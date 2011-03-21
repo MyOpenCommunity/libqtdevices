@@ -45,7 +45,8 @@
 int AlarmManager::alarm_serial_id = 0;
 
 
-enum {
+enum
+{
 	ITEM_ICON = 0,
 	BUTTON_ICON = 1
 };
@@ -502,6 +503,7 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 		case AntintrusionDevice::DIM_SYSTEM_INSERTED:
 		{
 			bool inserted = it.value().toBool();
+			antintrusion_system->setState(inserted);
 			for (int i = 0; i < NUM_ZONES; ++i)
 				if (zones[i])
 					zones[i]->enablePartialization(!inserted);
