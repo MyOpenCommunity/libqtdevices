@@ -680,9 +680,6 @@ void IntercomCallPage::changeVolume(int value)
 
 void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 {
-	if (!call_active && !values_list.contains(VideoDoorEntryDevice::INTERCOM_CALL))
-		return;
-
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
 	{
@@ -718,13 +715,17 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 			break;
 		}
 		case VideoDoorEntryDevice::ANSWER_CALL:
-			callStarted();
+			if (call_active)
+				callStarted();
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
-			call_active = false;
-			handleClose();
-			// Reset the timers for the freeze/screensaver.
-			bt_global::btmain->makeActive();
+			if (call_active)
+			{
+				call_active = false;
+				handleClose();
+				// Reset the timers for the freeze/screensaver.
+				bt_global::btmain->makeActive();
+			}
 			break;
 		}
 		++it;
