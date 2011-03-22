@@ -21,6 +21,7 @@
 
 #include "antintrusion_device.h"
 #include "frame_functions.h"
+#include "delayedslotcaller.h"
 
 #include <openmsg.h>
 
@@ -38,7 +39,6 @@ enum RequestDimension
 
 #define WHERE_CENTRAL "0"
 
-#define STATUS_REQUEST_DELAY_SECS 5
 
 namespace
 {
@@ -55,28 +55,48 @@ AntintrusionDevice::AntintrusionDevice(int openserver_id) : device("5", WHERE_CE
 	for (int i = 0; i < NUM_ZONES; ++i)
 		zones[i] = false;
 
-	status_request_timer = new QTimer(this);
-	status_request_timer->setSingleShot(true);
-	status_request_timer->setInterval(STATUS_REQUEST_DELAY_SECS * 1000);
-	connect(status_request_timer, SIGNAL(timeout()), SLOT(requestStatus()));
 	partialization_needed = false;
 	is_inserted = false;
 }
 
 void AntintrusionDevice::toggleActivation(const QString &password)
 {
-	sendCommand(QString::number(REQ_TOGGLE_ACTIVATION) + "#" + password);
+	int activation_delay = 0;
+	if (!is_inserted && partialization_needed)
+	{
+		activation_delay = 6000;
+		sendPartializationFrame(password);
+		DelayedSlotCaller *slot_caller = new DelayedSlotCaller(this);
+		slot_caller->setSlot(this, SLOT(sendActivationFrame(QString)), activation_delay);
+		slot_caller->addArgument(password);
+	}
+	else
+	{
+		sendActivationFrame(password);
+	}
+
+	QTimer::singleShot(5000 + activation_delay, this, SLOT(requestStatus()));
 	is_inserted = !is_inserted;
 }
 
-void AntintrusionDevice::setPartialization(const QString &password)
+void AntintrusionDevice::sendActivationFrame(const QString &password)
+{
+	sendCommand(QString::number(REQ_TOGGLE_ACTIVATION) + "#" + password);
+}
+
+void AntintrusionDevice::sendPartializationFrame(const QString &password)
 {
 	QString zones_mask;
 	for (int i = 0; i < NUM_ZONES; ++i)
 		zones_mask += zones[i] ? "1" : "0";
 
 	sendCommand(QString::number(REQ_PARTIALIZATION) + "#" + password + "#" + zones_mask);
-	status_request_timer->start();
+}
+
+void AntintrusionDevice::setPartialization(const QString &password)
+{
+	sendPartializationFrame(password);
+	QTimer::singleShot(5000, this, SLOT(requestStatus()));
 }
 
 void AntintrusionDevice::partializeZone(int num_zone, bool partialize)
@@ -111,6 +131,9 @@ bool AntintrusionDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == DIM_SYSTEM_ON || what == DIM_SYSTEM_OFF)
 	{
+		if (!is_inserted && what == DIM_SYSTEM_ON)
+			QTimer::singleShot(5000, this, SLOT(requestStatus()));
+
 		is_inserted = (what == DIM_SYSTEM_ON);
 		values_list[DIM_SYSTEM_INSERTED] = is_inserted;
 	}

@@ -26,8 +26,6 @@
 
 #define NUM_ZONES 8
 
-class QTimer;
-
 
 /*!
 	\ingroup Antintrusion
@@ -103,12 +101,15 @@ public slots:
 	*/
 	void requestStatus();
 
+private slots:
+	void sendActivationFrame(const QString &password);
+	void sendPartializationFrame(const QString &password);
+
 private:
 	bool _partializeZone(int num_zone, bool partialize);
 
 	bool zones[NUM_ZONES]; // true if a zone is partialized
 
-	QTimer *status_request_timer;
 	bool partialization_needed;
 	bool is_inserted;
 };

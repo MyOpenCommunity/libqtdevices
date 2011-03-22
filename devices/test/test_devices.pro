@@ -47,7 +47,9 @@ HEADERS += device_tester.h \
 	../../frame_functions.h \
 	../../xml_functions.h \
 	../../main.h \
+	../../delayedslotcaller.h \
 	../../devices_cache.h
+
 
 SOURCES += test_main.cpp \
 	device_tester.cpp \
@@ -74,6 +76,7 @@ SOURCES += test_main.cpp \
 	../../frame_functions.cpp \
 	../../xml_functions.cpp \
 	../../definitions.cpp \
+	../../delayedslotcaller.cpp \
 	../../devices_cache.cpp
 
 include(../../devices.pri)
