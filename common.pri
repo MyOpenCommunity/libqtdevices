@@ -129,6 +129,7 @@ HEADERS += actuators.h \
 	cleanscreen.h \
 	contrast.h \
 	datetime.h \
+	delayedslotcaller.h \
 	devices_cache.h \
 	displaycontrol.h \
 	energy_data.h \
@@ -233,6 +234,7 @@ SOURCES += actuators.cpp \
 	contrast.cpp \
 	datetime.cpp \
 	definitions.cpp \
+	delayedslotcaller.cpp \
 	devices_cache.cpp \
 	displaycontrol.cpp \
 	energy_data.cpp \
