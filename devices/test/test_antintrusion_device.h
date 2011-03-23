@@ -30,9 +30,12 @@ class TestAntintrusionDevice : public TestDevice
 {
 Q_OBJECT
 private slots:
-	void initTestCase();
-	void cleanupTestCase();
-	void sendToggleActivation();
+	void init();
+	void cleanup();
+
+	void sendToggleActivation1();
+	void sendToggleActivation2();
+	void sendToggleActivation3();
 	void sendRequestStatus();
 
 	void testSetPartialization();
@@ -46,7 +49,6 @@ private slots:
 	void receiveAntipanicAlarm();
 	void receiveTechnicalAlarm();
 	void receiveResetTechnicalAlarm();
-
 private:
 	AntintrusionDevice *dev;
 };

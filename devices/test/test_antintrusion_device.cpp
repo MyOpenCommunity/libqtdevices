@@ -26,19 +26,43 @@
 
 #include <QtTest/QtTest>
 
-void TestAntintrusionDevice::initTestCase()
+
+void TestAntintrusionDevice::init()
 {
 	dev = new AntintrusionDevice;
 }
 
-void TestAntintrusionDevice::cleanupTestCase()
+void TestAntintrusionDevice::cleanup()
 {
 	delete dev;
 }
 
-void TestAntintrusionDevice::sendToggleActivation()
+void TestAntintrusionDevice::sendToggleActivation1()
 {
 	QString pwd = "pwd";
+	dev->toggleActivation(pwd);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*5*36#%1*0##").arg(pwd));
+	QCOMPARE(dev->is_inserted, true);
+}
+
+void TestAntintrusionDevice::sendToggleActivation2()
+{
+	QString pwd = "pwd";
+	dev->partializeZone(1, true);
+	QCOMPARE(dev->partialization_needed, true);
+	dev->toggleActivation(pwd);
+	QCOMPARE(dev->partialization_needed, false);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*5*50#%1#%2*0##").arg(pwd).arg("10000000"));
+	// A frame will sent after few seconds.. but the test doesn't check it.
+}
+
+void TestAntintrusionDevice::sendToggleActivation3()
+{
+	QString pwd = "pwd";
+	dev->is_inserted = true;
+	dev->partializeZone(1, true);
 	dev->toggleActivation(pwd);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*5*36#%1*0##").arg(pwd));
@@ -58,16 +82,22 @@ void TestAntintrusionDevice::testSetPartialization()
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*5*50#%1#%2*0##").arg(pwd).arg("00000000"));
 	dev->partializeZone(1, true);
+	QCOMPARE(dev->partialization_needed, true);
 	dev->setPartialization(pwd);
+	QCOMPARE(dev->partialization_needed, false);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*5*50#%1#%2*0##").arg(pwd).arg("10000000"));
 	dev->partializeZone(2, true);
 	dev->partializeZone(8, true);
+	QCOMPARE(dev->partialization_needed, true);
 	dev->setPartialization(pwd);
+	QCOMPARE(dev->partialization_needed, false);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*5*50#%1#%2*0##").arg(pwd).arg("11000001"));
 	dev->partializeZone(8, false);
+	QCOMPARE(dev->partialization_needed, true);
 	dev->setPartialization(pwd);
+	QCOMPARE(dev->partialization_needed, false);
 	client_command->flush();
 	QCOMPARE(server->frameCommand(), QString("*5*50#%1#%2*0##").arg(pwd).arg("11000000"));
 }

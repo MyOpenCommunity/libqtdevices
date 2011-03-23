@@ -66,6 +66,7 @@ void AntintrusionDevice::toggleActivation(const QString &password)
 	{
 		activation_delay = 6000;
 		sendPartializationFrame(password);
+		partialization_needed = false;
 		DelayedSlotCaller *slot_caller = new DelayedSlotCaller(this);
 		slot_caller->setSlot(this, SLOT(sendActivationFrame(QString)), activation_delay);
 		slot_caller->addArgument(password);
@@ -96,6 +97,7 @@ void AntintrusionDevice::sendPartializationFrame(const QString &password)
 void AntintrusionDevice::setPartialization(const QString &password)
 {
 	sendPartializationFrame(password);
+	partialization_needed = false;
 	QTimer::singleShot(5000, this, SLOT(requestStatus()));
 }
 
