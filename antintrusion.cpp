@@ -375,7 +375,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	QWidget *top_widget = new QWidget;
 
 	QHBoxLayout *layout = new QHBoxLayout(top_widget);
-	layout->setContentsMargins(18, 0, 20, 10);
+	layout->setContentsMargins(10, 0, 20, 10);
 	layout->setSpacing(5);
 	layout->addWidget(antintrusion_system);
 	layout->addStretch(1);
