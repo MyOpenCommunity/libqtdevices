@@ -51,6 +51,7 @@ private:
 
 private slots:
 	void itemIsClicked(int index);
+	void radioClosed();
 
 private:
 	AudioPlayerPage *player;

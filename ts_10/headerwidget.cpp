@@ -262,7 +262,17 @@ void HomepageIPRadioLink::playRadio()
 {
 	player->showPrevButton(false);
 	player->showNextButton(false);
+
+	disconnect(player, SIGNAL(Closed()), this, SLOT(radioClosed())); // avoid multiple connections
+	connect(player, SIGNAL(Closed()), this, SLOT(radioClosed()));
 	player->playAudioFiles(QStringList() << url, 0);
+}
+
+void HomepageIPRadioLink::radioClosed()
+{
+	if (!player->isPlayerInstanceRunning())
+		disconnect(player, SIGNAL(Closed()), this, SLOT(radioClosed()));
+	emit pageClosed();
 }
 
 

@@ -247,6 +247,7 @@ public:
 
 private slots:
 	void playRadio();
+	void radioClosed();
 
 private:
 	AudioPlayerPage *player;
