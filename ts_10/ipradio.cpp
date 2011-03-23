@@ -85,4 +85,13 @@ QStringList IPRadioPage::radioUrls()
 void IPRadioPage::itemIsClicked(int index)
 {
 	player->playAudioFiles(radioUrls(), index);
+	disconnect(player, SIGNAL(Closed()), this, SLOT(radioClosed())); // avoid multiple connections
+	connect(player, SIGNAL(Closed()), this, SLOT(radioClosed()));
+}
+
+void IPRadioPage::radioClosed()
+{
+	if (!player->isPlayerInstanceRunning())
+		disconnect(player, SIGNAL(Closed()), this, SLOT(radioClosed()));
+	showPage();
 }
