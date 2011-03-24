@@ -96,6 +96,9 @@ void BtButton::setPressedPixmap(const QPixmap &p)
 
 void BtButton::setPixmap(const QPixmap &p)
 {
+	if (p.isNull())
+		return;
+
 	bool need_update = (pixmap.toImage() != p.toImage());
 	pixmap = p;
 	// Icon is set only the first time; in other cases the pixmap (pressed

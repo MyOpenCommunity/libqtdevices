@@ -36,7 +36,6 @@
 
 #include <QHash>
 #include <QDomNode>
-#include <QLocale>
 #include <QDebug>
 #include <QVBoxLayout>
 
@@ -61,9 +60,6 @@ namespace
 		else
 			return 0;
 	}
-
-	// The language used for the floating point number
-	static QLocale loc(QLocale::Italian);
 }
 
 EnergyData::EnergyData(const QDomNode &config_node)

@@ -26,7 +26,7 @@
 
 StateButton::StateButton(QWidget *parent) : BtButton(parent)
 {
-	setStatus(OFF);
+	status = OFF;
 	connect(this, SIGNAL(toggled(bool)), SLOT(setStatus(bool)));
 }
 

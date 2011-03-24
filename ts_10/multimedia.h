@@ -23,7 +23,7 @@
 #define MULTIMEDIA_H
 
 #include "iconpage.h"
-#include "mount_watcher.h"
+#include "mount_watcher.h" // MountType, bt_global::mount_watcher
 
 #include <QFutureWatcher>
 
@@ -35,6 +35,7 @@ class FileSelector;
 class SongSearch;
 class IPRadioPage;
 class AudioPlayerPage;
+class MountWatcher;
 
 
 /*!

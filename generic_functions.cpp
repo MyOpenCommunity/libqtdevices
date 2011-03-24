@@ -414,10 +414,11 @@ void DelayedConfigWrite::writeConfig()
 	queued_actions.clear();
 }
 
+Q_GLOBAL_STATIC(QMutex, avoid_mayhem); // just to avoid multiple executions of asyncWriteConfig
+
 void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actions)
 {
-	static QMutex avoid_mayhem; // just to avoid multiple executions of asyncWriteConfig
-	QMutexLocker locker(&avoid_mayhem);
+	QMutexLocker locker(avoid_mayhem());
 
 #ifdef DEBUG
 	QTime t;

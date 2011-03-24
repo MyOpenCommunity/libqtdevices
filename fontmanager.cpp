@@ -69,8 +69,14 @@ FontManager::FontManager(QString font_file)
 					continue;
 				}
 				QFont f;
+#ifdef Q_WS_QWS
 				f.setFamily(family);
 				f.setPointSize(size);
+#else
+				// An empirical setting
+				f.setFamily("helvetica");
+				f.setPixelSize(size);
+#endif
 				f.setWeight(weight);
 #if FONT_DEBUG
 				qDebug() << qPrintable(QString("Font [requested] -> Family:%1 Point:%2 Pixel:%3 Weight:%4").arg(family).

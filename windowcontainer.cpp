@@ -41,7 +41,11 @@ WindowContainer::WindowContainer(int width, int height)
 	root_layout->setSpacing(0);
 	root_layout->setContentsMargins(0, 0, 0, 0);
 
+#ifdef Q_WS_QWS
 	showFullScreen();
+#else
+	show();
+#endif
 	setFixedSize(width, height);
 
 	Page::setPageContainer(main->centralLayout());
@@ -100,3 +104,4 @@ QPixmap WindowContainer::grabHomeWindow()
 {
 	return QPixmap::grabWidget(main);
 }
+

@@ -256,15 +256,7 @@ public:
 	bool checkVideoResolution(QString track);
 
 private:
-	// there can only be a single MPlayer instance running, because only one
-	// process at a time can access /dev/dsp.  At any given time, at most one MediaPlayer
-	// instance "owns" the MPlayer process (the one with the active flag set).
-	//
-	// When an instance is not active, calling one of the play*() methods will stop
-	// the current playback, if any, and start the requested file.
-	// All other methods are no-ops.
 	bool active, is_video;
-	static QProcess mplayer_proc;
 
 	/// Send a string to the mplayer process to execute.
 	void execCmd(const QByteArray &command);

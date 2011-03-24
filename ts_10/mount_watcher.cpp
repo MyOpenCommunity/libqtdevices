@@ -91,13 +91,6 @@
  * polls /proc/sys/dev/btweb/mmc_cd every second and calls mount/umount manually
  */
 
-// can't create it as a global object: needs to be created after app startup
-MountWatcher &MountWatcher::getWatcher()
-{
-	static MountWatcher watcher;
-
-	return watcher;
-}
 
 MountWatcher::MountWatcher()
 {
@@ -348,3 +341,7 @@ void MountWatcher::checkSD()
 		unmount(SD_PATH);
 	}
 }
+
+
+// The global definition of mount watcher
+MountWatcher *bt_global::mount_watcher = 0;

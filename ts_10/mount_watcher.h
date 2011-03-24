@@ -52,11 +52,10 @@ enum MountType
 class MountWatcher : public QObject
 {
 Q_OBJECT
-
 	typedef QPair<QString, QStringList> ProcessEntry;
+
 public:
-	// returns the global mount watcher object
-	static MountWatcher &getWatcher();
+	MountWatcher();
 
 	// returns the list of currently-mounted directories
 	QStringList mountState() const;
@@ -77,8 +76,6 @@ signals:
 	void directoryUnmounted(const QString &dir, MountType type);
 
 private:
-	MountWatcher();
-
 	QStringList parseMounts() const;
 	QStringList parseUsbRemoved() const;
 
@@ -111,5 +108,9 @@ private:
 	QProcess mount_process;
 	QList<ProcessEntry> command_queue;
 };
+
+
+namespace bt_global { extern MountWatcher *mount_watcher; }
+
 
 #endif // MOUNT_WATCHER_H

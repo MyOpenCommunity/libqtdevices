@@ -70,6 +70,11 @@ HomeWindow::HomeWindow()
 	central_widget = 0;
 
 #ifdef LAYOUT_TS_10
+	// For some unknown reason, the homeWindow grow in its size, even if none of
+	// its child grow and the WindowContainer has a fixed size. To prevent the
+	// strange behaviour, we set a fixed size.
+	setFixedSize(QSize(maxWidth(), maxHeight()));
+
 	QDomNode pagemenu_home = getHomepageNode();
 	int favourites_pageid = getTextChild(pagemenu_home, "h_lnk_pageID").toInt();
 	QDomNode favourites_node = getPageNodeFromPageId(favourites_pageid);

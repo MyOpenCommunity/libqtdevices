@@ -43,20 +43,28 @@ static QDateTime lastPress = QDateTime::currentDateTime().addSecs(-3600);
 int maxWidth()
 {
 	static int width = 0;
-#ifdef Q_WS_QWS
 	if (!width)
+	{
+#ifdef Q_WS_QWS
 		width = QScreen::instance()->width();
+#else
+		width = 800;
 #endif
+	}
 	return width;
 }
 
 int maxHeight()
 {
 	static int height = 0;
-#ifdef Q_WS_QWS
 	if (!height)
+	{
+#ifdef Q_WS_QWS
 		height = QScreen::instance()->height();
+#else
+		height = 480;
 #endif
+	}
 	return height;
 }
 

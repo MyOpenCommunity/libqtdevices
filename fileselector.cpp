@@ -24,7 +24,7 @@
 #include "btmain.h" // bt_global::btmain
 
 #ifdef BT_HARDWARE_TS_10
-#include "mount_watcher.h"
+#include "mount_watcher.h" // bt_global::mount_watcher
 #endif
 
 #include <QTime>
@@ -68,7 +68,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 
 #ifdef BT_HARDWARE_TS_10
 	// since this checks the root file path, it's OK to use it for all instances
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
+	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
 #endif
 }
@@ -235,7 +235,7 @@ void FileSelector::operationCompleted()
 // methods for physical file systems
 void FileSelector::unmount()
 {
-	MountWatcher::getWatcher().unmount(getRootPath());
+	bt_global::mount_watcher->unmount(getRootPath());
 }
 
 void FileSelector::unmounted(const QString &dir)

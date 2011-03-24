@@ -81,7 +81,7 @@ private:
 
 
 /*
- * SlideShowSelector
+ * SlideshowSelector
  *
  * Display the filesystem and permit to select images and directories.
  */

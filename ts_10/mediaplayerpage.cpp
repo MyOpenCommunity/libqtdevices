@@ -22,7 +22,7 @@
 #include "mediaplayerpage.h"
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
-#include "mount_watcher.h"
+#include "mount_watcher.h" // bt_global::mount_watcher
 #include "audiostatemachine.h"
 
 
@@ -94,7 +94,7 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	temporary_pause = false;
 
 	// terminate player when unmounted
-	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
+	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
 
 	// pause local playback when receiving a VCT call
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));

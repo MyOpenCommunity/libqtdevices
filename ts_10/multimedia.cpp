@@ -195,7 +195,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
 			{
 				FileSelector *selector = factory->getFileSelector();
-				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), selector,
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(*bt_global::mount_watcher, selector,
 					item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr, bt_global::skin->getImage("mounted"),
 					bt_global::skin->getImage("unmounted"));
 				page_content->addWidget(t);
@@ -261,8 +261,8 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		}
 	}
 
-	MountWatcher::getWatcher().startWatching();
-	MountWatcher::getWatcher().notifyAll();
+	bt_global::mount_watcher->startWatching();
+	bt_global::mount_watcher->notifyAll();
 
 	if (showed_items == ITEMS_ALL && !song_search)
 		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);

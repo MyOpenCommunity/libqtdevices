@@ -152,7 +152,14 @@ namespace
 }
 
 
-QProcess MediaPlayer::mplayer_proc;
+// there can only be a single MPlayer instance running, because only one
+// process at a time can access /dev/dsp.  At any given time, at most one MediaPlayer
+// instance "owns" the MPlayer process (the one with the active flag set).
+//
+// When an instance is not active, calling one of the play*() methods will stop
+// the current playback, if any, and start the requested file.
+// All other methods are no-ops.
+Q_GLOBAL_STATIC(QProcess, mplayer_proc);
 
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
@@ -162,16 +169,16 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	paused = false;
 	really_paused = false;
 	info_watcher = 0;
-	connect(&mplayer_proc, SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
-	connect(&mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
-	connect(&mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
+	connect(mplayer_proc(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
+	connect(mplayer_proc(), SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
+	connect(mplayer_proc(), SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 	connect(this, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
 }
 
 void MediaPlayer::readStandardError()
 {
-	QByteArray error = mplayer_proc.readAllStandardError();
+	QByteArray error = mplayer_proc()->readAllStandardError();
 	if (!error.isEmpty())
 		qWarning() << "MediaPlayer::error: " << error;
 }
@@ -266,21 +273,21 @@ bool MediaPlayer::play(QString track, bool write_output)
 
 bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 {
-	if (mplayer_proc.state() != QProcess::NotRunning)
+	if (mplayer_proc()->state() != QProcess::NotRunning)
 	{
-		mplayer_proc.terminate();
-		mplayer_proc.waitForFinished();
+		mplayer_proc()->terminate();
+		mplayer_proc()->waitForFinished();
 	}
 
 	active = true;
 
 	if (!write_output)
-		mplayer_proc.setStandardOutputFile("/dev/null");
+		mplayer_proc()->setStandardOutputFile("/dev/null");
 
-	mplayer_proc.start(MPLAYER_FILENAME, args);
+	mplayer_proc()->start(MPLAYER_FILENAME, args);
 	paused = really_paused = false;
 
-	bool started = mplayer_proc.waitForStarted(300);
+	bool started = mplayer_proc()->waitForStarted(300);
 	if (started)
 		emit mplayerStarted();
 
@@ -329,7 +336,7 @@ void MediaPlayer::resume()
 	{
 		// When the user clicks two times on the seek forward (or back) button
 		// mplayer print the pause string, so we need to cleanup its output buffer.
-		mplayer_proc.readAll();
+		mplayer_proc()->readAll();
 		execCmd("pause");
 		paused = really_paused = false;
 		emit mplayerResumed();
@@ -348,8 +355,8 @@ void MediaPlayer::seek(int seconds)
 
 void MediaPlayer::execCmd(const QByteArray &command)
 {
-	if (mplayer_proc.write(command + "\n") < -1)
-		qDebug() << "Error MediaPlayer::execCmd():" << mplayer_proc.errorString();
+	if (mplayer_proc()->write(command + "\n") < -1)
+		qDebug() << "Error MediaPlayer::execCmd():" << mplayer_proc()->errorString();
 }
 
 bool MediaPlayer::isPlaying()
@@ -359,7 +366,7 @@ bool MediaPlayer::isPlaying()
 
 bool MediaPlayer::isInstanceRunning()
 {
-	return (active && mplayer_proc.state() == QProcess::Running);
+	return (active && mplayer_proc()->state() == QProcess::Running);
 }
 
 QMap<QString, QString> MediaPlayer::getVideoInfo(int msecs_timeout)
@@ -405,10 +412,10 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 		return QMap<QString, QString>();
 
 	if (msecs_timeout)
-		mplayer_proc.waitForReadyRead(msecs_timeout);
+		mplayer_proc()->waitForReadyRead(msecs_timeout);
 
 	/// READ RAW output from MPlayer
-	QString raw_data = mplayer_proc.readAll();
+	QString raw_data = mplayer_proc()->readAll();
 
 	/// Create output Map
 	QMap<QString, QString> info_data = parsePlayerOutput(raw_data, data_search);
@@ -425,11 +432,11 @@ void MediaPlayer::quit()
 	if (!active)
 		return;
 
-	if (mplayer_proc.state() == QProcess::Running)
+	if (mplayer_proc()->state() == QProcess::Running)
 	{
-		mplayer_proc.terminate();
+		mplayer_proc()->terminate();
 		qDebug("MediaPlayer::quit() waiting for mplayer to quit...");
-		if (!mplayer_proc.waitForFinished(300))
+		if (!mplayer_proc()->waitForFinished(300))
 			qWarning() << "Couldn't terminate mplayer";
 	}
 }
@@ -480,8 +487,8 @@ void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_statu
 
 void MediaPlayer::mplayerError(QProcess::ProcessError error)
 {
-	int idx = mplayer_proc.metaObject()->indexOfEnumerator("ProcessError");
-	QMetaEnum e = mplayer_proc.metaObject()->enumerator(idx);
+	int idx = mplayer_proc()->metaObject()->indexOfEnumerator("ProcessError");
+	QMetaEnum e = mplayer_proc()->metaObject()->enumerator(idx);
 	qDebug() << "[AUDIO] mplayer_proc raised an error: " << e.key(error);
 }
 

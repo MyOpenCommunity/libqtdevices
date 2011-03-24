@@ -27,7 +27,6 @@
 
 #include <QApplication>
 #include <QTranslator>
-#include <QWSServer>
 #include <QVector>
 #include <QDebug>
 #include <QFile>
@@ -36,6 +35,10 @@
 #include <QString>
 #include <QColor>
 #include <QBrush>
+
+#ifdef Q_WS_QWS
+#include <QWSServer>
+#endif
 
 #define TIMESTAMP
 #ifdef TIMESTAMP
@@ -193,8 +196,10 @@ int main(int argc, char **argv)
 {
 	GeneralConfig general_config;
 	QApplication a(argc, argv);
+#ifdef Q_WS_QWS
 	QWSServer::setCursorVisible(false);
 	QWSServer::instance()->setBackground(QColor("black"));
+#endif
 	QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8")); // force the locale as UTF8
 
 #if DEBUG

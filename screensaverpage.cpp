@@ -228,9 +228,14 @@ SlideshowSelector::SlideshowSelector() :
 	FileList *item_list = new FileList(0, 4);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
-	NavigationBar *nav_bar = new NavigationBar("eject");
+	NavigationBar *nav_bar;
 
+#ifdef BT_HARDWARE_TS_10
+	nav_bar = new NavigationBar("eject");
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
+#endif
+	nav_bar = new NavigationBar;
+
 	browse_directory = bt_global::skin->getImage("browse_directory");
 	selbutton_off = bt_global::skin->getImage("unchecked");
 	selbutton_on = bt_global::skin->getImage("checked");

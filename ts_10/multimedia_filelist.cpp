@@ -51,12 +51,14 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
+#ifdef BT_HARDWARE_TS_10
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");
 		connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	}
 	else
+#endif
 		nav_bar = new NavigationBar;
 
 	title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
