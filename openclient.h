@@ -162,19 +162,12 @@ signals:
 	*/
 	void connectionDown();
 
-	// Openwebnet ack received
-	void openAckRx();
-	// Openwebnet nak received
-	void openNakRx();
-
 private slots:
 	// Reads messages from the socket
 	int socketFrameRead();
 
 	void socketConnected();
 	void socketError(QAbstractSocket::SocketError e);
-
-	void ackReceived();
 
 	// sends queued frames, removing duplicates
 	void sendDelayedFrames();
@@ -194,8 +187,6 @@ private:
 
 	// The buffer that store the data read from the server
 	QByteArray data_read;
-
-	bool ackRx;
 
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
@@ -221,13 +212,15 @@ private:
 	void manageFrame(QByteArray frame);
 	QByteArray readFromServer();
 
-	// Wait for ack (returns 0 on ack, -1 on nak or when socket is a monitor socket)
-	int socketWaitForAck();
-
 	void dispatchFrame(QString frame);
 
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);
 };
+
+
+
+Client *getClient(Client::Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
+
 
 #endif

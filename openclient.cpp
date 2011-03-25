@@ -281,12 +281,10 @@ void Client::manageFrame(QByteArray frame)
 		if (frame == "*#*1##")
 		{
 			qDebug("ack received");
-			emit openAckRx();
 		}
 		else if (frame == "*#*0##")
 		{
 			qDebug("nak received");
-			emit openNakRx();
 		}
 	}
 }
@@ -355,26 +353,6 @@ int Client::socketFrameRead()
 	return 0;
 }
 
-int Client::socketWaitForAck()
-{
-	qDebug("Client::socketWaitForAck()");
-
-	if (type == MONITOR || type == SUPERVISOR)
-		return -1;
-	ackRx = false;
-	connect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
-	int stat;
-	if ((stat = socketFrameRead()) < 0)
-		return stat;
-	disconnect(this, SIGNAL(openAckRx()), this, SLOT(ackReceived()));
-	return ackRx ? 0 : -1;
-}
-
-void Client::ackReceived()
-{
-	ackRx = true;
-}
-
 void Client::socketError(QAbstractSocket::SocketError e)
 {
 	if (!is_connected)
@@ -386,5 +364,11 @@ void Client::socketError(QAbstractSocket::SocketError e)
 		is_connected = false;
 		emit connectionDown();
 	}
+}
+
+
+Client *getClient(Client::Type t, const QString &host, unsigned port)
+{
+	return new Client(t, host, port);
 }
 

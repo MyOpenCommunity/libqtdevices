@@ -273,17 +273,17 @@ BtMain::BtMain(int openserver_reconnection_time)
 			int id = getTextChild(item, "id").toInt();
 			QString host = getTextChild(item, "address");
 			int port = getTextChild(item, "port").toInt();
-			monitors[id] = new Client(Client::MONITOR, host, port);
-			clients[id].command = new Client(Client::COMMAND, host, port);
-			clients[id].request = new Client(Client::REQUEST, host, port);
+			monitors[id] = getClient(Client::MONITOR, host, port);
+			clients[id].command = getClient(Client::COMMAND, host, port);
+			clients[id].request = getClient(Client::REQUEST, host, port);
 		}
 
 	// If it is not defined a main openserver, the main openserver is the local openserver
 	if (!clients.contains(MAIN_OPENSERVER))
 	{
-		monitors[MAIN_OPENSERVER] = new Client(Client::MONITOR);
-		clients[MAIN_OPENSERVER].command = new Client(Client::COMMAND);
-		clients[MAIN_OPENSERVER].request = new Client(Client::REQUEST);
+		monitors[MAIN_OPENSERVER] = getClient(Client::MONITOR);
+		clients[MAIN_OPENSERVER].command = getClient(Client::COMMAND);
+		clients[MAIN_OPENSERVER].request = getClient(Client::REQUEST);
 	}
 
 #if DEBUG
@@ -298,7 +298,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		// receive frames from the client SUPERVISOR. To mantain the code clean (and
 		// because we have not to distinguish the input channel) we forward the frame
 		// received from the SUPERVISOR to the MONITOR.
-		Client *client_supervisor = new Client(Client::SUPERVISOR);
+		Client *client_supervisor = getClient(Client::SUPERVISOR);
 		client_supervisor->forwardFrame(monitors[MAIN_OPENSERVER]);
 
 		// The supervisor socket is opened only in two cases: when the GUI in in debug
