@@ -70,9 +70,9 @@ void DeviceTester::checkSignals(const QStringList& frames, int num_signals)
 
 QVariant DeviceTester::getResult()
 {
-	Q_ASSERT_X(spy.count() > 0, "DeviceTester::getResult", "DeviceTester: No signal emitted!");
-	Q_ASSERT_X(spy.last().count() > 0, "DeviceTester::getResult", "DeviceTester: No arguments for the last signal emitted!");
-	QVariant signal_arg = spy.last().at(0); // get the first argument from last signal
+	Q_ASSERT_X(spy.count() > 0, "DeviceTester::getResult", "No signal emitted!");
+	Q_ASSERT_X(spy.last().count() > 0, "DeviceTester::getResult", "No arguments for the last signal emitted!");
+	QVariant signal_arg = spy.last().at(0);
 	if (signal_arg.canConvert<DeviceValues>())
 	{
 		DeviceValues values_list = signal_arg.value<DeviceValues>();
@@ -84,7 +84,7 @@ QVariant DeviceTester::getResult()
 			return values_list[dim_type];
 		}
 	}
-	Q_ASSERT_X(false, "DeviceTester::getResult", "DeviceTester: error on parsing the signal content.");
+	Q_ASSERT_X(false, "DeviceTester::getResult", "Error on parsing the signal content.");
 	return QVariant(); // only to avoid warning
 }
 
@@ -93,3 +93,55 @@ void DeviceTester::check(QString frame, const char *result)
 	check(QStringList(frame), QString(result));
 }
 
+
+
+MultiDeviceTester::MultiDeviceTester(device *d) : spy(d, SIGNAL(valueReceived(const DeviceValues&)))
+{
+	dev = d;
+}
+
+MultiDeviceTester::~MultiDeviceTester()
+{
+	for (int i = 0; i < checkers.size(); ++i)
+		delete checkers[i];
+}
+
+void MultiDeviceTester::addReceiver(device *d)
+{
+	receivers.append(d);
+}
+
+void MultiDeviceTester::check(QString frame, CheckType check_type)
+{
+	OpenMsg msg;
+	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
+	dev->manageFrame(msg);
+	foreach (device *dev, receivers)
+		dev->manageFrame(msg);
+
+	Q_ASSERT_X(spy.count() > 0, "MultiDeviceTester::check", "No signal emitted!");
+	Q_ASSERT_X(spy.last().count() > 0, "MultiDeviceTester::check", "No arguments for the last signal emitted!");
+	QVariant signal_arg = spy.last().at(0);
+	Q_ASSERT_X(signal_arg.canConvert<DeviceValues>(), "MultiDeviceTester::check", "Error on parsing the signal content.");
+
+	DeviceValues v = signal_arg.value<DeviceValues>();
+	for (int i = 0; i < checkers.size(); ++i)
+		checkers[i]->compare(v);
+
+	if (check_type == ALL_VALUES && v.size() != checkers.size())
+	{
+		for (int i = 0; i < checkers.size(); ++i)
+			if (v.contains(checkers[i]->getDimension()))
+				v.remove(checkers[i]->getDimension());
+
+		QStringList remainders;
+		QHashIterator<int, QVariant> it(v);
+		while (it.hasNext())
+		{
+			it.next();
+			remainders.append(QString::number(it.key()));
+		}
+
+		Q_ASSERT_X(false, "MultiDeviceTester::check", qPrintable(QString("Unexpected dimensions received: %1").arg(remainders.join(","))));
+	}
+}

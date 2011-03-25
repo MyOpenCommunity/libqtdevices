@@ -28,11 +28,9 @@
 #include <QVariant>
 #include <QMetaType>
 #include <QList>
+#include <QPair>
 
-
-class QStringList;
-class QVariant;
-class device;
+#include <device.h>
 
 
 /**
@@ -98,5 +96,83 @@ template<class T> void DeviceTester::check(const T &result)
 	QVERIFY2(r.canConvert<T>(), "Unable to convert the result in the proper type");
 	QCOMPARE(r.value<T>(), result);
 }
+
+
+
+// The interface of the device checker, do not use directly
+class DeviceCheckerInterface
+{
+public:
+	virtual void compare(DeviceValues) = 0;
+	virtual int getDimension() = 0;
+};
+
+
+// An internal class, used by the MultiDeviceTester class to store and perform
+// the test with custom types.
+template <class T> class DeviceChecker : public DeviceCheckerInterface
+{
+public:
+	DeviceChecker(int dim, T val)
+	{
+		dimension = dim;
+		value = val;
+	}
+
+	virtual void compare(DeviceValues values)
+	{
+		Q_ASSERT_X(values.contains(dimension), "DeviceChecker::compare",
+			qPrintable(QString("DeviceValues does not contains the dimension %1").arg(dimension)));
+		Q_ASSERT_X(values[dimension].canConvert<T>(), "DeviceChecker::compare",
+			"Unable to convert the result to the target type");
+		QCOMPARE(values[dimension].value<T>(), value);
+	}
+
+	virtual int getDimension() { return dimension; }
+private:
+	T value;
+	int dimension;
+};
+
+
+/**
+ * This class is very similar to the DeviceTester but instead of testing one or
+ * more frames and a single dimension it tests if a frame produces more dimensions.
+ */
+class MultiDeviceTester
+{
+public:
+	enum CheckType
+	{
+		ALL_VALUES,
+		CONTAINS
+	};
+
+	MultiDeviceTester(device *d);
+	~MultiDeviceTester();
+
+	// Register the device arguments as a receiver of the frame.
+	void addReceiver(device *d);
+
+	// Add the couple <dimension, value> to the list of dimensions to check
+	template <class T1, class T2> void operator<<(QPair<T1, T2> dim);
+
+	// Perform the test, checking also (if the second arguments has ALL_VALUES
+	// as value) that the number dimensions expected is the same of the actual dimensions.
+	void check(QString frame, CheckType check_type = ALL_VALUES);
+
+private:
+	device *dev;
+	QList<DeviceCheckerInterface*> checkers;
+	QSignalSpy spy;
+	QList <device*> receivers;
+};
+
+
+template <class T1, class T2> void MultiDeviceTester::operator<<(QPair<T1, T2> dim)
+{
+	checkers << new DeviceChecker<T2>(dim.first, dim.second);
+}
+
 
 #endif // DEVICE_TESTER_H
