@@ -45,6 +45,7 @@ WindowContainer::WindowContainer(int width, int height)
 	showFullScreen();
 #else
 	show();
+	setWindowTitle(tr("BTouch"));
 #endif
 	setFixedSize(width, height);
 
