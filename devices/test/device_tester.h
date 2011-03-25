@@ -156,10 +156,14 @@ public:
 
 	// Add the couple <dimension, value> to the list of dimensions to check
 	template <class T1, class T2> void operator<<(QPair<T1, T2> dim);
+	template <class T1> void operator<<(QPair<T1, const char*> dim);
 
 	// Perform the test, checking also (if the second arguments has ALL_VALUES
 	// as value) that the number dimensions expected is the same of the actual dimensions.
 	void check(QString frame, CheckType check_type = ALL_VALUES);
+
+	// Check the signal emitted without sending frames.
+	void check(CheckType check_type = ALL_VALUES);
 
 private:
 	device *dev;
@@ -173,6 +177,18 @@ template <class T1, class T2> void MultiDeviceTester::operator<<(QPair<T1, T2> d
 {
 	checkers << new DeviceChecker<T2>(dim.first, dim.second);
 }
+
+template <class T1> void MultiDeviceTester::operator<<(QPair<T1, const char*> dim)
+{
+	checkers << new DeviceChecker<QString>(dim.first, QString(dim.second));
+}
+
+
+// To use the const char* as argument we need to redefine a function similar to
+// qMakePair and add a specialization (that convert the const char* in a QString)
+// to the MultiDeviceTester class.
+template <class T1, class T2> QPair<T1, T2> makePair(T1 t1, T2 t2) { return qMakePair(t1, t2); }
+
 
 
 #endif // DEVICE_TESTER_H

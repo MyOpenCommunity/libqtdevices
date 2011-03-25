@@ -79,7 +79,8 @@ private slots:
 	void receiveAntifreeze();
 	void receiveOff();
 	void receiveSetPoint();
-	void receiveLocalOffset();
+	void receiveLocalOffset1();
+	void receiveLocalOffset2();
 	void receiveLocalOff();
 	void receiveLocalAntifreeze();
 	void receiveSetPointAdjusted();

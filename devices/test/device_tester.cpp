@@ -119,6 +119,11 @@ void MultiDeviceTester::check(QString frame, CheckType check_type)
 	foreach (device *dev, receivers)
 		dev->manageFrame(msg);
 
+	check(check_type);
+}
+
+void MultiDeviceTester::check(CheckType check_type)
+{
 	Q_ASSERT_X(spy.count() > 0, "MultiDeviceTester::check", "No signal emitted!");
 	Q_ASSERT_X(spy.last().count() > 0, "MultiDeviceTester::check", "No arguments for the last signal emitted!");
 	QVariant signal_arg = spy.last().at(0);

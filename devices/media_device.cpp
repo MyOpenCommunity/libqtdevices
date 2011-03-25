@@ -377,7 +377,7 @@ bool SourceDevice::parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_lis
 		if (active_areas.contains(area))
 		{
 			active_areas.remove(area);
-			values_list[DIM_AREAS_UPDATED] = QVariant();
+			values_list[DIM_AREAS_UPDATED] = true;
 
 			return true;
 		}
@@ -391,7 +391,7 @@ bool SourceDevice::parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_lis
 			if (msg.whatArgN(i) == 1 && active_areas.contains(area))
 			{
 				active_areas.remove(area);
-				values_list[DIM_AREAS_UPDATED] = QVariant();
+				values_list[DIM_AREAS_UPDATED] = true;
 
 				return true;
 			}
@@ -418,7 +418,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		// turn the source on even if the area in the frame is not the right one.
 		QString area = is_multichannel ? QString::fromStdString(msg.whatArg(1)) : "0";
 		active_areas.insert(area);
-		values_list[DIM_AREAS_UPDATED] = QVariant();
+		values_list[DIM_AREAS_UPDATED] = true;
 
 		return true;
 	}
@@ -435,7 +435,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (msg.whatArgN(0) == 0)
 		{
 			active_areas.clear();
-			values_list[DIM_AREAS_UPDATED] = QVariant();
+			values_list[DIM_AREAS_UPDATED] = true;
 		}
 		break;
 	case DIM_TRACK:
@@ -446,7 +446,7 @@ bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		for (unsigned int i = 0; i < msg.whatArgCnt(); ++i)
 			if (msg.whatArgN(i) == 1)
 				active_areas.insert(QString::number(i));
-		values_list[DIM_AREAS_UPDATED] = QVariant();
+		values_list[DIM_AREAS_UPDATED] = true;
 		return true;
 	default:
 		return false;
@@ -632,7 +632,7 @@ void VirtualSourceDevice::turnOn(QString area)
 	DeviceValues values_list;
 
 	active_areas.insert(area);
-	values_list[DIM_AREAS_UPDATED] = QVariant();
+	values_list[DIM_AREAS_UPDATED] = true;
 	values_list[DIM_SELF_REQUEST] = true;
 	values_list[REQ_SOURCE_ON] = area;
 	emit valueReceived(values_list);

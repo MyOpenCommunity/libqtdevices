@@ -133,14 +133,13 @@ void TestLoadsDevice::receiveLoad()
 
 void TestLoadsDevice::receiveTotals()
 {
-	DeviceTester tst_period(dev, LoadsDevice::DIM_PERIOD, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(LoadsDevice::DIM_PERIOD, 1);
+	t << makePair(LoadsDevice::DIM_TOTAL, 1432);
+	t << makePair(LoadsDevice::DIM_RESET_DATE, QDateTime(QDate(2009, 10, 1), QTime(17, 12, 0)));
+	t.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where));
+
 	DeviceTester tst_total(dev, LoadsDevice::DIM_TOTAL, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester tst_date(dev, LoadsDevice::DIM_RESET_DATE, DeviceTester::MULTIPLE_VALUES);
-
-	tst_period.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), 1);
-	tst_total.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), 1432);
-	tst_date.check(QString("*#18*%1*72#2*1432*1*10*2009*17*12##").arg(dev->where), QDateTime(QDate(2009, 10, 1), QTime(17, 12, 0)));
-
 	tst_total.check(QString("*#18*%1*72#1*4294967295*18*5*2010*17*49##").arg(dev->where), 0);
 	tst_total.check(QString("*#18*%1*72#1*4294967294*18*5*2010*17*49##").arg(dev->where), 4294967294u);
 }

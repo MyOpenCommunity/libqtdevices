@@ -27,6 +27,7 @@
 #include <openclient.h>
 #include <openmsg.h>
 #include <videodoorentry_device.h>
+#include <ringtonesmanager.h>
 
 #include <QtTest/QtTest>
 
@@ -171,9 +172,11 @@ void TestVideoDoorEntryDevice::receiveIncomingCall()
 {
 	int kind = 1;
 	int mmtype = 4;
-	DeviceTester t(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::VCT_CALL, (int)VideoDoorEntryDevice::AUDIO_VIDEO);
+	t << makePair(VideoDoorEntryDevice::RINGTONE, (int)Ringtones::PE1);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+	t.check(frame);
 }
 
 void TestVideoDoorEntryDevice::receiveIncomingIpCall()
@@ -186,14 +189,14 @@ void TestVideoDoorEntryDevice::receiveIncomingIpCall()
 	int caller_address = 21;
 	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
 
-	DeviceTester tv(dev, VideoDoorEntryDevice::VCT_CALL, DeviceTester::MULTIPLE_VALUES);
-	tv.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::VCT_CALL, (int)VideoDoorEntryDevice::AUDIO_VIDEO);
+	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, "21");
+	t << makePair(VideoDoorEntryDevice::RINGTONE, (int)Ringtones::PE1);
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+	t.check(frame);
 	QCOMPARE(dev->caller_address, QString::number(caller_address));
 	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
-
-	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	tc.check(frame, "21");
-
 	dev->vct_mode = old_mode;
 }
 
@@ -207,14 +210,11 @@ void TestVideoDoorEntryDevice::receiveIncomingIpCall2()
 	int caller_address = 21;
 	QString frame = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(caller_address).arg(dev->where);
 
-	DeviceTester tv(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
-	tv.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
-	QCOMPARE(dev->caller_address, QString::number(caller_address));
-	QCOMPARE(dev->master_caller_address, QString::number(caller_address));
-
-	DeviceTester tc(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	tc.check(frame, "@21");
-
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::AUTO_VCT_CALL, (int)VideoDoorEntryDevice::ONLY_AUDIO);
+	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, "@21");
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+	t.check(frame);
 	dev->vct_mode = old_mode;
 }
 
@@ -222,18 +222,19 @@ void TestVideoDoorEntryDevice::receiveAutoswitchCall()
 {
 	int kind = 5;
 	int mmtype = 4;
-	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+
+	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+	t.check(frame, (int)VideoDoorEntryDevice::AUDIO_VIDEO);
 }
 
 void TestVideoDoorEntryDevice::receiveAudioCall()
 {
 	int kind = 5;
 	int mmtype = 2;
-	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VideoDoorEntryDevice::AUTO_VCT_CALL);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
+	t.check(frame, (int)VideoDoorEntryDevice::ONLY_AUDIO);
 }
 
 void TestVideoDoorEntryDevice::receiveFloorCall()
@@ -246,7 +247,7 @@ void TestVideoDoorEntryDevice::receiveFloorCall()
 	mmtype = 2;
 	DeviceTester t(dev, VideoDoorEntryDevice::RINGTONE);
 	QString frame = QString("*8*1#%1#%2#21*%3##").arg(kind).arg(mmtype).arg(dev->where);
-	t.simulateIncomingFrames(QStringList() << frame);
+	t.check(frame, (int)Ringtones::FLOORCALL);
 	QCOMPARE(dev->kind, 1);
 	QCOMPARE(dev->mmtype, 4);
 }
@@ -307,12 +308,12 @@ void TestVideoDoorEntryDevice::receiveCallerAddress2()
 	int mmtype = 4;
 	QString caller_addr = "20";
 	simulateIncomingCall(kind, mmtype);
-
-	DeviceTester t1(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester t2(dev, VideoDoorEntryDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
-	t1.check(frame, true);
-	t2.check(frame, false);
+
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, true);
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+	t.check(frame);
 }
 
 void TestVideoDoorEntryDevice::receiveCallerAddress3()
@@ -323,10 +324,10 @@ void TestVideoDoorEntryDevice::receiveCallerAddress3()
 	simulateIncomingCall(kind, mmtype);
 	QString frame = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
 
-	DeviceTester t1(dev, VideoDoorEntryDevice::CALLER_ADDRESS, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester t2(dev, VideoDoorEntryDevice::MOVING_CAMERA, DeviceTester::MULTIPLE_VALUES);
-	t1.check(frame, true);
-	t2.check(frame, true);
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, true);
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, true);
+	t.check(frame);
 }
 
 void TestVideoDoorEntryDevice::receiveEndOfCall()
@@ -357,9 +358,11 @@ void TestVideoDoorEntryDevice::receiveRearmSession()
 	simulateIncomingCall(kind, mmtype);
 	simulateCallerAddress(kind, mmtype, master_caller_addr);
 
-	DeviceTester t(dev, VideoDoorEntryDevice::VCT_TYPE, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::AUDIO_VIDEO));
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::VCT_TYPE, (int)VideoDoorEntryDevice::AUDIO_VIDEO);
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+	t.check(frame);
 
 	QCOMPARE(dev->caller_address, caller_addr);
 	QCOMPARE(dev->master_caller_address, master_caller_addr);
@@ -374,9 +377,11 @@ void TestVideoDoorEntryDevice::receiveRearmSession2()
 	simulateIncomingCall(kind, mmtype);
 	simulateCallerAddress(kind, mmtype, master_caller_addr);
 
-	DeviceTester t(dev, VideoDoorEntryDevice::VCT_TYPE, DeviceTester::MULTIPLE_VALUES);
 	QString frame = QString("*8*40#%1#%2*%3##").arg(kind).arg(mmtype).arg(caller_addr);
-	t.check(frame, static_cast<int>(VideoDoorEntryDevice::ONLY_AUDIO));
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::VCT_TYPE, (int)VideoDoorEntryDevice::ONLY_AUDIO);
+	t << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+	t.check(frame);
 
 	QCOMPARE(dev->caller_address, caller_addr);
 	QCOMPARE(dev->master_caller_address, master_caller_addr);

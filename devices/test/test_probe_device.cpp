@@ -157,94 +157,89 @@ void TestControlledProbeDevice::sendRequestStatus()
 
 void TestControlledProbeDevice::receiveFancoilStatus()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_FANCOIL_STATUS, DeviceTester::MULTIPLE_VALUES);
-
-	tst.check("*#4*23*11*2##", 2);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_FANCOIL_STATUS, 2);
+	t.check("*#4*23*11*2##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveTemperature()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_TEMPERATURE, DeviceTester::MULTIPLE_VALUES);
-
-	tst.check("*#4*23*0*0220##", 220);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_TEMPERATURE, 220);
+	t.check("*#4*23*0*0220##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveManual()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*4*310*23##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_MANUAL);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_STATUS, (int)ControlledProbeDevice::ST_MANUAL);
+	t.check("*4*310*23##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveAuto()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*4*311*23##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_AUTO);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_STATUS, (int)ControlledProbeDevice::ST_AUTO);
+	t.check("*4*311*23##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveAntifreeze()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*4*302*23##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_PROTECTION);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_STATUS, (int)ControlledProbeDevice::ST_PROTECTION);
+	t.check("*4*302*23##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveOff()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*4*303*23##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_OFF);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_STATUS, (int)ControlledProbeDevice::ST_OFF);
+	t.check("*4*303*23##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveSetPoint()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_SETPOINT, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#4*23*14*0220*3##");
-
-	tst.check(frame, 220);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_SETPOINT, 220);
+	t.check("*#4*23*14*0220*3##", MultiDeviceTester::CONTAINS);
 }
 
-void TestControlledProbeDevice::receiveLocalOffset()
+void TestControlledProbeDevice::receiveLocalOffset1()
 {
-	DeviceTester tso(dev, ControlledProbeDevice::DIM_OFFSET, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_LOCAL_STATUS, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_OFFSET, 3);
+	t << makePair(ControlledProbeDevice::DIM_LOCAL_STATUS, (int)ControlledProbeDevice::ST_NORMAL);
+	t.check("*#4*23*13*03##", MultiDeviceTester::CONTAINS);
+}
 
-	tso.check("*#4*23*13*00##", 0);
-	tso.check("*#4*23*13*03##", 3);
-	tso.check("*#4*23*13*12##", -2);
-
-	tst.check<int>("*#4*23*13*01##", ControlledProbeDevice::ST_NORMAL);
+void TestControlledProbeDevice::receiveLocalOffset2()
+{
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_OFFSET, -2);
+	t << makePair(ControlledProbeDevice::DIM_LOCAL_STATUS, (int)ControlledProbeDevice::ST_NORMAL);
+	t.check("*#4*23*13*12##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveLocalOff()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_LOCAL_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#4*23*13*4##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_OFF);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_LOCAL_STATUS, (int)ControlledProbeDevice::ST_OFF);
+	t.check("*#4*23*13*4##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveLocalAntifreeze()
 {
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_LOCAL_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#4*23*13*5##");
-
-	tst.check<int>(frame, ControlledProbeDevice::ST_PROTECTION);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_LOCAL_STATUS, (int)ControlledProbeDevice::ST_PROTECTION);
+	t.check("*#4*23*13*5##", MultiDeviceTester::CONTAINS);
 }
 
 void TestControlledProbeDevice::receiveSetPointAdjusted()
 {
-	DeviceTester tso(dev, ControlledProbeDevice::DIM_OFFSET, DeviceTester::MULTIPLE_VALUES);
+	OpenMsg msg("*#4*23*13*03##");
+	dev->manageFrame(msg);
 
-	tso.check("*#4*23*13*03##", 3);
-
-	DeviceTester tst(dev, ControlledProbeDevice::DIM_SETPOINT, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#4*23*12*0250*3##");
-
-	tst.check(frame, 220);
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_SETPOINT, 220);
+	t.check("*#4*23*12*0250*3##", MultiDeviceTester::CONTAINS);
 }

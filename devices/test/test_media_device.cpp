@@ -128,30 +128,22 @@ void TestAlarmSoundDiffDevice::receiveStatus()
 void TestAlarmSoundDiffDevice::receiveVolume()
 {
 	AmplifierDevice amplifier("57");
-	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester tsv(dev, AlarmSoundDiffDevice::DIM_VOLUME, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#22*3#5#7*1*13##");
-	tsa.addReceiver(&amplifier);
-	tss.addReceiver(&amplifier);
-	tsv.addReceiver(&amplifier);
-
-	tsa.check(frame, 57);
-	tss.check(frame, true);
-	tsv.check(frame, 13);
+	MultiDeviceTester t(dev);
+	t.addReceiver(&amplifier);
+	t << makePair(AlarmSoundDiffDevice::DIM_AMPLIFIER, 57);
+	t << makePair(AlarmSoundDiffDevice::DIM_STATUS, true);
+	t << makePair(AlarmSoundDiffDevice::DIM_VOLUME, 13);
+	t.check("*#22*3#5#7*1*13##");
 }
 
 void TestAlarmSoundDiffDevice::receiveStatusOff()
 {
 	AmplifierDevice amplifier("57");
-	DeviceTester tsa(dev, AlarmSoundDiffDevice::DIM_AMPLIFIER, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#22*3#5#7*12*0*22##");
-	tsa.addReceiver(&amplifier);
-	tss.addReceiver(&amplifier);
-
-	tsa.check(frame, 57);
-	tss.check(frame, false);
+	MultiDeviceTester t(dev);
+	t.addReceiver(&amplifier);
+	t << makePair(AlarmSoundDiffDevice::DIM_AMPLIFIER, 57);
+	t << makePair(AlarmSoundDiffDevice::DIM_STATUS, false);
+	t.check("*#22*3#5#7*12*0*22##");
 }
 
 void TestAlarmSoundDiffDevice::receiveSource()
@@ -166,7 +158,7 @@ void TestAlarmSoundDiffDevice::receiveSource()
 void TestAlarmSoundDiffDevice::receiveRadioStation()
 {
 	RadioSourceDevice source("21");
-	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_RADIO_STATION);
 	tss.addReceiver(&source);
 
 	tss.check("*#22*5#2#21*11*22*33*7##", 7);
@@ -230,11 +222,18 @@ void TestSourceDevice::sendRequestActiveAreas()
 	QCOMPARE(server->frameRequest(), QString("*#22*2#%1*13##").arg(source_id));
 }
 
-void TestSourceDevice::receiveStatus()
+void TestSourceDevice::receiveStatus1()
 {
-	DeviceTester t(dev, SourceDevice::DIM_STATUS, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, SourceDevice::DIM_STATUS);
 	t.check(QString("*#22*2#%1*12*1*4##").arg(source_id), true);
-	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), false);
+}
+
+void TestSourceDevice::receiveStatus2()
+{
+	MultiDeviceTester t(dev);
+	t << makePair(SourceDevice::DIM_STATUS, false);
+	t << makePair(SourceDevice::DIM_AREAS_UPDATED, true);
+	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), MultiDeviceTester::CONTAINS);
 }
 
 void TestSourceDevice::receiveTrack()
@@ -414,12 +413,10 @@ void TestRadioSourceDevice::receiveStopRDS()
 
 void TestRadioSourceDevice::receiveMemorizedStation()
 {
-	DeviceTester tf(dev, RadioSourceDevice::DIM_FREQUENCY, DeviceTester::MULTIPLE_VALUES);
-	DeviceTester ts(dev, RadioSourceDevice::DIM_TRACK, DeviceTester::MULTIPLE_VALUES);
-	QString frame = QString("*#22*5#2#%1*11*1*9800*5##").arg(source_id);
-
-	tf.check(frame, 9800);
-	ts.check(frame, 5);
+	MultiDeviceTester t(dev);
+	t << makePair(RadioSourceDevice::DIM_FREQUENCY, 9800);
+	t << makePair(RadioSourceDevice::DIM_TRACK, 5);
+	t.check(QString("*#22*5#2#%1*11*1*9800*5##").arg(source_id));
 }
 
 
@@ -486,14 +483,17 @@ void TestVirtualSourceDevice::receivePrevTrack()
 void TestVirtualSourceDevice::receiveSourceOn()
 {
 	QString area = "5";
-	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_ON, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_ON);
 	t.check(QString("*22*1#4#%1*2#%2##").arg(area).arg(source_id), area);
 }
 
 void TestVirtualSourceDevice::receiveSourceOff()
 {
-	DeviceTester t(dev, VirtualSourceDevice::REQ_SOURCE_OFF, DeviceTester::MULTIPLE_VALUES);
-	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id), true);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualSourceDevice::REQ_SOURCE_OFF, true);
+	t << makePair(VirtualSourceDevice::DIM_STATUS, false);
+	t << makePair(VirtualSourceDevice::DIM_AREAS_UPDATED, true);
+	t.check(QString("*#22*2#%1*12*0*4##").arg(source_id));
 }
 
 void TestVirtualSourceDevice::testInitFrame()
@@ -656,23 +656,29 @@ void TestVirtualAmplifierDevice::sendUpdateStatus()
 
 void TestVirtualAmplifierDevice::sendVolumeUp()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_UP, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualAmplifierDevice::REQ_VOLUME_UP, 1);
+	t << makePair(VirtualAmplifierDevice::DIM_SELF_REQUEST, true);
 	dev->volumeUp();
-	t.check(1);
+	t.check();
 }
 
 void TestVirtualAmplifierDevice::sendVolumeDown()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_VOLUME_DOWN, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualAmplifierDevice::REQ_VOLUME_DOWN, 1);
+	t << makePair(VirtualAmplifierDevice::DIM_SELF_REQUEST, true);
 	dev->volumeDown();
-	t.check(1);
+	t.check();
 }
 
 void TestVirtualAmplifierDevice::sendTurnOn()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualAmplifierDevice::REQ_AMPLI_ON, true);
+	t << makePair(VirtualAmplifierDevice::DIM_SELF_REQUEST, true);
 	dev->turnOn();
-	t.check(true);
+	t.check();
 
 	client_command->flush();
 	QString cmd(QString("*22*34#4#%1*3#%1#%2##").arg(area).arg(point));
@@ -681,9 +687,11 @@ void TestVirtualAmplifierDevice::sendTurnOn()
 
 void TestVirtualAmplifierDevice::sendTurnOff()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualAmplifierDevice::REQ_AMPLI_ON, false);
+	t << makePair(VirtualAmplifierDevice::DIM_SELF_REQUEST, true);
 	dev->turnOff();
-	t.check(false);
+	t.check();
 
 	client_command->flush();
 	QString cmd(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point));
@@ -692,9 +700,11 @@ void TestVirtualAmplifierDevice::sendTurnOff()
 
 void TestVirtualAmplifierDevice::sendSetVolume()
 {
-	DeviceTester t(dev, VirtualAmplifierDevice::REQ_SET_VOLUME, DeviceTester::MULTIPLE_VALUES);
+	MultiDeviceTester t(dev);
+	t << makePair(VirtualAmplifierDevice::REQ_SET_VOLUME, 5);
+	t << makePair(VirtualAmplifierDevice::DIM_SELF_REQUEST, true);
 	dev->setVolume(5);
-	t.check(5);
+	t.check();
 }
 
 void TestVirtualAmplifierDevice::receiveAmplifierOn()
@@ -713,15 +723,9 @@ void TestVirtualAmplifierDevice::receiveAmplifierOff()
 {
 	DeviceTester t(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
 	t.check(QString("*22*0#4#%1*3#%1#%2##").arg(area).arg(point), false);
-
-	DeviceTester t1(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
-	t1.check(QString("*22*0#4#0*5#3#0#0##"), false);
-
-	DeviceTester t2(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
-	t2.check(QString("*22*0#4#%1*4#%1##").arg(area), false);
-
-	DeviceTester t3(dev, VirtualAmplifierDevice::REQ_AMPLI_ON);
-	t3.check(QString("*22*0#4#15*5#1#1##"), false);
+	t.check(QString("*22*0#4#0*5#3#0#0##"), false);
+	t.check(QString("*22*0#4#%1*4#%1##").arg(area), false);
+	t.check(QString("*22*0#4#15*5#1#1##"), false);
 }
 
 void TestVirtualAmplifierDevice::receiveVolumeUp()

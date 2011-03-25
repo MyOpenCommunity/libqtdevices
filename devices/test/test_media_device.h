@@ -81,7 +81,8 @@ private slots:
 	void sendRequestTrack();
 	void sendRequestActiveAreas();
 
-	void receiveStatus();
+	void receiveStatus1();
+	void receiveStatus2();
 	void receiveTrack();
 
 	void testActiveAreas();
