@@ -45,9 +45,9 @@ class FrameReceiver;
 	\ingroup Core
 	\brief Manages the communication between the application and a specified openserver.
 
-	%Clients of types Client::MONITOR / Client::SUPERVISOR can be used to receive
-	frames while clients of types Client::COMMAND or Client::REQUEST can be used
-	to send frames to the openserver.
+	This abstract class has two specializations:
+	- the ClientWriter, that can be used to send frames to the openserver
+	- the ClientReader, to receive frames from the openserver.
 
 	Each client when created tries to connect itself to the specified openserver,
 	but you can connect or disconnect in every moment using the connectToHost()
@@ -55,11 +55,7 @@ class FrameReceiver;
 	the connection is established, while the connectionDown() is emitted when
 	the connection is lost (but not after the call of the disconnectFromHost
 	method).
-
-	To send a frame use the sendFrameOpen() method.
-
-	To receive a frame you have to inherit from the FrameReceiver class and
-	subscribe the derived object for a who.
+	\sa ClientReader, ClientWriter
 */
 class Client : public QObject
 {
@@ -81,15 +77,6 @@ public:
 		                  \note The frames sent during the programmation of a scenario module are not delivered. */
 		COMMAND      /*!< Used to send frames to the openserver. */
 	};
-
-	/*!
-		\brief Constructor
-
-		It builds a new Client of Client::Type \a t and connect it to the openserver
-		having the given \a host and \a port.
-	*/
-	Client(Type t, const QString &host, unsigned port);
-
 
 	/*!
 		\brief Check if the client is connected
@@ -130,16 +117,21 @@ signals:
 	void connectionDown();
 
 protected:
+
+	Client(Type t, const QString &host, unsigned port);
+
+	virtual void sendChannelId() = 0;
 	virtual void manageFrame(const QByteArray &frame) = 0;
 	static bool delay_frames;
 
 	// The channel description
 	QString description;
 
+	// The actual socket instance
 	QTcpSocket *socket;
 
-	// This flag marks if the client is logically connected or not.
-	bool is_connected;
+	// The channel type
+	Type type;
 
 protected slots:
 	virtual void socketConnected();
@@ -151,9 +143,6 @@ private slots:
 	void socketError(QAbstractSocket::SocketError e);
 
 private:
-	// The channel type
-	Type type;
-
 	// The address of the openserver
 	QString host;
 	// The port of the openserver
@@ -162,14 +151,34 @@ private:
 	// The buffer that store the data read from the server
 	QByteArray data_read;
 
+	// This flag marks if the client is logically connected or not.
+	bool is_connected;
+
 	QByteArray readFromServer();
 };
 
 
+
+/*!
+	\ingroup Core
+	\brief Manages the read-only part of the communication with the openserver.
+
+	To receive a frame inherit from the FrameReceiver class and subscribe the
+	object for a who. The forwardFrame method can be used to receive frames from
+	an object to anothe object.
+
+	\sa Client
+*/
 class ClientReader : public Client
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+
+		It builds a new ClientReader of Client::Type \a t and connect it to the openserver
+		having the given \a host and \a port.
+	*/
 	ClientReader(Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
 
 	/*!
@@ -190,6 +199,7 @@ public:
 	void unsubscribe(FrameReceiver *obj);
 
 protected:
+	virtual void sendChannelId();
 	virtual void manageFrame(const QByteArray &frame);
 
 private:
@@ -204,10 +214,23 @@ private:
 
 
 
+/*!
+	\ingroup Core
+	\brief Manages the write-only part of the communication with the openserver.
+
+	To send a frame use the sendFrameOpen() method, using the optional argument
+	delay to force the %ClientWriter to send the frame immediately.
+*/
 class ClientWriter : public Client
 {
 Q_OBJECT
 public:
+	/*!
+		\brief Constructor
+
+		It builds a new ClientReader of Client::Type \a t and connect it to the openserver
+		having the given \a host and \a port.
+	*/
 	ClientWriter(Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
 
 	/*!
@@ -232,6 +255,7 @@ public:
 #endif
 
 protected:
+	virtual void sendChannelId();
 	virtual void manageFrame(const QByteArray &frame);
 
 protected slots:
@@ -253,10 +277,11 @@ private:
 	// The time since the last frame sent (only for REQUEST and COMMAND)
 	QTime inactivity_time;
 
+	QList<QByteArray> ack_source_list;
+
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);
 };
-
 
 
 #endif

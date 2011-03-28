@@ -33,14 +33,27 @@
 #include <sys/socket.h>
 #include <netinet/tcp.h>
 
+// The channels id
 #define SOCKET_MONITOR "*99*1##"
 #define SOCKET_SUPERVISOR "*99*10##"
 #define SOCKET_COMMAND "*99*9##"
 #define SOCKET_REQUEST "*99*0##"
 
+// The standard delay used to send frames
 #define FRAME_TIMEOUT_MSECS 10
 
+// The time after that the connection in the channels COMMAND and REQUEST is
+// invalid (see the comment in ClientWriter::socketConnected)
 #define CONNECTION_TIMEOUT_SECS 25
+
+// The ACK/NAK frames are sent by the openserver to indicate if an operation is
+// processed without success or not. The operation is usually a frame, however
+// the openserver sent an ack/nak also on the connection and when receiving the
+// channel id. We use the __NONE__ to discard these informations.
+#define __NONE__ "NONE"
+#define ACK_FRAME "*#*1##"
+#define NAK_FRAME "*#*0##"
+
 
 namespace
 {
@@ -64,8 +77,6 @@ namespace
 		return true;
 	}
 }
-
-
 
 
 bool Client::delay_frames = false;
@@ -116,14 +127,7 @@ void Client::socketConnected()
 
 	qDebug() << "Client::socketConnected()" << qPrintable(description);
 
-	if (type == MONITOR)
-		socket->write(SOCKET_MONITOR);
-	else if (type == REQUEST)
-		socket->write(SOCKET_REQUEST);
-	else if (type == SUPERVISOR)
-		socket->write(SOCKET_SUPERVISOR);
-	else
-		socket->write(SOCKET_COMMAND);
+	sendChannelId();
 }
 
 void Client::delayFrames(bool delay)
@@ -195,15 +199,21 @@ ClientReader::ClientReader(Type t, const QString &host, unsigned port) : Client(
 	to_forward = 0;
 }
 
+void ClientReader::sendChannelId()
+{
+	if (type == MONITOR)
+		socket->write(SOCKET_MONITOR);
+	else if (type == SUPERVISOR)
+		socket->write(SOCKET_SUPERVISOR);
+	else
+		Q_ASSERT_X(false, "ClientReader::sendChannelId", "Unknown type");
+}
+
 void ClientReader::manageFrame(const QByteArray &frame)
 {
-	qDebug() << "Client::manageFrame()" << qPrintable(description) << "read:" << frame;
+	qDebug() << "ClientReader::manageFrame()" << qPrintable(description) << "read:" << frame;
 
-	if (frame == "*#*1##")
-		qWarning("ERROR - ack received");
-	else if (frame == "*#*0##")
-		qWarning("ERROR - nak received");
-	else
+	if (frame != ACK_FRAME && frame != NAK_FRAME)
 		dispatchFrame(frame);
 }
 
@@ -268,15 +278,31 @@ ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(
 	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 }
 
+void ClientWriter::sendChannelId()
+{
+	QByteArray frame;
+	if (type == REQUEST)
+		frame = SOCKET_REQUEST;
+	else if (type == COMMAND)
+		frame = SOCKET_COMMAND;
+	else
+		Q_ASSERT_X(false, "ClientWriter::sendChannelId", "Unknown type");
+	socket->write(frame);
+	ack_source_list.append(__NONE__);
+}
+
 void ClientWriter::manageFrame(const QByteArray &frame)
 {
-	if (frame == "*#*1##")
+	if (frame == ACK_FRAME || frame == NAK_FRAME)
 	{
-		qDebug("ack received");
-	}
-	else if (frame == "*#*0##")
-	{
-		qDebug("nak received");
+		bool ack = frame == ACK_FRAME;
+		Q_ASSERT_X(ack_source_list.size() > 0, "ClientWriter::manageFrame", "Empty ack source list!");
+		QByteArray actual_frame = ack_source_list.takeFirst();
+		if (actual_frame != __NONE__)
+		{
+			qDebug() << "ClientWriter::manageFrame()" << qPrintable(description) << (ack ? "ACK" : "NAK")
+				<< "for:" << actual_frame;
+		}
 	}
 }
 
@@ -284,7 +310,7 @@ void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 {
 	QByteArray frame = frame_open.toLatin1();
 
-	if (!is_connected)
+	if (!isConnected())
 	{
 		qWarning() << "Client::sendFrameOpen try to send the frame" << frame_open
 			<< "in unconnected state for client" << qPrintable(description);
@@ -303,6 +329,7 @@ void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 
 void ClientWriter::socketConnected()
 {
+	ack_source_list.append(__NONE__);
 	Client::socketConnected();
 
 	// Sometimes happens that the QTCPSocket thinks that the connection is still
@@ -368,7 +395,10 @@ bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
 		if (written == -1)
 			qWarning() << "Unable to send the frame" << frame << "to" << qPrintable(description);
 		else
+		{
 			qDebug() << "ClientWriter::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
+			ack_source_list.append(frame);
+		}
 	}
 
 	inactivity_time.start();
