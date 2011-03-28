@@ -81,8 +81,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 	port = !_port ? OPENSERVER_PORT : _port;
 	is_connected = false;
 
-	to_forward = 0;
-
 	socket = new QTcpSocket(this);
 	connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
 	connect(socket, SIGNAL(readyRead()), SLOT(socketFrameRead()));
@@ -90,15 +88,6 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	// connect to the server
 	connectToHost();
-
-	// set up the timer for normal and delayed frame sending
-	connect(&frame_timer, SIGNAL(timeout()), SLOT(sendFrames()));
-	frame_timer.setSingleShot(true);
-	frame_timer.setInterval(FRAME_TIMEOUT_MSECS);
-
-	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
-	delayed_frame_timer.setSingleShot(true);
-	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 }
 
 bool Client::isConnected()
@@ -125,15 +114,6 @@ void Client::socketConnected()
 	else
 		is_connected = true;
 
-	// Sometimes happens that the QTCPSocket thinks that the connection is still
-	// up while the openserver has already closes its side of the socket.
-	// To prevent losing frames we use a time counter and manually disconnect the
-	// connection after CONNECTION_TIMEOUT_SECS of inactivity.
-	// NOTE: we cannot use a QTimer because at the startup sometimes the timeout
-	// signal has dispatched too late.
-	if (type == COMMAND || type == REQUEST)
-		inactivity_time.start();
-
 	qDebug() << "Client::socketConnected()" << qPrintable(description);
 
 	if (type == MONITOR)
@@ -144,94 +124,11 @@ void Client::socketConnected()
 		socket->write(SOCKET_SUPERVISOR);
 	else
 		socket->write(SOCKET_COMMAND);
-
-	if (!send_on_connected.isEmpty() && sendFrames(send_on_connected))
-		send_on_connected.clear();
 }
 
 void Client::delayFrames(bool delay)
 {
 	delay_frames = delay;
-}
-
-void Client::sendFrames()
-{
-	if (!sendFrames(list_frames))
-		send_on_connected.append(list_frames);
-
-	list_frames.clear();
-}
-
-void Client::sendDelayedFrames()
-{
-	if (!sendFrames(delayed_list_frames))
-		send_on_connected.append(delayed_list_frames);
-
-	delayed_list_frames.clear();
-}
-
-bool Client::sendFrames(const QList<QByteArray> &to_send)
-{
-	if (socket->state() == QAbstractSocket::ConnectedState && (type == COMMAND || type == REQUEST) &&
-		inactivity_time.elapsed() > CONNECTION_TIMEOUT_SECS * 1000)
-	{
-		// We can safely call abort because if we aren't sending frames for
-		// CONNECTION_TIMEOUT_SECS we won't lose frame. The abort call drop immediately
-		// the connection, so after the call the socket is unconnected.
-		socket->abort();
-		qDebug() << "Disconnect for inactivity of" << inactivity_time.elapsed() / 1000
-			<< "seconds on client" << qPrintable(description);
-	}
-
-	QAbstractSocket::SocketState state = socket->state();
-	if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState ||
-		state == QAbstractSocket::HostLookupState || state == QAbstractSocket::ConnectingState)
-	{
-		if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState)
-			connectToHost();
-		return false;
-	}
-
-	QSet<QByteArray> discard_duplicates;
-
-	foreach (const QByteArray &frame, to_send)
-	{
-		if (discard_duplicates.contains(frame))
-			continue;
-		discard_duplicates.insert(frame);
-
-		int written = socket->write(frame);
-		if (written == -1)
-			qWarning() << "Unable to send the frame" << frame << "to" << qPrintable(description);
-		else
-			qDebug() << "Client::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
-	}
-
-	if (type == COMMAND || type == REQUEST)
-		inactivity_time.start();
-
-	return true;
-}
-
-void Client::sendFrameOpen(const QString &frame_open, FrameDelay delay)
-{
-	QByteArray frame = frame_open.toLatin1();
-
-	if (!is_connected)
-	{
-		qWarning() << "Client::sendFrameOpen try to send the frame" << frame_open
-			<< "in unconnected state for client" << qPrintable(description);
-		send_on_connected.append(frame);
-		return;
-	}
-
-	// queue the frames to be sent later, but avoid delaying frames indefinitely
-	QList<QByteArray> &list = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_list_frames : list_frames;
-	QTimer &timer = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_frame_timer : frame_timer;
-
-	list.append(frame);
-	if (!timer.isActive())
-		timer.start();
 }
 
 void Client::disconnectFromHost()
@@ -263,80 +160,7 @@ QByteArray Client::readFromServer()
 	}
 }
 
-void Client::manageFrame(QByteArray frame)
-{
-	if (type == MONITOR || type == SUPERVISOR)
-	{
-		qDebug() << "Client::manageFrame()" << qPrintable(description) << "read:" << frame;
-
-		if (frame == "*#*1##")
-			qWarning("ERROR - ack received");
-		else if (frame == "*#*0##")
-			qWarning("ERROR - nak received");
-		else
-			dispatchFrame(frame);
-	}
-	else
-	{
-		if (frame == "*#*1##")
-		{
-			qDebug("ack received");
-		}
-		else if (frame == "*#*0##")
-		{
-			qDebug("nak received");
-		}
-	}
-}
-
-void Client::forwardFrame(Client *c)
-{
-	to_forward = c;
-}
-
-void Client::dispatchFrame(QString frame)
-{
-	if (to_forward)
-	{
-		to_forward->dispatchFrame(frame);
-		return;
-	}
-
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame.toAscii().data(), frame.length());
-	delay_frames = true;
-	if (subscribe_list.contains(msg.who()))
-	{
-		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
-		for (int i = 0; i < l.size(); ++i)
-			l[i]->manageFrame(msg);
-	}
-	delay_frames = false;
-}
-
-void Client::subscribe(FrameReceiver *obj, int who)
-{
-	subscribe_list[who].append(obj);
-}
-
-void Client::unsubscribe(FrameReceiver *obj)
-{
-	// A frame receiver can be subscribed for one or more "who".
-	QMutableHashIterator<int, QList<FrameReceiver*> > it(subscribe_list);
-	while (it.hasNext())
-	{
-		it.next();
-		QMutableListIterator<FrameReceiver*> it_list(it.value());
-		while (it_list.hasNext())
-		{
-			it_list.next();
-			if (it_list.value() == obj)
-				it_list.remove();
-		}
-	}
-}
-
-int Client::socketFrameRead()
+void Client::socketFrameRead()
 {
 	while (true)
 	{
@@ -350,7 +174,6 @@ int Client::socketFrameRead()
 
 		manageFrame(frame);
 	}
-	return 0;
 }
 
 void Client::socketError(QAbstractSocket::SocketError e)
@@ -367,8 +190,221 @@ void Client::socketError(QAbstractSocket::SocketError e)
 }
 
 
+ClientReader::ClientReader(Type t, const QString &host, unsigned port) : Client(t, host, port)
+{
+	to_forward = 0;
+}
+
+void ClientReader::manageFrame(const QByteArray &frame)
+{
+	qDebug() << "Client::manageFrame()" << qPrintable(description) << "read:" << frame;
+
+	if (frame == "*#*1##")
+		qWarning("ERROR - ack received");
+	else if (frame == "*#*0##")
+		qWarning("ERROR - nak received");
+	else
+		dispatchFrame(frame);
+}
+
+void ClientReader::forwardFrame(Client *c)
+{
+	to_forward = qobject_cast<ClientReader*>(c);
+}
+
+void ClientReader::dispatchFrame(const QByteArray &frame)
+{
+	if (to_forward)
+	{
+		to_forward->dispatchFrame(frame);
+		return;
+	}
+
+	OpenMsg msg;
+	msg.CreateMsgOpen(const_cast<char*>(frame.data()), frame.length()); // GIANNI: perche' vuole il cast!!
+	delay_frames = true;
+	if (subscribe_list.contains(msg.who()))
+	{
+		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
+		for (int i = 0; i < l.size(); ++i)
+			l[i]->manageFrame(msg);
+	}
+	delay_frames = false;
+}
+
+void ClientReader::subscribe(FrameReceiver *obj, int who)
+{
+	subscribe_list[who].append(obj);
+}
+
+void ClientReader::unsubscribe(FrameReceiver *obj)
+{
+	// A frame receiver can be subscribed for one or more "who".
+	QMutableHashIterator<int, QList<FrameReceiver*> > it(subscribe_list);
+	while (it.hasNext())
+	{
+		it.next();
+		QMutableListIterator<FrameReceiver*> it_list(it.value());
+		while (it_list.hasNext())
+		{
+			it_list.next();
+			if (it_list.value() == obj)
+				it_list.remove();
+		}
+	}
+}
+
+void ClientReader::sendFrameOpen(const QString &frame_open, FrameDelay delay)
+{
+	Q_ASSERT_X(false, "ClientReader::sendFrameOpen", "Method not implemented");
+}
+
+
+
+ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(t, host, port)
+{
+	// set up the timer for normal and delayed frame sending
+	connect(&frame_timer, SIGNAL(timeout()), SLOT(sendFrames()));
+	frame_timer.setSingleShot(true);
+	frame_timer.setInterval(FRAME_TIMEOUT_MSECS);
+
+	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
+	delayed_frame_timer.setSingleShot(true);
+	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
+}
+
+void ClientWriter::manageFrame(const QByteArray &frame)
+{
+	if (frame == "*#*1##")
+	{
+		qDebug("ack received");
+	}
+	else if (frame == "*#*0##")
+	{
+		qDebug("nak received");
+	}
+}
+
+void ClientWriter::forwardFrame(Client *c)
+{
+	Q_ASSERT_X(false, "ClientWriter::forwardFrame", "Method not implemented");
+}
+
+void ClientWriter::subscribe(FrameReceiver *obj, int who)
+{
+	Q_ASSERT_X(false, "ClientWriter::subscribe", "Method not implemented");
+}
+
+void ClientWriter::unsubscribe(FrameReceiver *obj)
+{
+	Q_ASSERT_X(false, "ClientWriter::unsubscribe", "Method not implemented");
+}
+
+void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
+{
+	QByteArray frame = frame_open.toLatin1();
+
+	if (!is_connected)
+	{
+		qWarning() << "Client::sendFrameOpen try to send the frame" << frame_open
+			<< "in unconnected state for client" << qPrintable(description);
+		send_on_connected.append(frame);
+		return;
+	}
+
+	// queue the frames to be sent later, but avoid delaying frames indefinitely
+	QList<QByteArray> &list = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_list_frames : list_frames;
+	QTimer &timer = delay_frames && delay == DELAY_IF_REQUESTED ? delayed_frame_timer : frame_timer;
+
+	list.append(frame);
+	if (!timer.isActive())
+		timer.start();
+}
+
+void ClientWriter::socketConnected()
+{
+	Client::socketConnected();
+
+	// Sometimes happens that the QTCPSocket thinks that the connection is still
+	// up while the openserver has already closes its side of the socket.
+	// To prevent losing frames we use a time counter and manually disconnect the
+	// connection after CONNECTION_TIMEOUT_SECS of inactivity.
+	// NOTE: we cannot use a QTimer because at the startup sometimes the timeout
+	// signal has dispatched too late.
+	inactivity_time.start();
+
+	qDebug() << "ClientWriter::socketConnected()" << qPrintable(description);
+
+	if (!send_on_connected.isEmpty() && sendFrames(send_on_connected))
+		send_on_connected.clear();
+}
+
+void ClientWriter::sendFrames()
+{
+	if (!sendFrames(list_frames))
+		send_on_connected.append(list_frames);
+
+	list_frames.clear();
+}
+
+void ClientWriter::sendDelayedFrames()
+{
+	if (!sendFrames(delayed_list_frames))
+		send_on_connected.append(delayed_list_frames);
+
+	delayed_list_frames.clear();
+}
+
+bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
+{
+	if (socket->state() == QAbstractSocket::ConnectedState && inactivity_time.elapsed() > CONNECTION_TIMEOUT_SECS * 1000)
+	{
+		// We can safely call abort because if we aren't sending frames for
+		// CONNECTION_TIMEOUT_SECS we won't lose frame. The abort call drop immediately
+		// the connection, so after the call the socket is unconnected.
+		socket->abort();
+		qDebug() << "Disconnect for inactivity of" << inactivity_time.elapsed() / 1000
+			<< "seconds on client" << qPrintable(description);
+	}
+
+	QAbstractSocket::SocketState state = socket->state();
+	if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState ||
+		state == QAbstractSocket::HostLookupState || state == QAbstractSocket::ConnectingState)
+	{
+		if (state == QAbstractSocket::UnconnectedState || state == QAbstractSocket::ClosingState)
+			connectToHost();
+		return false;
+	}
+
+	QSet<QByteArray> discard_duplicates;
+
+	foreach (const QByteArray &frame, to_send)
+	{
+		if (discard_duplicates.contains(frame))
+			continue;
+		discard_duplicates.insert(frame);
+
+		int written = socket->write(frame);
+		if (written == -1)
+			qWarning() << "Unable to send the frame" << frame << "to" << qPrintable(description);
+		else
+			qDebug() << "ClientWriter::sendFrameOpen()" << qPrintable(description) << "sent:" << frame;
+	}
+
+	inactivity_time.start();
+
+	return true;
+}
+
+
+
+
+
+
 Client *getClient(Client::Type t, const QString &host, unsigned port)
 {
-	return new Client(t, host, port);
+	if (t == Client::MONITOR || t == Client::SUPERVISOR)
+		return new ClientReader(t, host, port);
+	return new ClientWriter(t, host, port);
 }
 

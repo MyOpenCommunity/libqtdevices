@@ -40,6 +40,7 @@
 
 class FrameReceiver;
 
+// TODO: frameDElay!
 
 /*!
 	\ingroup Core
@@ -97,7 +98,7 @@ public:
 		It builds a new Client of Client::Type \a t and connect it to the openserver
 		having the given \a host and \a port.
 	*/
-	Client(Type t, const QString &_host = OPENSERVER_ADDR, unsigned _port = 0);
+	Client(Type t, const QString &host, unsigned port);
 
 	/*!
 		\brief Send a frame to the openserver.
@@ -105,19 +106,19 @@ public:
 		Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
 		othewise can be delayed depending on the status set via delayFrames()
 	*/
-	void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
+	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED) = 0;
 
 	/*!
 		\brief Request to receive frames having \a who.
 
 		Note that a FrameReceiver can ask to receive frames for one or more who.
 	*/
-	void subscribe(FrameReceiver *obj, int who);
+	virtual void subscribe(FrameReceiver *obj, int who) = 0;
 
 	/*!
 		\brief Request to not receive frames anymore.
 	*/
-	void unsubscribe(FrameReceiver *obj);
+	virtual void unsubscribe(FrameReceiver *obj) = 0;
 
 	/*!
 		\brief Check if the client is connected
@@ -126,13 +127,13 @@ public:
 
 #if DEBUG
 	int bytesAvailable() { return socket->bytesAvailable(); }
-	void flush() { sendDelayedFrames(); sendFrames(); socket->flush(); }
+	virtual void flush() { socket->flush(); }
 #endif
 
 	/*!
 		\brief Forward the frames received from a Client object to another one.
 	*/
-	void forwardFrame(Client *c);
+	virtual void forwardFrame(Client *c) = 0;
 
 	/*!
 		\brief Delay all the frames marked as DELAY_IF_REQUESTED are delayed.
@@ -162,23 +163,30 @@ signals:
 	*/
 	void connectionDown();
 
-private slots:
-	// Reads messages from the socket
-	int socketFrameRead();
+protected:
+	virtual void manageFrame(const QByteArray &frame) = 0;
+	static bool delay_frames;
 
-	void socketConnected();
-	void socketError(QAbstractSocket::SocketError e);
-
-	// sends queued frames, removing duplicates
-	void sendDelayedFrames();
-	void sendFrames();
-
-private:
-	QTcpSocket *socket;
-	// The channel type
-	Type type;
 	// The channel description
 	QString description;
+
+	QTcpSocket *socket;
+
+	// This flag marks if the client is logically connected or not.
+	bool is_connected;
+
+protected slots:
+	virtual void socketConnected();
+
+private slots:
+	// Reads messages from the socket
+	void socketFrameRead();
+
+	void socketError(QAbstractSocket::SocketError e);
+
+private:
+	// The channel type
+	Type type;
 
 	// The address of the openserver
 	QString host;
@@ -188,9 +196,80 @@ private:
 	// The buffer that store the data read from the server
 	QByteArray data_read;
 
+	QByteArray readFromServer();
+
+};
+
+
+class ClientReader : public Client
+{
+Q_OBJECT
+public:
+	ClientReader(Type t, const QString &host, unsigned port);
+	virtual void forwardFrame(Client *c);
+
+	/*!
+		\brief Request to receive frames having \a who.
+
+		Note that a FrameReceiver can ask to receive frames for one or more who.
+	*/
+	virtual void subscribe(FrameReceiver *obj, int who);
+
+	/*!
+		\brief Request to not receive frames anymore.
+	*/
+	virtual void unsubscribe(FrameReceiver *obj);
+
+	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
+
+protected:
+	virtual void manageFrame(const QByteArray &frame);
+
+private:
+	// The client where forwards the frames received.
+	ClientReader *to_forward;
+
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 
+	void dispatchFrame(const QByteArray &frame);
+};
+
+
+class ClientWriter : public Client
+{
+Q_OBJECT
+public:
+	ClientWriter(Type t, const QString &host, unsigned port);
+	virtual void forwardFrame(Client *c);
+
+	virtual void subscribe(FrameReceiver *obj, int who);
+	virtual void unsubscribe(FrameReceiver *obj);
+
+	/*!
+		\brief Send a frame to the openserver.
+
+		Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
+		othewise can be delayed depending on the status set via delayFrames()
+	*/
+	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
+
+#if DEBUG
+	virtual void flush() { sendDelayedFrames(); sendFrames(); Client::flush(); }
+#endif
+
+protected:
+	virtual void manageFrame(const QByteArray &frame);
+
+protected slots:
+	virtual void socketConnected();
+
+private slots:
+	// sends queued frames, removing duplicates
+	void sendDelayedFrames();
+	void sendFrames();
+
+private:
 	// gather sent frames to be sent later; using a list because frame order is important
 	QList<QByteArray> list_frames, delayed_list_frames;
 	QTimer frame_timer, delayed_frame_timer;
@@ -201,23 +280,9 @@ private:
 	// The time since the last frame sent (only for REQUEST and COMMAND)
 	QTime inactivity_time;
 
-	// This flag marks if the client is logically connected or not.
-	bool is_connected;
-
-	// The client where forward the frames received.
-	Client *to_forward;
-
-	static bool delay_frames;
-
-	void manageFrame(QByteArray frame);
-	QByteArray readFromServer();
-
-	void dispatchFrame(QString frame);
-
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);
 };
-
 
 
 Client *getClient(Client::Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
