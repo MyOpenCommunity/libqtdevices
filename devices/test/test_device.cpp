@@ -57,7 +57,7 @@ void TestDevice::initTestDevice()
 	client_request = server->connectRequest();
 	client_monitor = server->connectMonitor();
 
-	QHash<int, Client*> monitors;
+	QHash<int, ClientReader*> monitors;
 	monitors[0] = client_monitor;
 	FrameReceiver::setClientsMonitor(monitors);
 

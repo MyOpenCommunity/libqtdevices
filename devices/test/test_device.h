@@ -25,7 +25,8 @@
 #include <QObject>
 
 class OpenServerMock;
-class Client;
+class ClientWriter;
+class ClientReader;
 class device;
 
 /**
@@ -51,9 +52,9 @@ public:
 
 protected:
 	OpenServerMock *server;
-	Client *client_command;
-	Client *client_request;
-	Client *client_monitor;
+	ClientWriter *client_command;
+	ClientWriter *client_request;
+	ClientReader *client_monitor;
 	void cleanBuffers();
 	void flushCompressedFrames(device *dev);
 };

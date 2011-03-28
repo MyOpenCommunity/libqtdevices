@@ -27,7 +27,8 @@
 
 class DeviceConditionDisplayMock;
 class OpenServerMock;
-class Client;
+class ClientWriter;
+class ClientReader;
 class QSignalSpy;
 
 
@@ -43,9 +44,9 @@ public:
 
 private:
 	OpenServerMock *server;
-	Client *client_monitor;
-	Client *client_command;
-	Client *client_request;
+	ClientReader *client_monitor;
+	ClientWriter *client_command;
+	ClientWriter *client_request;
 	QString dev_where;
 
 	DeviceConditionDisplayMock *mock_display;

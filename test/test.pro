@@ -47,6 +47,7 @@ HEADERS += xmldevice_tester.h \
 	../skinmanager.h \
 	../xml_functions.h \
 	../xmlclient.h \
+	../delayedslotcaller.h \
 	../xmldevice.h
 
 SOURCES += xmldevice_tester.cpp \
@@ -72,6 +73,7 @@ SOURCES += xmldevice_tester.cpp \
 	../skinmanager.cpp \
 	../xml_functions.cpp \
 	../xmlclient.cpp \
+	../delayedslotcaller.cpp \
 	../xmldevice.cpp \
 	../definitions.cpp
 

@@ -46,7 +46,7 @@ void TestXmlClient::testSimple()
 	QCOMPARE(spy.count(), 1);
 	QList<QVariant> arguments = spy.takeFirst();
 
-	QCOMPARE(arguments.at(0).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
+	QCOMPARE(arguments.at(0).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
 }
 
 void TestXmlClient::testDouble()
@@ -62,7 +62,7 @@ void TestXmlClient::testDouble()
 	QList<QVariant> arguments = spy.takeFirst();
 
 	for (int i = 0; i < spy.count(); ++i)
-		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
+		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test</OWNxml>"));
 }
 
 void TestXmlClient::testGarbage()
@@ -79,5 +79,5 @@ void TestXmlClient::testGarbage()
 	QList<QVariant> arguments = spy.takeFirst();
 
 	for (int i = 0; i < spy.count(); ++i)
-		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test%1</OWNxml>").arg(i + 1));
+		QCOMPARE(arguments.at(i).toString(), QString("<OWNxml xmlns=\"http://www.bticino.it/xopen/v1\"\nxmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">Test%1</OWNxml>").arg(i + 1));
 }

@@ -60,7 +60,6 @@ class FrameReceiver;
 class Client : public QObject
 {
 friend class OpenServerMock;
-friend class TestScenEvoDevicesCond;
 Q_OBJECT
 Q_ENUMS(Type)
 
@@ -171,6 +170,7 @@ private:
 */
 class ClientReader : public Client
 {
+friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	/*!

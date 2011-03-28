@@ -27,7 +27,8 @@
 #include <QTcpServer>
 
 class QTcpSocket;
-class Client;
+class ClientWriter;
+class ClientReader;
 
 
 class OpenServerMock : public QObject
@@ -36,9 +37,9 @@ Q_OBJECT
 public:
 	OpenServerMock();
 
-	Client *connectMonitor();
-	Client *connectCommand();
-	Client *connectRequest();
+	ClientReader *connectMonitor();
+	ClientWriter *connectCommand();
+	ClientWriter *connectRequest();
 	QString frameRequest(unsigned int timeout = 0);
 	QString frameCommand(unsigned int timeout = 0);
 

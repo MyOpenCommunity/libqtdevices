@@ -50,7 +50,7 @@ public:
 TestScenEvoDevicesCond::TestScenEvoDevicesCond()
 {
 	server = new OpenServerMock;
-	QHash<int, Client*> monitors;
+	QHash<int, ClientReader*> monitors;
 	client_monitor = server->connectMonitor();
 	monitors[0] = client_monitor;
 	FrameReceiver::setClientsMonitor(monitors);

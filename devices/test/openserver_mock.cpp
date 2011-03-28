@@ -32,9 +32,9 @@ OpenServerMock::OpenServerMock() : server(this)
 		qFatal("Fatal error: OpenServerMock cannot listen");
 }
 
-Client *OpenServerMock::connectMonitor()
+ClientReader *OpenServerMock::connectMonitor()
 {
-	Client *client_monitor = new Client(Client::MONITOR, "127.0.0.1", server.serverPort());
+	ClientReader *client_monitor = new ClientReader(Client::MONITOR, "127.0.0.1", server.serverPort());
 	if (!client_monitor->socket->waitForConnected(default_timeout))
 		qFatal("Fatal error: client_monitor cannot connect to OpenServerMock");
 	server.waitForNewConnection(default_timeout);
@@ -42,9 +42,9 @@ Client *OpenServerMock::connectMonitor()
 	return client_monitor;
 }
 
-Client *OpenServerMock::connectCommand()
+ClientWriter *OpenServerMock::connectCommand()
 {
-	Client *client_command = new Client(Client::COMMAND, "127.0.0.1", server.serverPort());
+	ClientWriter *client_command = new ClientWriter(Client::COMMAND, "127.0.0.1", server.serverPort());
 	if (!client_command->socket->waitForConnected(default_timeout))
 		qFatal("Fatal error: client_command cannot connect to OpenServerMock");
 	server.waitForNewConnection(default_timeout);
@@ -54,9 +54,9 @@ Client *OpenServerMock::connectCommand()
 	return client_command;
 }
 
-Client *OpenServerMock::connectRequest()
+ClientWriter *OpenServerMock::connectRequest()
 {
-	Client *client_request = new Client(Client::REQUEST, "127.0.0.1", server.serverPort());
+	ClientWriter *client_request = new ClientWriter(Client::REQUEST, "127.0.0.1", server.serverPort());
 	if (!client_request->socket->waitForConnected(default_timeout))
 		qFatal("Fatal error: client_request cannot connect to OpenServerMock");
 	server.waitForNewConnection(default_timeout);
