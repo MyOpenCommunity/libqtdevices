@@ -204,7 +204,8 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	setup_vct_icon = bt_global::skin->getImage("setup_vct");
 	setup_vct = new BtButton();
 	camera_settings_shown = false;
-	toggleCameraSettings();
+	image_control->hide();
+	setup_vct->setImage(getBostikName(setup_vct_icon, "off"));
 	connect(setup_vct, SIGNAL(clicked()), SLOT(toggleCameraSettings()));
 
 	video_box = new QLabel;
@@ -878,7 +879,7 @@ VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 	buttons_layout->addWidget(vct_call->stairlight, 3, 0);
 	buttons_layout->addWidget(vct_call->cycle, 3, 1);
 
-	QVBoxLayout *sidebar = new QVBoxLayout;
+	QVBoxLayout *sidebar = new QVBoxLayout(this);
 	sidebar->setContentsMargins(0, 0, 0, 5);
 	sidebar->setSpacing(5);
 	sidebar->addStretch(1);
