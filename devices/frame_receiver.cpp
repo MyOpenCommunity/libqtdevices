@@ -23,7 +23,7 @@
 #include "openclient.h" // client_monitor
 
 // Inizialization of static member
-QHash<int, Client*> FrameReceiver::clients_monitor;
+QHash<int, ClientReader*> FrameReceiver::clients_monitor;
 
 
 /*!
@@ -62,7 +62,7 @@ FrameReceiver::~FrameReceiver()
 /*!
  * \brief Sets the monitors
  */
-void FrameReceiver::setClientsMonitor(const QHash<int, Client*> &monitors)
+void FrameReceiver::setClientsMonitor(const QHash<int, ClientReader*> &monitors)
 {
 	clients_monitor = monitors;
 }

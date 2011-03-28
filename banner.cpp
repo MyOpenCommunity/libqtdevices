@@ -39,8 +39,8 @@
 
 
 // Inizialization of static member
-Client *banner::client_comandi = 0;
-Client *banner::client_richieste = 0;
+ClientWriter *banner::client_command = 0;
+ClientWriter *banner::client_request = 0;
 
 
 banner::banner(QWidget *parent) : QWidget(parent)
@@ -60,20 +60,20 @@ QSize banner::sizeHint() const
 
 void banner::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(client_comandi, "banner::sendFrame", "Client comandi not set!");
-	client_comandi->sendFrameOpen(frame);
+	Q_ASSERT_X(client_command, "banner::sendFrame", "Client command not set!");
+	client_command->sendFrameOpen(frame);
 }
 
 void banner::sendInit(QString frame) const
 {
-	Q_ASSERT_X(client_richieste, "banner::sendInit", "Client richieste not set!");
-	client_richieste->sendFrameOpen(frame);
+	Q_ASSERT_X(client_request, "banner::sendInit", "Client request not set!");
+	client_request->sendFrameOpen(frame);
 }
 
-void banner::setClients(Client *command, Client *request)
+void banner::setClients(ClientWriter *command, ClientWriter *request)
 {
-	client_comandi = command;
-	client_richieste = request;
+	client_command = command;
+	client_request = request;
 }
 
 void banner::setSerNum(int s)

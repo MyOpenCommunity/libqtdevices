@@ -207,12 +207,12 @@ void ClientReader::manageFrame(const QByteArray &frame)
 		dispatchFrame(frame);
 }
 
-void ClientReader::forwardFrame(Client *c)
+void ClientReader::forwardFrame(ClientReader *c)
 {
-	to_forward = qobject_cast<ClientReader*>(c);
+	to_forward = c;
 }
 
-void ClientReader::dispatchFrame(const QByteArray &frame)
+void ClientReader::dispatchFrame(QByteArray frame)
 {
 	if (to_forward)
 	{
@@ -221,7 +221,7 @@ void ClientReader::dispatchFrame(const QByteArray &frame)
 	}
 
 	OpenMsg msg;
-	msg.CreateMsgOpen(const_cast<char*>(frame.data()), frame.length()); // GIANNI: perche' vuole il cast!!
+	msg.CreateMsgOpen(frame.data(), frame.length());
 	delay_frames = true;
 	if (subscribe_list.contains(msg.who()))
 	{
@@ -254,11 +254,6 @@ void ClientReader::unsubscribe(FrameReceiver *obj)
 	}
 }
 
-void ClientReader::sendFrameOpen(const QString &frame_open, FrameDelay delay)
-{
-	Q_ASSERT_X(false, "ClientReader::sendFrameOpen", "Method not implemented");
-}
-
 
 
 ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(t, host, port)
@@ -283,21 +278,6 @@ void ClientWriter::manageFrame(const QByteArray &frame)
 	{
 		qDebug("nak received");
 	}
-}
-
-void ClientWriter::forwardFrame(Client *c)
-{
-	Q_ASSERT_X(false, "ClientWriter::forwardFrame", "Method not implemented");
-}
-
-void ClientWriter::subscribe(FrameReceiver *obj, int who)
-{
-	Q_ASSERT_X(false, "ClientWriter::subscribe", "Method not implemented");
-}
-
-void ClientWriter::unsubscribe(FrameReceiver *obj)
-{
-	Q_ASSERT_X(false, "ClientWriter::unsubscribe", "Method not implemented");
 }
 
 void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
@@ -397,14 +377,4 @@ bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
 }
 
 
-
-
-
-
-Client *getClient(Client::Type t, const QString &host, unsigned port)
-{
-	if (t == Client::MONITOR || t == Client::SUPERVISOR)
-		return new ClientReader(t, host, port);
-	return new ClientWriter(t, host, port);
-}
 

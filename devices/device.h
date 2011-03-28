@@ -30,6 +30,8 @@
 #include <QTimer>
 #include <QSignalMapper>
 
+class ClientReader;
+class ClientWriter;
 class Client;
 class OpenMsg;
 
@@ -38,10 +40,15 @@ typedef QHash<int, QVariant> DeviceValues;
 
 struct Clients
 {
-	Client *command;
-	Client *request;
-	Client *supervisor;
-	Clients() { command = request = supervisor = 0; }
+	ClientWriter *command;
+	ClientWriter *request;
+	ClientReader *supervisor;
+	Clients()
+	{
+		command = 0;
+		request = 0;
+		supervisor = 0;
+	}
 };
 
 /*!

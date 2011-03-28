@@ -26,7 +26,7 @@
 
 #include "styledwidget.h"
 
-class Client;
+class ClientWriter;
 class PageContainer;
 class QVBoxLayout;
 class TransitionWidget;
@@ -156,9 +156,9 @@ public:
 		\brief Se the clients used to send frames for all pages.
 
 		\warning This method is required by sendFrame() and sendInit(), will be removed.
-		\sa Client
+		\sa ClientWriter
 	*/
-	static void setClients(Client *command, Client *request);
+	static void setClients(ClientWriter *command, ClientWriter *request);
 
 	/*!
 		\brief send a \a frame using the Client::COMMAND channel.
@@ -273,8 +273,8 @@ protected:
 
 private:
 	static PageContainer *page_container;
-	static Client *client_richieste;
-	static Client *client_comandi;
+	static ClientWriter *client_request;
+	static ClientWriter *client_command;
 
 	void setCurrentPage();
 	Page *currentPage();

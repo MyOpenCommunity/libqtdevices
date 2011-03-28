@@ -149,7 +149,7 @@ private slots:
 
 private:
 	QHash<int, Clients> clients;
-	QHash<int, Client*> monitors;
+	QHash<int, ClientReader*> monitors;
 
 	QHash<int, Page*> page_list;
 	QTime *boot_time;

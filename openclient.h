@@ -40,7 +40,6 @@
 
 class FrameReceiver;
 
-// TODO: frameDElay!
 
 /*!
 	\ingroup Core
@@ -84,15 +83,6 @@ public:
 	};
 
 	/*!
-		\brief Defines the type of the delay that can used while sent frames.
-	*/
-	enum FrameDelay
-	{
-		DELAY_NONE,          /*!< No delay allowed */
-		DELAY_IF_REQUESTED   /*!< Delay if the requested from delayFrames() */
-	};
-
-	/*!
 		\brief Constructor
 
 		It builds a new Client of Client::Type \a t and connect it to the openserver
@@ -100,25 +90,6 @@ public:
 	*/
 	Client(Type t, const QString &host, unsigned port);
 
-	/*!
-		\brief Send a frame to the openserver.
-
-		Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
-		othewise can be delayed depending on the status set via delayFrames()
-	*/
-	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED) = 0;
-
-	/*!
-		\brief Request to receive frames having \a who.
-
-		Note that a FrameReceiver can ask to receive frames for one or more who.
-	*/
-	virtual void subscribe(FrameReceiver *obj, int who) = 0;
-
-	/*!
-		\brief Request to not receive frames anymore.
-	*/
-	virtual void unsubscribe(FrameReceiver *obj) = 0;
 
 	/*!
 		\brief Check if the client is connected
@@ -129,11 +100,6 @@ public:
 	int bytesAvailable() { return socket->bytesAvailable(); }
 	virtual void flush() { socket->flush(); }
 #endif
-
-	/*!
-		\brief Forward the frames received from a Client object to another one.
-	*/
-	virtual void forwardFrame(Client *c) = 0;
 
 	/*!
 		\brief Delay all the frames marked as DELAY_IF_REQUESTED are delayed.
@@ -197,7 +163,6 @@ private:
 	QByteArray data_read;
 
 	QByteArray readFromServer();
-
 };
 
 
@@ -205,22 +170,24 @@ class ClientReader : public Client
 {
 Q_OBJECT
 public:
-	ClientReader(Type t, const QString &host, unsigned port);
-	virtual void forwardFrame(Client *c);
+	ClientReader(Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
+
+	/*!
+		\brief Forward the frames received from a ClientReader object to another one.
+	*/
+	void forwardFrame(ClientReader *c);
 
 	/*!
 		\brief Request to receive frames having \a who.
 
 		Note that a FrameReceiver can ask to receive frames for one or more who.
 	*/
-	virtual void subscribe(FrameReceiver *obj, int who);
+	void subscribe(FrameReceiver *obj, int who);
 
 	/*!
 		\brief Request to not receive frames anymore.
 	*/
-	virtual void unsubscribe(FrameReceiver *obj);
-
-	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
+	void unsubscribe(FrameReceiver *obj);
 
 protected:
 	virtual void manageFrame(const QByteArray &frame);
@@ -232,19 +199,25 @@ private:
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
 
-	void dispatchFrame(const QByteArray &frame);
+	void dispatchFrame(QByteArray frame);
 };
+
 
 
 class ClientWriter : public Client
 {
 Q_OBJECT
 public:
-	ClientWriter(Type t, const QString &host, unsigned port);
-	virtual void forwardFrame(Client *c);
+	ClientWriter(Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
 
-	virtual void subscribe(FrameReceiver *obj, int who);
-	virtual void unsubscribe(FrameReceiver *obj);
+	/*!
+		\brief Defines the type of the delay that can used while sent frames.
+	*/
+	enum FrameDelay
+	{
+		DELAY_NONE,          /*!< No delay allowed */
+		DELAY_IF_REQUESTED   /*!< Delay if the requested from delayFrames() */
+	};
 
 	/*!
 		\brief Send a frame to the openserver.
@@ -252,7 +225,7 @@ public:
 		Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
 		othewise can be delayed depending on the status set via delayFrames()
 	*/
-	virtual void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
+	void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
 
 #if DEBUG
 	virtual void flush() { sendDelayedFrames(); sendFrames(); Client::flush(); }
@@ -284,8 +257,6 @@ private:
 	bool sendFrames(const QList<QByteArray> &to_send);
 };
 
-
-Client *getClient(Client::Type t, const QString &host = OPENSERVER_ADDR, unsigned port = 0);
 
 
 #endif

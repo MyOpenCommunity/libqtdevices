@@ -25,7 +25,7 @@
 #include <QObject>
 #include <QHash>
 
-class Client;
+class ClientReader;
 class OpenMsg;
 
 
@@ -35,14 +35,14 @@ public:
 	FrameReceiver(int openserver_id = 0);
 	virtual ~FrameReceiver();
 
-	static void setClientsMonitor(const QHash<int, Client*> &monitors);
+	static void setClientsMonitor(const QHash<int, ClientReader*> &monitors);
 
 	virtual void manageFrame(OpenMsg &msg) = 0;
 
 protected:
 	void subscribe_monitor(int who);
 
-	static QHash<int, Client*> clients_monitor;
+	static QHash<int, ClientReader*> clients_monitor;
 
 private:
 	bool subscribed;

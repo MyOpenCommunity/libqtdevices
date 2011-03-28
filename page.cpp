@@ -43,8 +43,8 @@
 
 
 // Inizialization of static member
-Client *Page::client_comandi = 0;
-Client *Page::client_richieste = 0;
+ClientWriter *Page::client_command = 0;
+ClientWriter *Page::client_request = 0;
 PageContainer *Page::page_container = 0;
 
 
@@ -226,20 +226,20 @@ void Page::showPage()
 
 void Page::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(client_comandi, "Page::sendFrame", "Client comandi not set!");
-	client_comandi->sendFrameOpen(frame);
+	Q_ASSERT_X(client_command, "Page::sendFrame", "Client command not set!");
+	client_command->sendFrameOpen(frame);
 }
 
 void Page::sendInit(QString frame) const
 {
-	Q_ASSERT_X(client_richieste, "Page::sendInit", "Client richieste not set!");
-	client_richieste->sendFrameOpen(frame);
+	Q_ASSERT_X(client_request, "Page::sendInit", "Client request not set!");
+	client_request->sendFrameOpen(frame);
 }
 
-void Page::setClients(Client *command, Client *request)
+void Page::setClients(ClientWriter *command, ClientWriter *request)
 {
-	client_comandi = command;
-	client_richieste = request;
+	client_command = command;
+	client_request = request;
 }
 
 

@@ -32,7 +32,7 @@
 
 
 class BtButton;
-class Client;
+class ClientWriter;
 class Page;
 class BannerContent;
 class ScrollingLabel;
@@ -81,7 +81,7 @@ public:
 	/*!
 		\brief Set the clients used to send frames.
 	*/
-	static void setClients(Client *command, Client *request);
+	static void setClients(ClientWriter *command, ClientWriter *request);
 
 	/*!
 		\brief Init the banner.
@@ -118,9 +118,6 @@ protected:
 	int banner_width;
 	int banner_height;
 
-	static Client *client_richieste;
-	static Client *client_comandi;
-
 	// The sizeHint method is required to have a layout management that work fine.
 	// Note that this sizeHint is ok for banner with a standard dimension, banner
 	// bigger or smaller should be re-define this method.
@@ -136,6 +133,9 @@ protected:
 private:
 	int id;
 	int serNum;
+
+	static ClientWriter *client_request;
+	static ClientWriter *client_command;
 };
 
 
