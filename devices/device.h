@@ -294,7 +294,6 @@ public:
 	static void delayFrames(bool delay);
 
 signals:
-
 	/*!
 		\brief Signal used to notify that a dimension of device has changed or a
 		new command has received.
@@ -325,7 +324,7 @@ signals:
 	*/
 	void connectionDown();
 
-public slots:
+protected slots:
 	/*!
 		\brief Sends frames to the openserver, using the Client::COMMAND channel.
 
@@ -345,6 +344,33 @@ public slots:
 		\sa delayFrames(), sendInitNow()
 	*/
 	void sendInit(QString frame) const;
+
+protected:
+	/*!
+		\brief Constructor
+
+		Construct a new device with the given \a who, \a where and Openserver id.
+
+		\note The costructor is protected only to make device abstract.
+		\note The default openserver id should be keep in sync with the define
+		MAIN_OPENSERVER.
+	*/
+	device(QString who, QString where, int openserver_id = 0);
+
+	/*!
+		\brief The (physical) system of the device.
+	*/
+	QString who;
+
+	/*!
+		\brief The address of the device.
+	*/
+	QString where;
+
+	/*!
+		\brief The id of the OpenServer which the device is connected.
+	*/
+	int openserver_id;
 
 	/*!
 		\brief Sends frames to the openserver, using the Client::COMMAND channel.
@@ -381,34 +407,6 @@ public slots:
 		\sa sendInit(), sendCompressedFrame(), FrameCompressor
 	*/
 	void sendCompressedInit(QString frame, int compression_timeout = COMPRESSION_TIMEOUT) const;
-
-protected:
-
-	/*!
-		\brief Constructor
-
-		Construct a new device with the given \a who, \a where and Openserver id.
-
-		\note The costructor is protected only to make device abstract.
-		\note The default openserver id should be keep in sync with the define
-		MAIN_OPENSERVER.
-	*/
-	device(QString who, QString where, int openserver_id = 0);
-
-	/*!
-		\brief The (physical) system of the device.
-	*/
-	QString who;
-
-	/*!
-		\brief The address of the device.
-	*/
-	QString where;
-
-	/*!
-		\brief The id of the OpenServer which the device is connected.
-	*/
-	int openserver_id;
 
 	/*!
 		\brief Sends a frame on the Client::COMMAND socket using the given \a what and \a where.

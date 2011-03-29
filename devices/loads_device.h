@@ -23,7 +23,8 @@
 #define LOADS_DEVICE_H
 
 #include "device.h"
-#include "energy_device.h" // for AutomaticUpdates
+
+class AutomaticUpdates;
 
 
 /*!
@@ -98,6 +99,7 @@ public:
 	*/
 	LoadsDevice(const QString &where);
 
+	~LoadsDevice();
 	virtual void init();
 
 	/*!
@@ -160,7 +162,7 @@ protected:
 
 private:
 	// handle automatic updates of current measure
-	AutomaticUpdates current_updates;
+	AutomaticUpdates *current_updates;
 };
 
 #endif // LOADS_DEVICE_H

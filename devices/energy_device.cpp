@@ -100,9 +100,8 @@ enum RequestDimension
 };
 
 
-AutomaticUpdates::AutomaticUpdates(QString _where, int _mode, device *_dev)
+AutomaticUpdates::AutomaticUpdates(QString _where, int _mode)
 {
-	dev = _dev;
 	where = _where;
 	mode = _mode;
 	update_state = UPDATE_IDLE;
@@ -189,7 +188,7 @@ void AutomaticUpdates::stoppingTimeout()
 	}
 }
 
-void AutomaticUpdates::requestCurrent() const
+void AutomaticUpdates::requestCurrent()
 {
 	int what = 0;
 	switch (mode)
@@ -212,17 +211,17 @@ void AutomaticUpdates::requestCurrent() const
 	default:
 		qFatal("Unknown mode on the energy management!");
 	}
-	dev->sendFrame(createDimensionFrame("18", QString::number(what), where));
+	emit sendFrame(createDimensionFrame("18", QString::number(what), where));
 }
 
 void AutomaticUpdates::sendUpdateStart()
 {
-	dev->sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
+	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
 }
 
 void AutomaticUpdates::sendUpdateStop()
 {
-	dev->sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
+	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
 }
 
 void AutomaticUpdates::setHasNewFrames()
@@ -289,10 +288,11 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 }
 
 
-EnergyDevice::EnergyDevice(QString where, int mode) :
-	device(QString("18"), where),
-	current_updates(where, mode, this)
+EnergyDevice::EnergyDevice(QString where, int mode) : device(QString("18"), where)
 {
+	current_updates = new AutomaticUpdates(where, mode);
+	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
+
 	platform_dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(platform_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(platformValueReceived(DeviceValues)));
 
@@ -303,6 +303,11 @@ EnergyDevice::EnergyDevice(QString where, int mode) :
 
 	for (int i = 1; i <= 12; ++i)
 		buffer_year_data[i] = 0;
+}
+
+EnergyDevice::~EnergyDevice()
+{
+	delete current_updates;
 }
 
 void EnergyDevice::platformValueReceived(const DeviceValues &values_list)
@@ -348,28 +353,28 @@ void EnergyDevice::requestCumulativeYear() const
 
 void EnergyDevice::requestCurrent() const
 {
-	current_updates.requestCurrent();
+	current_updates->requestCurrent();
 }
 
 void EnergyDevice::requestCurrentUpdate()
 {
-	current_updates.requestCurrentUpdate();
+	current_updates->requestCurrentUpdate();
 }
 
 void EnergyDevice::requestCurrentUpdateStart()
 {
-	current_updates.requestCurrentUpdateStart();
+	current_updates->requestCurrentUpdateStart();
 }
 
 
 void EnergyDevice::requestCurrentUpdateStop()
 {
-	current_updates.requestCurrentUpdateStop();
+	current_updates->requestCurrentUpdateStop();
 }
 
 void EnergyDevice::flushCurrentUpdateStop()
 {
-	current_updates.flushCurrentUpdateStop();
+	current_updates->flushCurrentUpdateStop();
 }
 
 void EnergyDevice::requestDailyAverageGraph(QDate date) const
@@ -643,7 +648,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == _DIM_STATE_UPDATE_INTERVAL && msg.whatArgCnt() == 1)
 	{
-		current_updates.handleAutomaticUpdate(msg);
+		current_updates->handleAutomaticUpdate(msg);
 		setHasNewFrames();
 		managed = true;
 	}
@@ -663,7 +668,7 @@ void EnergyDevice::setHasNewFrames()
 	if (has_new_frames)
 		return;
 
-	current_updates.setHasNewFrames();
+	current_updates->setHasNewFrames();
 
 	has_new_frames = true;
 

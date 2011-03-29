@@ -20,7 +20,7 @@
 
 
 #include "loads_device.h"
-
+#include "energy_device.h" // AutomaticUpdates
 #include "openmsg.h"
 
 #include <QDateTime>
@@ -41,12 +41,18 @@ enum
 };
 
 
-LoadsDevice::LoadsDevice(const QString &where) :
-	device("18", where),
-	current_updates(where, 1, this)
+LoadsDevice::LoadsDevice(const QString &where) : device("18", where)
 {
+	current_updates = new AutomaticUpdates(where, 1);
+	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
+
 	// actuators always have the automatic updates
-	current_updates.setHasNewFrames();
+	current_updates->setHasNewFrames();
+}
+
+LoadsDevice::~LoadsDevice()
+{
+	delete current_updates;
 }
 
 void LoadsDevice::init()
@@ -72,17 +78,17 @@ void LoadsDevice::forceOff(int time) const
 
 void LoadsDevice::requestCurrent() const
 {
-	current_updates.requestCurrent();
+	current_updates->requestCurrent();
 }
 
 void LoadsDevice::requestCurrentUpdateStart()
 {
-	current_updates.requestCurrentUpdateStart();
+	current_updates->requestCurrentUpdateStart();
 }
 
 void LoadsDevice::requestCurrentUpdateStop()
 {
-	current_updates.requestCurrentUpdateStop();
+	current_updates->requestCurrentUpdateStop();
 }
 
 void LoadsDevice::requestStatus() const
@@ -143,7 +149,7 @@ bool LoadsDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		if (msg.whatArgCnt() != 1)
 			return false;
 
-		current_updates.handleAutomaticUpdate(msg);
+		current_updates->handleAutomaticUpdate(msg);
 	}
 
 	if (values_list.count() != 0)

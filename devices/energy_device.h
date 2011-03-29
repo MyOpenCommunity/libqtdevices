@@ -71,9 +71,9 @@ class AutomaticUpdates : public QObject
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
-	AutomaticUpdates(QString where, int _mode, device *_dev);
+	AutomaticUpdates(QString where, int _mode);
 
-	void requestCurrent() const;
+	void requestCurrent();
 	void requestCurrentUpdate();
 	void requestCurrentUpdateStart();
 	void requestCurrentUpdateStop();
@@ -82,6 +82,10 @@ public:
 	// not part of the public interface, but used by the containing device
 	void setHasNewFrames();
 	void handleAutomaticUpdate(OpenMsg &msg);
+
+signals:
+	// request to send a frame
+	void sendFrame(QString);
 
 private:
 	void sendUpdateStart();
@@ -120,7 +124,6 @@ private:
 	int mode;
 
 	QString where;
-	device *dev;
 };
 
 
@@ -175,6 +178,8 @@ public:
 		- 5: heating/conditioning
 	*/
 	EnergyDevice(QString where, int mode);
+
+	~EnergyDevice();
 
 	/*!
 		\brief Request total consumption over a day (DIM_CUMULATIVE_DAY).
@@ -333,7 +338,7 @@ private:
 	int scaling_factor_old_frames;
 
 	// handle automatic updates of current measure
-	AutomaticUpdates current_updates;
+	AutomaticUpdates *current_updates;
 
 	// true if the device supports automatic updates without polling
 	// and the new 16/32 bit frames for graphs
