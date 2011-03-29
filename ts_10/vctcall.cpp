@@ -879,7 +879,7 @@ VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 	buttons_layout->addWidget(vct_call->stairlight, 3, 0);
 	buttons_layout->addWidget(vct_call->cycle, 3, 1);
 
-	QVBoxLayout *sidebar = new QVBoxLayout(this);
+	QVBoxLayout *sidebar = new QVBoxLayout;
 	sidebar->setContentsMargins(0, 0, 0, 5);
 	sidebar->setSpacing(5);
 	sidebar->addStretch(1);
