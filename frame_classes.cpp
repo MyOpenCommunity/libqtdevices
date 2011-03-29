@@ -33,21 +33,16 @@ FrameReceiver::FrameReceiver(int oid)
 	openserver_id = oid;
 }
 
-
 FrameReceiver::~FrameReceiver()
 {
 	if (subscribed)
 		clients_monitor[openserver_id]->unsubscribe(this);
 }
 
-
 void FrameReceiver::setClientsMonitor(const QHash<int, ClientReader*> &monitors)
 {
 	clients_monitor = monitors;
 }
-
-
-
 
 void FrameReceiver::subscribeMonitor(int who)
 {

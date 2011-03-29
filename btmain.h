@@ -154,13 +154,13 @@ private:
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
 	HomePage *home;
-	Page *pagDefault;
+	Page *page_default;
 
 	QTimer *screensaver_timer;
 	QDateTime last_date_time;
 	QString pwd;
-	bool pwdOn, alreadyCalibrated;
-	KeypadWindow *passwordKeypad;
+	bool pwd_on, already_calibrated;
+	KeypadWindow *password_keypad;
 	bool frozen;
 	int last_event_time;
 

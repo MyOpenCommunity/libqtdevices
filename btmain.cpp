@@ -332,17 +332,17 @@ BtMain::BtMain(int openserver_reconnection_time)
 	rearmWDT();
 
 	calibrating = false;
-	pagDefault = NULL;
+	page_default = NULL;
 	home = NULL;
 	version = NULL;
-	alreadyCalibrated = false;
+	already_calibrated = false;
 	alarm_clock_on = false;
 	vde_call_active = false;
 	last_event_time = 0;
 	frozen = false;
 
-	passwordKeypad = NULL;
-	pwdOn = false;
+	password_keypad = NULL;
+	pwd_on = false;
 
 	Window *loading = NULL;
 
@@ -372,7 +372,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	{
 		qDebug() << "No pointer calibration file, calibrating";
 
-		alreadyCalibrated = true;
+		already_calibrated = true;
 #ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
@@ -597,7 +597,7 @@ void BtMain::loadConfiguration()
 	if (getTextChild(home_node, "isdefined").toInt())
 	{
 		int id_default = getTextChild(home_node, "id").toInt();
-		pagDefault = !id_default ? home : getPage(id_default);
+		page_default = !id_default ? home : getPage(id_default);
 	}
 
 	// Transition effects are for now disabled!
@@ -613,8 +613,8 @@ void BtMain::init()
 
 	loadConfiguration();
 
-	if (pagDefault)
-		connect(pagDefault, SIGNAL(Closed()), home, SLOT(showPage()));
+	if (page_default)
+		connect(page_default, SIGNAL(Closed()), home, SLOT(showPage()));
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
@@ -668,11 +668,11 @@ void BtMain::myMain()
 	device::initDevices();
 
 #if !defined(BT_HARDWARE_X11)
-	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !alreadyCalibrated)
+	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !already_calibrated)
 	{
 		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
 
-		alreadyCalibrated = true;
+		already_calibrated = true;
 #ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
@@ -720,7 +720,7 @@ Page *BtMain::homePage()
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
-	if (page_container->currentPage() != pagDefault && page_container->currentPage() != version)
+	if (page_container->currentPage() != page_default && page_container->currentPage() != version)
 		while (page_container->currentPage() != home)
 		{
 			Page *curr = page_container->currentPage();
@@ -750,7 +750,7 @@ void BtMain::makeActive()
 		bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
 		bt_global::display->currentState() == DISPLAY_FREEZED)
 	{
-		if (pwdOn)
+		if (pwd_on)
 		{
 			if (bt_global::display->currentState() != DISPLAY_FREEZED)
 			{
@@ -863,9 +863,9 @@ void BtMain::checkScreensaver()
 	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
 		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
-			pagDefault && page_container->currentPage() != pagDefault)
+			page_default && page_container->currentPage() != page_default)
 		{
-			pagDefault->showPage();
+			page_default->showPage();
 		}
 
 		if (bt_global::display->currentState() == DISPLAY_FREEZED)
@@ -884,10 +884,10 @@ void BtMain::checkScreensaver()
 
 #ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(true);
-			if (pagDefault)
+			if (page_default)
 			{
 				unrollPages();
-				pagDefault->showPage();
+				page_default->showPage();
 			}
 			else
 			{
@@ -964,15 +964,15 @@ void BtMain::freeze(bool b)
 
 		bt_global::display->setState(DISPLAY_OPERATIVE);
 
-		if (pwdOn)
+		if (pwd_on)
 		{
-			if (!passwordKeypad)
+			if (!password_keypad)
 			{
-				passwordKeypad = new KeypadWindow(Keypad::HIDDEN);
-				connect(passwordKeypad, SIGNAL(Closed()), SLOT(testPassword()));
+				password_keypad = new KeypadWindow(Keypad::HIDDEN);
+				connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
 			}
-			bt_global::page_stack.showKeypad(passwordKeypad);
-			passwordKeypad->showWindow();
+			bt_global::page_stack.showKeypad(password_keypad);
+			password_keypad->showWindow();
 		}
 		qApp->removeEventFilter(this);
 	}
@@ -985,27 +985,27 @@ void BtMain::freeze(bool b)
 
 void BtMain::setPassword(bool enable, QString password)
 {
-	pwdOn = enable;
+	pwd_on = enable;
 	pwd = password;
-	qDebug() << "new password:" << pwd << "active:" << pwdOn;
+	qDebug() << "new password:" << pwd << "active:" << pwd_on;
 }
 
 void BtMain::testPassword()
 {
-	QString p = passwordKeypad->getText();
+	QString p = password_keypad->getText();
 	qDebug() << "testing password, input text is: " << p;
 	if (!p.isEmpty())
 	{
 		if (p != pwd)
 		{
-			passwordKeypad->resetText();
+			password_keypad->resetText();
 			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
 		}
 		else
 		{
 			qDebug() << "pwd ok!";
-			Window *t = passwordKeypad;
-			passwordKeypad = NULL;
+			Window *t = password_keypad;
+			password_keypad = NULL;
 			bt_global::page_stack.closeWindow(t);
 			t->disconnect();
 			t->deleteLater();
