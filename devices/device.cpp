@@ -30,7 +30,6 @@
 #include <QDebug>
 
 // Inizialization of static member
-QHash<int, Clients> device::clients;
 QHash<int, OpenServerManager*> device::openservers;
 
 
@@ -161,19 +160,19 @@ void FrameCompressor::flushCompressedFrames()
 }
 
 
-device::device(QString _who, QString _where, int oid) : FrameReceiver(oid)
+device::device(QString _who, QString _where, int oid) : FrameReceiver(oid), FrameSender(oid)
 {
 	who = _who;
 	where = _where;
 	openserver_id = oid;
-	subscribe_monitor(who.toInt());
+	subscribeMonitor(who.toInt());
 
 	OpenServerManager *manager = getManager(openserver_id);
 
 	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
 	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
-	connect(&frame_compressor, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
-	connect(&request_compressor, SIGNAL(sendFrame(QString)), SLOT(sendInit(QString)));
+	connect(&frame_compressor, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));
+	connect(&request_compressor, SIGNAL(sendFrame(QString)), SLOT(slotSendInit(QString)));
 }
 
 OpenServerManager *device::getManager(int openserver_id)
@@ -217,30 +216,9 @@ int device::openserverId()
 	return openserver_id;
 }
 
-void device::delayFrames(bool delay)
+void device::slotSendFrame(QString frame) const
 {
-	Client::delayFrames(delay);
-}
-
-void device::sendFrame(QString frame) const
-{
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
-			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].command->sendFrameOpen(frame, ClientWriter::DELAY_IF_REQUESTED);
-}
-
-void device::sendFrameNow(QString frame) const
-{
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
-			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].command->sendFrameOpen(frame, ClientWriter::DELAY_NONE);
-}
-
-void device::sendCommandFrame(int openserver_id, const QString &frame)
-{
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command, "device::sendFrame",
-			   qPrintable(QString("Client COMMAND not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].command->sendFrameOpen(frame, ClientWriter::DELAY_NONE);
+	sendFrame(frame);
 }
 
 void device::sendCompressedFrame(QString frame, int compression_timeout) const
@@ -253,18 +231,9 @@ void device::sendCompressedInit(QString frame, int compression_timeout) const
 	request_compressor.sendCompressedFrame(frame, compression_timeout);
 }
 
-void device::sendInit(QString frame) const
+void device::slotSendInit(QString frame) const
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].request, "device::sendInit",
-		qPrintable(QString("Client REQUEST not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].request->sendFrameOpen(frame, ClientWriter::DELAY_IF_REQUESTED);
-}
-
-void device::sendInitNow(QString frame) const
-{
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].request, "device::sendInit",
-		qPrintable(QString("Client REQUEST not set for id: %1!").arg(openserver_id)));
-	clients[openserver_id].request->sendFrameOpen(frame, ClientWriter::DELAY_NONE);
+	sendInit(frame);
 }
 
 void device::sendCommand(QString what, QString _where) const
@@ -293,11 +262,6 @@ void device::sendRequest(QString what) const
 void device::sendRequest(int what) const
 {
 	sendRequest(QString::number(what));
-}
-
-void device::setClients(const QHash<int, Clients> &c)
-{
-	clients = c;
 }
 
 QString device::get_key()

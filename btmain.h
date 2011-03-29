@@ -27,7 +27,7 @@
 #include <QPair>
 #include <QDateTime>
 
-#include "device.h" // Clients
+#include "frame_classes.h" // Clients
 
 class Version;
 class HomePage;

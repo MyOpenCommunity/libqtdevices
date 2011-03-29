@@ -22,7 +22,7 @@
 #ifndef SPECIALPAGE_H
 #define SPECIALPAGE_H
 
-#include "frame_receiver.h"
+#include "frame_classes.h" // FrameReceiver
 #include "page.h"
 
 class timeScript;
@@ -31,7 +31,7 @@ class TemperatureViewer;
 class QDomNode;
 
 
-class SpecialPage : public Page, FrameReceiver
+class SpecialPage : public Page, public FrameReceiver
 {
 Q_OBJECT
 public:

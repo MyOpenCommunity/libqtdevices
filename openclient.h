@@ -39,6 +39,7 @@
 #define MAIN_OPENSERVER 0
 
 class FrameReceiver;
+class FrameSender;
 
 
 /*!
@@ -120,7 +121,7 @@ protected:
 	Client(Type t, const QString &host, unsigned port);
 
 	virtual void sendChannelId() = 0;
-	virtual void manageFrame(const QByteArray &frame) = 0;
+	virtual void manageFrame(QByteArray frame) = 0;
 	static bool delay_frames;
 
 	// The channel description
@@ -189,6 +190,8 @@ public:
 	/*!
 		\brief Request to receive frames having \a who.
 
+		When a frame is received from the openserver, the FrameReceiver::manageFrame()
+		method is called for every object that has subscribed itself.
 		Note that a FrameReceiver can ask to receive frames for one or more who.
 	*/
 	void subscribe(FrameReceiver *obj, int who);
@@ -200,7 +203,7 @@ public:
 
 protected:
 	virtual void sendChannelId();
-	virtual void manageFrame(const QByteArray &frame);
+	virtual void manageFrame(QByteArray frame);
 
 private:
 	// The client where forwards the frames received.
@@ -208,10 +211,7 @@ private:
 
 	// The list of the FrameReceivers that will receive the incoming frames.
 	QHash<int, QList<FrameReceiver*> > subscribe_list;
-
-	void dispatchFrame(QByteArray frame);
 };
-
 
 
 /*!
@@ -254,9 +254,24 @@ public:
 	virtual void flush() { sendDelayedFrames(); sendFrames(); Client::flush(); }
 #endif
 
+	/*!
+		\brief Request to receive notifications for ack/nack.
+		When a ack, which indicates that a command is successfully processed, or its opposite nak
+		is received from the openserver, the FrameSender::manageAck() or FrameSender::manageNak()
+		is called for every object that has subscribed itself.
+
+		Note that a FrameSender can ask to receive notifications for one or more who.
+	*/
+	void subscribeAck(FrameSender *obj, int who);
+
+	/*!
+		\brief Request to not receive notifications for ack/nack anymore.
+	*/
+	void unsubscribeAck(FrameSender *obj);
+
 protected:
 	virtual void sendChannelId();
-	virtual void manageFrame(const QByteArray &frame);
+	virtual void manageFrame(QByteArray frame);
 
 protected slots:
 	virtual void socketConnected();
@@ -278,6 +293,8 @@ private:
 	QTime inactivity_time;
 
 	QList<QByteArray> ack_source_list;
+
+	QHash<int, QList<FrameSender*> > ack_receivers;
 
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);

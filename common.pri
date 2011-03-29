@@ -142,6 +142,7 @@ HEADERS += actuators.h \
 	feedparser.h \
 	fileselector.h \
 	fontmanager.h \
+	frame_classes.h \
 	frame_functions.h \
 	generic_functions.h \
 	hardware_functions.h \
@@ -247,6 +248,7 @@ SOURCES += actuators.cpp \
 	feedparser.cpp \
 	fileselector.cpp \
 	fontmanager.cpp \
+	frame_classes.cpp \
 	frame_functions.cpp \
 	generic_functions.cpp \
 	homepage.cpp \

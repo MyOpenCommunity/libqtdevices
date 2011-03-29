@@ -20,7 +20,7 @@
 
 
 #include "openclient.h"
-#include "frame_receiver.h"
+#include "frame_classes.h"
 #include "main.h" // bt_global::config, TS_NUMBER_FRAME_DELAY
 
 #include <openmsg.h>
@@ -75,6 +75,23 @@ namespace
 				return false;
 		}
 		return true;
+	}
+
+	template <class T> void unsubscribe(QHash<int, QList<T*> > &container, T *obj)
+	{
+		// An object can be subscribed more times.
+		QMutableHashIterator<int, QList<T*> > it(container);
+		while (it.hasNext())
+		{
+			it.next();
+			QMutableListIterator<T*> it_list(it.value());
+			while (it_list.hasNext())
+			{
+				it_list.next();
+				if (it_list.value() == obj)
+					it_list.remove();
+			}
+		}
 	}
 }
 
@@ -209,37 +226,34 @@ void ClientReader::sendChannelId()
 		Q_ASSERT_X(false, "ClientReader::sendChannelId", "Unknown type");
 }
 
-void ClientReader::manageFrame(const QByteArray &frame)
+void ClientReader::manageFrame(QByteArray frame)
 {
 	qDebug() << "ClientReader::manageFrame()" << qPrintable(description) << "read:" << frame;
 
 	if (frame != ACK_FRAME && frame != NAK_FRAME)
-		dispatchFrame(frame);
+	{
+		if (to_forward)
+		{
+			to_forward->manageFrame(frame);
+			return;
+		}
+
+		OpenMsg msg;
+		msg.CreateMsgOpen(frame.data(), frame.length());
+		delay_frames = true;
+		if (subscribe_list.contains(msg.who()))
+		{
+			QList<FrameReceiver*> &l = subscribe_list[msg.who()];
+			for (int i = 0; i < l.size(); ++i)
+				l[i]->manageFrame(msg);
+		}
+		delay_frames = false;
+	}
 }
 
 void ClientReader::forwardFrame(ClientReader *c)
 {
 	to_forward = c;
-}
-
-void ClientReader::dispatchFrame(QByteArray frame)
-{
-	if (to_forward)
-	{
-		to_forward->dispatchFrame(frame);
-		return;
-	}
-
-	OpenMsg msg;
-	msg.CreateMsgOpen(frame.data(), frame.length());
-	delay_frames = true;
-	if (subscribe_list.contains(msg.who()))
-	{
-		QList<FrameReceiver*> &l = subscribe_list[msg.who()];
-		for (int i = 0; i < l.size(); ++i)
-			l[i]->manageFrame(msg);
-	}
-	delay_frames = false;
 }
 
 void ClientReader::subscribe(FrameReceiver *obj, int who)
@@ -249,19 +263,7 @@ void ClientReader::subscribe(FrameReceiver *obj, int who)
 
 void ClientReader::unsubscribe(FrameReceiver *obj)
 {
-	// A frame receiver can be subscribed for one or more "who".
-	QMutableHashIterator<int, QList<FrameReceiver*> > it(subscribe_list);
-	while (it.hasNext())
-	{
-		it.next();
-		QMutableListIterator<FrameReceiver*> it_list(it.value());
-		while (it_list.hasNext())
-		{
-			it_list.next();
-			if (it_list.value() == obj)
-				it_list.remove();
-		}
-	}
+	::unsubscribe(subscribe_list, obj);
 }
 
 
@@ -291,7 +293,7 @@ void ClientWriter::sendChannelId()
 	ack_source_list.append(__NONE__);
 }
 
-void ClientWriter::manageFrame(const QByteArray &frame)
+void ClientWriter::manageFrame(QByteArray frame)
 {
 	if (frame == ACK_FRAME || frame == NAK_FRAME)
 	{
@@ -302,6 +304,20 @@ void ClientWriter::manageFrame(const QByteArray &frame)
 		{
 			qDebug() << "ClientWriter::manageFrame()" << qPrintable(description) << (ack ? "ACK" : "NAK")
 				<< "for:" << actual_frame;
+
+			OpenMsg msg;
+			msg.CreateMsgOpen(actual_frame.data(), actual_frame.length());
+			if (ack_receivers.contains(msg.who()))
+			{
+				QList<FrameSender*> &l = ack_receivers[msg.who()];
+				for (int i = 0; i < l.size(); ++i)
+				{
+					if (ack)
+						l[i]->manageAck(msg);
+					else
+						l[i]->manageNak(msg);
+				}
+			}
 		}
 	}
 }
@@ -406,5 +422,13 @@ bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
 	return true;
 }
 
+void ClientWriter::subscribeAck(FrameSender *obj, int who)
+{
+	ack_receivers[who].append(obj);
+}
 
+void ClientWriter::unsubscribeAck(FrameSender *obj)
+{
+	::unsubscribe(ack_receivers, obj);
+}
 

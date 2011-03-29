@@ -22,7 +22,6 @@
 #ifndef TEMPERATUREVIEWER_H
 #define TEMPERATUREVIEWER_H
 
-#include "frame_receiver.h"
 #include "main.h" // TemperatureScale
 #include "device.h" // DeviceValues
 
@@ -31,10 +30,10 @@
 
 class Page;
 class NonControlledProbeDevice;
-
 class QLabel;
 class QString;
 class QLCDNumber;
+
 
 
 class TemperatureViewer : public QObject

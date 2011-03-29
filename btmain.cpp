@@ -38,7 +38,6 @@
 #include "pagefactory.h" // getPage
 #include "banner.h"
 #include "transitionwidget.h"
-#include "frame_receiver.h"
 #include "pagecontainer.h"
 #include "homewindow.h"
 #include "iconwindow.h"
@@ -311,7 +310,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	banner::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
 	Page::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
 	FrameReceiver::setClientsMonitor(monitors);
-	device::setClients(clients);
+	FrameSender::setClients(clients);
 
 	// When only the main openserver is defined the homepage is showed only when
 	// the monitor of the openserver is up. Otherwise the homepage is showed as

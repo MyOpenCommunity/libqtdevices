@@ -9,7 +9,6 @@ HEADERS += airconditioning_device.h \
 	automation_device.h \
 	device.h \
 	energy_device.h \
-	frame_receiver.h \
 	lighting_device.h \
 	loads_device.h \
 	media_device.h \
@@ -27,7 +26,6 @@ SOURCES += airconditioning_device.cpp \
 	automation_device.cpp \
 	device.cpp \
 	energy_device.cpp \
-	frame_receiver.cpp \
 	lighting_device.cpp \
 	loads_device.cpp \
 	media_device.cpp \

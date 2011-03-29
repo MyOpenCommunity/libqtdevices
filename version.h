@@ -22,7 +22,7 @@
 #ifndef VERSION_H
 #define VERSION_H
 
-#include "frame_receiver.h"
+#include "frame_classes.h" // FrameReceiver
 #include "page.h"
 
 #include <QString>
@@ -30,7 +30,7 @@
 class QLabel;
 
 // Shows the touchscreen version.
-class Version : public Page, FrameReceiver
+class Version : public Page, public FrameReceiver
 {
 Q_OBJECT
 public:
@@ -42,7 +42,7 @@ public:
 	/*!
 	\brief Sets the serial number of the device among all the TouchScreens installed in the system
 	*/
-     void setAddr(int);
+	void setAddr(int);
 	/*!
 	\brief Sets model string
 	*/

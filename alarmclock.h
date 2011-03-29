@@ -22,8 +22,7 @@
 #ifndef ALARMCLOCK_H
 #define ALARMCLOCK_H
 
-#include "frame_receiver.h"
-#include "hardware_functions.h"
+#include "hardware_functions.h" // AMPLI_NUM
 #include "page.h"
 #include "navigation_bar.h" // AbstractNavigationBar
 

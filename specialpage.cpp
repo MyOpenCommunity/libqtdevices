@@ -125,7 +125,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 	const int TEXT_HEIGHT = 20;
 	box_text->setGeometry(DIM_BUT_BACK, command_button_y - TEXT_HEIGHT, width() - DIM_BUT_BACK, TEXT_HEIGHT);
 
-	subscribe_monitor(who.toInt());
+	subscribeMonitor(who.toInt());
 }
 
 void SpecialPage::clickedButton()

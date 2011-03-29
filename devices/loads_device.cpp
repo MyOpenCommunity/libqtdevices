@@ -44,7 +44,7 @@ enum
 LoadsDevice::LoadsDevice(const QString &where) : device("18", where)
 {
 	current_updates = new AutomaticUpdates(where, 1);
-	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
+	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));
 
 	// actuators always have the automatic updates
 	current_updates->setHasNewFrames();

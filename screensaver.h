@@ -280,7 +280,6 @@ protected:
 
 /*!
 	\ingroup Core
-	\class ScreenSaverSlideshow
 	\brief The concrete class that represent a slideshow screensaver.
 */
 class ScreenSaverSlideshow : public ScreenSaver
@@ -317,10 +316,6 @@ private slots:
 };
 
 
-/*!
-	\class ScreenSaverDeform
-	\brief The screensaver composed by a lens that deforms the underlying window.
-*/
 class ScreenSaverDeform : public ScreenSaver
 {
 Q_OBJECT

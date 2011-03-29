@@ -291,7 +291,7 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 EnergyDevice::EnergyDevice(QString where, int mode) : device(QString("18"), where)
 {
 	current_updates = new AutomaticUpdates(where, mode);
-	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(sendFrame(QString)));
+	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));
 
 	platform_dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(platform_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(platformValueReceived(DeviceValues)));

@@ -24,6 +24,7 @@
 #include "openserver_mock.h"
 #include "openclient.h"
 #include "devices_cache.h" // bt_global::devices_cache
+#include "frame_classes.h" // Clients
 
 #include <QtTest/QtTest>
 #include <QSignalSpy>

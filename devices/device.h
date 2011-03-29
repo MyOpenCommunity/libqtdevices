@@ -22,7 +22,7 @@
 #ifndef __DEVICE_H__
 #define __DEVICE_H__
 
-#include "frame_receiver.h"
+#include "frame_classes.h"
 
 #include <QVariant>
 #include <QHash>
@@ -30,26 +30,11 @@
 #include <QTimer>
 #include <QSignalMapper>
 
-class ClientReader;
-class ClientWriter;
 class Client;
 class OpenMsg;
 
 typedef QHash<int, QVariant> DeviceValues;
 
-
-struct Clients
-{
-	ClientWriter *command;
-	ClientWriter *request;
-	ClientReader *supervisor;
-	Clients()
-	{
-		command = 0;
-		request = 0;
-		supervisor = 0;
-	}
-};
 
 /*!
 	\ingroup Core
@@ -129,7 +114,6 @@ private:
 
 /*!
 	\ingroup Core
-	\class FrameCompressor
 	\brief Incapsulate the logic of compressed frames.
 
 	To avoid to flood the openserver, queues the frame to be emitted after a
@@ -218,7 +202,7 @@ private:
 	\sa manageFrame(), parseFrame(), sendFrame(), sendFrameNow(), sendInit(),
 	sendInitNow(), sendCompressedFrame(), delayFrames(), valueReceived()
 */
-class device : public QObject, FrameReceiver
+class device : public QObject, public FrameReceiver, public FrameSender
 {
 friend class TestDevice;
 friend class BtMain;
@@ -246,24 +230,6 @@ public:
 	virtual ~device() {}
 
 	/*!
-		\brief Sets the Client
-	*/
-	static void setClients(const QHash<int, Clients> &c);
-
-	/*!
-		\brief Manages a frame
-
-		Can be reimplemented in order to parse the incoming frames (from the client
-		monitor). However, if the specific device can be subclassed, reimplement the
-		parseFrame() method in order to avoid a double valueReceived() signal.
-
-		If the frame is handled the valueReceived() signal is emitted.
-
-		\sa parseFrame()
-	*/
-	virtual void manageFrame(OpenMsg &msg);
-
-	/*!
 		\brief Returns true if is connected to the OpenServer.
 	*/
 	bool isConnected();
@@ -281,17 +247,17 @@ public:
 	static void initDevices();
 
 	/*!
-		\brief Send (without delay) a \a frame to the Openserver with the given \a id.
-	 */
-	static void sendCommandFrame(int openserver_id, const QString &frame);
+		\brief Manages a frame
 
-	/*!
-		\brief Set this flag to delay the frames sent using the sendFrame()
-		sendInit() methods.
+		Can be reimplemented in order to parse the incoming frames (from the client
+		monitor). However, if the specific device can be subclassed, reimplement the
+		parseFrame() method in order to avoid a double valueReceived() signal.
 
-		\sa sendFrame(), sendFrameNow(), sendInit(), sendInitNow()
+		If the frame is handled the valueReceived() signal is emitted.
+
+		\sa parseFrame()
 	*/
-	static void delayFrames(bool delay);
+	virtual void manageFrame(OpenMsg &msg);
 
 signals:
 	/*!
@@ -324,27 +290,6 @@ signals:
 	*/
 	void connectionDown();
 
-protected slots:
-	/*!
-		\brief Sends frames to the openserver, using the Client::COMMAND channel.
-
-		The frame can be really sent after a delay depending on the delayFrames()
-		setting.
-
-		\sa delayFrames(), sendFrameNow()
-	*/
-	void sendFrame(QString frame) const;
-
-	/*!
-		\brief Sends frames to the openserver, using the Client::REQUEST channel.
-
-		The frame can be really sent after a delay depending on the delayFrames()
-		setting.
-
-		\sa delayFrames(), sendInitNow()
-	*/
-	void sendInit(QString frame) const;
-
 protected:
 	/*!
 		\brief Constructor
@@ -371,26 +316,6 @@ protected:
 		\brief The id of the OpenServer which the device is connected.
 	*/
 	int openserver_id;
-
-	/*!
-		\brief Sends frames to the openserver, using the Client::COMMAND channel.
-
-		The frame is sent immediatelly not taking care of the delayFrames()
-		setting.
-
-		\sa delayFrames(), sendFrame()
-	 */
-	void sendFrameNow(QString frame) const;
-
-	/*!
-		\brief Sends frames to the openserver, using the Client::REQUEST channel.
-
-		The frame is sent immediatelly not taking care of the delayFrames()
-		setting.
-
-		\sa delayFrames(), sendFrame()
-	 */
-	void sendInitNow(QString frame) const;
 
 	/*!
 		\brief Sends only one frame of the same "what" into a time interval on
@@ -447,11 +372,13 @@ protected:
 	*/
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
 
+private slots:
+	void slotSendFrame(QString frame) const;
+	void slotSendInit(QString frame) const;
+
 private:
 	static OpenServerManager *getManager(int openserver_id);
 
-private:
-	static QHash<int, Clients> clients;
 	static QHash<int, OpenServerManager*> openservers;
 
 	FrameCompressor frame_compressor, request_compressor;

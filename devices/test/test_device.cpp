@@ -20,11 +20,12 @@
 
 
 #include "test_device.h"
+#include "devices_cache.h"
 #include "openserver_mock.h"
 #include "openclient.h"
 
 #include <device.h>
-#include <frame_receiver.h>
+#include <frame_classes.h>
 
 #include <QVariant>
 #include <QMetaType>
@@ -64,12 +65,13 @@ void TestDevice::initTestDevice()
 	QHash<int, Clients> clients;
 	clients[0].command = client_command;
 	clients[0].request = client_request;
-	device::setClients(clients);
+	FrameSender::setClients(clients);
 }
 
 TestDevice::~TestDevice()
 {
 	delete server;
+	bt_global::devices_cache.clear();
 }
 
 void TestDevice::cleanBuffers()

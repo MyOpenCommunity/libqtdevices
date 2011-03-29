@@ -35,6 +35,7 @@ HEADERS += xmldevice_tester.h \
 	../bttime.h \
 	../devices_cache.h \
 	../fontmanager.h \
+	../frame_classes.h \
 	../frame_functions.h \
 	../generic_functions.h \
 	../hardware_functions.h \
@@ -62,6 +63,7 @@ SOURCES += xmldevice_tester.cpp \
 	../bttime.cpp \
 	../devices_cache.cpp \
 	../fontmanager.cpp \
+	../frame_classes.cpp \
 	../frame_functions.cpp \
 	../generic_functions.cpp \
 	../hardware_functions_x11.cpp \

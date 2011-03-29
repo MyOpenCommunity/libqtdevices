@@ -55,8 +55,8 @@ Version::Version()
 
 	box_text->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	indDisp = 0;
-	subscribe_monitor(13);
-	subscribe_monitor(1013);
+	subscribeMonitor(13);
+	subscribeMonitor(1013);
 
 	vers = 0;
 	release = 0;

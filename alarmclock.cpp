@@ -23,7 +23,6 @@
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // getBeep, setBeep, beep
 #include "state_button.h"
-#include "openclient.h"
 #include "datetime.h"
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
@@ -33,12 +32,13 @@
 #include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
+#include "audiostatemachine.h"
+#include "devices_cache.h" // bt_global::add_device_to_cache
+#include "mediaplayer.h" // bt_global::sound
+
 #ifdef LAYOUT_TS_10
 #include "sounddiffusionpage.h" // alarmClockPage
 #endif
-#include "audiostatemachine.h"
-#include "devices_cache.h"
-#include "mediaplayer.h" // bt_global::sound
 
 #include <openmsg.h>
 

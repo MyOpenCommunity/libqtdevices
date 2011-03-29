@@ -58,6 +58,7 @@ template<class T> friend T* DevicesCachePrivate::add_device_to_cache(T *device, 
 friend class TestScenEvoDevicesCond;
 friend class TestVideoDoorEntryDevice;
 friend class BtMain;
+friend class TestDevice;
 public:
 	DevicesCache();
 	~DevicesCache();
