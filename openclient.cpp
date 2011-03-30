@@ -38,8 +38,6 @@
 #define SOCKET_COMMAND "*99*9##"
 #define SOCKET_REQUEST "*99*0##"
 
-// The standard delay used to send frames
-#define FRAME_TIMEOUT_MSECS 10
 
 // The time after that the connection in the channels COMMAND and REQUEST is
 // invalid (see the comment in ClientWriter::socketConnected)
@@ -266,7 +264,7 @@ ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(
 	// set up the timer for normal and delayed frame sending
 	connect(&frame_timer, SIGNAL(timeout()), SLOT(sendFrames()));
 	frame_timer.setSingleShot(true);
-	frame_timer.setInterval(FRAME_TIMEOUT_MSECS);
+	frame_timer.setInterval(STANDARD_FRAME_DELAY);
 
 	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
 	delayed_frame_timer.setSingleShot(true);
@@ -337,10 +335,10 @@ void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 		return;
 	}
 
-	if (delay_frames && delayed_frame_timer.interval() != FRAME_TIMEOUT_MSECS + delay_msecs)
+	if (delay_frames && delayed_frame_timer.interval() != STANDARD_FRAME_DELAY + delay_msecs)
 	{
 		Q_ASSERT_X(delay_msecs != -1, "ClientWriter::sendFrameOpen", "Trying to send delayed frame with delay not set!");
-		delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + delay_msecs);
+		delayed_frame_timer.setInterval(STANDARD_FRAME_DELAY + delay_msecs);
 	}
 
 	// queue the frames to be sent later, but avoid delaying frames indefinitely

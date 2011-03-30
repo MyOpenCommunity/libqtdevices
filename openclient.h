@@ -303,8 +303,12 @@ private:
 	// True if we need to delay the frames
 	static bool delay_frames;
 
-	// The msecs of delay used when sending frames (if delay_frames is true)
+	// The delay used when sending frames (if delay_frames is true)
 	static int delay_msecs;
+
+	// The delay (in msecs) used normally when sending frames (if delay_frames is false)
+	// This delay has the only purpose of discarding the duplicated frames.
+	static const int STANDARD_FRAME_DELAY = 10;
 
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);

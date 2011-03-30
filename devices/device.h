@@ -188,7 +188,7 @@ private:
 	- sendFrame() to send a frame on command port
 	- sendInit() to send a frame on the request port
 
-	These frame are sent immediatelly (after a ~10 ms in truth) unless you
+	These frame are sent immediatelly (after ClientWriter::STANDARD_FRAME_DELAY in truth) unless you
 	called delayFrames() with true as parameter.
 	However there are the send-immediatelly versions of these methods
 	(sendFrameNow() and sendInitNow()) that sends the frames without delay
