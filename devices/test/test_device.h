@@ -29,10 +29,6 @@ class ClientWriter;
 class ClientReader;
 class device;
 
-/**
- * Sleep function that runs an event loop.
- */
-void testSleep(int msec);
 
 /**
  * The base class for all tests about device.
