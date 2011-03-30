@@ -30,6 +30,7 @@
 #include "test_imageselection.h"
 #include "test_xmlclient.h"
 #include "test_xmldevice.h"
+#include "test_clientwriter.h"
 #include "main.h"
 
 
@@ -57,6 +58,9 @@ int main(int argc, char *argv[])
 
 	TestXmlDevice test_xmldevice;
 	test_list << &test_xmldevice;
+
+	TestClientWriter test_clientwriter;
+	test_list << &test_clientwriter;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))

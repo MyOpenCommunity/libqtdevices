@@ -26,6 +26,7 @@ VPATH = ..
 
 HEADERS += xmldevice_tester.h \
 	test_bttime.h \
+	test_clientwriter.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
 	test_xmlclient.h \
@@ -54,6 +55,7 @@ HEADERS += xmldevice_tester.h \
 SOURCES += xmldevice_tester.cpp \
 	test_main.cpp \
 	test_bttime.cpp \
+	test_clientwriter.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
 	test_xmlclient.cpp \

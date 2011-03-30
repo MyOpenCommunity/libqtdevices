@@ -43,13 +43,9 @@
 // invalid (see the comment in ClientWriter::socketConnected)
 #define CONNECTION_TIMEOUT_SECS 25
 
-// The ACK/NAK frames are sent by the openserver to indicate if an operation is
-// processed without success or not. The operation is usually a frame, however
-// the openserver sent an ack/nak also on the connection and when receiving the
-// channel id. We use the __NONE__ to discard these informations.
+// The openserver sent an ack/nak not only for frame, but also on the connection
+// and when receiving the channel id. We use the __NONE__ to discard these informations.
 #define __NONE__ "NONE"
-#define ACK_FRAME "*#*1##"
-#define NAK_FRAME "*#*0##"
 
 
 namespace
@@ -425,7 +421,6 @@ bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
 	}
 
 	inactivity_time.start();
-
 	return true;
 }
 

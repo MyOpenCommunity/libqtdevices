@@ -101,11 +101,14 @@ void FrameSender::setClients(const QHash<int, Clients> &c)
 
 void FrameSender::subscribeAck(int who)
 {
-	Q_ASSERT_X(clients.contains(openserver_id) && clients[openserver_id].command && clients[openserver_id].request,
-		"FrameSender::subscribeAck", qPrintable(QString("Clients not set for id: %1!").arg(openserver_id)));
+	Q_ASSERT_X(clients.contains(openserver_id), "FrameSender::subscribeAck",
+		qPrintable(QString("Clients not set for id: %1!").arg(openserver_id)));
 
-	clients[openserver_id].command->subscribeAck(this, who);
-	clients[openserver_id].request->subscribeAck(this, who);
+	if (clients[openserver_id].command)
+		clients[openserver_id].command->subscribeAck(this, who);
+
+	if (clients[openserver_id].request)
+		clients[openserver_id].request->subscribeAck(this, who);
 	subscribed = true;
 }
 
@@ -118,8 +121,11 @@ FrameSender::~FrameSender()
 {
 	if (subscribed)
 	{
-		clients[openserver_id].command->unsubscribeAck(this);
-		clients[openserver_id].request->unsubscribeAck(this);
+		if (clients[openserver_id].command)
+			clients[openserver_id].command->unsubscribeAck(this);
+
+		if (clients[openserver_id].request)
+			clients[openserver_id].request->unsubscribeAck(this);
 	}
 }
 

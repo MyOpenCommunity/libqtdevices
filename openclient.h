@@ -36,6 +36,11 @@
 // The id for the main openserver
 #define MAIN_OPENSERVER 0
 
+// The ACK/NAK frames are sent by the openserver to indicate if an operation is
+// processed without success or not.
+#define ACK_FRAME "*#*1##"
+#define NAK_FRAME "*#*0##"
+
 class FrameReceiver;
 class FrameSender;
 
@@ -214,6 +219,7 @@ private:
 */
 class ClientWriter : public Client
 {
+friend class TestClientWriter;
 Q_OBJECT
 public:
 	/*!
