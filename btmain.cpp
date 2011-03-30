@@ -262,6 +262,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	config_loaded = false;
 
 	OpenServerManager::reconnection_time = openserver_reconnection_time;
+	ClientWriter::setDelay((*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
 
 	// The configuration is usually loaded in the "init()" method, but in this
 	// case (that should be an exception) we need to know the list of openserver.

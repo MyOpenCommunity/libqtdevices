@@ -21,7 +21,6 @@
 
 #include "openclient.h"
 #include "frame_classes.h"
-#include "main.h" // bt_global::config, TS_NUMBER_FRAME_DELAY
 
 #include <openmsg.h>
 
@@ -96,8 +95,6 @@ namespace
 }
 
 
-bool Client::delay_frames = false;
-
 Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_host)
 {
 	QMetaEnum e = staticMetaObject.enumerator(0);
@@ -145,11 +142,6 @@ void Client::socketConnected()
 	qDebug() << "Client::socketConnected()" << qPrintable(description);
 
 	sendChannelId();
-}
-
-void Client::delayFrames(bool delay)
-{
-	delay_frames = delay;
 }
 
 void Client::disconnectFromHost()
@@ -240,14 +232,12 @@ void ClientReader::manageFrame(QByteArray frame)
 
 		OpenMsg msg;
 		msg.CreateMsgOpen(frame.data(), frame.length());
-		delay_frames = true;
 		if (subscribe_list.contains(msg.who()))
 		{
 			QList<FrameReceiver*> &l = subscribe_list[msg.who()];
 			for (int i = 0; i < l.size(); ++i)
 				l[i]->manageFrame(msg);
 		}
-		delay_frames = false;
 	}
 }
 
@@ -268,6 +258,9 @@ void ClientReader::unsubscribe(FrameReceiver *obj)
 
 
 
+bool ClientWriter::delay_frames = false;
+int ClientWriter::delay_msecs = -1;
+
 ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(t, host, port)
 {
 	// set up the timer for normal and delayed frame sending
@@ -277,7 +270,17 @@ ClientWriter::ClientWriter(Type t, const QString &host, unsigned port) : Client(
 
 	connect(&delayed_frame_timer, SIGNAL(timeout()), SLOT(sendDelayedFrames()));
 	delayed_frame_timer.setSingleShot(true);
-	delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + (*bt_global::config)[TS_NUMBER].toInt() * TS_NUMBER_FRAME_DELAY);
+	// The delayed interval is set lazy in the sendFrameOpen method
+}
+
+void ClientWriter::delayFrames(bool delay)
+{
+	delay_frames = delay;
+}
+
+void ClientWriter::setDelay(int msecs)
+{
+	delay_msecs = msecs;
 }
 
 void ClientWriter::sendChannelId()
@@ -332,6 +335,12 @@ void ClientWriter::sendFrameOpen(const QString &frame_open, FrameDelay delay)
 			<< "in unconnected state for client" << qPrintable(description);
 		send_on_connected.append(frame);
 		return;
+	}
+
+	if (delay_frames && delayed_frame_timer.interval() != FRAME_TIMEOUT_MSECS + delay_msecs)
+	{
+		Q_ASSERT_X(delay_msecs != -1, "ClientWriter::sendFrameOpen", "Trying to send delayed frame with delay not set!");
+		delayed_frame_timer.setInterval(FRAME_TIMEOUT_MSECS + delay_msecs);
 	}
 
 	// queue the frames to be sent later, but avoid delaying frames indefinitely

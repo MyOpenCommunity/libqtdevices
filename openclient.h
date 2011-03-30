@@ -21,9 +21,7 @@
 #ifndef OPENCLIENT_H
 #define OPENCLIENT_H
 
-#include <openwebnet.h>
-
-#include <QTcpSocket>
+#include <QTcpSocket> // QAbstractSocket
 #include <QByteArray>
 #include <QHash>
 #include <QTimer>
@@ -41,6 +39,7 @@
 class FrameReceiver;
 class FrameSender;
 
+class QTcpSocket;
 
 /*!
 	\ingroup Core
@@ -88,12 +87,6 @@ public:
 	virtual void flush() { socket->flush(); }
 #endif
 
-	/*!
-		\brief Delay all the frames marked as DELAY_IF_REQUESTED are delayed.
-		\sa FrameDelay, sendFrameOpen()
-	*/
-	static void delayFrames(bool delay);
-
 public slots:
 	/*!
 		\brief Connect to the openserver
@@ -117,12 +110,10 @@ signals:
 	void connectionDown();
 
 protected:
-
 	Client(Type t, const QString &host, unsigned port);
 
 	virtual void sendChannelId() = 0;
 	virtual void manageFrame(QByteArray frame) = 0;
-	static bool delay_frames;
 
 	// The channel description
 	QString description;
@@ -243,10 +234,23 @@ public:
 	};
 
 	/*!
+		\brief Delay all the frames marked as DELAY_IF_REQUESTED are delayed.
+		\sa FrameDelay, sendFrameOpen(), setDelay()
+	*/
+	static void delayFrames(bool delay);
+
+	/*!
+		\brief Set the delay used when the frame are delayed
+		\sa FrameDelay, delayFrames(), sendFrameOpen()
+	*/
+	static void setDelay(int msecs);
+
+	/*!
 		\brief Send a frame to the openserver.
 
 		Send a \a frame_open. The frame is sent immediately if \a delay is FrameDelay::DELAY_NONE,
 		othewise can be delayed depending on the status set via delayFrames()
+		\sa delayFrames(), setDelay()
 	*/
 	void sendFrameOpen(const QString &frame_open, FrameDelay delay = DELAY_IF_REQUESTED);
 
@@ -295,6 +299,12 @@ private:
 	QList<QByteArray> ack_source_list;
 
 	QHash<int, QList<FrameSender*> > ack_receivers;
+
+	// True if we need to delay the frames
+	static bool delay_frames;
+
+	// The msecs of delay used when sending frames (if delay_frames is true)
+	static int delay_msecs;
 
 	// try to send the argument frames and return true on success.
 	bool sendFrames(const QList<QByteArray> &to_send);

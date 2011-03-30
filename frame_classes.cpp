@@ -111,7 +111,7 @@ void FrameSender::subscribeAck(int who)
 
 void FrameSender::delayFrames(bool delay)
 {
-	Client::delayFrames(delay);
+	ClientWriter::delayFrames(delay);
 }
 
 FrameSender::~FrameSender()
