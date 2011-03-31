@@ -31,6 +31,7 @@
 #include "test_xmlclient.h"
 #include "test_xmldevice.h"
 #include "test_clientwriter.h"
+#include "test_delayedslotcaller.h"
 #include "main.h"
 
 
@@ -61,6 +62,9 @@ int main(int argc, char *argv[])
 
 	TestClientWriter test_clientwriter;
 	test_list << &test_clientwriter;
+
+	TestDelayedSlotCaller test_delayedslotcaller;
+	test_list << &test_delayedslotcaller;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))

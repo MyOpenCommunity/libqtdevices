@@ -27,10 +27,12 @@ VPATH = ..
 HEADERS += xmldevice_tester.h \
 	test_bttime.h \
 	test_clientwriter.h \
+	test_delayedslotcaller.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
 	test_xmlclient.h \
 	test_xmldevice.h \
+	test_functions.h \
 	../devices/test/openserver_mock.h \
 	../btbutton.h \
 	../bttime.h \
@@ -56,10 +58,12 @@ SOURCES += xmldevice_tester.cpp \
 	test_main.cpp \
 	test_bttime.cpp \
 	test_clientwriter.cpp \
+	test_delayedslotcaller.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
 	test_xmlclient.cpp \
 	test_xmldevice.cpp \
+	test_functions.cpp \
 	../devices/test/openserver_mock.cpp \
 	../btbutton.cpp \
 	../bttime.cpp \

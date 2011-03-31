@@ -25,7 +25,6 @@
 #include <QList>
 #include <QVariant>
 
-
 class QGenericArgument;
 
 /*!
@@ -36,11 +35,18 @@ class QGenericArgument;
 	only slot without arguments.
 	After build the instance, set the slot to call and the delay calling the
 	method setSlot() and add the arguments with the addArgument().
-	The execution of the slot can be stopped calling the abort() method.
+	The execution of the slot can be stopped calling the abort() method. The signal
+	called() is emitted every time that the slot has been called.
 
 	Limitations:
 	- the slot to call cannot contains an argument of type "const char*"
 	- the slot can have a maximum of 10 arguments.
+
+	\note The slot can contains custom types, that have to be register with the
+	Q_DECLARE_METATYPE macro. Unfortunately, the macro doesn't work with template
+	types that have more than one template arguments. To overcome this limitation,
+	you can define a typedef of the type and use it in both the method signature
+	and in the addArgument() call.
 */
 class DelayedSlotCaller : public QObject
 {
@@ -48,10 +54,28 @@ Q_OBJECT
 public:
 	DelayedSlotCaller(QObject *parent = 0, bool single_shot = true);
 
+	/*!
+		\brief Set the \a slot to call after \a msec milliseconds in the \a receiver object.
+	*/
 	void setSlot(QObject *receiver, const char *slot, int msecs);
-	void addArgument(const QVariant &arg);
+
+	/*!
+		\brief Add \a arg to the list of the arguments passed to the slot called.
+	*/
+	template <class T> void addArgument(const T &arg);
+
 	void addArgument(const char* arg);
+
+	/*!
+		\brief Stop the execution of the slot.
+	*/
 	void abort();
+
+signals:
+	/*!
+		\brief Notify that the target slot has been called.
+	*/
+	void called();
 
 protected:
 	void timerEvent(QTimerEvent *event);
@@ -62,12 +86,19 @@ private slots:
 private:
 	const char *slot_to_call;
 	QObject *target;
-	QList<QVariant> arguments;
 	int timer_id;
 	bool is_single_shot;
+
+	QList<QVariant> arguments;
 
 	QGenericArgument arg(int index);
 };
 
+
+template <class T>  void DelayedSlotCaller::addArgument(const T &arg)
+{
+	Q_ASSERT_X(arguments.size() < 9, "SlotCaller::addArgument", "Arguments list cannot exceed 10 elements");
+	arguments << QVariant::fromValue(arg);
+}
 
 #endif

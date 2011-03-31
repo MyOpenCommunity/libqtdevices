@@ -19,7 +19,7 @@
  */
 
 #include "test_clientwriter.h"
-
+#include "test_functions.h"
 
 #include <openmsg.h>
 
@@ -28,19 +28,6 @@
 #include <QTest>
 #include <QTcpServer>
 
-
-void testSleep(int msec)
-{
-	QEventLoop event_loop;
-	QTimer timer;
-
-	timer.setSingleShot(true);
-	QObject::connect(&timer, SIGNAL(timeout()), &event_loop, SLOT(quit()));
-
-	// Wait for the timeout
-	timer.start(msec);
-	event_loop.exec();
-}
 
 FrameSenderMock::FrameSenderMock(ClientWriter *command, ClientWriter *request)
 {

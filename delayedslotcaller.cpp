@@ -79,13 +79,11 @@ void DelayedSlotCaller::addArgument(const char *arg)
 void DelayedSlotCaller::abort()
 {
 	if (timer_id != 1)
+	{
 		killTimer(timer_id);
-}
-
-void DelayedSlotCaller::addArgument(const QVariant &arg)
-{
-	Q_ASSERT_X(arguments.size() < 9, "SlotCaller::addArgument", "Arguments list cannot exceed 10 elements");
-	arguments << arg;
+		timer_id = -1;
+		arguments.clear();
+	}
 }
 
 void DelayedSlotCaller::timerEvent(QTimerEvent *event)
@@ -93,12 +91,9 @@ void DelayedSlotCaller::timerEvent(QTimerEvent *event)
 	if (event->timerId() == timer_id)
 	{
 		callSlot();
+		emit called();
 		if (is_single_shot)
-		{
 			killTimer(timer_id);
-			// Destroy itself to avoid wasting memory.
-			deleteLater();
-		}
 	}
 }
 
@@ -128,10 +123,14 @@ void DelayedSlotCaller::callSlot()
 
 	for (int i = 0; i < types.size(); ++i)
 	{
-		if (QByteArray(arguments[i].typeName()) != types[i])
+		// QVariant wraps various types in a "strange" way: a QVariant(QVariant(type))
+		// has the same typeName of QVariant(type), so we exclude QVariant from the test.
+		if (QByteArray(arguments[i].typeName()) != types[i] && types[i] != "QVariant")
 		{
-			qWarning() << "DelayedSlotCaller::callSlot -> the argument number" << i + 1
+			qWarning() << "DelayedSlotCaller::callSlot -> the argument number"
+				<< i + 1 << "of type" << QString(arguments[i].typeName())
 				<< "does not match the signature of the slot" << signature;
+
 			return;
 		}
 	}
