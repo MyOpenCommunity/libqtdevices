@@ -224,13 +224,86 @@ void TestClientWriter::testNak()
 	QCOMPARE(frame_sender.ack_history.first(), qMakePair(false, frame));
 }
 
+void TestClientWriter::testAckMultipleWho()
+{
+	ClientWriter *client = createClient(Client::COMMAND);
+	QTcpSocket *command = newConnection(client);
+
+	FrameSenderMock frame_sender(client, 0);
+
+	frame_sender.subscribeAck(5);
+	frame_sender.subscribeAck(13);
+
+	QStringList frames;
+	frames << "*#5*#1##" << "*#18*11*250##" << "*#1*11##" << "*#5*#8##" << "*#5*0##";
+	frames << "*#13**#9*1##" << "*#22*2#5*13##" << "*#0*01##" << "*5*50#8#00000000*0##";
+
+	foreach (QString frame, frames)
+		client->sendFrameOpen(frame);
+
+	client->flush();
+
+	for (int i = 0; i < frames.size(); ++i)
+		command->write(i < 3 ? ACK_FRAME : NAK_FRAME);
+
+	command->flush();
+	client->socket->waitForReadyRead(0);
+
+	QList<QPair<bool, QString> > expected;
+	expected.append(qMakePair(true, QString("*#5*#1##")));
+	expected.append(qMakePair(false, QString("*#5*#8##")));
+	expected.append(qMakePair(false, QString("*#5*0##")));
+	expected.append(qMakePair(false, QString("*#13**#9*1##")));
+	expected.append(qMakePair(false, QString("*5*50#8#00000000*0##")));
+	QCOMPARE(frame_sender.ack_history, expected);
+}
+
+void TestClientWriter::testAckMultipleReceivers()
+{
+	ClientWriter *client = createClient(Client::COMMAND);
+	QTcpSocket *command = newConnection(client);
+
+	FrameSenderMock frame_sender1(client, 0);
+	FrameSenderMock frame_sender2(client, 0);
+	FrameSenderMock frame_sender3(client, 0);
+
+	frame_sender1.subscribeAck(4);
+	frame_sender2.subscribeAck(13);
+	frame_sender3.subscribeAck(4);
+
+	QStringList frames;
+	frames << "*#13**23##" << "*#22*5#3#0#0*1##" << "*#22*5#3#0#0*12##" << "*#4*#01##";
+	frames << "*#5*#1##" << "*#4*113*0##" <<"*#18*51*#1200#1*255##" << "*#13**#9*1##";
+
+	foreach (QString frame, frames)
+		client->sendFrameOpen(frame);
+
+	client->flush();
+
+	for (int i = 0; i < frames.size(); ++i)
+		command->write((i % 2) == 0 ? ACK_FRAME : NAK_FRAME);
+
+	command->flush();
+	client->socket->waitForReadyRead(0);
+
+	QList<QPair<bool, QString> > expected4;
+	expected4.append(qMakePair(false, QString("*#4*#01##")));
+	expected4.append(qMakePair(false, QString("*#4*113*0##")));
+	QCOMPARE(frame_sender1.ack_history, expected4);
+	QCOMPARE(frame_sender3.ack_history, expected4);
+
+	QList<QPair<bool, QString> > expected13;
+	expected13.append(qMakePair(true, QString("*#13**23##")));
+	expected13.append(qMakePair(false, QString("*#13**#9*1##")));
+	QCOMPARE(frame_sender2.ack_history, expected13);
+}
+
 void TestClientWriter::testMultipleAckNak()
 {
 	ClientWriter *client = createClient(Client::COMMAND);
 	QTcpSocket *command = newConnection(client);
 
 	FrameSenderMock frame_sender(client, 0);
-	QCOMPARE(frame_sender.ack_history.size(), 0);
 
 	frame_sender.subscribeAck(1);
 

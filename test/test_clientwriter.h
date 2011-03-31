@@ -62,6 +62,8 @@ private slots:
 	void testAck();
 	void testAckNotReceived();
 	void testNak();
+	void testAckMultipleWho();
+	void testAckMultipleReceivers();
 	void testMultipleAckNak();
 
 private:
