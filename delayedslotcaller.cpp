@@ -27,7 +27,7 @@
 #include <QDebug>
 
 
-DelayedSlotCaller::DelayedSlotCaller(QObject *parent, bool single_shot) : QObject(parent)
+DelayedSlotCaller::DelayedSlotCaller(bool single_shot)
 {
 	timer_id = -1;
 	is_single_shot = single_shot;

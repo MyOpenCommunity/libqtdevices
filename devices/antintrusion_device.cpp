@@ -67,7 +67,7 @@ void AntintrusionDevice::toggleActivation(const QString &password)
 		activation_delay = 6000;
 		sendPartializationFrame(password);
 		partialization_needed = false;
-		DelayedSlotCaller *slot_caller = new DelayedSlotCaller(this);
+		DelayedSlotCaller *slot_caller = new DelayedSlotCaller;
 		connect(slot_caller, SIGNAL(called()), slot_caller, SLOT(deleteLater()));
 		slot_caller->setSlot(this, SLOT(sendActivationFrame(QString)), activation_delay);
 		slot_caller->addArgument(password);

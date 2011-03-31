@@ -52,7 +52,7 @@ class DelayedSlotCaller : public QObject
 {
 Q_OBJECT
 public:
-	DelayedSlotCaller(QObject *parent = 0, bool single_shot = true);
+	DelayedSlotCaller(bool single_shot = true);
 
 	/*!
 		\brief Set the \a slot to call after \a msec milliseconds in the \a receiver object.

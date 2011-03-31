@@ -58,6 +58,7 @@ public slots:
 	void slotQHash(Hash h);
 	void slotQVariant(QVariant v);
 	void slotMultipleArgs(int i, QStringList l, Hash h, int r);
+	void slotMultipleCalls();
 
 public:
 	QList<QVariant> history;
@@ -80,6 +81,7 @@ private slots:
 	void testSlotQHash();
 	void testSlotQVariant();
 	void testSlotMultipleArgs();
+	void testSlotMultipleCalls();
 
 private:
 	int delay;

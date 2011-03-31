@@ -69,6 +69,11 @@ void SlotTester::slotMultipleArgs(int i, QStringList l, Hash h, int r)
 	history << QVariant::fromValue(h) << r;
 }
 
+void SlotTester::slotMultipleCalls()
+{
+	history << QString("SlotTester::slotMultipleCalls");
+}
+
 
 TestDelayedSlotCaller::TestDelayedSlotCaller()
 {
@@ -194,4 +199,19 @@ void TestDelayedSlotCaller::testSlotMultipleArgs()
 	QVERIFY(tester.history.at(2).toStringList() == l);
 	QVERIFY(tester.history.at(3).value<Hash>() == h);
 	QVERIFY(tester.history.at(4).toInt() == -3);
+}
+
+void TestDelayedSlotCaller::testSlotMultipleCalls()
+{
+	DelayedSlotCaller d(false);
+	SlotTester tester;
+	d.setSlot(&tester, SLOT(slotMultipleCalls()), delay);
+	testSleep(delay * 3);
+	QCOMPARE(tester.history.at(0).toString(), QString("SlotTester::slotMultipleCalls"));
+	QCOMPARE(tester.history.at(1).toString(), QString("SlotTester::slotMultipleCalls"));
+	QCOMPARE(tester.history.at(2).toString(), QString("SlotTester::slotMultipleCalls"));
+	tester.history.clear();
+	d.abort();
+	testSleep(delay * 2);
+	QCOMPARE(tester.history.size(), 0);
 }
