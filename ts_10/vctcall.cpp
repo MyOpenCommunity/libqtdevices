@@ -894,7 +894,7 @@ VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 	layout->addLayout(sidebar, 0, 1, 2, 1);
 	layout->addWidget(vct_call->video_box, 1, 0);
 	layout->setContentsMargins(5, 0, 0, 12);
-	layout->setSpacing(10);
+	layout->setSpacing(0);
 }
 
 void VCTCallWindow::showWindow()
