@@ -1419,43 +1419,43 @@ AlarmList > QWidget {  background-image: url(); }
 	<!-- Antintrusion zones 1-8 -->
 	<item>
 		<cid>13001</cid>
-		<img_partial_on>antintrusione/parzializza1on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza1off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva1.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva1.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13002</cid>
-		<img_partial_on>antintrusione/parzializza2on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza2off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva2.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva2.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13003</cid>
-		<img_partial_on>antintrusione/parzializza3on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza3off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva3.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva3.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13004</cid>
-		<img_partial_on>antintrusione/parzializza4on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza4off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva4.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva4.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13005</cid>
-		<img_partial_on>antintrusione/parzializza5on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza5off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva5.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva5.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13006</cid>
-		<img_partial_on>antintrusione/parzializza6on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza6off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva6.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva6.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13007</cid>
-		<img_partial_on>antintrusione/parzializza7on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza7off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva7.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva7.png</img_zone_inactive>
 	</item>
 	<item>
 		<cid>13008</cid>
-		<img_partial_on>antintrusione/parzializza8on.png</img_partial_on>
-		<img_partial_off>antintrusione/parzializza8off.png</img_partial_off>
+		<img_zone_active>antintrusione/zona_attiva8.png</img_zone_active>
+		<img_zone_inactive>antintrusione/zona_non_attiva8.png</img_zone_inactive>
 	</item>
 	<!-- thermal menu banners -->
 	<!-- TODO unify 4 zones and 99 zones sections -->

@@ -403,7 +403,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	{
 		int state = -1;
 		if (zones[i] != 0)
-			state = (zones[i]->isPartialized() ? 1 : 0);
+			state = (zones[i]->isPartialized() ? 0 : 1);
 
 		states.append(state);
 	}
@@ -430,7 +430,7 @@ void Antintrusion::updateKeypadStates()
 	{
 		int state = -1;
 		if (zones[i] != 0)
-			state = (zones[i]->isPartialized() ? 1 : 0);
+			state = (zones[i]->isPartialized() ? 0 : 1);
 
 		states.append(state);
 	}

@@ -36,8 +36,8 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 	partialized = false;
 	partialization_enabled = true;
 	zone_description = descr;
-	left_off = bt_global::skin->getImage("partial_off");
-	left_on = bt_global::skin->getImage("partial_on");
+	left_off = bt_global::skin->getImage("zone_inactive");
+	left_on = bt_global::skin->getImage("zone_active");
 	disabled_left_off = getPressName(left_off);
 	disabled_left_on = getPressName(left_on);
 
@@ -62,12 +62,12 @@ void AntintrusionZone::enablePartialization(bool enabled)
 	{
 		if (enabled)
 		{
-			left_button->setImage(partialized ? left_on : left_off);
+			left_button->setImage(partialized ? left_off : left_on);
 			left_button->enable();
 		}
 		else
 		{
-			left_button->setImage(partialized ? disabled_left_on : disabled_left_off);
+			left_button->setImage(partialized ? disabled_left_off : disabled_left_on);
 			left_button->disable();
 		}
 		partialization_enabled = enabled;
@@ -76,7 +76,7 @@ void AntintrusionZone::enablePartialization(bool enabled)
 
 void AntintrusionZone::setPartialization(bool _partialized)
 {
-	left_button->setImage(_partialized ? left_on : left_off);
+	left_button->setImage(_partialized ? left_off : left_on);
 	partialized = _partialized;
 }
 

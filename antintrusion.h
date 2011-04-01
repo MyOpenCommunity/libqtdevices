@@ -40,9 +40,11 @@ class AlarmPage;
 /*!
 	\defgroup Antintrusion Antintrusion
 
-
-	The Antintrusion class shows the standard zones and allows the user to control the
-	plant and partialize or insert a zone.
+	The Antintrusion class shows the standard zones (from 1 to 8) and allows
+	the user to control the plant partializing (that means excludiing) or
+	inserting a zone from the plant.
+	Every time that an action is performed on the plant, the KeypadWithState class
+	is used to ask the password from the user.
 
 	When a new alarm is triggered, the AlarmPage class is showed as popup and the
 	alarm is added to a list, displayed by the AlarmListPage class.
