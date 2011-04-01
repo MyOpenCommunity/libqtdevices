@@ -124,7 +124,6 @@ namespace
 
 	void disactivateIpVCTAudio()
 	{
-		//smartExecute("killall gst-launch-0.10");
 		smartExecute("/bin/in_eth_off");
 	}
 
@@ -136,6 +135,16 @@ namespace
 	void deactivateLocalSource()
 	{
 		smartExecute("/bin/rca2_off");
+	}
+
+	void silenceVCTAudio()
+	{
+		silentExecute("/home/bticino/bin/zarlink 044a 7104 WR");
+	}
+
+	void restoreVCTAudio()
+	{
+		silentExecute("/home/bticino/bin/zarlink 044a 7004 WR");
 	}
 
 	void activateLocalAmplifier()
@@ -255,17 +264,17 @@ AudioStateMachine::AudioStateMachine()
 		 SLOT(statePlayRingtoneEntered()),
 		 SLOT(statePlayRingtoneExited()));
 	addState(SCS_VIDEO_CALL,
-		 SLOT(stateScsVideoCallEntered()),
-		 SLOT(stateScsVideoCallExited()));
+		 SLOT(stateScsVideoCallEntered(int,int)),
+		 SLOT(stateScsVideoCallExited(int,int)));
 	addState(SCS_INTERCOM_CALL,
-		 SLOT(stateScsIntercomCallEntered()),
-		 SLOT(stateScsIntercomCallExited()));
+		 SLOT(stateScsIntercomCallEntered(int,int)),
+		 SLOT(stateScsIntercomCallExited(int,int)));
 	addState(IP_VIDEO_CALL,
-		 SLOT(stateIpVideoCallEntered()),
-		 SLOT(stateIpVideoCallExited()));
+		 SLOT(stateIpVideoCallEntered(int,int)),
+		 SLOT(stateIpVideoCallExited(int,int)));
 	addState(IP_INTERCOM_CALL,
-		 SLOT(stateIpIntercomCallEntered()),
-		 SLOT(stateIpIntercomCallExited()));
+		 SLOT(stateIpIntercomCallEntered(int,int)),
+		 SLOT(stateIpIntercomCallExited(int,int)));
 	addState(ALARM_TO_SPEAKER,
 		 SLOT(stateAlarmToSpeakerEntered()),
 		 SLOT(stateAlarmToSpeakerExited()));
@@ -653,83 +662,98 @@ void AudioStateMachine::statePlayRingtoneExited()
 	qDebug() << "AudioStateMachine::statePlayRingtoneExited";
 }
 
-void AudioStateMachine::stateScsVideoCallEntered()
+void AudioStateMachine::stateScsVideoCallEntered(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateScsVideoCallEntered";
 
-	activateVCTAudio();
-	current_audio_path = Volumes::VIDEODOOR;
-	changeVolumePath(Volumes::VIDEODOOR);
+	if (old_state != MUTE)
+	{
+		activateVCTAudio();
+		current_audio_path = Volumes::VIDEODOOR;
+		changeVolumePath(Volumes::VIDEODOOR);
+	}
 }
 
-void AudioStateMachine::stateScsVideoCallExited()
+void AudioStateMachine::stateScsVideoCallExited(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateScsVideoCallExited";
 
-	disactivateVCTAudio();
+	if (new_state != MUTE)
+		disactivateVCTAudio();
 }
 
-void AudioStateMachine::stateScsIntercomCallEntered()
+void AudioStateMachine::stateScsIntercomCallEntered(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateScsIntercomCallEntered";
 
-	activateVCTAudio();
-	current_audio_path = Volumes::INTERCOM;
-	changeVolumePath(Volumes::INTERCOM);
+	if (old_state != MUTE)
+	{
+		activateVCTAudio();
+		current_audio_path = Volumes::INTERCOM;
+		changeVolumePath(Volumes::INTERCOM);
+	}
 }
 
-void AudioStateMachine::stateScsIntercomCallExited()
+void AudioStateMachine::stateScsIntercomCallExited(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateScsIntercomCallExited";
 
-	disactivateVCTAudio();
+	if (new_state != MUTE)
+		disactivateVCTAudio();
 }
 
 void AudioStateMachine::stateMuteEntered()
 {
 	qDebug() << "AudioStateMachine::stateMuteEntered";
 
-	current_audio_path = Volumes::MICROPHONE;
-	setVolume(0);
+	silenceVCTAudio();
 }
 
 void AudioStateMachine::stateMuteExited()
 {
 	qDebug() << "AudioStateMachine::stateMuteExited";
 
-	setVolume(1);
+	restoreVCTAudio();
 }
 
-void AudioStateMachine::stateIpVideoCallEntered()
+void AudioStateMachine::stateIpVideoCallEntered(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateIpVideoCallEntered";
 
-	activateIpVCTAudio();
-	current_audio_path = Volumes::VCTIP;
-	changeVolumePath(Volumes::VCTIP);
+	if (old_state != MUTE)
+	{
+		activateIpVCTAudio();
+		current_audio_path = Volumes::VCTIP;
+		changeVolumePath(Volumes::VCTIP);
+	}
 }
 
-void AudioStateMachine::stateIpVideoCallExited()
+void AudioStateMachine::stateIpVideoCallExited(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateIpVideoCallExited";
 
-	disactivateIpVCTAudio();
+	if (new_state != MUTE)
+		disactivateIpVCTAudio();
 }
 
-void AudioStateMachine::stateIpIntercomCallEntered()
+void AudioStateMachine::stateIpIntercomCallEntered(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateIpIntercomCallEntered";
 
-	activateIpVCTAudio();
-	current_audio_path = Volumes::INTERCOMIP;
-	changeVolumePath(Volumes::INTERCOMIP);
+	if (old_state != MUTE)
+	{
+		activateIpVCTAudio();
+		current_audio_path = Volumes::INTERCOMIP;
+		changeVolumePath(Volumes::INTERCOMIP);
+	}
 }
 
-void AudioStateMachine::stateIpIntercomCallExited()
+void AudioStateMachine::stateIpIntercomCallExited(int new_state, int old_state)
 {
 	qDebug() << "AudioStateMachine::stateIpIntercomCallExited";
 
-	disactivateIpVCTAudio();
+	if (new_state != MUTE)
+		disactivateIpVCTAudio();
 }
 
 void AudioStateMachine::stateAlarmToSpeakerEntered()

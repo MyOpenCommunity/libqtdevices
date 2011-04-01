@@ -258,17 +258,17 @@ private slots:
 	void statePlayRingtoneEntered();
 	void statePlayRingtoneExited();
 	// Events: Answer on an incoming scs video call
-	void stateScsVideoCallEntered();
-	void stateScsVideoCallExited();
+	void stateScsVideoCallEntered(int new_state, int old_state);
+	void stateScsVideoCallExited(int new_state, int old_state);
 	// Events: Answer on an incoming scs intercom call
-	void stateScsIntercomCallEntered();
-	void stateScsIntercomCallExited();
+	void stateScsIntercomCallEntered(int new_state, int old_state);
+	void stateScsIntercomCallExited(int new_state, int old_state);
 	// Events: Answer on an incoming IP video call
-	void stateIpVideoCallEntered();
-	void stateIpVideoCallExited();
+	void stateIpVideoCallEntered(int new_state, int old_state);
+	void stateIpVideoCallExited(int new_state, int old_state);
 	// Events: Answer on an incoming IP intercom call
-	void stateIpIntercomCallEntered();
-	void stateIpIntercomCallExited();
+	void stateIpIntercomCallEntered(int new_state, int old_state);
+	void stateIpIntercomCallExited(int new_state, int old_state);
 	// Events: Play Alarm on local speaker
 	void stateAlarmToSpeakerEntered();
 	void stateAlarmToSpeakerExited();
