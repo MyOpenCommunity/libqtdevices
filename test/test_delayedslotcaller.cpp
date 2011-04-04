@@ -63,6 +63,11 @@ void SlotTester::slotQVariant(QVariant v)
 	history << QString("SlotTester::slotQVariant") << v;
 }
 
+void SlotTester::slotConstChar(const char *c)
+{
+	history << QString("SlotTester::slotConstChar") << c;
+}
+
 void SlotTester::slotMultipleArgs(int i, QStringList l, Hash h, int r)
 {
 	history << QString("SlotTester::slotMultipleArgs") << i << l;
@@ -177,6 +182,17 @@ void TestDelayedSlotCaller::testSlotQVariant()
 	testSleep(delay);
 	QCOMPARE(tester.history.at(0).toString(), QString("SlotTester::slotQVariant"));
 	QVERIFY(tester.history.at(1) == v);
+}
+
+void TestDelayedSlotCaller::testSlotConstChar()
+{
+	DelayedSlotCaller d;
+	SlotTester tester;
+	d.setSlot(&tester, SLOT(slotConstChar(const char*)), delay);
+	d.addArgument("a common string");
+	testSleep(delay);
+	QCOMPARE(tester.history.at(0).toString(), QString("SlotTester::slotConstChar"));
+	QCOMPARE(tester.history.at(1).toString(), QString("a common string"));
 }
 
 void TestDelayedSlotCaller::testSlotMultipleArgs()

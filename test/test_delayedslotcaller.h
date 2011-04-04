@@ -57,6 +57,7 @@ public slots:
 	void slotQList(QList<int> l);
 	void slotQHash(Hash h);
 	void slotQVariant(QVariant v);
+	void slotConstChar(const char *c);
 	void slotMultipleArgs(int i, QStringList l, Hash h, int r);
 	void slotMultipleCalls();
 
@@ -71,6 +72,7 @@ class TestDelayedSlotCaller : public QObject
 Q_OBJECT
 public:
 	TestDelayedSlotCaller();
+
 private slots:
 	void testSlotNoArg();
 	void testDelay();
@@ -80,6 +82,7 @@ private slots:
 	void testSlotQList();
 	void testSlotQHash();
 	void testSlotQVariant();
+	void testSlotConstChar();
 	void testSlotMultipleArgs();
 	void testSlotMultipleCalls();
 

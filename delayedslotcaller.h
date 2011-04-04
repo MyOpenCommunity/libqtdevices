@@ -24,8 +24,39 @@
 #include <QObject>
 #include <QList>
 #include <QVariant>
+#include <QMetaMethod>
+#include <QByteArray>
 
 class QGenericArgument;
+
+
+class ArgInterface
+{
+public:
+	virtual QGenericArgument getArgument() = 0;
+	virtual QByteArray getTypeName() = 0;
+	virtual ~ArgInterface() {}
+};
+
+Q_DECLARE_METATYPE(const char*);
+
+
+template <class T> class ArgContainer : public ArgInterface
+{
+public:
+	ArgContainer(T arg) { argument = arg; }
+	virtual QGenericArgument getArgument() { return Q_ARG(T, argument); }
+	virtual QByteArray getTypeName() { QVariant v = QVariant::fromValue(argument); return v.typeName(); }
+
+public:
+	T argument;
+};
+
+template <class T> ArgInterface *buildContainer(T t)
+{
+	return new ArgContainer<T>(t);
+}
+
 
 /*!
 	\ingroup Core
@@ -38,9 +69,7 @@ class QGenericArgument;
 	The execution of the slot can be stopped calling the abort() method. The signal
 	called() is emitted every time that the slot has been called.
 
-	Limitations:
-	- the slot to call cannot contains an argument of type "const char*"
-	- the slot can have a maximum of 10 arguments.
+	The only limitation is that the slot to call can have a maximum of 10 arguments.
 
 	\note The slot can contains custom types, that have to be register with the
 	Q_DECLARE_METATYPE macro. Unfortunately, the macro doesn't work with template
@@ -53,6 +82,8 @@ class DelayedSlotCaller : public QObject
 Q_OBJECT
 public:
 	DelayedSlotCaller(bool single_shot = true);
+
+	~DelayedSlotCaller();
 
 	/*!
 		\brief Set the \a slot to call after \a msec milliseconds in the \a receiver object.
@@ -84,12 +115,14 @@ private slots:
 	void callSlot();
 
 private:
-	const char *slot_to_call;
 	QObject *target;
 	int timer_id;
 	bool is_single_shot;
+	QMetaMethod method_to_call;
 
-	QList<QVariant> arguments;
+	QList<ArgInterface*> arguments;
+
+	void reset();
 
 	QGenericArgument arg(int index);
 };
@@ -98,7 +131,7 @@ private:
 template <class T>  void DelayedSlotCaller::addArgument(const T &arg)
 {
 	Q_ASSERT_X(arguments.size() < 9, "SlotCaller::addArgument", "Arguments list cannot exceed 10 elements");
-	arguments << QVariant::fromValue(arg);
+	arguments << new ArgContainer<T>(arg);
 }
 
 #endif
