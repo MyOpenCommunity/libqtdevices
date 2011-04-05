@@ -26,7 +26,7 @@
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "openclient.h"
 #include "version.h"
-#include "keypad.h"
+#include "pagestack.h" // bt_global::page_stack
 #include "screensaver.h"
 #include "displaycontrol.h" // bt_global::display
 #include "devices_cache.h" // bt_global::devices_cache
@@ -43,7 +43,6 @@
 #include "iconwindow.h"
 #include "windowcontainer.h"
 #include "ringtonesmanager.h"
-#include "pagestack.h"
 #include "videodoorentry.h"
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
@@ -341,9 +340,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 	vde_call_active = false;
 	last_event_time = 0;
 	frozen = false;
-
-	password_keypad = NULL;
-	pwd_on = false;
 
 	Window *loading = NULL;
 
@@ -751,7 +747,7 @@ void BtMain::makeActive()
 		bt_global::display->currentState() == DISPLAY_SCREENSAVER ||
 		bt_global::display->currentState() == DISPLAY_FREEZED)
 	{
-		if (pwd_on)
+		if (bt_global::display->checkPassword())
 		{
 			if (bt_global::display->currentState() != DISPLAY_FREEZED)
 			{
@@ -951,52 +947,15 @@ void BtMain::freeze(bool b)
 
 		bt_global::display->setState(DISPLAY_OPERATIVE);
 
-		if (pwd_on)
-		{
-			if (!password_keypad)
-			{
-				password_keypad = new KeypadWindow(Keypad::HIDDEN);
-				connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
-			}
-			bt_global::page_stack.showKeypad(password_keypad);
-			password_keypad->showWindow();
-		}
+		if (bt_global::display->checkPassword())
+			bt_global::display->showPasswordKeypad();
+
 		qApp->removeEventFilter(bt_global::display);
 	}
 	else
 	{
 		bt_global::display->setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(bt_global::display);
-	}
-}
-
-void BtMain::setPassword(bool enable, QString password)
-{
-	pwd_on = enable;
-	pwd = password;
-	qDebug() << "new password:" << pwd << "active:" << pwd_on;
-}
-
-void BtMain::testPassword()
-{
-	QString p = password_keypad->getText();
-	qDebug() << "testing password, input text is: " << p;
-	if (!p.isEmpty())
-	{
-		if (p != pwd)
-		{
-			password_keypad->resetText();
-			qDebug() << "pwd ko" << p << "doveva essere " << pwd;
-		}
-		else
-		{
-			qDebug() << "pwd ok!";
-			Window *t = password_keypad;
-			password_keypad = NULL;
-			bt_global::page_stack.closeWindow(t);
-			t->disconnect();
-			t->deleteLater();
-		}
 	}
 }
 

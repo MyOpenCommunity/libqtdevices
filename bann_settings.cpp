@@ -26,11 +26,11 @@
 #include "contrast.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBeep, getBeep, beep, setContrast, getContrast
-#include "btmain.h" // bt_global::btmain
 #include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
 #include "audiostatemachine.h" // bt_global::audio_states
+#include "displaycontrol.h" // bt_global::display
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -264,7 +264,7 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = check_active;
-	bt_global::btmain->setPassword(active, password);
+	bt_global::display->setPassword(active, password);
 }
 
 void PasswordChanger::changePassword()
@@ -286,7 +286,7 @@ void PasswordChanger::toggleActivation()
 #else
 	setCfgValue("actived", active, item_id);
 #endif
-	bt_global::btmain->setPassword(active, password);
+	bt_global::display->setPassword(active, password);
 	emit passwordActive(active);
 }
 
@@ -417,7 +417,7 @@ void PasswordChanger::savePassword(const QString &passwd)
 #else
 		setCfgValue("password", password, item_id);
 #endif
-		bt_global::btmain->setPassword(active, password);
+		bt_global::display->setPassword(active, password);
 		setStatus(CHECK_OLD_PASSWORD);
 	}
 }

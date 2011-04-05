@@ -32,7 +32,6 @@
 class Version;
 class HomePage;
 class Client;
-class KeypadWindow;
 class ScreenSaver;
 class Page;
 class PageContainer;
@@ -110,8 +109,6 @@ public:
 	/// Freeze or unfreeze the application
 	void freeze(bool freeze);
 
-	void setPassword(bool enable, QString password);
-
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
@@ -138,7 +135,6 @@ signals:
 private slots:
 	void init();
 	void checkScreensaver();
-	void testPassword();
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
@@ -155,9 +151,7 @@ private:
 
 	QTimer *screensaver_timer;
 	QDateTime last_date_time;
-	QString pwd;
-	bool pwd_on, already_calibrated;
-	KeypadWindow *password_keypad;
+	bool already_calibrated;
 	bool frozen;
 	int last_event_time;
 

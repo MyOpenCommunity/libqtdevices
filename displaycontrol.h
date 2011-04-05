@@ -26,6 +26,7 @@
 
 #include <QMap>
 
+class KeypadWindow;
 class QEvent;
 
 
@@ -156,6 +157,15 @@ public:
 	*/
 	bool isDirectScreenAccess();
 
+	/*!
+		\brief Set the password and if is active or not.
+	*/
+	void setPassword(bool enable, QString pwd);
+
+	bool checkPassword() { return check_password; }
+
+	void showPasswordKeypad();
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -172,6 +182,9 @@ signals:
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
+private slots:
+	void testPassword();
+
 private:
 	void updateBrightnessData();
 
@@ -187,6 +200,10 @@ private:
 	DisplayStatus current_state;
 	bool forced_operative_mode;
 	int operative_brightness, direct_screen_access;
+
+	QString password;
+	bool check_password;
+	KeypadWindow *password_keypad;
 };
 
 namespace bt_global { extern DisplayControl *display; }

@@ -23,13 +23,18 @@
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
 #include "btmain.h" // bt_global::btmain
+#include "keypad.h" // KeypadWindow
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QEvent>
+
 
 DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
 	direct_screen_access = 0;
+	check_password = false;
+	password_keypad = 0;
 
 #ifdef BT_HARDWARE_TS_10
 	operative_brightness = 1; // a low brightness for the touch 10''
@@ -186,6 +191,46 @@ bool DisplayControl::eventFilter(QObject *obj, QEvent *ev)
 
 	bt_global::btmain->freeze(false);
 	return true;
+}
+
+void DisplayControl::setPassword(bool enable, QString pwd)
+{
+	check_password = enable;
+	password = pwd;
+	qDebug() << "DisplayControl::setPassword new password:" << pwd << "check:" << enable;
+}
+
+void DisplayControl::testPassword()
+{
+	QString text = password_keypad->getText();
+	if (!text.isEmpty())
+	{
+		if (text != password)
+		{
+			password_keypad->resetText();
+			qDebug() << "DisplayControl::testPassword the input text" << text
+				<< "doesn't match the password" << password;
+		}
+		else
+		{
+			qDebug() << "DisplayControl::testPassword password ok";
+			bt_global::page_stack.closeWindow(password_keypad);
+			password_keypad->disconnect();
+			password_keypad->deleteLater();
+			password_keypad = 0;
+		}
+	}
+}
+
+void DisplayControl::showPasswordKeypad()
+{
+	if (!password_keypad)
+	{
+		password_keypad = new KeypadWindow(Keypad::HIDDEN);
+		connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
+	}
+	bt_global::page_stack.showKeypad(password_keypad);
+	password_keypad->showWindow();
 }
 
 // The global definition of display
