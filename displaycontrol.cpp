@@ -33,8 +33,13 @@ DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
 	direct_screen_access = 0;
+
 	check_password = false;
 	password_keypad = 0;
+
+	freeze_time = 30;
+	screensaver_time = 60;
+	screenoff_time = 120;
 
 #ifdef BT_HARDWARE_TS_10
 	operative_brightness = 1; // a low brightness for the touch 10''
@@ -231,6 +236,39 @@ void DisplayControl::showPasswordKeypad()
 	}
 	bt_global::page_stack.showKeypad(password_keypad);
 	password_keypad->showWindow();
+}
+
+void DisplayControl::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
+{
+	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
+
+	screenoff_time = blank_screen;
+	screensaver_time = screensaver_start;
+}
+
+int DisplayControl::freezeTime()
+{
+	if (blankScreenTime())
+		return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
+	else
+		return qMin(freeze_time, screensaverTime());
+}
+
+int DisplayControl::screensaverTime()
+{
+	return screensaver_time;
+}
+
+int DisplayControl::blankScreenTime()
+{
+	ScreenSaver::Type target_screensaver = currentScreenSaver();
+
+	if (screenoff_time == 0)
+		return 0;
+	else if (target_screensaver == ScreenSaver::NONE)
+		return screenoff_time - screensaver_time;
+	else
+		return screenoff_time;
 }
 
 // The global definition of display

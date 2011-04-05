@@ -343,10 +343,6 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	Window *loading = NULL;
 
-	freeze_time = 30;
-	screensaver_time = 60;
-	screenoff_time = 120;
-
 #ifdef LAYOUT_TS_3_5
 	// We want to set the stylesheet for the version page, but we have to wait
 	// after all the pages are built in order to set the dynamic properties _before_
@@ -764,39 +760,6 @@ void BtMain::makeActive()
 	}
 }
 
-void BtMain::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
-{
-	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
-
-	screenoff_time = blank_screen;
-	screensaver_time = screensaver_start;
-}
-
-int BtMain::freezeTime()
-{
-	if (blankScreenTime())
-		return qMin(qMin(freeze_time, screensaverTime()), blankScreenTime());
-	else
-		return qMin(freeze_time, screensaverTime());
-}
-
-int BtMain::screensaverTime()
-{
-	return screensaver_time;
-}
-
-int BtMain::blankScreenTime()
-{
-	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
-
-	if (screenoff_time == 0)
-		return 0;
-	else if (target_screensaver == ScreenSaver::NONE)
-		return screenoff_time - screensaver_time;
-	else
-		return screenoff_time;
-}
-
 void BtMain::checkScreensaver()
 {
 	rearmWDT();
@@ -834,9 +797,11 @@ void BtMain::checkScreensaver()
 	int time_press = getTimePress();
 	int time = qMin(time_press, abs(int(now() - last_event_time)));
 
-	if (blankScreenTime() != 0 &&
-		((bt_global::display->currentState() == DISPLAY_SCREENSAVER && time >= blankScreenTime()) ||
-		 (bt_global::display->currentState() == DISPLAY_FREEZED && target_screensaver == ScreenSaver::NONE && time >= blankScreenTime())))
+	int blank_time = bt_global::display->blankScreenTime();
+
+	if (blank_time != 0 &&
+		((bt_global::display->currentState() == DISPLAY_SCREENSAVER && time >= blank_time) ||
+		 (bt_global::display->currentState() == DISPLAY_FREEZED && target_screensaver == ScreenSaver::NONE && time >= blank_time)))
 	{
 		qDebug() << "Turning screen off";
 		// the stopscreensaver() event is emitted when the user clicks on screen
@@ -853,11 +818,11 @@ void BtMain::checkScreensaver()
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		bt_global::display->setState(DISPLAY_OFF);
 	}
-	else if (time >= freezeTime() && getBacklight() && !frozen)
+	else if (time >= bt_global::display->freezeTime() && getBacklight() && !frozen)
 	{
 		freeze(true);
 	}
-	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
+	else if (time >= bt_global::display->screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
 		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
 			page_default && page_container->currentPage() != page_default)

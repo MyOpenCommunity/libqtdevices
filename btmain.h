@@ -114,9 +114,6 @@ public:
 	void showHomePage();
 	Page *homePage();
 
-	// set the screensaver and blank screen timeouts in seconds
-	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
-
 	// stop the screen saver but keep the screen frozen if password protection is active.
 	void makeActive();
 
@@ -154,22 +151,6 @@ private:
 	bool already_calibrated;
 	bool frozen;
 	int last_event_time;
-
-	// take into account selected screensaver when computing freeze/blank screen times
-	//
-	// if the user is idle for this number of seconds, freeze the screen
-	int freezeTime();
-	// if the user is idle for this number of seconds, start the screen saver
-	int screensaverTime();
-	// if the user is idle for this number of seconds, turn off the screen
-	int blankScreenTime();
-
-	// the three values below are in seconds; screenoff_time can be 0
-	// it must always be screensaver_time < screenoff_time
-
-	int freeze_time;
-	int screensaver_time;
-	int screenoff_time;
 
 	static bool calibrating;
 	ScreenSaver *screensaver;

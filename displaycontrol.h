@@ -166,6 +166,18 @@ public:
 
 	void showPasswordKeypad();
 
+	// take into account selected screensaver when computing freeze/blank screen times
+	//
+	// if the user is idle for this number of seconds, freeze the screen
+	int freezeTime();
+	// if the user is idle for this number of seconds, start the screen saver
+	int screensaverTime();
+	// if the user is idle for this number of seconds, turn off the screen
+	int blankScreenTime();
+
+	// set the screensaver and blank screen timeouts in seconds
+	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -204,6 +216,12 @@ private:
 	QString password;
 	bool check_password;
 	KeypadWindow *password_keypad;
+
+	// the three values below are in seconds; screenoff_time can be 0
+	// it must always be screensaver_time < screenoff_time
+	int freeze_time;
+	int screensaver_time;
+	int screenoff_time;
 };
 
 namespace bt_global { extern DisplayControl *display; }

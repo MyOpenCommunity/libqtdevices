@@ -23,7 +23,6 @@
 #include "navigation_bar.h"
 #include "xml_functions.h"
 #include "skinmanager.h"
-#include "btmain.h" // version page
 #include "version.h"
 #include "screensaverpage.h"
 #include "cleanscreen.h"
@@ -37,7 +36,7 @@
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "platform_device.h" // PlatformDevice
 #include "generic_functions.h" // setCfgValue
-#include "displaycontrol.h"
+#include "displaycontrol.h" // bt_global::display
 #include "videodoorentry.h" // HandsFree, ProfessionalStudio
 #include "main.h" // bt_global::config, SETTINGS
 #include "audiostatemachine.h" // bt_global::audio_states
@@ -419,7 +418,7 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		{
 			int timeout = getTextChild(item, "timeout").toInt() / 1000;
 			int blank = getTextChild(item, "blankscreen").toInt() / 1000;
-			bt_global::btmain->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
+			bt_global::display->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
 			// Screensaver data is not correctly initialized (in BtMain) when using TS 10'' conf file
 			ScreenSaver::initData(item);
 			p = new ScreenSaverPage(item);
