@@ -44,6 +44,9 @@ private slots:
 	void receiveFirmwareVersion();
 	void receiveKernelVersion();
 	void receivePicVersion();
+	void receiveTime();
+	void receiveDate();
+	void receiveDateTime();
 
 	void sendSetDate();
 	void sendSetTime();

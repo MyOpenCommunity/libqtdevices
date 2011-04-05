@@ -115,3 +115,24 @@ void TestPlatformDevice::receiveKernelVersion()
 	DeviceTester t(dev, PlatformDevice::DIM_KERN_VERS);
 	t.check("*#13**23*2*3*3##", "2.3.3");
 }
+
+void TestPlatformDevice::receiveTime()
+{
+	DeviceTester t(dev, PlatformDevice::DIM_TIME);
+	t.check("*#13**#0*12*11*27*##", BtTime(12, 11, 27));
+}
+
+void TestPlatformDevice::receiveDate()
+{
+	DeviceTester t(dev, PlatformDevice::DIM_DATE);
+	t.check("*#13**#1*00*12*04*2011##", QDate(2011, 4, 12));
+}
+
+void TestPlatformDevice::receiveDateTime()
+{
+	MultiDeviceTester t(dev);
+	t << makePair(PlatformDevice::DIM_TIME, BtTime(13, 50, 35));
+	t << makePair(PlatformDevice::DIM_DATE, QDate(2011, 3, 7));
+	t.check("*#13**#22*13*50*35**00*07*03*2011##");
+}
+

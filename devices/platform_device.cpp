@@ -33,6 +33,12 @@
 #define STATUS_REQUEST_DELAY 1000
 
 
+enum PrivateType
+{
+	DIM_DATETIME = 22,
+};
+
+
 PlatformDevice::PlatformDevice() : device(QString("13"), QString(""))
 {
 }
@@ -49,14 +55,14 @@ void PlatformDevice::init()
 void PlatformDevice::setTime(const BtTime &t)
 {
 	QString f;
-	f.sprintf("*#13**#0*%02u*%02u*%02u**##", t.hour(), t.minute(), t.second());
+	f.sprintf("*#13**#%d*%02u*%02u*%02u**##", DIM_TIME, t.hour(), t.minute(), t.second());
 	sendFrameNow(f);
 }
 
 void PlatformDevice::setDate(const QDate &d)
 {
 	QString f;
-	f.sprintf("*#13**#1*00*%02d*%02d*%04d##", d.day(), d.month(), d.year());
+	f.sprintf("*#13**#%d*00*%02d*%02d*%04d##", DIM_DATE, d.day(), d.month(), d.year());
 	sendFrameNow(f);
 }
 
@@ -139,18 +145,26 @@ bool PlatformDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (what == DIM_MACADDR || what == DIM_IP || what == DIM_NETMASK ||
 		what == DIM_GATEWAY || what == DIM_DNS1 || what == DIM_DNS2 ||
-		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS || what == DIM_PIC_VERS)
+		what == DIM_STATUS || what == DIM_KERN_VERS || what == DIM_FW_VERS ||
+		what == DIM_PIC_VERS || what == DIM_TIME || what == DIM_DATE || what == DIM_DATETIME)
 	{
 		qDebug("PlatformDevice::parseFrame -> frame read:%s", msg.frame_open);
 
 		switch (what)
 		{
 		case DIM_STATUS:
-		{
-			bool st = msg.whatArgN(0) == 1;
-			v.setValue(st);
+			v.setValue(msg.whatArgN(0) == 1);
 			break;
-		}
+		case DIM_DATETIME:
+			values_list[DIM_TIME] = QVariant::fromValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2)));
+			values_list[DIM_DATE] = QVariant::fromValue(QDate(msg.whatArgN(7), msg.whatArgN(6), msg.whatArgN(5)));
+			return true;
+		case DIM_TIME:
+			v.setValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), msg.whatArgN(2)));
+			break;
+		case DIM_DATE:
+			v.setValue(QDate(msg.whatArgN(3), msg.whatArgN(2), msg.whatArgN(1)));
+			break;
 		case DIM_MACADDR:
 		{
 			QStringList parts;

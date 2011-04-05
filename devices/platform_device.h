@@ -149,6 +149,8 @@ public:
 		DIM_GATEWAY = 50,
 		DIM_DNS1 = 51,
 		DIM_DNS2 = 52,
+		DIM_TIME = 0,
+		DIM_DATE = 1,
 	};
 
 public slots:
