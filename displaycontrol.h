@@ -26,6 +26,8 @@
 
 #include <QMap>
 
+class QEvent;
+
 
 /*!
 	\ingroup Core
@@ -166,6 +168,9 @@ signals:
 		\sa directScreenAccessStarted(), setDirectScreenAccess(), isDirectScreenAccess()
 	*/
 	void directScreenAccessStopped();
+
+protected:
+	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private:
 	void updateBrightnessData();

@@ -22,7 +22,9 @@
 #include "displaycontrol.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
+#include "btmain.h" // bt_global::btmain
 
+#include <QEvent>
 
 DisplayControl::DisplayControl()
 {
@@ -172,6 +174,19 @@ ScreenSaver::Type DisplayControl::currentScreenSaver()
 	return current_screensaver;
 }
 
+bool DisplayControl::eventFilter(QObject *obj, QEvent *ev)
+{
+	// Discard the mouse press and mouse double click
+	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
+		ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
+		return true;
+
+	if (ev->type() != QEvent::MouseButtonRelease)
+		return false;
+
+	bt_global::btmain->freeze(false);
+	return true;
+}
 
 // The global definition of display
 DisplayControl *bt_global::display = 0;

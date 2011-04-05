@@ -135,9 +135,6 @@ signals:
 	void startscreensaver(Page*);
 	void stopscreensaver();
 
-protected:
-	virtual bool eventFilter(QObject *obj, QEvent *ev);
-
 private slots:
 	void init();
 	void checkScreensaver();

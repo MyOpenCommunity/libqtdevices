@@ -923,20 +923,6 @@ Window *BtMain::homeWindow()
 	return window_container->homeWindow();
 }
 
-bool BtMain::eventFilter(QObject *obj, QEvent *ev)
-{
-	// Discard the mouse press and mouse double click
-	if (ev->type() == QEvent::MouseButtonPress || ev->type() == QEvent::MouseButtonDblClick ||
-		ev->type() == QEvent::MouseMove || ev->type() == QEvent::Enter || ev->type() == QEvent::Leave)
-		return true;
-
-	if (ev->type() != QEvent::MouseButtonRelease)
-		return false;
-
-	freeze(false);
-	return true;
-}
-
 void BtMain::freeze(bool b)
 {
 	qDebug("BtMain::freeze(%d)", b);
@@ -975,12 +961,12 @@ void BtMain::freeze(bool b)
 			bt_global::page_stack.showKeypad(password_keypad);
 			password_keypad->showWindow();
 		}
-		qApp->removeEventFilter(this);
+		qApp->removeEventFilter(bt_global::display);
 	}
 	else
 	{
 		bt_global::display->setState(DISPLAY_FREEZED);
-		qApp->installEventFilter(this);
+		qApp->installEventFilter(bt_global::display);
 	}
 }
 
