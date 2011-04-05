@@ -83,7 +83,7 @@ private slots:
 private:
 	static long parent_pid;
 	static int signalfd[2];
-	QSocketNotifier *snSignal;
+	QSocketNotifier *sn_signal;
 };
 
 

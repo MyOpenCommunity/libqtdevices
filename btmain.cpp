@@ -191,26 +191,26 @@ SignalsHandler::SignalsHandler()
 		qWarning() << "Cannot create SignalsHandler socketpair";
 	parent_pid = getpid();
 
-	snSignal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
-	snSignal->setEnabled(true);
-	connect(snSignal, SIGNAL(activated(int)), SLOT(handleSignal()));
+	sn_signal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
+	sn_signal->setEnabled(true);
+	connect(sn_signal, SIGNAL(activated(int)), SLOT(handleSignal()));
 }
 
 SignalsHandler::~SignalsHandler()
 {
-	delete snSignal;
+	delete sn_signal;
 }
 
 void SignalsHandler::handleSignal()
 {
-	snSignal->setEnabled(false);
+	sn_signal->setEnabled(false);
 	char signal_number;
 	::read(signalfd[1], &signal_number, sizeof(signal_number));
 
 	qDebug() << "Handling signal" << int(signal_number);
 	emit signalReceived(int(signal_number));
 
-	snSignal->setEnabled(true);
+	sn_signal->setEnabled(true);
 }
 
 void SignalsHandler::signalHandler(int signal_number)
