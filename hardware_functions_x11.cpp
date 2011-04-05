@@ -38,7 +38,7 @@
 static bool buzzer_enabled = false;
 static bool backlight = false;
 static unsigned char contrast = 0;
-static QDateTime lastPress = QDateTime::currentDateTime().addSecs(-3600);
+static QDateTime last_press = QDateTime::currentDateTime().addSecs(-3600);
 
 int maxWidth()
 {
@@ -125,12 +125,12 @@ void beep()
 
 void setTimePress(const QDateTime &press)
 {
-	lastPress = press;
+	last_press = press;
 }
 
 unsigned long getTimePress()
 {
-	return lastPress.secsTo(QDateTime::currentDateTime());
+	return last_press.secsTo(QDateTime::currentDateTime());
 }
 
 void rearmWDT()

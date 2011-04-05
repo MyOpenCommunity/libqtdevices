@@ -385,16 +385,16 @@ unsigned long getTimePress()
 
 #else
 
-static QDateTime lastPress = QDateTime::currentDateTime().addSecs(-3600);
+static QDateTime last_press = QDateTime::currentDateTime().addSecs(-3600);
 
 void setTimePress(const QDateTime &press)
 {
-	lastPress = press;
+	last_press = press;
 }
 
 unsigned long getTimePress()
 {
-	return lastPress.secsTo(QDateTime::currentDateTime());
+	return last_press.secsTo(QDateTime::currentDateTime());
 }
 
 #endif
