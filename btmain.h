@@ -32,7 +32,6 @@
 class Version;
 class HomePage;
 class Client;
-class ScreenSaver;
 class Page;
 class PageContainer;
 class WindowContainer;
@@ -106,16 +105,11 @@ public:
 	Version *version;
 
 	void resetTimer();
-	/// Freeze or unfreeze the application
-	void freeze(bool freeze);
 
 	Window *homeWindow();
 	TrayBar *trayBar();
 	void showHomePage();
 	Page *homePage();
-
-	// stop the screen saver but keep the screen frozen if password protection is active.
-	void makeActive();
 
 	static bool isCalibrating();
 	static void calibrationStarted();
@@ -124,14 +118,21 @@ public:
 	bool alarm_clock_on;
 	bool vde_call_active;
 
+	// Unroll all the pages until homepage
+	void unrollPages();
+
+	bool canScreensaverStart();
+
+	Page *screensaverExitPage();
+	Page *screensaverTargetPage();
+	Window *screensaverTargetWindow();
+
 signals:
 	void resettimer();
-	void startscreensaver(Page*);
-	void stopscreensaver();
 
 private slots:
 	void init();
-	void checkScreensaver();
+	void checkApplication();
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
@@ -146,14 +147,12 @@ private:
 	HomePage *home;
 	Page *page_default;
 
-	QTimer *screensaver_timer;
+	QTimer *application_timer;
 	QDateTime last_date_time;
 	bool already_calibrated;
-	bool frozen;
-	int last_event_time;
 
 	static bool calibrating;
-	ScreenSaver *screensaver;
+
 	PageContainer *page_container;
 	WindowContainer *window_container;
 
@@ -168,14 +167,6 @@ private:
 
 	// Load the global configuration (the item in "generale" section of xml config file)
 	void loadGlobalConfig();
-	// Unroll all the pages until homepage
-	void unrollPages();
-
-	bool canScreensaverStart();
-
-	Page *screensaverExitPage();
-	Page *screensaverTargetPage();
-	Window *screensaverTargetWindow();
 };
 
 namespace bt_global { extern BtMain *btmain; }

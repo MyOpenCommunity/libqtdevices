@@ -28,7 +28,8 @@
 #include "keypad.h" // KeypadWithState
 #include "devices_cache.h"
 #include "alarmpage.h"
-#include "btmain.h" // makeActive
+#include "btmain.h" // showHomePage
+#include "displaycontrol.h" // makeActive
 #include "pagestack.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "navigation_bar.h"
@@ -267,7 +268,7 @@ void AlarmManager::newAlarm(int alarm_type, int zone, const QString &zone_descri
 	// The current alarm is the last alarm inserted
 	current_alarm = alarm_pages.size() - 1;
 
-	bt_global::btmain->makeActive();
+	bt_global::display->makeActive();
 	alarm->showPage();
 }
 

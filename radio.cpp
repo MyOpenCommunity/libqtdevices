@@ -26,7 +26,7 @@
 #include "navigation_bar.h" // NavigationBar
 #include "media_device.h" // RadioSourceDevice
 #include "icondispatcher.h" // bt_global::icons_cache
-#include "btmain.h" // startscreensaver, stopscreensaver
+#include "displaycontrol.h" //  bt_global::display
 #include "mediaplayer.h" // bt_global::sound
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "main.h" // SOUND_PATH
@@ -92,8 +92,8 @@ RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSource
 	setChannel(-1);
 	setRadioName(QString());
 
-	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screensaverStarted()));
-	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
+	connect(bt_global::display, SIGNAL(startscreensaver(Page*)), SLOT(screensaverStarted()));
+	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
 }
 
 void RadioInfo::setArea(const QString &_area)

@@ -33,7 +33,7 @@
 #include "energy_rates.h"
 #include "bann_energy.h"
 #include "bann2_buttons.h" // Bann2Buttons
-#include "btmain.h" // bt_global::btmain
+#include "displaycontrol.h" // bt_global::display
 #include "energy_management.h" // EnergyManagement::isBuilt
 #include "main.h" // ENERGY_MANAGEMENT, ENERGY_DATA
 
@@ -441,8 +441,8 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	showBannerWidget();
 
 	// to switch back to the graph view
-	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
-	connect(bt_global::btmain, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
+	connect(bt_global::display, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
+	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(screenSaverStopped()));
 
 	// keep track for screensaver exit
 	update_after_ssaver = is_current_page = false;

@@ -450,7 +450,7 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			cleanAudioStates();
 			call_status->resetStatus();
 			// Reset the timers for the freeze/screensaver.
-			bt_global::btmain->makeActive();
+			bt_global::display->makeActive();
 			emit callClosed();
 			break;
 		case VideoDoorEntryDevice::STOP_VIDEO:
@@ -847,7 +847,7 @@ void VCTCallPage::showPage()
 	// screen off state.
 	// Fortunately in this case the problem is only theorical, because the screensaver
 	// can't start if the vct page is still on the top of the stack.
-	bt_global::btmain->makeActive();
+	bt_global::display->makeActive();
 	Page::showPage();
 
 	// We must start the video after draw the page

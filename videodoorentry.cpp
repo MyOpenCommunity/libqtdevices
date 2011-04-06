@@ -155,7 +155,7 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 			if (!popup_pages.contains(where))
 				where = QString();
 
-			bt_global::btmain->makeActive();
+			bt_global::display->makeActive();
 			bt_global::page_stack.showUserPage(popup_pages[where]);
 			popup_pages[where]->showPage();
 		}
@@ -574,7 +574,7 @@ void IntercomCallPage::showPageAfterCall()
 	// when the touch call an internal place the "accept" button should be
 	// in the active status.
 	bt_global::page_stack.showUserPage(this);
-	bt_global::btmain->makeActive();
+	bt_global::display->makeActive();
 	call_accept->setStatus(true);
 	mute_button->setStatus(StateButton::DISABLED);
 	showPage();
@@ -592,7 +592,7 @@ void IntercomCallPage::showPageIncomingCall()
 	}
 
 	bt_global::page_stack.showUserPage(this);
-	bt_global::btmain->makeActive();
+	bt_global::display->makeActive();
 	call_accept->setStatus(false);
 	mute_button->setStatus(StateButton::DISABLED);
 	showPage();
@@ -724,7 +724,7 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 				call_active = false;
 				handleClose();
 				// Reset the timers for the freeze/screensaver.
-				bt_global::btmain->makeActive();
+				bt_global::display->makeActive();
 			}
 			break;
 		}

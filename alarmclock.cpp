@@ -336,7 +336,7 @@ void AlarmClock::checkAlarm()
 			// When the alarm ring we have to put the light on (like in the
 			// operative mode) but with a screen "locked" (like in the freezed
 			// mode). We do that using an event filter.
-			bt_global::btmain->freeze(false); // To stop a screensaver, if running
+			bt_global::display->freeze(false); // To stop a screensaver, if running
 			bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
 			qApp->installEventFilter(this);
 			bt_global::btmain->alarm_clock_on = true;
@@ -437,7 +437,7 @@ void AlarmClock::alarmTimeout()
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
 
 	// restore display state
-	bt_global::btmain->freeze(false);
+	bt_global::display->freeze(false);
 	bt_global::btmain->alarm_clock_on = false;
 
 	emit alarmClockFired();

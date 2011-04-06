@@ -22,10 +22,11 @@
 #ifndef DISPLAYCONTROL_H
 #define DISPLAYCONTROL_H
 
-#include "screensaver.h"
+#include "screensaver.h" // ScreenSaver::Type
 
 #include <QMap>
 
+class PageContainer;
 class KeypadWindow;
 class QEvent;
 
@@ -81,6 +82,10 @@ Q_OBJECT
 friend class BtMain;
 public:
 	DisplayControl();
+	~DisplayControl();
+
+	void setPageContainer(PageContainer *c);
+
 	/*!
 		\brief Set the state of the display
 	*/
@@ -162,7 +167,7 @@ public:
 	*/
 	void setPassword(bool enable, QString pwd);
 
-	bool checkPassword() { return check_password; }
+	bool checkPassword();
 
 	void showPasswordKeypad();
 
@@ -178,6 +183,14 @@ public:
 	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
+	// stop the screen saver but keep the screen frozen if password protection is active.
+	void makeActive();
+
+	/// Freeze or unfreeze the application
+	void freeze(bool freeze);
+
+	void startActivities();
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -191,11 +204,15 @@ signals:
 	*/
 	void directScreenAccessStopped();
 
+	void startscreensaver(Page*);
+	void stopscreensaver();
+
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
 	void testPassword();
+	void checkScreensaver();
 
 private:
 	void updateBrightnessData();
@@ -222,6 +239,12 @@ private:
 	int freeze_time;
 	int screensaver_time;
 	int screenoff_time;
+
+	QTimer *screensaver_timer;
+	ScreenSaver *screensaver;
+	bool frozen;
+	int last_event_time;
+	PageContainer *page_container;
 };
 
 namespace bt_global { extern DisplayControl *display; }

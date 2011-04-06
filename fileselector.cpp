@@ -21,7 +21,7 @@
 
 #include "fileselector.h"
 #include "icondispatcher.h"
-#include "btmain.h" // bt_global::btmain
+#include "displaycontrol.h" // bt_global::display
 
 #ifdef BT_HARDWARE_TS_10
 #include "mount_watcher.h" // bt_global::mount_watcher
@@ -59,7 +59,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
 	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
-	connect(bt_global::btmain, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
+	connect(bt_global::display, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 
 	connect(browser, SIGNAL(directoryChangeError()), SLOT(directoryChangeError()));
 	connect(browser, SIGNAL(listRetrieveError()), SLOT(handleError()));
