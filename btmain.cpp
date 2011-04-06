@@ -49,7 +49,10 @@
 #endif
 #include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
 #include "mediaplayer.h" // bt_global::sound
+
+#ifdef LAYOUT_TS_10
 #include "mount_watcher.h" // bt_global::mount_watcher
+#endif
 
 #include <QMutableHashIterator>
 #include <QXmlSimpleReader>
@@ -248,7 +251,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::audio_states = new AudioStateMachine;
 	bt_global::sound = new SoundPlayer;
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
+#ifdef LAYOUT_TS_10
 	bt_global::mount_watcher = new MountWatcher;
+#endif
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 	// save last click time for the screen saver
@@ -410,7 +415,9 @@ BtMain::~BtMain()
 	delete screensaver;
 	delete bt_global::skin;
 	delete bt_global::font;
+#ifdef LAYOUT_TS_10
 	delete bt_global::mount_watcher;
+#endif
 	delete bt_global::ringtones;
 	delete bt_global::sound;
 	delete bt_global::audio_states;
@@ -760,6 +767,34 @@ void BtMain::makeActive()
 	}
 }
 
+bool BtMain::canScreensaverStart()
+{
+	return !(alarm_clock_on || calibrating || vde_call_active);
+}
+
+Page *BtMain::screensaverTargetPage()
+{
+#ifdef LAYOUT_TS_3_5
+	return page_default ? page_default : home;
+#else
+	return page_container->currentPage();
+#endif
+}
+
+Page *BtMain::screensaverExitPage()
+{
+#ifdef LAYOUT_TS_3_5
+	return page_default ? page_default : page_container->currentPage();
+#else
+	return page_container->currentPage();
+#endif
+}
+
+Window *BtMain::screensaverTargetWindow()
+{
+	return window_container->currentWindow();
+}
+
 void BtMain::checkScreensaver()
 {
 	rearmWDT();
@@ -783,7 +818,8 @@ void BtMain::checkScreensaver()
 
 	if (bt_global::display->isForcedOperativeMode())
 		return;
-	if (alarm_clock_on || calibrating || vde_call_active)
+
+	if (!canScreensaverStart())
 		return;
 
 	ScreenSaver::Type target_screensaver = bt_global::display->currentScreenSaver();
@@ -824,10 +860,11 @@ void BtMain::checkScreensaver()
 	}
 	else if (time >= bt_global::display->screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
-		if (bt_global::display->currentState() == DISPLAY_OPERATIVE &&
-			page_default && page_container->currentPage() != page_default)
+		Page *target_page = screensaverTargetPage();
+
+		if (bt_global::display->currentState() == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
 		{
-			page_default->showPage();
+			target_page->showPage();
 		}
 
 		if (bt_global::display->currentState() == DISPLAY_FREEZED)
@@ -841,33 +878,38 @@ void BtMain::checkScreensaver()
 			if (!screensaver)
 				screensaver = getScreenSaver(target_screensaver);
 
-			// TODO move the code until the end of the block to PageStack and/or ScreenSaver
-			Page *prev_page = page_container->currentPage();
+			Window *target_window = screensaverTargetWindow();
+			Page *exit_page = screensaverExitPage();
+
+			Page *current_page = page_container->currentPage();
 
 #ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(true);
-			if (page_default)
+#endif
+			if (exit_page != current_page)
 			{
 				unrollPages();
-				page_default->showPage();
+				target_page->showPage();
+				target_window->showWindow();
 			}
 			else
 			{
-				home->showPage();
-				// this makes the screen saver go back to prev_page
-				// when exited
-				bt_global::page_stack.currentPageChanged(prev_page);
+				target_page->showPage();
+				target_window->showWindow();
+				// this makes the screen saver go back to exit_page when exited
+				bt_global::page_stack.currentPageChanged(exit_page);
 			}
 
-			window_container->homeWindow()->showWindow();
+#ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(false);
 #endif
-			if (window_container->currentWindow() == window_container->homeWindow())
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << page_container->currentPage();
+			if (target_window == window_container->homeWindow())
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_page;
 			else
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << window_container->currentWindow();
-			screensaver->start(window_container->currentWindow());
-			emit startscreensaver(prev_page);
+				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_window;
+			screensaver->start(target_window);
+			emit startscreensaver(exit_page);
+
 			bt_global::display->setState(DISPLAY_SCREENSAVER);
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		}
