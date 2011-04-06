@@ -461,22 +461,20 @@ void DisplayControl::makeActive()
 	qDebug() << "DisplayControl::makeActive";
 	last_event_time = now();
 
-	if (currentState() == DISPLAY_OFF || currentState() == DISPLAY_SCREENSAVER || currentState() == DISPLAY_FREEZED)
+	if (currentState() != DISPLAY_OPERATIVE)
 	{
-		if (checkPassword())
+		if (currentState() != DISPLAY_FREEZED)
 		{
-			if (currentState() != DISPLAY_FREEZED)
-			{
-				bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
-				emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER
-				if (screensaver && screensaver->isRunning())
-					screensaver->stop();
-				setState(DISPLAY_FREEZED);
-				freeze(true);
-			}
+			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+			emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER
+			if (screensaver && screensaver->isRunning())
+				screensaver->stop();
 		}
-		else
-			freeze(false);
+		// If the user has protected its touch with the password, we have to do
+		// all the things to show the event that calls the makeActive leaving
+		// the tounch in the freeze state so when the user clicks on the screen
+		// the keypad window (for inserting the password) is shown.
+		freeze(checkPassword() == true);
 	}
 }
 
