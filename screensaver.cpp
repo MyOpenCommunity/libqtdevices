@@ -24,7 +24,6 @@
 #include "timescript.h"
 #include "fontmanager.h" // bt_global::font
 #include "xml_functions.h"
-#include "homewindow.h"
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageLoad, getFileFilter
 #include "imageselectionhandler.h"
