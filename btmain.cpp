@@ -585,8 +585,8 @@ void BtMain::loadConfiguration()
 	// only to manage the ringtone and the loading of the VCTCallPage/IntercomPage.
 	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
 		(void) new VideoDoorEntry;
-
 #endif
+
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), home, SLOT(showPage()));
 	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), home, SLOT(showSectionPage(int)));
 	connect(home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
@@ -733,12 +733,6 @@ void BtMain::unrollPages()
 				break;
 			}
 		}
-}
-
-bool BtMain::canScreensaverStart()
-{
-	return !(bt_global::status.alarm_clock_on || bt_global::status.calibrating ||
-			 bt_global::status.vde_call_active);
 }
 
 Page *BtMain::screensaverTargetPage()

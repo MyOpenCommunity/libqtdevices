@@ -132,8 +132,6 @@ public:
 	// Unroll all the pages until homepage
 	void unrollPages();
 
-	bool canScreensaverStart();
-
 	Page *screensaverExitPage();
 	Page *screensaverTargetPage();
 	Window *screensaverTargetWindow();

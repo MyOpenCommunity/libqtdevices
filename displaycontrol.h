@@ -211,6 +211,7 @@ private slots:
 
 private:
 	void updateBrightnessData();
+	bool canScreensaverStart();
 
 	struct DisplayData
 	{

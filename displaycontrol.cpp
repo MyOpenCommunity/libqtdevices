@@ -22,7 +22,7 @@
 #include "displaycontrol.h"
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
-#include "btmain.h" // bt_global::btmain
+#include "btmain.h" // bt_global::btmain, bt_global::status
 #include "pagestack.h" // bt_global::page_stack
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "pagecontainer.h"
@@ -265,13 +265,19 @@ int DisplayControl::blankScreenTime()
 		return screenoff_time;
 }
 
+bool DisplayControl::canScreensaverStart()
+{
+	return !(bt_global::status.alarm_clock_on || bt_global::status.calibrating ||
+			 bt_global::status.vde_call_active);
+}
+
 void DisplayControl::checkScreensaver()
 {
 	Q_ASSERT_X(page_container, "DisplayControl::checkScreensaver", "Page container not set!");
 	if (isForcedOperativeMode())
 		return;
 
-	if (!bt_global::btmain->canScreensaverStart())
+	if (!canScreensaverStart())
 		return;
 
 	ScreenSaver::Type target_screensaver = currentScreenSaver();
@@ -355,7 +361,7 @@ void DisplayControl::checkScreensaver()
 #ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(false);
 #endif
-			if (target_window == bt_global::btmain->homeWindow())
+			if (target_page != current_page)
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_page;
 			else
 				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_window;
