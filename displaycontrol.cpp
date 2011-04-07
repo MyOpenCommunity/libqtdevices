@@ -349,10 +349,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 #ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(false);
 #endif
-			if (target_page != current_page)
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_page;
-			else
-				qDebug() << "start screensaver:" << target_screensaver << "on:" << target_window;
+			qDebug() << "start screensaver:" << target_screensaver << "on:" << target_page << target_window;
 			screensaver->start(target_window);
 			emit startscreensaver(exit_page);
 
