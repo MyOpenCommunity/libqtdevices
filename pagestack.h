@@ -61,6 +61,8 @@ Q_OBJECT
 public:
 	PageStack();
 
+	void setHomePage(Page *p);
+
 	// register when different types of window/pages are shown; must be
 	// called before Page::showPage() and Window::showWindow()
 
@@ -105,6 +107,7 @@ private slots:
 
 private:
 	QList<State> states;
+	Page *home;
 };
 
 namespace bt_global { extern PageStack page_stack; }

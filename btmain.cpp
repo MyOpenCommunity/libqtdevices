@@ -587,6 +587,7 @@ void BtMain::loadConfiguration()
 		(void) new VideoDoorEntry;
 #endif
 
+	bt_global::page_stack.setHomePage(home);
 	connect(window_container->homeWindow(), SIGNAL(showHomePage()), home, SLOT(showPage()));
 	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), home, SLOT(showSectionPage(int)));
 	connect(home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),

@@ -22,7 +22,7 @@
 #include "pagestack.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h" // homePage, bt_global::status
+#include "btmain.h" // bt_global::status
 #include "main.h" // NO_SECTION
 
 #include <QtDebug>
@@ -52,6 +52,7 @@ QObject *PageStack::State::object() const
 PageStack::PageStack()
 {
 	states.append(State(static_cast<Window*>(NULL)));
+	home = 0;
 }
 
 void PageStack::showKeypad(Window *window)
@@ -104,6 +105,11 @@ void PageStack::showState(const State &state)
 	}
 	else if (state.window)
 		state.window->showWindow();
+}
+
+void PageStack::setHomePage(Page *p)
+{
+	home = p;
 }
 
 void PageStack::currentPageChanged(Page *page)
@@ -175,6 +181,7 @@ void PageStack::removeFromStack(QObject *obj)
 
 void PageStack::clear()
 {
+	Q_ASSERT_X(home, "PageStack::clear", "HomePage not set!");
 	while (states.size() > 0)
 	{
 		State el = states.takeLast();
@@ -184,7 +191,7 @@ void PageStack::clear()
 
 	// restoring the stack to a known sane state is important if the next page
 	// pushes itself in the page stack
-	states.push_back(State(bt_global::btmain->homePage()));
+	states.push_back(State(home));
 	states[0].section_id = NO_SECTION;
 }
 
