@@ -87,6 +87,21 @@ private:
 };
 
 
+struct BtStatus
+{
+	bool calibrating;
+	bool vde_call_active;
+	QString password;
+	bool check_password;
+	bool alarm_clock_on;
+
+	BtStatus()
+	{
+		calibrating = vde_call_active = check_password = alarm_clock_on = false;
+	}
+};
+
+
 /*!
 	\ingroup Core
 	\brief The main class of the BTouch interface.
@@ -112,12 +127,7 @@ public:
 	void showHomePage();
 	Page *homePage();
 
-	static bool isCalibrating();
-	static void calibrationStarted();
-	static void calibrationEnded();
-
 	bool alarm_clock_on;
-	bool vde_call_active;
 
 	// Unroll all the pages until homepage
 	void unrollPages();
@@ -127,13 +137,6 @@ public:
 	Page *screensaverExitPage();
 	Page *screensaverTargetPage();
 	Window *screensaverTargetWindow();
-
-	/*!
-		\brief Set the password and if is active or not.
-	*/
-	void setPassword(bool enable, QString pwd);
-
-	bool checkPassword();
 
 signals:
 	void resettimer();
@@ -161,8 +164,6 @@ private:
 	QDateTime last_date_time;
 	bool already_calibrated;
 
-	static bool calibrating;
-
 	PageContainer *page_container;
 	WindowContainer *window_container;
 
@@ -171,8 +172,6 @@ private:
 	// A flag that is set when the configuration has loaded
 	bool config_loaded;
 
-	QString password;
-	bool check_password;
 	KeypadWindow *password_keypad;
 
 	void myMain();
@@ -187,5 +186,7 @@ private:
 };
 
 namespace bt_global { extern BtMain *btmain; }
+
+namespace bt_global { extern BtStatus status; }
 
 #endif// BTMAIN_H

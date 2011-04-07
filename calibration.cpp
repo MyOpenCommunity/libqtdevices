@@ -21,7 +21,7 @@
 
 #include "calibration.h"
 #include "calibration_widget.h"
-#include "btmain.h" // startCalib/endCalib
+#include "btmain.h" // bt_global::status
 #include "pagestack.h"
 
 #include <QMouseEvent>
@@ -63,13 +63,13 @@ void Calibration::showEvent(QShowEvent*)
 
 void Calibration::calibrationEnded()
 {
-	BtMain::calibrationEnded();
+	bt_global::status.calibrating = false;
 	emit Closed();
 }
 
 void Calibration::calibrationStarted()
 {
-	BtMain::calibrationStarted();
+	bt_global::status.calibrating = true;
 }
 
 

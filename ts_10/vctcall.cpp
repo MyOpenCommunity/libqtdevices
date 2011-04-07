@@ -31,13 +31,12 @@
 #include "bann2_buttons.h"
 #include "items.h" // ItemTuning
 #include "pagestack.h" // bt_global::page_stack
-#include "btmain.h" // isCalibrating, vde_call_active
+#include "btmain.h" // bt_global::status
 #include "state_button.h"
 #include "audiostatemachine.h"
 #include "homewindow.h" // TrayBar
 #include "ringtonesmanager.h" // bt_global::ringtones
 #include "main.h" // VIDEODOORENTRY
-#include "btmain.h" // makeActive
 #include "videodoorentry.h" // VideoDoorEntry::ring_exclusion
 
 #include <QDomNode>
@@ -728,7 +727,7 @@ void VCTCallPage::handleClose()
 	}
 
 	vct_call->stopVideo();
-	bt_global::btmain->vde_call_active = false;
+	bt_global::status.vde_call_active = false;
 	vct_call->enable();
 	if (!already_closed)
 		emit Closed();
@@ -799,7 +798,7 @@ void VCTCallPage::incomingCall()
 	vct_call->cycle->setStatus(StateButton::OFF);
 
 	showPage();
-	bt_global::btmain->vde_call_active = true;
+	bt_global::status.vde_call_active = true;
 }
 
 void VCTCallPage::callerAddress(QString address)
@@ -854,7 +853,7 @@ void VCTCallPage::showPage()
 	repaint();
 	// TODO the check should never be necessary (the window is never shown
 	//      during calibration)
-	if (!BtMain::isCalibrating())
+	if (!bt_global::status.calibrating)
 		vct_call->startVideo();
 }
 
@@ -909,7 +908,7 @@ void VCTCallWindow::showWindow()
 	repaint();
 	// TODO the check should never be necessary (the window is never shown
 	//      during calibration)
-	if (!BtMain::isCalibrating())
+	if (!bt_global::status.calibrating)
 		vct_call->startVideo();
 }
 

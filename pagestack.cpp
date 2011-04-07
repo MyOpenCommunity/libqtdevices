@@ -22,7 +22,7 @@
 #include "pagestack.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h" // makeActive, homePage, isCalibrating
+#include "btmain.h" // homePage, bt_global::status
 #include "main.h" // NO_SECTION
 
 #include <QtDebug>
@@ -80,7 +80,7 @@ void PageStack::addState(const State &state)
 	// the top of the stack
 	//
 	// during calibration, insert new states just below the calibration page
-	if (!BtMain::isCalibrating())
+	if (!bt_global::status.calibrating)
 		states.append(state);
 	else
 		states.insert(states.size() - 1, state);

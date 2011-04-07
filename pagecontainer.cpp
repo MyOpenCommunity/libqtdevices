@@ -23,7 +23,7 @@
 #include "transitionwidget.h"
 #include "page.h"
 #include "window.h"
-#include "btmain.h" // bt_global::btmain
+#include "btmain.h" // bt_global::status
 
 #ifdef LAYOUT_TS_10
 #include "vctcall.h"
@@ -94,7 +94,7 @@ void PageContainer::showPage(Page *p)
 #ifdef LAYOUT_TS_10
 			// We want to close the call if some events (like a new scs message
 			// or an alarm) trigger a showPage.
-			if (bt_global::btmain->vde_call_active)
+			if (bt_global::status.vde_call_active)
 			{
 				if (VCTCallPage *p = qobject_cast<VCTCallPage*>(curr))
 					p->closeCall();

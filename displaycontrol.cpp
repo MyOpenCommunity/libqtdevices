@@ -427,7 +427,7 @@ void DisplayControl::makeActive()
 		// all the things to show the event that calls the makeActive leaving
 		// the tounch in the freeze state so when the user clicks on the screen
 		// the keypad window (for inserting the password) is shown.
-		freeze(bt_global::btmain->checkPassword() == true);
+		freeze(bt_global::status.check_password == true);
 	}
 }
 

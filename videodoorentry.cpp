@@ -36,7 +36,7 @@
 #include "items.h" // ItemTuning
 #include "displaycontrol.h" // bt_global::display
 #include "hardware_functions.h" // setVolume
-#include "btmain.h" // bt_global::btmain
+#include "btmain.h" // bt_global::status
 #include "homewindow.h" // TrayBar
 #include "pagestack.h" // bt_global::page_stack
 #include "state_button.h"
@@ -579,7 +579,7 @@ void IntercomCallPage::showPageAfterCall()
 	mute_button->setStatus(StateButton::DISABLED);
 	showPage();
 	call_active = true;
-	bt_global::btmain->vde_call_active = true;
+	bt_global::status.vde_call_active = true;
 }
 
 void IntercomCallPage::showPageIncomingCall()
@@ -597,12 +597,12 @@ void IntercomCallPage::showPageIncomingCall()
 	mute_button->setStatus(StateButton::DISABLED);
 	showPage();
 	call_active = true;
-	bt_global::btmain->vde_call_active = true;
+	bt_global::status.vde_call_active = true;
 }
 
 void IntercomCallPage::handleClose()
 {
-	bt_global::btmain->vde_call_active = false;
+	bt_global::status.vde_call_active = false;
 	volume->disable();
 
 	disconnect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), this, SLOT(playRingtone()));

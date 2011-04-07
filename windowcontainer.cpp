@@ -24,8 +24,7 @@
 #include "page.h" // Page::setPageContainer
 #include "window.h" // Window::setWindowContainer
 #include "transitionwidget.h"
-#include "btmain.h" // isCalibrating
-
+#include "btmain.h" // bt_global::status
 #include <QStackedLayout>
 
 
@@ -65,7 +64,7 @@ void WindowContainer::showWindow(Window *w)
 
 	// during calibration, do not display new window/pages; the page stack
 	// will ensure that we return to the correct page after calibration
-	if (BtMain::isCalibrating())
+	if (bt_global::status.calibrating)
 		return;
 
 	currentWindow()->aboutToHideEvent();

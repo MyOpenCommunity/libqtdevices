@@ -339,16 +339,12 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	rearmWDT();
 
-	check_password = false;
 	password_keypad = 0;
 
-	calibrating = false;
 	page_default = NULL;
 	home = NULL;
 	version = NULL;
 	already_calibrated = false;
-	alarm_clock_on = false;
-	vde_call_active = false;
 
 	Window *loading = NULL;
 
@@ -741,7 +737,8 @@ void BtMain::unrollPages()
 
 bool BtMain::canScreensaverStart()
 {
-	return !(alarm_clock_on || calibrating || vde_call_active);
+	return !(bt_global::status.alarm_clock_on || bt_global::status.calibrating ||
+			 bt_global::status.vde_call_active);
 }
 
 Page *BtMain::screensaverTargetPage()
@@ -799,25 +796,6 @@ Window *BtMain::homeWindow()
 	return window_container->homeWindow();
 }
 
-bool BtMain::calibrating = false;
-
-void BtMain::calibrationStarted()
-{
-	qDebug("BtMain::calibrationStarted()");
-	calibrating = true;
-}
-
-void BtMain::calibrationEnded()
-{
-	qDebug("BtMain::calibrationEnded()");
-	calibrating = false;
-}
-
-bool BtMain::isCalibrating()
-{
-	return calibrating;
-}
-
 void BtMain::resetTimer()
 {
 	qDebug("BtMain::ResetTimer()");
@@ -835,23 +813,16 @@ void BtMain::handleSignal(int signal_number)
 	}
 }
 
-void BtMain::setPassword(bool enable, QString pwd)
-{
-	check_password = enable;
-	password = pwd;
-	qDebug() << "BtMain::setPassword new password:" << pwd << "check:" << enable;
-}
-
 void BtMain::testPassword()
 {
 	QString text = password_keypad->getText();
 	if (!text.isEmpty())
 	{
-		if (text != password)
+		if (text != bt_global::status.password)
 		{
 			password_keypad->resetText();
 			qDebug() << "BtMain::testPassword the input text" << text
-				<< "doesn't match the password" << password;
+				<< "doesn't match the password" << bt_global::status.password;
 		}
 		else
 		{
@@ -862,11 +833,6 @@ void BtMain::testPassword()
 			password_keypad = 0;
 		}
 	}
-}
-
-bool BtMain::checkPassword()
-{
-	return check_password;
 }
 
 void BtMain::showPasswordKeypad()
@@ -882,10 +848,13 @@ void BtMain::showPasswordKeypad()
 
 void BtMain::showKeypadIfNeeded()
 {
-	if (checkPassword())
+	if (bt_global::status.check_password)
 		showPasswordKeypad();
 }
 
 // The global definition of btmain pointer
 BtMain *bt_global::btmain;
+
+// The global BTouch status
+BtStatus bt_global::status;
 
