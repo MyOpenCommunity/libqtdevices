@@ -162,14 +162,7 @@ public:
 	*/
 	bool isDirectScreenAccess();
 
-	/*!
-		\brief Set the password and if is active or not.
-	*/
-	void setPassword(bool enable, QString pwd);
 
-	bool checkPassword();
-
-	void showPasswordKeypad();
 
 	// take into account selected screensaver when computing freeze/blank screen times
 	//
@@ -207,11 +200,13 @@ signals:
 	void startscreensaver(Page*);
 	void stopscreensaver();
 
+	void unfreezed();
+	void freezed();
+
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 
 private slots:
-	void testPassword();
 	void checkScreensaver();
 
 private:
@@ -229,10 +224,6 @@ private:
 	DisplayStatus current_state;
 	bool forced_operative_mode;
 	int operative_brightness, direct_screen_access;
-
-	QString password;
-	bool check_password;
-	KeypadWindow *password_keypad;
 
 	// the three values below are in seconds; screenoff_time can be 0
 	// it must always be screensaver_time < screenoff_time

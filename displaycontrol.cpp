@@ -23,10 +23,10 @@
 #include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
 #include "btmain.h" // bt_global::btmain
-#include "keypad.h" // KeypadWindow
 #include "pagestack.h" // bt_global::page_stack
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "pagecontainer.h"
+#include "page.h"
 
 #include <QEvent>
 #include <QTimer>
@@ -45,9 +45,6 @@ DisplayControl::DisplayControl()
 {
 	forced_operative_mode = false;
 	direct_screen_access = 0;
-
-	check_password = false;
-	password_keypad = 0;
 
 	freeze_time = 30;
 	screensaver_time = 60;
@@ -235,51 +232,6 @@ bool DisplayControl::eventFilter(QObject *obj, QEvent *ev)
 	return true;
 }
 
-void DisplayControl::setPassword(bool enable, QString pwd)
-{
-	check_password = enable;
-	password = pwd;
-	qDebug() << "DisplayControl::setPassword new password:" << pwd << "check:" << enable;
-}
-
-void DisplayControl::testPassword()
-{
-	QString text = password_keypad->getText();
-	if (!text.isEmpty())
-	{
-		if (text != password)
-		{
-			password_keypad->resetText();
-			qDebug() << "DisplayControl::testPassword the input text" << text
-				<< "doesn't match the password" << password;
-		}
-		else
-		{
-			qDebug() << "DisplayControl::testPassword password ok";
-			bt_global::page_stack.closeWindow(password_keypad);
-			password_keypad->disconnect();
-			password_keypad->deleteLater();
-			password_keypad = 0;
-		}
-	}
-}
-
-bool DisplayControl::checkPassword()
-{
-	return check_password;
-}
-
-void DisplayControl::showPasswordKeypad()
-{
-	if (!password_keypad)
-	{
-		password_keypad = new KeypadWindow(Keypad::HIDDEN);
-		connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
-	}
-	bt_global::page_stack.showKeypad(password_keypad);
-	password_keypad->showWindow();
-}
-
 void DisplayControl::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
 {
 	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
@@ -419,6 +371,9 @@ void DisplayControl::checkScreensaver()
 void DisplayControl::freeze(bool b)
 {
 	qDebug("DisplayControl::freeze(%d)", b);
+	if (b == frozen)
+		return;
+
 	frozen = b;
 
 	if (!frozen)
@@ -443,16 +398,14 @@ void DisplayControl::freeze(bool b)
 		}
 
 		setState(DISPLAY_OPERATIVE);
-
-		if (checkPassword())
-			showPasswordKeypad();
-
 		qApp->removeEventFilter(bt_global::display);
+		emit unfreezed();
 	}
 	else
 	{
 		setState(DISPLAY_FREEZED);
 		qApp->installEventFilter(bt_global::display);
+		emit freezed();
 	}
 }
 
@@ -474,7 +427,7 @@ void DisplayControl::makeActive()
 		// all the things to show the event that calls the makeActive leaving
 		// the tounch in the freeze state so when the user clicks on the screen
 		// the keypad window (for inserting the password) is shown.
-		freeze(checkPassword() == true);
+		freeze(bt_global::btmain->checkPassword() == true);
 	}
 }
 

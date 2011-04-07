@@ -44,6 +44,7 @@
 #include "windowcontainer.h"
 #include "ringtonesmanager.h"
 #include "videodoorentry.h"
+#include "keypad.h" // KeypadWindow
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -334,8 +335,12 @@ BtMain::BtMain(int openserver_reconnection_time)
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
 	bt_global::display->setPageContainer(page_container);
+	connect(bt_global::display, SIGNAL(unfreezed()), SLOT(showKeypadIfNeeded()));
 
 	rearmWDT();
+
+	check_password = false;
+	password_keypad = 0;
 
 	calibrating = false;
 	page_default = NULL;
@@ -828,6 +833,57 @@ void BtMain::handleSignal(int signal_number)
 		qDebug("Terminating on SIGTERM");
 		qApp->quit();
 	}
+}
+
+void BtMain::setPassword(bool enable, QString pwd)
+{
+	check_password = enable;
+	password = pwd;
+	qDebug() << "BtMain::setPassword new password:" << pwd << "check:" << enable;
+}
+
+void BtMain::testPassword()
+{
+	QString text = password_keypad->getText();
+	if (!text.isEmpty())
+	{
+		if (text != password)
+		{
+			password_keypad->resetText();
+			qDebug() << "BtMain::testPassword the input text" << text
+				<< "doesn't match the password" << password;
+		}
+		else
+		{
+			qDebug() << "BtMain::testPassword password ok";
+			bt_global::page_stack.closeWindow(password_keypad);
+			password_keypad->disconnect();
+			password_keypad->deleteLater();
+			password_keypad = 0;
+		}
+	}
+}
+
+bool BtMain::checkPassword()
+{
+	return check_password;
+}
+
+void BtMain::showPasswordKeypad()
+{
+	if (!password_keypad)
+	{
+		password_keypad = new KeypadWindow(Keypad::HIDDEN);
+		connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
+	}
+	bt_global::page_stack.showKeypad(password_keypad);
+	password_keypad->showWindow();
+}
+
+void BtMain::showKeypadIfNeeded()
+{
+	if (checkPassword())
+		showPasswordKeypad();
 }
 
 // The global definition of btmain pointer

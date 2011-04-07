@@ -37,6 +37,7 @@ class PageContainer;
 class WindowContainer;
 class Window;
 class TrayBar;
+class KeypadWindow;
 
 class QPixmap;
 class QString;
@@ -127,6 +128,13 @@ public:
 	Page *screensaverTargetPage();
 	Window *screensaverTargetWindow();
 
+	/*!
+		\brief Set the password and if is active or not.
+	*/
+	void setPassword(bool enable, QString pwd);
+
+	bool checkPassword();
+
 signals:
 	void resettimer();
 
@@ -137,6 +145,8 @@ private slots:
 	void connectionReady();
 	void startGui();
 	void handleSignal(int signal_number);
+	void testPassword();
+	void showKeypadIfNeeded();
 
 private:
 	QHash<int, Clients> clients;
@@ -161,12 +171,19 @@ private:
 	// A flag that is set when the configuration has loaded
 	bool config_loaded;
 
+	QString password;
+	bool check_password;
+	KeypadWindow *password_keypad;
+
 	void myMain();
 	/// Load the main configuration
 	void loadConfiguration();
 
 	// Load the global configuration (the item in "generale" section of xml config file)
 	void loadGlobalConfig();
+
+	void showPasswordKeypad();
+
 };
 
 namespace bt_global { extern BtMain *btmain; }
