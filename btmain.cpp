@@ -78,7 +78,7 @@
 
 #define DEBUG_MOUSEPRESS 0
 
-#define APPLICATION_CHECK 2000
+#define ACTIVITIES_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
 
 #if LAYOUT_TS_3_5
@@ -687,8 +687,8 @@ void BtMain::myMain()
 
 void BtMain::startGui()
 {
-	// start the display activities (ie: screensaver) when the home page is shown
-	bt_global::display->startActivities();
+	// start counting the time elapsed to manage freeze/screensaver..
+	bt_global::display->startTime();
 
 	home->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
@@ -696,9 +696,9 @@ void BtMain::startGui()
 	page_container->blockTransitions(false);
 	window_container->homeWindow()->showWindow();
 
-	application_timer = new QTimer(this);
-	application_timer->start(APPLICATION_CHECK);
-	connect(application_timer, SIGNAL(timeout()), SLOT(checkApplication()));
+	activities_timer = new QTimer(this);
+	activities_timer->start(ACTIVITIES_CHECK);
+	connect(activities_timer, SIGNAL(timeout()), SLOT(checkActivities()));
 }
 
 void BtMain::showHomePage()
@@ -758,7 +758,7 @@ Window *BtMain::screensaverTargetWindow()
 	return window_container->currentWindow();
 }
 
-void BtMain::checkApplication()
+void BtMain::checkActivities()
 {
 	rearmWDT();
 
@@ -778,6 +778,12 @@ void BtMain::checkApplication()
 	if (LastClickTime::isPressed())
 		return;
 #endif
+
+	Page *target_page = screensaverTargetPage();
+	Window *target_window = screensaverTargetWindow();
+	Page *exit_page = screensaverExitPage();
+
+	bt_global::display->checkScreensaver(target_page, target_window, exit_page);
 }
 
 TrayBar *BtMain::trayBar()

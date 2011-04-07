@@ -132,16 +132,12 @@ public:
 	// Unroll all the pages until homepage
 	void unrollPages();
 
-	Page *screensaverExitPage();
-	Page *screensaverTargetPage();
-	Window *screensaverTargetWindow();
-
 signals:
 	void resettimer();
 
 private slots:
 	void init();
-	void checkApplication();
+	void checkActivities();
 	void waitBeforeInit();
 	void connectionReady();
 	void startGui();
@@ -158,7 +154,7 @@ private:
 	HomePage *home;
 	Page *page_default;
 
-	QTimer *application_timer;
+	QTimer *activities_timer;
 	QDateTime last_date_time;
 	bool already_calibrated;
 
@@ -181,6 +177,9 @@ private:
 
 	void showPasswordKeypad();
 
+	Page *screensaverExitPage();
+	Page *screensaverTargetPage();
+	Window *screensaverTargetWindow();
 };
 
 namespace bt_global { extern BtMain *btmain; }

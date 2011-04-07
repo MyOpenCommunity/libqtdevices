@@ -162,8 +162,6 @@ public:
 	*/
 	bool isDirectScreenAccess();
 
-
-
 	// take into account selected screensaver when computing freeze/blank screen times
 	//
 	// if the user is idle for this number of seconds, freeze the screen
@@ -182,7 +180,9 @@ public:
 	/// Freeze or unfreeze the application
 	void freeze(bool freeze);
 
-	void startActivities();
+	void checkScreensaver(Page *target_page, Window *target_window, Page *exit_page);
+
+	void startTime();
 
 signals:
 	/*!
@@ -205,9 +205,6 @@ signals:
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
-
-private slots:
-	void checkScreensaver();
 
 private:
 	void updateBrightnessData();
@@ -232,7 +229,6 @@ private:
 	int screensaver_time;
 	int screenoff_time;
 
-	QTimer *screensaver_timer;
 	ScreenSaver *screensaver;
 	bool frozen;
 	int last_event_time;

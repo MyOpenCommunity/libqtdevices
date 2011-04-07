@@ -29,10 +29,7 @@
 #include "page.h"
 
 #include <QEvent>
-#include <QTimer>
 #include <QApplication>
-
-#define SCREENSAVER_CHECK 2000
 
 
 static unsigned long now()
@@ -76,14 +73,10 @@ void DisplayControl::setPageContainer(PageContainer *c)
 	page_container = c;
 }
 
-void DisplayControl::startActivities()
+void DisplayControl::startTime()
 {
 	// start the screensaver countdown
 	last_event_time = now();
-
-	screensaver_timer = new QTimer(this);
-	screensaver_timer->start(SCREENSAVER_CHECK);
-	connect(screensaver_timer, SIGNAL(timeout()), SLOT(checkScreensaver()));
 }
 
 void DisplayControl::updateBrightnessData()
@@ -271,7 +264,7 @@ bool DisplayControl::canScreensaverStart()
 			 bt_global::status.vde_call_active);
 }
 
-void DisplayControl::checkScreensaver()
+void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, Page *exit_page)
 {
 	Q_ASSERT_X(page_container, "DisplayControl::checkScreensaver", "Page container not set!");
 	if (isForcedOperativeMode())
@@ -318,8 +311,6 @@ void DisplayControl::checkScreensaver()
 	}
 	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
 	{
-		Page *target_page = bt_global::btmain->screensaverTargetPage();
-
 		if (currentState() == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
 		{
 			target_page->showPage();
@@ -335,9 +326,6 @@ void DisplayControl::checkScreensaver()
 
 			if (!screensaver)
 				screensaver = getScreenSaver(target_screensaver);
-
-			Window *target_window = bt_global::btmain->screensaverTargetWindow();
-			Page *exit_page = bt_global::btmain->screensaverExitPage();
 
 			Page *current_page = page_container->currentPage();
 
