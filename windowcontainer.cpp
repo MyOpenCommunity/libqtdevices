@@ -29,9 +29,9 @@
 #include <QStackedLayout>
 
 
-WindowContainer::WindowContainer(int width, int height)
-	: transition_widget(0)
+WindowContainer::WindowContainer(int width, int height, QWidget *parent) : QStackedWidget(parent)
 {
+	transition_widget = 0;
 	// needs to be done before HomeWindow is constructed
 	Window::window_container = this;
 

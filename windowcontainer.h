@@ -46,7 +46,7 @@ public:
 		Construct the %WindowContainer setting also the Window::window_container
 		to itself.
 	*/
-	WindowContainer(int width, int height);
+	WindowContainer(int width, int height, QWidget *parent = 0);
 
 
 	/*!
