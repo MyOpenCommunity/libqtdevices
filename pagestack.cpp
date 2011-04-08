@@ -48,7 +48,6 @@ QObject *PageStack::State::object() const
 	return page ? static_cast<QObject*>(page) : static_cast<QObject*>(window);
 }
 
-
 PageStack::PageStack()
 {
 	states.append(State(static_cast<Window*>(NULL)));

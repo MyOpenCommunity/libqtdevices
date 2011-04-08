@@ -44,7 +44,7 @@ public:
 	/*!
 		\brief Build the %WindowContainer with the given \a width and \a height.
 
-		Constuct the %WindowContainer setting also the Window::window_container
+		Construct the %WindowContainer setting also the Window::window_container
 		to itself and building thee HomeWindow. It also set the PageContainer
 		built inside the HomeWindow as the PageContainer for all the pages.
 	*/
