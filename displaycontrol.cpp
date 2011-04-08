@@ -334,7 +334,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 #endif
 			if (exit_page != current_page)
 			{
-				bt_global::btmain->unrollPages();
+				emit unrollPages();
 				target_page->showPage();
 				target_window->showWindow();
 			}

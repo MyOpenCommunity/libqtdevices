@@ -20,11 +20,12 @@
 
 
 #include "windowcontainer.h"
-#include "homewindow.h"
 #include "page.h" // Page::setPageContainer
 #include "window.h" // Window::setWindowContainer
 #include "transitionwidget.h"
 #include "btmain.h" // bt_global::status
+
+
 #include <QStackedLayout>
 
 
@@ -33,8 +34,6 @@ WindowContainer::WindowContainer(int width, int height)
 {
 	// needs to be done before HomeWindow is constructed
 	Window::window_container = this;
-
-	main = new HomeWindow;
 
 	QStackedLayout *root_layout = static_cast<QStackedLayout *>(layout());
 	root_layout->setSpacing(0);
@@ -47,8 +46,6 @@ WindowContainer::WindowContainer(int width, int height)
 	setWindowTitle(tr("BTouch"));
 #endif
 	setFixedSize(width, height);
-
-	Page::setPageContainer(main->centralLayout());
 }
 
 void WindowContainer::addWindow(Window *w)
@@ -71,16 +68,6 @@ void WindowContainer::showWindow(Window *w)
 	setCurrentWidget(w);
 }
 
-PageContainer *WindowContainer::centralLayout()
-{
-	return main->centralLayout();
-}
-
-HomeWindow *WindowContainer::homeWindow()
-{
-	return main;
-}
-
 Window *WindowContainer::currentWindow()
 {
 	return static_cast<Window*>(currentWidget());
@@ -98,10 +85,5 @@ void WindowContainer::installTransitionWidget(TransitionWidget *tr)
 	transition_widget = tr;
 	addWidget(transition_widget);
 	transition_widget->setContainer(this);
-}
-
-QPixmap WindowContainer::grabHomeWindow()
-{
-	return QPixmap::grabWidget(main);
 }
 

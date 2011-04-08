@@ -40,13 +40,15 @@ void TransitionWidget::cancelTransition()
 
 void TransitionWidget::prepareTransition()
 {
-	prev_image = container->grabHomeWindow();
+//	prev_image = container->grabHomeWindow();
 	container->setCurrentWidget(this);
 }
 
 void TransitionWidget::startTransition()
 {
-	dest_image = container->grabHomeWindow();
+	// Why homeWindow and not currentWindow? For now I don't care because the
+	// transition effects are always disabled
+//	dest_image = container->grabHomeWindow();
 	initTransition();
 
 	timeline.start();

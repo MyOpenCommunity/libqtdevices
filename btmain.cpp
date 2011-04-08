@@ -22,6 +22,7 @@
 #include "btmain.h"
 #include "main.h" // (*bt_global::config)
 #include "homepage.h"
+#include "homewindow.h"
 #include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "openclient.h"
@@ -330,19 +331,24 @@ BtMain::BtMain(int openserver_reconnection_time)
 	}
 
 	window_container = new WindowContainer(maxWidth(), maxHeight());
-	page_container = window_container->centralLayout();
+
+	home_window = new HomeWindow;
+	page_container = home_window->centralLayout();
+	Page::setPageContainer(page_container);
+
 	page_container->blockTransitions(true); // no transitions until homepage is showed
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
 	bt_global::display->setPageContainer(page_container);
 	connect(bt_global::display, SIGNAL(unfreezed()), SLOT(showKeypadIfNeeded()));
+	connect(bt_global::display, SIGNAL(unrollPages()), SLOT(unrollPages()));
 
 	rearmWDT();
 
 	password_keypad = 0;
 
 	page_default = NULL;
-	home = NULL;
+	home_page = NULL;
 	version = NULL;
 	already_calibrated = false;
 
@@ -559,7 +565,7 @@ void BtMain::loadConfiguration()
 #endif
 	bt_global::display->current_screensaver = type;
 
-	window_container->homeWindow()->loadConfiguration();
+	home_window->loadConfiguration();
 
 #ifdef CONFIG_TS_3_5
 	QDomNode gui_node = getConfElement("displaypages");
@@ -567,7 +573,7 @@ void BtMain::loadConfiguration()
 	// homePage must be built after the loading of the configuration,
 	// to ensure that values displayed (by homePage or its child pages)
 	// is in according with saved values.
-	home = new HomePage(pagemenu_home);
+	home_page = new HomePage(pagemenu_home);
 
 	QString orientation = getTextChild(gui_node, "orientation");
 	if (!orientation.isNull())
@@ -576,7 +582,7 @@ void BtMain::loadConfiguration()
 	QDomNode gui_node = getConfElement("gui");
 	// TODO read the id from the <homepage> node
 	QDomNode pagemenu_home = getHomepageNode();
-	home = new HomePage(pagemenu_home);
+	home_page = new HomePage(pagemenu_home);
 
 	QDomNode video_node = getPageNode(VIDEODOORENTRY);
 	// Touch X can receive calls even if the videodoorentry section is not
@@ -587,17 +593,17 @@ void BtMain::loadConfiguration()
 		(void) new VideoDoorEntry;
 #endif
 
-	bt_global::page_stack.setHomePage(home);
-	connect(window_container->homeWindow(), SIGNAL(showHomePage()), home, SLOT(showPage()));
-	connect(window_container->homeWindow(), SIGNAL(showSectionPage(int)), home, SLOT(showSectionPage(int)));
-	connect(home, SIGNAL(iconStateChanged(int,StateButton::Status)), window_container->homeWindow(),
+	bt_global::page_stack.setHomePage(home_page);
+	connect(home_window, SIGNAL(showHomePage()), home_page, SLOT(showPage()));
+	connect(home_window, SIGNAL(showSectionPage(int)), home_page, SLOT(showSectionPage(int)));
+	connect(home_page, SIGNAL(iconStateChanged(int,StateButton::Status)), home_window,
 		SLOT(iconStateChanged(int,StateButton::Status)));
 
 	QDomNode home_node = getChildWithName(gui_node, "homepage");
 	if (getTextChild(home_node, "isdefined").toInt())
 	{
 		int id_default = getTextChild(home_node, "id").toInt();
-		page_default = !id_default ? home : getPage(id_default);
+		page_default = !id_default ? home_page : getPage(id_default);
 	}
 
 	// Transition effects are for now disabled!
@@ -614,7 +620,7 @@ void BtMain::init()
 	loadConfiguration();
 
 	if (page_default)
-		connect(page_default, SIGNAL(Closed()), home, SLOT(showPage()));
+		connect(page_default, SIGNAL(Closed()), home_page, SLOT(showPage()));
 	// The stylesheet can contain some references to dynamic properties,
 	// so loading of css must be done after setting these properties (otherwise
 	// it might be necessary to force a stylesheet recomputation).
@@ -658,7 +664,7 @@ void BtMain::myMain()
 		disconnect(manager, 0, this, 0);
 	}
 
-	home->inizializza();
+	home_page->inizializza();
 	if (version)
 		version->inizializza();
 
@@ -691,11 +697,11 @@ void BtMain::startGui()
 	// start counting the time elapsed to manage freeze/screensaver..
 	bt_global::display->startTime();
 
-	home->showPage();
+	home_page->showPage();
 	// this needs to be after the showPage, and will be a no-op until transitions
 	// between windows are implemented
 	page_container->blockTransitions(false);
-	window_container->homeWindow()->showWindow();
+	home_window->showWindow();
 
 	activities_timer = new QTimer(this);
 	activities_timer->start(ACTIVITIES_CHECK);
@@ -704,19 +710,19 @@ void BtMain::startGui()
 
 void BtMain::showHomePage()
 {
-	home->showPage();
+	home_page->showPage();
 }
 
 Page *BtMain::homePage()
 {
-	return home;
+	return home_page;
 }
 
 void BtMain::unrollPages()
 {
 	int seq_pages = 0;
 	if (page_container->currentPage() != page_default && page_container->currentPage() != version)
-		while (page_container->currentPage() != home)
+		while (page_container->currentPage() != home_page)
 		{
 			Page *curr = page_container->currentPage();
 			if (curr)
@@ -789,12 +795,12 @@ void BtMain::checkActivities()
 
 TrayBar *BtMain::trayBar()
 {
-	return window_container->homeWindow()->tray_bar;
+	return home_window->tray_bar;
 }
 
 Window *BtMain::homeWindow()
 {
-	return window_container->homeWindow();
+	return home_window;
 }
 
 void BtMain::resetTimer()

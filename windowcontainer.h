@@ -25,7 +25,6 @@
 #include <QStackedWidget>
 
 class PageContainer;
-class HomeWindow;
 class Window;
 class TransitionWidget;
 class QPixmap;
@@ -45,17 +44,10 @@ public:
 		\brief Build the %WindowContainer with the given \a width and \a height.
 
 		Construct the %WindowContainer setting also the Window::window_container
-		to itself and building thee HomeWindow. It also set the PageContainer
-		built inside the HomeWindow as the PageContainer for all the pages.
+		to itself.
 	*/
 	WindowContainer(int width, int height);
 
-	PageContainer *centralLayout();
-
-	/*!
-		\brief Return the HomeWindow.
-	*/
-	HomeWindow *homeWindow();
 
 	/*!
 		\brief Return the current Window displayed.
@@ -79,12 +71,8 @@ public:
 	*/
 	void installTransitionWidget(TransitionWidget *tr);
 
-	QPixmap grabHomeWindow();
-
 private:
 	TransitionWidget *transition_widget;
-
-	HomeWindow *main;
 };
 
 #endif // WINDOWCONTAINER_H

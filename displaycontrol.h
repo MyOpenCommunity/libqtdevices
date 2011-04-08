@@ -203,6 +203,8 @@ signals:
 	void unfreezed();
 	void freezed();
 
+	void unrollPages();
+
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
 

@@ -31,6 +31,7 @@
 
 class Version;
 class HomePage;
+class HomeWindow;
 class Client;
 class Page;
 class PageContainer;
@@ -129,9 +130,6 @@ public:
 
 	bool alarm_clock_on;
 
-	// Unroll all the pages until homepage
-	void unrollPages();
-
 signals:
 	void resettimer();
 
@@ -145,13 +143,17 @@ private slots:
 	void testPassword();
 	void showKeypadIfNeeded();
 
+	// Unroll all the pages until homepage
+	void unrollPages();
+
 private:
 	QHash<int, Clients> clients;
 	QHash<int, ClientReader*> monitors;
 
 	QHash<int, Page*> page_list;
 	QTime *boot_time;
-	HomePage *home;
+	HomePage *home_page;
+	HomeWindow *home_window;
 	Page *page_default;
 
 	QTimer *activities_timer;
