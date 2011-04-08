@@ -28,15 +28,19 @@ HEADERS += xmldevice_tester.h \
 	test_bttime.h \
 	test_clientwriter.h \
 	test_delayedslotcaller.h \
+	test_displaycontrol.h \
 	test_imageselection.h \
 	test_scenevodevicescond.h \
 	test_xmlclient.h \
 	test_xmldevice.h \
 	test_functions.h \
 	../devices/test/openserver_mock.h \
+	../audiostatemachine.h \
 	../btbutton.h \
 	../bttime.h \
+	../delayedslotcaller.h \
 	../devices_cache.h \
+	../displaycontrol.h \
 	../fontmanager.h \
 	../frame_classes.h \
 	../frame_functions.h \
@@ -44,14 +48,23 @@ HEADERS += xmldevice_tester.h \
 	../hardware_functions.h \
 	../icondispatcher.h \
 	../imageselectionhandler.h \
+	../pagecontainer.h \
+	../pagestack.h \
+	../page.h \
 	../main.h \
 	../openclient.h \
 	../scaleconversion.h \
 	../scenevodevicescond.h \
+	../screensaver.h \
 	../skinmanager.h \
+	../statemachine.h \
+	../styledwidget.h \
+	../timescript.h \
+	../transitionwidget.h \
+	../window.h \
+	../windowcontainer.h \
 	../xml_functions.h \
 	../xmlclient.h \
-	../delayedslotcaller.h \
 	../xmldevice.h
 
 SOURCES += xmldevice_tester.cpp \
@@ -59,15 +72,19 @@ SOURCES += xmldevice_tester.cpp \
 	test_bttime.cpp \
 	test_clientwriter.cpp \
 	test_delayedslotcaller.cpp \
+	test_displaycontrol.cpp \
 	test_imageselection.cpp \
 	test_scenevodevicescond.cpp \
 	test_xmlclient.cpp \
 	test_xmldevice.cpp \
 	test_functions.cpp \
 	../devices/test/openserver_mock.cpp \
+	../audiostatemachine_x11.cpp \
 	../btbutton.cpp \
 	../bttime.cpp \
+	../delayedslotcaller.cpp \
 	../devices_cache.cpp \
+	../displaycontrol.cpp \
 	../fontmanager.cpp \
 	../frame_classes.cpp \
 	../frame_functions.cpp \
@@ -75,13 +92,22 @@ SOURCES += xmldevice_tester.cpp \
 	../hardware_functions_x11.cpp \
 	../icondispatcher.cpp \
 	../imageselectionhandler.cpp \
+	../pagecontainer.cpp \
+	../pagestack.cpp \
+	../page.cpp \
 	../openclient.cpp \
 	../scaleconversion.cpp \
 	../scenevodevicescond.cpp \
+	../screensaver.cpp \
 	../skinmanager.cpp \
+	../statemachine.cpp \
+	../styledwidget.cpp \
+	../timescript.cpp \
+	../transitionwidget.cpp \
+	../window.cpp \
+	../windowcontainer.cpp \
 	../xml_functions.cpp \
 	../xmlclient.cpp \
-	../delayedslotcaller.cpp \
 	../xmldevice.cpp \
 	../definitions.cpp
 

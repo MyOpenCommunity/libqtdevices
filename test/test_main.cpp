@@ -22,6 +22,7 @@
 #include <QtTest/QtTest>
 #include <QList>
 #include <QRegExp>
+#include <QApplication>
 
 #include <iostream>
 
@@ -32,12 +33,17 @@
 #include "test_xmldevice.h"
 #include "test_clientwriter.h"
 #include "test_delayedslotcaller.h"
+#include "test_displaycontrol.h"
+#include "btmain.h"
 #include "main.h"
+
+
+BtStatus bt_global::status;
 
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication app(argc, argv);
+	QApplication app(argc, argv);
 	QList<QObject *> test_list;
 
 	// Initialize the config object for tests.
@@ -65,6 +71,9 @@ int main(int argc, char *argv[])
 
 	TestDelayedSlotCaller test_delayedslotcaller;
 	test_list << &test_delayedslotcaller;
+
+	TestDisplayControl test_displaycontrol;
+	test_list << &test_displaycontrol;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
