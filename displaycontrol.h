@@ -80,6 +80,7 @@ class DisplayControl : public QObject
 {
 Q_OBJECT
 friend class BtMain;
+friend class TestDisplayControl;
 public:
 	DisplayControl();
 	~DisplayControl();
@@ -87,14 +88,9 @@ public:
 	void setPageContainer(PageContainer *c);
 
 	/*!
-		\brief Set the state of the display
+	  \brief Change the brightness without changing the display state.
 	*/
-	void setState(DisplayStatus status);
-
-	/*!
-		\brief Retrieve the current state of the display.
-	*/
-	DisplayStatus currentState();
+	void changeBrightness(DisplayStatus status);
 
 	/*!
 		\brief Set the brightness to be used in operative mode.
@@ -162,15 +158,6 @@ public:
 	*/
 	bool isDirectScreenAccess();
 
-	// take into account selected screensaver when computing freeze/blank screen times
-	//
-	// if the user is idle for this number of seconds, freeze the screen
-	int freezeTime();
-	// if the user is idle for this number of seconds, start the screen saver
-	int screensaverTime();
-	// if the user is idle for this number of seconds, turn off the screen
-	int blankScreenTime();
-
 	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
@@ -211,6 +198,18 @@ protected:
 private:
 	void updateBrightnessData();
 	bool canScreensaverStart();
+
+	// Set the state of the display
+	void setState(DisplayStatus status);
+
+	// take into account selected screensaver when computing freeze/blank screen times
+	//
+	// if the user is idle for this number of seconds, freeze the screen
+	int freezeTime();
+	// if the user is idle for this number of seconds, start the screen saver
+	int screensaverTime();
+	// if the user is idle for this number of seconds, turn off the screen
+	int blankScreenTime();
 
 	struct DisplayData
 	{

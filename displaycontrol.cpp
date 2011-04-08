@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -28,6 +28,7 @@
 #include "pagecontainer.h"
 #include "page.h"
 
+#include <QDebug>
 #include <QEvent>
 #include <QApplication>
 
@@ -61,6 +62,7 @@ DisplayControl::DisplayControl()
 #endif
 
 	setState(DISPLAY_OPERATIVE);
+	current_screensaver = ScreenSaver::LINES;
 }
 
 DisplayControl::~DisplayControl()
@@ -180,20 +182,18 @@ bool DisplayControl::isDirectScreenAccess()
 	return direct_screen_access != 0;
 }
 
+void DisplayControl::changeBrightness(DisplayStatus status)
+{
+	setBacklight(data[status].backlight);
+	setBrightnessLevel(data[status].brightness);
+}
+
 void DisplayControl::setState(DisplayStatus status)
 {
 	if (!forced_operative_mode || (forced_operative_mode && status == DISPLAY_OPERATIVE))
-	{
-		setBacklight(data[status].backlight);
-		setBrightnessLevel(data[status].brightness);
-	}
+		changeBrightness(status);
 
 	current_state = status;
-}
-
-DisplayStatus DisplayControl::currentState()
-{
-	return current_state;
 }
 
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
@@ -248,11 +248,9 @@ int DisplayControl::screensaverTime()
 
 int DisplayControl::blankScreenTime()
 {
-	ScreenSaver::Type target_screensaver = currentScreenSaver();
-
 	if (screenoff_time == 0)
 		return 0;
-	else if (target_screensaver == ScreenSaver::NONE)
+	else if (current_screensaver == ScreenSaver::NONE)
 		return screenoff_time - screensaver_time;
 	else
 		return screenoff_time;
@@ -273,22 +271,20 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 	if (!canScreensaverStart())
 		return;
 
-	ScreenSaver::Type target_screensaver = currentScreenSaver();
 #ifdef BT_HARDWARE_TS_3_5
 	// When the brightness is set to off in the old hardware the display
 	// is not really off, so it is required to use a screensaver to protect
 	// the display, even if the screensaver is not visible.
 	if (inactiveBrightness() == BRIGHTNESS_OFF)
-		target_screensaver = ScreenSaver::LINES;
+		current_screensaver = ScreenSaver::LINES;
 #endif
 	int time_press = getTimePress();
 	int time = qMin(time_press, abs(int(now() - last_event_time)));
-
 	int blank_time = blankScreenTime();
 
 	if (blank_time != 0 &&
-		((currentState() == DISPLAY_SCREENSAVER && time >= blank_time) ||
-		 (currentState() == DISPLAY_FREEZED && target_screensaver == ScreenSaver::NONE && time >= blank_time)))
+		((current_state == DISPLAY_SCREENSAVER && time >= blank_time) ||
+		 (current_state == DISPLAY_FREEZED && current_screensaver == ScreenSaver::NONE && time >= blank_time)))
 	{
 		qDebug() << "Turning screen off";
 		// the stopscreensaver() event is emitted when the user clicks on screen
@@ -301,7 +297,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 			// the screen turn off.
 			emit startscreensaver(page_container->currentPage());
 		}
-		if (currentState() != DISPLAY_SCREENSAVER)
+		if (current_state != DISPLAY_SCREENSAVER)
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 		setState(DISPLAY_OFF);
 	}
@@ -309,23 +305,23 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 	{
 		freeze(true);
 	}
-	else if (time >= screensaverTime() && target_screensaver != ScreenSaver::NONE)
+	else if (time >= screensaverTime() && current_screensaver != ScreenSaver::NONE)
 	{
-		if (currentState() == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
+		if (current_state == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
 		{
 			target_page->showPage();
 		}
 
-		if (currentState() == DISPLAY_FREEZED)
+		if (current_state == DISPLAY_FREEZED)
 		{
-			if (screensaver && screensaver->type() != target_screensaver)
+			if (screensaver && screensaver->type() != current_screensaver)
 			{
 				delete screensaver;
 				screensaver = 0;
 			}
 
 			if (!screensaver)
-				screensaver = getScreenSaver(target_screensaver);
+				screensaver = getScreenSaver(current_screensaver);
 
 			Page *current_page = page_container->currentPage();
 
@@ -349,7 +345,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 #ifdef LAYOUT_TS_3_5
 			page_container->blockTransitions(false);
 #endif
-			qDebug() << "start screensaver:" << target_screensaver << "on:" << target_page << target_window;
+			qDebug() << "start screensaver:" << current_screensaver << "on:" << target_page << target_window;
 			screensaver->start(target_window);
 			emit startscreensaver(exit_page);
 
@@ -375,7 +371,7 @@ void DisplayControl::freeze(bool b)
 
 		// in this case the screeensaver is not running, to reduce power consumption,
 		// but the state is as if it were
-		if (currentState() == DISPLAY_OFF)
+		if (current_state == DISPLAY_OFF)
 		{
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
 			emit stopscreensaver();
@@ -405,9 +401,9 @@ void DisplayControl::makeActive()
 	qDebug() << "DisplayControl::makeActive";
 	last_event_time = now();
 
-	if (currentState() != DISPLAY_OPERATIVE)
+	if (current_state != DISPLAY_OPERATIVE)
 	{
-		if (currentState() != DISPLAY_FREEZED)
+		if (current_state != DISPLAY_FREEZED)
 		{
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
 			emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER

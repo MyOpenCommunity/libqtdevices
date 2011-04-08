@@ -402,9 +402,9 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	if (contaBuzzer % 8 == 0)
-		bt_global::display->setState(DISPLAY_OPERATIVE);
+		bt_global::display->changeBrightness(DISPLAY_OPERATIVE);
 	else
-		bt_global::display->setState(DISPLAY_FREEZED);
+		bt_global::display->changeBrightness(DISPLAY_FREEZED);
 
 	contaBuzzer++;
 	if (contaBuzzer >= 10*60*2)
