@@ -42,12 +42,17 @@ private slots:
 	void testScreensaver();
 	void testScreensaverNone();
 	void testForcedOperativeMode();
+	void testScreensaverPostForcedOperativeMode();
 	void testVdeCallActive();
 	void testCalibrationActive();
 	void testAlarmClockActive();
+	void testScreenOffNoScreeensaver();
+	void testScreenOff();
 	void testMakeActive();
 	void testMakeActivePassword();
-	void testMakeActiveScreensaver();
+	void testMakeActivePostScreensaver();
+	void testScreensaverPostMakeActive();
+	void testScreenOffPostMakeActive();
 
 private:
 	DisplayControl *display;
