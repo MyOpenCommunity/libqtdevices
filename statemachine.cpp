@@ -191,16 +191,22 @@ void StateMachine::callStateCallbacks(int new_state, int old_state)
 
 	if (os.exited)
 	{
-		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(os.exited + 1)));
+		QByteArray signature = QMetaObject::normalizedSignature(os.exited + 1);
+		QMetaMethod meth = mo->method(mo->indexOfMethod(signature));
 
-		meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
+		bool called = meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
+		Q_ASSERT_X(called, "StateMachine::callStateCallbacks",
+			qPrintable(QString("Unable to call the callback: %1").arg(signature.constData())));
 	}
 
 	if (s.entered)
 	{
-		QMetaMethod meth = mo->method(mo->indexOfMethod(QMetaObject::normalizedSignature(s.entered + 1)));
+		QByteArray signature = QMetaObject::normalizedSignature(s.entered + 1);
+		QMetaMethod meth = mo->method(mo->indexOfMethod(signature));
 
-		meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
+		bool called = meth.invoke(this, Q_ARG(int, new_state), Q_ARG(int, old_state));
+		Q_ASSERT_X(called, "StateMachine::callStateCallbacks",
+			qPrintable(QString("Unable to call the callback: %1").arg(signature.constData())));
 	}
 }
 
