@@ -85,15 +85,4 @@ private:
 };
 
 
-// Old and deprecated!
-// Describes a banner with a label between 2 buttons and a text under them.
-// There are 2 alternative buttons on the left and only one is visible at a time.
-class bann3ButLab : public BannerOld
-{
-Q_OBJECT
-public:
-	bann3ButLab(QWidget *parent);
-};
-
-
 #endif // BANN3_BUTTONS_H

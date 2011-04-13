@@ -745,7 +745,7 @@ void BtMain::unrollPages()
 Page *BtMain::screensaverTargetPage()
 {
 #ifdef LAYOUT_TS_3_5
-	return page_default ? page_default : home;
+	return page_default ? page_default : home_page;
 #else
 	return page_container->currentPage();
 #endif

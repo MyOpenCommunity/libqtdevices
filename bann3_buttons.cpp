@@ -150,13 +150,3 @@ void Bann3ButtonsLabel::setForced(Forced is_forced)
 	}
 }
 
-
-bann3ButLab::bann3ButLab(QWidget *parent) : BannerOld(parent)
-{
-	addItem(BUT1, banner_width - BAN3BL_BUT_DIM, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
-	addItem(BUT2, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
-	addItem(BUT4, 0, 0, BAN3BL_BUT_DIM, BAN3BL_BUT_DIM);
-	addItem(TEXT, 0, BAN3BL_BUT_DIM, banner_width, banner_height - BAN3BL_BUT_DIM);
-	addItem(ICON, BAN3BL_BUT_DIM + BAN3BUT_SPACING, 0, BUT3BL_ICON_DIM_X, BUT3BL_ICON_DIM_Y);
-}
-

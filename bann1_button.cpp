@@ -183,16 +183,6 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-bannPuls::bannPuls(QWidget *parent) : BannerOld(parent)
-{
-	addItem(BUT1, banner_width - BANPULS_BUT_DIM, 0,  BANPULS_BUT_DIM ,BANPULS_BUT_DIM);
-	addItem(ICON,BANPULS_BUT_DIM, 0,  BANPULS_ICON_DIM_X ,BANPULS_ICON_DIM_Y);
-	addItem(TEXT, 0, BANPULS_BUT_DIM, banner_width, banner_height - BANPULS_BUT_DIM);
-
-	connect(this,SIGNAL(sxClick()),this,SIGNAL(click()));
-	connect(this,SIGNAL(sxPressed()),this,SIGNAL(pressed()));
-	connect(this,SIGNAL(sxReleased()),this,SIGNAL(released()));
-}
 
 
 bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : BannerOld(parent)
@@ -225,15 +215,6 @@ bannOnSx::bannOnSx(QWidget *parent, QString icon) : BannerOld(parent)
 BtButton *bannOnSx::getButton()
 {
 	return sxButton;
-}
-
-
-bannBut2Icon::bannBut2Icon(QWidget *parent) : BannerOld(parent)
-{
-	addItem(BUT1, banner_width - BUT_DIM, 0, BUT_DIM, BUT_DIM);
-	addItem(ICON, BUT_DIM, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
-	addItem(ICON2, BUT_DIM + BANNBUT2ICON_ICON_DIM_X, 0, BANNBUT2ICON_ICON_DIM_X, BANNBUT2ICON_ICON_DIM_Y);
-	addItem(TEXT, 0, BUT_DIM, banner_width, banner_height - BUT_DIM);
 }
 
 

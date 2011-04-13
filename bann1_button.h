@@ -39,7 +39,6 @@ class QLabel;
 #define BANPULS_ICON_DIM_Y 60
 
 
-// substitute for bannPuls
 // Don't use this class for new developments, use Bann2Buttons
 class BannSinglePuls : public BannerNew
 {
@@ -111,21 +110,6 @@ signals:
 };
 
 
-// A class that describes a banner with a button on the right, an icon in the center.
-// and a text on the bottom
-class bannPuls : public BannerOld
-{
-Q_OBJECT
-public:
-	bannPuls(QWidget *parent);
-
-signals:
-	void click();
-	void pressed();
-	void released();
-};
-
-
 // Describes a banner with a button on the right and a text on the remaining area.
 class bannOnDx : public BannerOld
 {
@@ -147,15 +131,6 @@ public:
 	BtButton *getButton();
 signals:
 	void click();
-};
-
-
-// A banner with a button on the right,two icons in the middle and some text below.
-class bannBut2Icon : public BannerOld
-{
-Q_OBJECT
-public:
-	bannBut2Icon(QWidget *);
 };
 
 
