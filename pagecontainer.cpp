@@ -53,10 +53,6 @@ PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
 	block_transitions = false;
 	prev_page = 0;
 	dest_page = 0;
-
-	// TODO: this ugly workaround is needed because the QStackedWidget in some ways
-	// invalidate the first widget inserted. FIX it asap!
-	addWidget(new QWidget);
 }
 
 void PageContainer::installTransitionWidget(TransitionWidget *tr)

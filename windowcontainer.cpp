@@ -39,6 +39,11 @@ WindowContainer::WindowContainer(int width, int height, QWidget *parent) : QStac
 	root_layout->setSpacing(0);
 	root_layout->setContentsMargins(0, 0, 0, 0);
 
+	// TODO: this workaround is needed (only on the ts. 3.5'', even if the graphical
+	// structure is the same) because the QStackedWidget in some ways invalidate the
+	// first widget inserted.
+	addWidget(new Window);
+
 #ifdef Q_WS_QWS
 	showFullScreen();
 #else
