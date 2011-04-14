@@ -42,6 +42,13 @@ class QScrollArea;
 #define MESSAGES_MAX 10
 
 /*!
+        \ingroup Char messages
+        \def CHARS_MAX
+        The maximum number of charecters.
+*/
+#define CHARS_MAX 145
+
+/*!
 	\ingroup Messages
 	\def MESSAGES_FILENAME
 	The file where the messages are stored.
