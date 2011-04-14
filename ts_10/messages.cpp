@@ -65,14 +65,13 @@ void MessageList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, in
 
 	QString desc = item.description;
 	if (desc.contains("\n"))
-		desc = desc.split("\n")[0] + "... ";
-
-        if (desc.length() > CHARS_MAX){
+                desc = desc.split("\n")[0] + "... ";
+        else if (desc.length() > CHARS_MAX){
                 if (desc.contains(" "))
                         desc = desc.split(" ")[0] + "... ";
                 else{ 
-			desc = desc.split(QRegExp("\\w+"))[0] + "... ";
-			qDebug() << " Desc è: " << desc;
+			desc = desc.split(QRegExp("\\w+"))[1] + "... ";
+			qDebug() << " Desc: " << desc;
 		}
         }
 
