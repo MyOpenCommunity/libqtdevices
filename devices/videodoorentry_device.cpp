@@ -326,7 +326,6 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	case END_OF_CALL:
-		qDebug() << "VideoDoorEntryDevice END CALL received";
 		if (msg.whatArgN(1) == 3) // with mmtype == 3 we have to stop the video
 		{
 			if (vct_mode == SCS_MODE) // we manage the frame only for the scs vct.

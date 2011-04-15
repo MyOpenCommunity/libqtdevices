@@ -346,7 +346,6 @@ void Client::unsubscribe(FrameReceiver *obj)
 
 int Client::socketFrameRead()
 {
-	qDebug("Client::socketFrameRead");
 	while (true)
 	{
 		QByteArray frame = readFromServer();

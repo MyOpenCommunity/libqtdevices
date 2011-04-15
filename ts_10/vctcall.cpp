@@ -643,7 +643,6 @@ VCTCallPage::~VCTCallPage()
 
 void VCTCallPage::closeCall()
 {
-	qDebug() << "VCTCallPage::closeCall";
 	cleanUp();
 	if (!isVisible()) // If the page is not visible, we are in fullscreen mode.
 	{
@@ -694,7 +693,6 @@ void VCTCallPage::valueReceived(const DeviceValues &values_list)
 
 void VCTCallPage::cleanUp()
 {
-	qDebug() << "VCTCallPage::cleanUp";
 	// the cleanUp is performed when we exit from the page using an external
 	// button. In this case, we have to send the end of call (even if is an
 	// autoswitch call) and terminate the video.
@@ -710,7 +708,6 @@ void VCTCallPage::cleanUp()
 	// TODO: we can do better refactor the pagestack!
 	if (dev->vctMode() == VideoDoorEntryDevice::IP_MODE)
 	{
-		qDebug() << "VCTCallPage::cleanUp IP MODE wait for input";
 		while (vct_call->call_status->call_active) // We wait for the callClosed()
 			QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 	}
