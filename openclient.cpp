@@ -102,8 +102,14 @@ Client::Client(Type t, const QString &_host, unsigned _port) : type(t), host(_ho
 
 	socket = new QTcpSocket(this);
 	connect(socket, SIGNAL(connected()), SLOT(socketConnected()));
-	connect(socket, SIGNAL(readyRead()), SLOT(socketFrameRead()));
 	connect(socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(socketError(QAbstractSocket::SocketError)));
+	// The readyRead signal is not emitted recursively: in other words if a slot called by this signal
+	// has a local loop or process events, if a frame arrives the signal is not emitted so the frame
+	// is not parsed.
+	// In the Vct Full Ip, we have exactly this situation: when an alarm arrives during a videocall, we
+	// have to end the call and wait for a frame which notifies that the openserver has successfully
+	// processed the command. To manage that situation, we break the recursion using a queued slot.
+	connect(socket, SIGNAL(readyRead()), SLOT(socketFrameRead()), Qt::QueuedConnection);
 
 	// connect to the server
 	connectToHost();
