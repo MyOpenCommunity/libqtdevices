@@ -128,6 +128,8 @@ protected:
 private slots:
 	void gotoPlayerPage();
 	void currentPlayerExited();
+	void showUPnpPage();
+	void uPnpPageClosed();
 
 private:
 	void loadItems(const QDomNode &config_node);
@@ -137,6 +139,7 @@ private:
 	bool delete_browser;
 	BtButton *play_button;
 	FileSelectorFactory *factory;
+	Page *upnp_page;
 
 	// used by playSomethingRandomly()
 	static SongSearch *song_search;

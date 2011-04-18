@@ -217,7 +217,9 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
 			{
 				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
-				p = f.getFileSelector();
+				upnp_page = f.getFileSelector();
+				BtButton *b = addButton(descr, icon);
+				connect(b, SIGNAL(clicked()), SLOT(showUPnpPage()));
 			}
 			break;
 #ifdef BUILD_EXAMPLES
@@ -252,7 +254,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			break;
 		default:
 			qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
-		};
+		}
 
 		if (p)
 		{
@@ -266,6 +268,18 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 
 	if (showed_items == ITEMS_ALL && !song_search)
 		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);
+}
+
+void MultimediaSectionPage::showUPnpPage()
+{
+	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	upnp_page->showPage();
+}
+
+void MultimediaSectionPage::uPnpPageClosed()
+{
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	showPage();
 }
 
 void MultimediaSectionPage::playSomethingRandomly()
