@@ -272,6 +272,8 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 
 void MultimediaSectionPage::showUPnpPage()
 {
+	// Because the upnp_page is the same for every MultimediaSectionPage created
+	// we have to connect/disconnect the page from its container.
 	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
 	upnp_page->showPage();
 }
