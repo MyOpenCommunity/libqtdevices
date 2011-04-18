@@ -462,12 +462,12 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 			if (dev->ipCall())
 			{
 				new_status = false; // Ip calls has always the video disabled.
+				emit updateScreen();
 
 				// If we have already answer, we need to send again the answer.
 				if (bt_global::audio_states->contains(AudioStates::IP_VIDEO_CALL))
 					dev->answerCall();
 			}
-
 			bool old_status = call_status->video_enabled;
 
 			// Switch from a camera with video to a camera without video
@@ -573,6 +573,7 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call, SIGNAL(incomingCall()), SLOT(incomingCall()));
 	connect(vct_call, SIGNAL(callerAddress(QString)), SLOT(callerAddress(QString)));
+	connect(vct_call, SIGNAL(updateScreen()), SLOT(updateScreen()));
 
 	window = new VCTCallWindow(d);
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
@@ -634,6 +635,11 @@ VCTCallPage::VCTCallPage(VideoDoorEntryDevice *d)
 	layout->addLayout(bottom, 2, 0, 1, 2, Qt::AlignLeft);
 	layout->setContentsMargins(20, 0, 0, 20);
 	layout->setSpacing(10);
+}
+
+void VCTCallPage::updateScreen()
+{
+	update();
 }
 
 VCTCallPage::~VCTCallPage()
@@ -866,6 +872,7 @@ VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 	// Signals from vct_call must be managed only when the window is visible.
 	connect(vct_call, SIGNAL(callClosed()), SLOT(handleClose()));
 	connect(vct_call->camera, SIGNAL(toggleFullScreen()), SLOT(fullScreenExit()));
+	connect(vct_call, SIGNAL(updateScreen()), SLOT(updateScreen()));
 
 	QGridLayout *buttons_layout = new QGridLayout;
 	buttons_layout->setContentsMargins(30, 0, 30, 0);
@@ -894,6 +901,11 @@ VCTCallWindow::VCTCallWindow(VideoDoorEntryDevice *d)
 	layout->addWidget(vct_call->video_box, 1, 0);
 	layout->setContentsMargins(5, 0, 0, 12);
 	layout->setSpacing(0);
+}
+
+void VCTCallWindow::updateScreen()
+{
+	update();
 }
 
 void VCTCallWindow::showWindow()

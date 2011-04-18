@@ -134,6 +134,7 @@ namespace VCTCallPrivate
 		void callClosed();
 		void incomingCall();
 		void callerAddress(QString address);
+		void updateScreen();
 
 	private slots:
 		void valueReceived(const DeviceValues &values_list);
@@ -178,6 +179,7 @@ namespace VCTCallPrivate
 		void handleClose();
 		void fullScreenExit();
 		void showVCTPage();
+		void updateScreen();
 
 	private:
 		VCTCall *vct_call;
@@ -229,8 +231,8 @@ private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void playRingtone();
 	void backClicked();
-
 	void manageHandsFree();
+	void updateScreen();
 
 private:
 	int ringtone;
