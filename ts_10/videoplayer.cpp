@@ -211,7 +211,7 @@ bool VideoPlayerPage::checkVideo(QString track)
 
 	if (!supported)
 	{
-		qWarning() << "VideoPlayerPage::next -> Video resolution too high";
+		qWarning() << "VideoPlayerPage::checkVideo -> Video resolution too high";
 		text = tr("Video not supported");
 	}
 
