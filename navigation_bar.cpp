@@ -25,7 +25,8 @@
 
 #include <QFileInfo>
 
-static const int buttons_dim = 60;
+// 10 is the spacing between the buttons (for legacy reasons we don't touch the code)
+static const int buttons_dim = 50 + 10;
 static const int top_margin = 92;
 
 

@@ -108,15 +108,10 @@ Page::~Page()
 void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationBar *nav_bar, QWidget *title_widget)
 {
 	QBoxLayout *l;
-#ifdef LAYOUT_TS_10
-	l = new QHBoxLayout(this);
-#else
-	l = new QVBoxLayout(this);
-#endif
 
 #ifdef LAYOUT_TS_10
-	// TODO add an API to set the page title and to set the page count
-	//      and current page number
+	l = new QHBoxLayout(this);
+
 	if (nav_bar)
 		l->addWidget(nav_bar, 0);
 
@@ -132,16 +127,16 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	int left_margin = nav_bar ? 13 : 0;
 	l->setContentsMargins(left_margin, 5, 0, 10);
 	l->setSpacing(0);
-
 #else
+	l = new QVBoxLayout(this);
 
 	Q_ASSERT_X(title_widget == NULL, "Page::buildPage", "TS 3.5'' pages can't have a title");
 	l->addWidget(main_widget, 1);
+	l->addStretch();
 	l->addWidget(nav_bar);
 
-	l->setContentsMargins(0, 5, 0, 10);
+	l->setContentsMargins(5, 5, 0, 5);
 	l->setSpacing(0);
-
 #endif
 
 	__content = content;
