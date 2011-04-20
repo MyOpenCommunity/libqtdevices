@@ -33,6 +33,8 @@
 #include <QProcess>
 #include <QDateTime>
 #include <QStringList>
+#include <QByteArray>
+#include <QList>
 
 #include <fcntl.h>
 #include <unistd.h>
@@ -541,5 +543,29 @@ void dumpSystemMemory()
 	qDebug() << f.readLine().constData();
 	qDebug() << "-------------------------------------------------------------";
 #endif
+}
+
+int getMemFree()
+{
+#ifndef BT_HARDWARE_TS_10
+	return -1;
+#endif
+
+	QFile f("/proc/meminfo");
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		return -1;
+
+	QHash<QString, int> data;
+	QByteArray line = f.readLine();
+	while (!line.isEmpty())
+	{
+		line.chop(3); // erase the ' kB' part of the string
+		QList<QByteArray> l = line.trimmed().split(':');
+		data[l[0].trimmed()] = l[1].trimmed().toInt();
+
+		line = f.readLine();
+	}
+
+	return data["MemFree"] + data["Cached"];
 }
 

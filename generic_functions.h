@@ -322,4 +322,11 @@ bool silentExecute(const QString &program, QStringList args = QStringList());
 //
 bool checkImageLoad(const QString &path);
 
+
+// Useful for debug, these functions can be used to print the minimum
+// amount of free memory between start and stop.
+void startTrackMemory();
+void stopTrackMemory();
+
+
 #endif // GENERIC_FUNCTIONS_H

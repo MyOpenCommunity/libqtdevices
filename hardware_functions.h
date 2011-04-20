@@ -137,4 +137,7 @@ void usbHotplug();
 // Dump (on the debug channel) some statistic about the status of the memory
 void dumpSystemMemory();
 
+// Return the available memory in KB (-1 if the information is not available)
+int getMemFree();
+
 #endif // HARDWARE_FUNCTIONS_H

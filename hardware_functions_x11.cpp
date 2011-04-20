@@ -203,3 +203,8 @@ void dumpSystemMemory()
 {
 }
 
+int getMemFree()
+{
+	return -1;
+}
+
