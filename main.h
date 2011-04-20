@@ -189,14 +189,14 @@ enum Section
  */
 enum ItemType
 {
-	SET_DATA_ORA=14,                              /*!<  Time setting */
-	SET_SVEGLIA=20,                               /*!<  AlarmClock setting */
+	SET_DATETIME=14,                              /*!<  Time setting */
+	SET_ALARMCLOCK=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DISPLAY=21,                                   /*!<  Display */
-	SUONO=25,                                     /*!<  Beep */
-	PROTEZIONE=26,                                /*!<  Password's settings */
-	VERSIONE=27,                                  /*!<  Version */
-	CONTRASTO=28,                                 /*!<  Contrast */
+	SET_BEEP=25,                                     /*!<  Beep */
+	PASSWORD=26,                                /*!<  Password's settings */
+	VERSION=27,                                  /*!<  Version */
+	CONTRAST=28,                                 /*!<  Contrast */
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */

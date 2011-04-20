@@ -23,7 +23,6 @@
 #define BANN_SETTINGS_H
 
 #include "banner.h"
-#include "bann1_button.h" // bannOnDx, bannOnSx
 #include "bann2_buttons.h"
 #include "ringtonesmanager.h" // RingtoneType
 
@@ -39,11 +38,11 @@ class StateButton;
 #ifdef LAYOUT_TS_3_5
 
 // This class is made to make alarm clock settings.
-class bannAlarmClock : public Bann2StateButtons
+class BannAlarmClock : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
+	BannAlarmClock(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_label, QString text, int enabled, int freq, int tipo);
 	void setAbil(bool);
 	void inizializza(bool forza = false);
@@ -64,11 +63,11 @@ private slots:
 
 #else
 
-class bannAlarmClockIcon : public BannOnOffState
+class BannAlarmClockIcon : public BannOnOffState
 {
 Q_OBJECT
 public:
-	bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
+	BannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_state, QString icon_edit, QString text,
 		int enabled, int tipo, int days);
 
@@ -93,23 +92,11 @@ private slots:
 
 #endif
 
-class calibration : public bannOnDx
+class BannBeep : public Bann2StateButtons
 {
 Q_OBJECT
 public:
-	calibration(QWidget *parent, QString icon);
-
-signals:
-	void startCalibration();
-	void endCalibration();
-};
-
-
-class impBeep : public Bann2StateButtons
-{
-Q_OBJECT
-public:
-	impBeep(int item_id, bool enabled, QString icon_on, QString icon_off, QString text);
+	BannBeep(int item_id, bool enabled, QString icon_on, QString icon_off, QString text);
 
 public slots:
 	void toggleBeep();
@@ -119,11 +106,11 @@ private:
 };
 
 
-class bannContrast : public bannOnDx
+class BannContrast : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	bannContrast(int item_id, int val, QString icon);
+	BannContrast(int item_id, int val, QString icon, QString descr);
 
 private slots:
 	void done();
@@ -133,15 +120,17 @@ private:
 };
 
 
-class bannVersion : public bannOnDx
+class BannVersion : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	bannVersion(QWidget *parent, QString icon, Version *ver);
+	BannVersion(QString icon, QString text, Version *v);
+
 private slots:
-	void showVers();
+	void showVersionPage();
+
 private:
-	Version *v;
+	Version *version_page;
 };
 
 

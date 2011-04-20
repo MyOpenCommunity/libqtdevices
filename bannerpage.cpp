@@ -81,8 +81,8 @@ BannerContent::BannerContent(QWidget *parent, int _columns) : ScrollableContent(
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
 #ifdef LAYOUT_TS_3_5
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
+	l->setContentsMargins(5, 5, 5, 0);
+	l->setSpacing(10);
 #else
 	// TODO: the following margins uses empirical values to align the banners
 	// in the center of the content (delimited by the navigation bar on the left

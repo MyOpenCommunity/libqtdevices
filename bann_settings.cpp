@@ -41,9 +41,8 @@
 
 #ifdef LAYOUT_TS_3_5
 
-bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_on,
-			       QString icon_off, QString icon_label, QString text, int enabled, int tipo, int freq) :
-	Bann2StateButtons(0)
+BannAlarmClock::BannAlarmClock(int item_id, int hour, int minute, QString icon_on,
+	QString icon_off, QString icon_label, QString text, int enabled, int tipo, int freq)
 {
 	initBanner(icon_on, icon_label, text);
 
@@ -51,7 +50,7 @@ bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_o
 	left_button->setOffImage(icon_off);
 	left_button->setStatus(enabled == 1);
 
-	alarm_clock = new AlarmClock(SET_SVEGLIA, item_id, static_cast<AlarmClock::Type>(tipo),
+	alarm_clock = new AlarmClock(SET_ALARMCLOCK, item_id, static_cast<AlarmClock::Type>(tipo),
 		static_cast<AlarmClock::Freq>(freq), 0, hour, minute);
 	alarm_clock->setSerNum(getSerNum());
 	alarm_clock->hide();
@@ -64,36 +63,36 @@ bannAlarmClock::bannAlarmClock(int item_id, int hour, int minute, QString icon_o
 	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
 }
 
-void bannAlarmClock::setSerNum(int num)
+void BannAlarmClock::setSerNum(int num)
 {
 	banner::setSerNum(num);
 	alarm_clock->setSerNum(num);
 }
 
-void bannAlarmClock::handleClose()
+void BannAlarmClock::handleClose()
 {
 	left_button->setStatus(alarm_clock->isActive());
 	emit pageClosed();
 }
 
-void bannAlarmClock::setButtonIcon()
+void BannAlarmClock::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
 		left_button->setStatus(false);
 }
 
-void bannAlarmClock::setAbil(bool b)
+void BannAlarmClock::setAbil(bool b)
 {
 	left_button->setStatus(b);
 	alarm_clock->setActive(b);
 }
 
-void bannAlarmClock::toggleAbil()
+void BannAlarmClock::toggleAbil()
 {
 	setAbil(!alarm_clock->isActive());
 }
 
-void bannAlarmClock::inizializza(bool forza)
+void BannAlarmClock::inizializza(bool forza)
 {
 	Bann2Buttons::inizializza(forza);
 	alarm_clock->inizializza();
@@ -101,7 +100,7 @@ void bannAlarmClock::inizializza(bool forza)
 
 #else
 
-bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
+BannAlarmClockIcon::BannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 					   QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, int days) :
 	BannOnOffState(0, static_cast<StateButton*>(0))
 {
@@ -125,20 +124,20 @@ bannAlarmClockIcon::bannAlarmClockIcon(int item_id, int hour, int minute, QStrin
 	connect(alarm_clock, SIGNAL(alarmClockFired()), SLOT(setButtonIcon()));
 }
 
-void bannAlarmClockIcon::setSerNum(int num)
+void BannAlarmClockIcon::setSerNum(int num)
 {
 	banner::setSerNum(num);
 	alarm_clock->setSerNum(num);
 }
 
-void bannAlarmClockIcon::handleClose()
+void BannAlarmClockIcon::handleClose()
 {
 	left_button->setStatus(alarm_clock->isActive());
 	setState(alarm_clock->isActive() ? ON : OFF);
 	emit pageClosed();
 }
 
-void bannAlarmClockIcon::setButtonIcon()
+void BannAlarmClockIcon::setButtonIcon()
 {
 	if (!alarm_clock->isActive())
 	{
@@ -147,38 +146,27 @@ void bannAlarmClockIcon::setButtonIcon()
 	}
 }
 
-void bannAlarmClockIcon::setAbil(bool b)
+void BannAlarmClockIcon::setAbil(bool b)
 {
 	setState(b ? ON : OFF);
 	left_button->setStatus(b);
 	alarm_clock->setActive(b);
 }
 
-void bannAlarmClockIcon::toggleAbil()
+void BannAlarmClockIcon::toggleAbil()
 {
 	setAbil(!alarm_clock->isActive());
 }
 
-void bannAlarmClockIcon::inizializza(bool forza)
+void BannAlarmClockIcon::inizializza(bool forza)
 {
 	BannOnOffState::inizializza(forza);
 	alarm_clock->inizializza();
 }
 #endif
 
-calibration::calibration(QWidget *parent, QString icon) : bannOnDx(parent)
-{
-	SetIcons(icon, 1);
-#if !defined(BT_HARDWARE_X11)
-	Calibration *cal = new Calibration;
-	connect(cal, SIGNAL(Closed()), this, SIGNAL(endCalibration()));
-	connect(this, SIGNAL(click()), this, SIGNAL(startCalibration()));
-	connect(this, SIGNAL(click()), cal, SLOT(showWindow()));
-#endif
-}
 
-
-impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off, QString text) :
+BannBeep::BannBeep(int _item_id, bool enabled, QString icon_on, QString icon_off, QString text) :
 	Bann2StateButtons(0)
 {
 	initBanner(icon_on, QString(), text);
@@ -194,7 +182,7 @@ impBeep::impBeep(int _item_id, bool enabled, QString icon_on, QString icon_off, 
 	setBeep(enabled);
 }
 
-void impBeep::toggleBeep()
+void BannBeep::toggleBeep()
 {
 	bool beep_on = !getBeep();
 
@@ -202,7 +190,7 @@ void impBeep::toggleBeep()
 	left_button->setStatus(beep_on);
 
 #ifdef CONFIG_TS_3_5
-	setCfgValue("value", beep_on, SUONO);
+	setCfgValue("value", beep_on, SET_BEEP);
 #else
 	setCfgValue("enabled", beep_on, item_id);
 #endif
@@ -212,15 +200,16 @@ void impBeep::toggleBeep()
 }
 
 
-bannContrast::bannContrast(int _item_id, int val, QString icon) :
-	bannOnDx(0, icon, new Contrast())
+BannContrast::BannContrast(int _item_id, int val, QString icon, QString descr)
 {
+	initBanner(QString(), icon, descr);
+	connectRightButton(new Contrast);
 	item_id = _item_id;
 	setContrast(val);
-	connect(linked_dx_page, SIGNAL(Closed()), SLOT(done()));
+	connect(this, SIGNAL(pageClosed()), SLOT(done()));
 }
 
-void bannContrast::done()
+void BannContrast::done()
 {
 	int c = getContrast();
 
@@ -229,16 +218,16 @@ void bannContrast::done()
 }
 
 
-bannVersion::bannVersion(QWidget *parent, QString icon, Version *ver)
-	: bannOnDx(parent, icon)
+BannVersion::BannVersion(QString icon, QString text, Version *v)
 {
-	connect(this, SIGNAL(click()), this, SLOT(showVers()));
-	v = ver;
+	initBanner(QString(), icon, text);
+	connect(this, SIGNAL(rightClicked()), SLOT(showVersionPage()));
+	version_page = v;
 }
 
-void bannVersion::showVers()
+void BannVersion::showVersionPage()
 {
-	v->showPage();
+	version_page->showPage();
 	QTimer::singleShot(10000, this, SIGNAL(pageClosed()));
 }
 

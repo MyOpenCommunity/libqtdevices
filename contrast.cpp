@@ -33,8 +33,7 @@
 
 static BtButton *getButton(QString img, bool autorepeat)
 {
-	BtButton *btn = new BtButton;
-	btn->setImage(bt_global::skin->getImage(img));
+	BtButton *btn = new BtButton(bt_global::skin->getImage(img));
 	btn->setAutoRepeat(autorepeat);
 	return btn;
 }
@@ -42,39 +41,39 @@ static BtButton *getButton(QString img, bool autorepeat)
 Contrast::Contrast()
 {
 	// create buttons
-	BtButton *decBut = getButton("minus", true);
-	BtButton *incBut = getButton("plus", true);
-	BtButton *okBut = getButton("ok", false);
+	BtButton *dec_but = getButton("minus", true);
+	BtButton *inc_but = getButton("plus", true);
+	BtButton *ok_but = getButton("ok", false);
 
-	connect(decBut, SIGNAL(clicked()), SLOT(decContrast()));
-	connect(incBut, SIGNAL(clicked()), SLOT(incContrast()));
-	connect(okBut,  SIGNAL(clicked()), SIGNAL(Closed()));
+	connect(dec_but, SIGNAL(clicked()), SLOT(decContrast()));
+	connect(inc_but, SIGNAL(clicked()), SLOT(incContrast()));
+	connect(ok_but,  SIGNAL(clicked()), SIGNAL(Closed()));
 
 	// create images
-	QLabel *paintLabel = new QLabel;
-	QLabel *colorBar = new QLabel;
+	QLabel *paint_label = new QLabel;
+	QLabel *color_bar = new QLabel;
 
-	paintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	paintLabel->setPixmap(QPixmap(bt_global::skin->getImage("logo")));
+	paint_label->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	paint_label->setPixmap(QPixmap(bt_global::skin->getImage("logo")));
 
-	colorBar ->setFrameStyle(QFrame::Panel | QFrame::Raised);
-	colorBar ->setPixmap(QPixmap(bt_global::skin->getImage("colorbar")));
+	color_bar->setFrameStyle(QFrame::Panel | QFrame::Raised);
+	color_bar->setPixmap(QPixmap(bt_global::skin->getImage("colorbar")));
 
 	// layout
 	QHBoxLayout *b = new QHBoxLayout;
 	b->setContentsMargins(0, 0, 0, 0);
 	b->setSpacing(0);
 
-	b->addWidget(decBut, 0, Qt::AlignLeft);
-	b->addWidget(okBut);
-	b->addWidget(incBut, 0, Qt::AlignRight);
+	b->addWidget(dec_but, 0, Qt::AlignLeft);
+	b->addWidget(ok_but);
+	b->addWidget(inc_but, 0, Qt::AlignRight);
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
+	l->setContentsMargins(5, 5, 5, 5);
+	l->setSpacing(15);
 
-	l->addWidget(paintLabel, 0, Qt::AlignCenter);
-	l->addWidget(colorBar, 0, Qt::AlignCenter);
+	l->addWidget(paint_label, 0, Qt::AlignCenter);
+	l->addWidget(color_bar, 0, Qt::AlignCenter);
 	l->addLayout(b);
 }
 

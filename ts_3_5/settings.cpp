@@ -47,16 +47,18 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	banner *b = 0;
 
+	QString descr = getTextChild(item_node, "descr");
+
 	switch (id)
 	{
-	case SUONO:
-		b = new impBeep(getTextChild(item_node, "itemID").toInt(),
+	case SET_BEEP:
+		b = new BannBeep(getTextChild(item_node, "itemID").toInt(),
 				getTextChild(item_node, "value").toInt(),
 				bt_global::skin->getImage("state_on"),
 				bt_global::skin->getImage("state_off"),
 				getTextChild(item_node, "descr"));
 		break;
-	case SET_SVEGLIA:
+	case SET_ALARMCLOCK:
 	{
 		int item_id = getTextChild(item_node, "itemID").toInt();
 		int type = getTextChild(item_node, "type").toInt();
@@ -65,7 +67,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		int minute = getTextChild(item_node, "minute").toInt();
 		int alarmset = getTextChild(item_node, "alarmset").toInt();
 
-		b = new bannAlarmClock(item_id, hour, minute,
+		b = new BannAlarmClock(item_id, hour, minute,
 				       bt_global::skin->getImage("state_on"),
 				       bt_global::skin->getImage("state_off"),
 				       bt_global::skin->getImage("edit"),
@@ -74,35 +76,50 @@ banner *Settings::getBanner(const QDomNode &item_node)
 
 		break;
 	}
-	case SET_DATA_ORA:
-		b = new bannOnDx(0, bt_global::skin->getImage("info"), new ChangeTime);
+	case SET_DATETIME:
+	{
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("info"), descr);
+		bann->connectRightButton(new ChangeTime);
+		b = bann;
 		break;
-	case CONTRASTO:
-		// TODO CONTRASTO below needs to be changed when removing CONFIG_TS_3_5
-		b = new bannContrast(CONTRASTO, getTextChild(item_node, "value").toInt(),
-					 bt_global::skin->getImage("edit"));
+	}
+	case CONTRAST:
+		// TODO CONTRAST below needs to be changed when removing CONFIG_TS_3_5
+		b = new BannContrast(CONTRAST, getTextChild(item_node, "value").toInt(),
+					 bt_global::skin->getImage("edit"), descr);
 		break;
 	case DISPLAY:
-		b = new bannOnDx(0, bt_global::skin->getImage("forward"), new DisplayPage(item_node));
+	{
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("forward"), descr);
+		bann->connectRightButton(new DisplayPage(item_node));
+		b = bann;
 		break;
-	case PROTEZIONE:
-		// TODO PROTEZIONE below needs to be changed when removing CONFIG_TS_3_5
+	}
+	case PASSWORD:
+		// TODO PASSWORD below needs to be changed when removing CONFIG_TS_3_5
 		b = new BannPassword(
 			bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
-			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PROTEZIONE,
+			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PASSWORD,
 			getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());
 		break;
-	case VERSIONE:
-		b = new bannVersion(0, bt_global::skin->getImage("info"), bt_global::btmain->version);
-		break;
 	case LANSETTINGS:
-		b = new bannOnDx(0, bt_global::skin->getImage("info"), new LanSettings(item_node));
+	{
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("info"), descr);
+		bann->connectRightButton(new LanSettings(item_node));
+		b = bann;
+		break;
+	}
+	case VERSION:
+		b = new BannVersion(bt_global::skin->getImage("info"), descr, bt_global::btmain->version);
 		break;
 	}
 
 	if (b)
 	{
-		b->setText(getTextChild(item_node, "descr"));
+		b->setText(descr);
 		b->setId(id);
 		b->Draw();
 	}
@@ -116,7 +133,7 @@ void Settings::loadItems(const QDomNode &config_node)
 	{
 		int id = getTextChild(item, "id").toInt();
 #ifdef BT_HARDWARE_X11
-		if (id == CONTRASTO)
+		if (id == CONTRAST)
 			continue;
 #endif
 		if (banner *b = getBanner(item))

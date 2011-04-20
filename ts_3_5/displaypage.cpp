@@ -20,14 +20,15 @@
 
 
 #include "displaypage.h"
-#include "bann1_button.h" // bannOnDx
+#include "bann1_button.h" // BannSimple
+#include "bann2_buttons.h" // Bann2Buttons
 #include "bann_settings.h"
 #include "cleanscreen.h"
 #include "brightnesspage.h"
 #include "xml_functions.h" // getElement
 #include "screensaverpage.h"
 #include "skinmanager.h" // SkinContext, bt_global::skin
-
+#include "calibration.h"
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
 {
@@ -37,7 +38,7 @@ DisplayPage::DisplayPage(const QDomNode &config_node)
 
 void DisplayPage::loadItems(const QDomNode &config_node)
 {
-	banner *b;
+	Bann2Buttons *b;
 
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QString img_items = bt_global::skin->getImage("display_items");
@@ -50,24 +51,27 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 
 	Window *w = new CleanScreen(img_clean, wait_time);
 
-	b = new BannSimple(img_clean);
-	connect(b, SIGNAL(clicked()), w, SLOT(showWindow()));
-	page_content->appendBanner(b);
+	BannSimple *simple = new BannSimple(img_clean);
+	connect(simple, SIGNAL(clicked()), w, SLOT(showWindow()));
+	page_content->appendBanner(simple);
+
 #ifndef BT_HARDWARE_X11
-	b = new calibration(this, img_items);
-	b->setText(tr("Calibration"));
-	b->Draw();
+	Calibration *calibration_window = new Calibration;
+	b = new Bann2Buttons;
+	b->initBanner(QString(), img_items, tr("Calibration"));
+	connect(b, SIGNAL(rightClicked()), calibration_window, SLOT(showWindow()));
+	connect(calibration_window, SIGNAL(Closed()), this, SLOT(showPage()));
 	page_content->appendBanner(b);
 
-	b = new bannOnDx(this,img_items, new BrightnessPage());
-	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	b->setText(tr("Brightness"));
-	b->Draw();
+	b = new Bann2Buttons;
+	b->initBanner(QString(), img_items, tr("Brightness"));
+	b->connectRightButton(new BrightnessPage);
 	page_content->appendBanner(b);
 #endif
-	bannOnDx *bann = new bannOnDx(this, img_items, new ScreenSaverPage(getChildWithName(config_node, "screensaver")));
-	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
-	bann->setText(tr("Screen Saver"));
-	bann->Draw();
-	page_content->appendBanner(bann);
+
+	b = new Bann2Buttons;
+	b->initBanner(QString(), img_items, tr("Screen Saver"));
+	b->connectRightButton(new ScreenSaverPage(getChildWithName(config_node, "screensaver")));
+
+	page_content->appendBanner(b);
 }

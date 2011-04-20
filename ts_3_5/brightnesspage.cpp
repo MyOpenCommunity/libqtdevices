@@ -21,7 +21,6 @@
 
 #include "brightnesspage.h"
 #include "displaycontrol.h" // bt_global::display
-#include "bann1_button.h" // bannOnSx
 #include "banner.h"
 #include "btbutton.h"
 #include <QDebug>

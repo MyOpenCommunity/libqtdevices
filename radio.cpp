@@ -30,6 +30,7 @@
 #include "mediaplayer.h" // bt_global::sound
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "main.h" // SOUND_PATH
+#include "hardware_functions.h" // beep
 
 #include <QLabel>
 #include <QDebug>

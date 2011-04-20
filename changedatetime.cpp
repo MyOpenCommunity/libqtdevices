@@ -23,7 +23,6 @@
 #include "datetime.h"
 #include "btbutton.h"
 #include "skinmanager.h"
-#include "main.h" // getConfElement
 #include "platform_device.h"
 #include "devices_cache.h"
 
@@ -31,7 +30,6 @@
 #include <QVBoxLayout>
 
 
-// ChangeTime implementation
 
 ChangeTime::ChangeTime()
 	: timer_id(0)
@@ -43,8 +41,7 @@ ChangeTime::ChangeTime()
 
 	edit = new BtTimeEdit(this, BtTimeEdit::DISPLAY_SECONDS);
 
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
 	date = new ChangeDate();
 
@@ -52,12 +49,12 @@ ChangeTime::ChangeTime()
 	connect(date, SIGNAL(Closed()), SIGNAL(Closed()));
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(10, 0, 10, 0);
-	l->setSpacing(0);
+	l->setContentsMargins(0, 5, 0, 5);
+	l->setSpacing(10);
 
 	l->addWidget(img, 0, Qt::AlignCenter);
 	l->addWidget(edit, 1);
-	l->addWidget(ok);
+	l->addWidget(ok, 0, Qt::AlignCenter);
 }
 
 void ChangeTime::acceptTime()
@@ -103,7 +100,6 @@ void ChangeTime::showPage()
 }
 
 
-// ChangeDate implementation
 
 ChangeDate::ChangeDate()
 {
@@ -115,18 +111,17 @@ ChangeDate::ChangeDate()
 	edit = new BtDateEdit(this);
 	edit->setAllowPastDates(true);
 
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
 	connect(ok, SIGNAL(clicked()), SLOT(acceptDate()));
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(10, 0, 10, 0);
-	l->setSpacing(0);
+	l->setContentsMargins(0, 5, 0, 5);
+	l->setSpacing(10);
 
 	l->addWidget(img, 0, Qt::AlignCenter);
 	l->addWidget(edit, 1);
-	l->addWidget(ok);
+	l->addWidget(ok, 0, Qt::AlignCenter);
 }
 
 void ChangeDate::showPage()

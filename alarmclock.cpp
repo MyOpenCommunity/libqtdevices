@@ -452,7 +452,7 @@ void AlarmClock::stopAlarm()
 	qDebug("Stopping alarm clock");
 	aumVolTimer->stop();
 #ifdef BT_HARDWARE_TS_3_5
-	if (type == BUZZER)
+	if (alarm_type == BUZZER)
 		setBeep(buzAbilOld);
 #endif
 	if (alarm_type == BUZZER)
