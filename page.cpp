@@ -135,7 +135,7 @@ void Page::buildPage(QWidget *main_widget, QWidget *content, AbstractNavigationB
 	l->addStretch();
 	l->addWidget(nav_bar);
 
-	l->setContentsMargins(5, 5, 0, 5);
+	l->setContentsMargins(5, 5, 5, 5);
 	l->setSpacing(0);
 #endif
 

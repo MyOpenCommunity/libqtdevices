@@ -92,10 +92,6 @@ BtButton *CheckableBanner::getButton()
 
 SingleChoiceContent::SingleChoiceContent()
 {
-	// Add 5 pixel on the left of the page to align the banners with the previous
-	// version of BTouch
-	layout()->setContentsMargins(10, 5, 5, 0);
-
 	buttons.setExclusive(true);
 
 	connect(&buttons, SIGNAL(buttonClicked(int)), SIGNAL(bannerSelected(int)));
