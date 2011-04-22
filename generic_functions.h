@@ -185,6 +185,13 @@ void setCfgValue(QString field, int value, int item_id, int num_item=1, const QS
 #else
 
 /*!
+    \ingroup Core
+    \brief shift list of boolean by step positions
+    \a It could be useful
+ */
+void lShift( QList<bool> &boolList);
+
+/*!
 	\ingroup Core
 	\brief Save one or more values in the configuration file related to a specific object.
 
