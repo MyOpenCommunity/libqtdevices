@@ -144,6 +144,7 @@ QString DirectoryTreeBrowser::pathKey()
 
 void DirectoryTreeBrowser::setContext(const QStringList &context)
 {
+	level = 0;
 	current_dir.setPath(root_path);
 	foreach (const QString &dir, context)
 	{
@@ -154,6 +155,7 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 		}
 		++level;
 	}
+
 	emit directoryChanged();
 }
 
