@@ -185,11 +185,11 @@ void setCfgValue(QString field, int value, int item_id, int num_item=1, const QS
 #else
 
 /*!
-    \ingroup Core
-    \brief shift list of boolean by step positions
-    \a It could be useful
+	\ingroup Core
+	\brief shift list of boolean by step positions
+	\a It could be useful
  */
-void lShift( QList<bool> &boolList);
+void lShift(QList<bool> &boolList);
 
 /*!
 	\ingroup Core

@@ -86,9 +86,6 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 		alarm_days.append((days_active & mask) ? true : false);
 	}
 
-        //left shift to align with software
-        lShift(alarm_days);
-
 	for (int i = 0; i < AMPLI_NUM; i++)
 		alarm_volumes[i] = -1;
 
@@ -102,6 +99,9 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 	connect(alarm_type_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
 	connect(alarm_type_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 #else
+	// left shift to align with software
+	lShift(alarm_days);
+
 	alarm_time_page = alarm_type_page = new AlarmClockTimeFreq(alarm_time, alarm_type, alarm_days);
 	connect(alarm_time_page, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(alarm_time_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
