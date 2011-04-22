@@ -86,6 +86,9 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 		alarm_days.append((days_active & mask) ? true : false);
 	}
 
+        //left shift to align with software
+        lShift(alarm_days);
+
 	for (int i = 0; i < AMPLI_NUM; i++)
 		alarm_volumes[i] = -1;
 
