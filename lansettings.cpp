@@ -175,6 +175,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->addRow(tr("DNS"), "");
 	box_text->addRow("", "");
 	box_text->addRow(tr("Connection Status"), "");
+	box_text->setSpacing(2);
 	tester = new ConnectionTester(this);
 	connect(tester, SIGNAL(testFailed()), SLOT(connectionDown()));
 	connect(tester, SIGNAL(testPassed()), SLOT(connectionUp()));
@@ -182,7 +183,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
 	main_layout->setContentsMargins(0, 0, 0, 18);
-	main_layout->setSpacing(0);
+	main_layout->setSpacing(5);
 
 	QHBoxLayout *label_layout = new QHBoxLayout;
 	label_layout->setContentsMargins(5, 0, 5, 0);
