@@ -56,35 +56,31 @@ Keypad::Keypad(bool back_button)
 	QWidget *top_widget = this;
 #endif
 
-	BtButton *ok = new BtButton;
-	BtButton *canc = new BtButton;
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	BtButton *canc = new BtButton(bt_global::skin->getImage("cancel"));
 	BtButton *digits[10];
 
 	QButtonGroup *buttons = new QButtonGroup;
 
 	for (int i = 0; i < 10; ++i)
 	{
-		digits[i] = new BtButton;
-		digits[i]->setImage(bt_global::skin->getImage("num_" + QString::number(i)));
+		digits[i] = new BtButton(bt_global::skin->getImage("num_" + QString::number(i)));
 		buttons->addButton(digits[i], i);
 	}
 
-	digitLabel = new QLabel;
-	msgLabel = new QLabel;
-	warningLabel = new QLabel(tr("Wrong password"));
-	warningLabel->hide();
-
-	ok->setImage(bt_global::skin->getImage("ok"));
-	canc->setImage(bt_global::skin->getImage("cancel"));
+	digit_label = new QLabel;
+	msg_label = new QLabel;
+	warning_label = new QLabel(tr("Wrong password"));
+	warning_label->hide();
 
 	mode = CLEAN;
 
-	msgLabel->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	msgLabel->setFont(bt_global::font->get(FontManager::TEXT));
-	msgLabel->setText(tr("PASSWORD:"));
+	msg_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	msg_label->setFont(bt_global::font->get(FontManager::TEXT));
+	msg_label->setText(tr("PASSWORD:"));
 
-	digitLabel->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
-	digitLabel->setFont(bt_global::font->get(FontManager::TEXT));
+	digit_label->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+	digit_label->setFont(bt_global::font->get(FontManager::TEXT));
 
 	connect(buttons, SIGNAL(buttonClicked(int)), SLOT(buttonClicked(int)));
 	connect(canc, SIGNAL(clicked()), SLOT(deleteChar()));
@@ -92,10 +88,15 @@ Keypad::Keypad(bool back_button)
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
+
 #ifdef LAYOUT_TS_10
 	k->setAlignment(Qt::AlignHCenter);
 	k->setSpacing(20);
+#else
+	k->setHorizontalSpacing(25);
+	k->setVerticalSpacing(15);
 #endif
+
 	k->setContentsMargins(0, 0, 0, 0);
 
 	for (int i = 0; i < 9; ++i)
@@ -107,58 +108,65 @@ Keypad::Keypad(bool back_button)
 
 	// bottom labels
 	QHBoxLayout *p = new QHBoxLayout;
+#ifdef LAYOUT_TS_3_5
+	p->setContentsMargins(0, 20, 0, 0);
+#else
 	p->setContentsMargins(0, 0, 0, 0);
+#endif
+
 	p->setSpacing(10);
 
-	p->addWidget(msgLabel, 1, Qt::AlignRight);
-	p->addWidget(digitLabel, 1, Qt::AlignLeft);
+	p->addWidget(msg_label, 1, Qt::AlignRight);
+	p->addWidget(digit_label, 1, Qt::AlignLeft);
 
 	// top layout
-	topLayout = new QGridLayout(top_widget);
-	topLayout->setContentsMargins(0, 0, 0, 10);
+	top_layout = new QGridLayout(top_widget);
+
 	// avoid expansion of keys
-	topLayout->setColumnStretch(0, 1);
-	topLayout->setColumnStretch(2, 1);
+	top_layout->setColumnStretch(0, 1);
+	top_layout->setColumnStretch(2, 1);
 
 #ifdef LAYOUT_TS_3_5
-	topLayout->setSpacing(0);
+	top_layout->setSpacing(0);
+	top_layout->setContentsMargins(5, 5, 5, 10);
 #else
-	topLayout->setSpacing(15);
+	top_layout->setSpacing(15);
+	top_layout->setContentsMargins(0, 0, 0, 10);
 #endif
 
 	// when modifying this, modify insertLayout below
-	topLayout->addLayout(k, 0, 1);
-	topLayout->addLayout(p, 2, 1);
-	topLayout->addWidget(warningLabel, 3, 1);
-	topLayout->setRowStretch(3, 1);
+	top_layout->addLayout(k, 0, 1);
+	top_layout->addLayout(p, 2, 1);
+	top_layout->addWidget(warning_label, 3, 1);
+	top_layout->setRowStretch(3, 1);
 
 	updateText();
 }
 
 void Keypad::insertLayout(QLayout *l)
 {
-	topLayout->addLayout(l, 1, 1);
+	top_layout->addLayout(l, 1, 1);
 }
 
 void Keypad::showWrongPassword(bool is_visible)
 {
-	warningLabel->setVisible(is_visible);
+	warning_label->setVisible(is_visible);
 }
 
 void Keypad::setMessage(const QString &message)
 {
-	msgLabel->setText(message);
+	msg_label->setText(message);
 }
 
 void Keypad::updateText()
 {
 	if (mode == CLEAN)
-		digitLabel->setText(text);
+		digit_label->setText(text);
 	else
-		digitLabel->setText(QString(text.length(),'*'));
+		digit_label->setText(QString(text.length(),'*'));
 	// always set a text on the label, otherwise the sizeHint() height changes
 	if (text.length() == 0)
-		digitLabel->setText(" ");
+		digit_label->setText(" ");
 }
 
 void Keypad::buttonClicked(int number)
@@ -166,7 +174,7 @@ void Keypad::buttonClicked(int number)
 	if (text.length() < 5)
 		text += QString::number(number);
 	updateText();
-	warningLabel->hide();
+	warning_label->hide();
 }
 
 void Keypad::deleteChar()

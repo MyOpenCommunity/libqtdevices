@@ -66,12 +66,14 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	b = new Bann2Buttons;
 	b->initBanner(QString(), img_items, tr("Brightness"));
 	b->connectRightButton(new BrightnessPage);
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 #endif
 
 	b = new Bann2Buttons;
 	b->initBanner(QString(), img_items, tr("Screen Saver"));
 	b->connectRightButton(new ScreenSaverPage(getChildWithName(config_node, "screensaver")));
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 
 	page_content->appendBanner(b);
 }

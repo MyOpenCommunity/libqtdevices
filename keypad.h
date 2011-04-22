@@ -75,9 +75,9 @@ private:
 	void updateText();
 
 private:
-	QGridLayout *topLayout;
-	QLabel *digitLabel;
-	QLabel *warningLabel, *msgLabel;
+	QGridLayout *top_layout;
+	QLabel *digit_label;
+	QLabel *warning_label, *msg_label;
 	QString text;
 	Type mode;
 

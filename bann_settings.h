@@ -170,7 +170,7 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private slots:
-	// called on tasti::accept() (user has confirmed password entry)
+	// called on Keypad::accept() (user has confirmed password entry)
 	void checkPasswd();
 	//
 	void resetState();
@@ -205,7 +205,7 @@ private:
 	bool active;
 	PasswdStatus status;
 	QString password, new_password;
-	Keypad *tasti;
+	Keypad *keypad;
 	bool sb;
 	int item_id;
 };

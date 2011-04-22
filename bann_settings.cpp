@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -236,21 +236,21 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 {
 	item_id = _item_id;
 	password = pwd;
-	tasti = new Keypad();
+	keypad = new Keypad;
 	if (password.isEmpty())
 	{
 		setStatus(PASSWD_NOT_SET);
-		tasti->setMode(Keypad::CLEAN);
+		keypad->setMode(Keypad::CLEAN);
 	}
 	else
 	{
 		setStatus(CHECK_OLD_PASSWORD);
-		tasti->setMode(Keypad::HIDDEN);
+		keypad->setMode(Keypad::HIDDEN);
 	}
 
-	connect(tasti, SIGNAL(Closed()), SIGNAL(finished()));
-	connect(tasti, SIGNAL(Closed()), SLOT(resetState()));
-	connect(tasti, SIGNAL(accept()), SLOT(checkPasswd()));
+	connect(keypad, SIGNAL(Closed()), SIGNAL(finished()));
+	connect(keypad, SIGNAL(Closed()), SLOT(resetState()));
+	connect(keypad, SIGNAL(accept()), SLOT(checkPasswd()));
 
 	active = check_active;
 	bt_global::status.check_password = active;
@@ -259,13 +259,13 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 
 void PasswordChanger::changePassword()
 {
-	tasti->showPage();
+	keypad->showPage();
 }
 
 void PasswordChanger::requestPasswdOn()
 {
 	setStatus(ASK_PASSWORD);
-	tasti->showPage();
+	keypad->showPage();
 }
 
 void PasswordChanger::toggleActivation()
@@ -291,22 +291,22 @@ void PasswordChanger::showEvent(QShowEvent *event)
 	else
 	{
 		setStatus(CHECK_OLD_PASSWORD);
-		tasti->setMode(Keypad::HIDDEN);
+		keypad->setMode(Keypad::HIDDEN);
 	}
-	tasti->resetText();
+	keypad->resetText();
 }
 
 void PasswordChanger::resetState()
 {
 	setStatus(CHECK_OLD_PASSWORD);
-	tasti->resetText();
-	tasti->showWrongPassword(false);
+	keypad->resetText();
+	keypad->showWrongPassword(false);
 }
 
 void PasswordChanger::checkPasswd()
 {
-	QString c = tasti->getText();
-	tasti->resetText();
+	QString c = keypad->getText();
+	keypad->resetText();
 	switch (status)
 	{
 	// TODO: understand what must be done when password is not set
@@ -318,7 +318,7 @@ void PasswordChanger::checkPasswd()
 	case CHECK_OLD_PASSWORD:
 		if (password != c)
 		{
-			qDebug() << "password errata doveva essere " << password;
+			qDebug() << "PasswordChanger: wrong password, it has to be" << password;
 			// only beep on error on TS 3.5''
 #ifdef LAYOUT_TS_3_5
 			sb = getBeep();
@@ -326,21 +326,21 @@ void PasswordChanger::checkPasswd()
 			beep(200);
 			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
 #else
-			tasti->showWrongPassword(true);
+			keypad->showWrongPassword(true);
 #endif
 		}
-		else //password is correct
+		else // password is correct
 		{
-			qDebug("Old password correct, insert new password");
+			qDebug("PasswordChanger: Old password correct, insert new password");
 			setStatus(INSERT_NEW_PASSWORD);
-			tasti->showPage();
+			keypad->showPage();
 		}
 		break;
 
 	case INSERT_NEW_PASSWORD:
 		new_password = c;
 		setStatus(VERIFY_PASSWORD);
-		tasti->showPage();
+		keypad->showPage();
 		qDebug("New password: %s", qPrintable(new_password));
 		break;
 
@@ -348,9 +348,9 @@ void PasswordChanger::checkPasswd()
 		if (new_password != c)
 		{
 			qDebug("Password mismatch, new: %s; repeated: %s", qPrintable(new_password), qPrintable(c));
-			tasti->showWrongPassword(true);
+			keypad->showWrongPassword(true);
 			setStatus(INSERT_NEW_PASSWORD);
-			tasti->showPage();
+			keypad->showPage();
 		}
 		else
 		{
@@ -368,7 +368,7 @@ void PasswordChanger::checkPasswd()
 			emit finished();
 		}
 		else
-			tasti->showWrongPassword(true);
+			keypad->showWrongPassword(true);
 		break;
 	}
 }
@@ -380,20 +380,20 @@ void PasswordChanger::setStatus(PasswdStatus _status)
 	switch (status)
 	{
 	case CHECK_OLD_PASSWORD:
-		tasti->setMessage(tr("Old password:"));
+		keypad->setMessage(tr("Old password:"));
 		break;
 
 	case INSERT_NEW_PASSWORD:
 	case PASSWD_NOT_SET:
-		tasti->setMessage(tr("New password:"));
+		keypad->setMessage(tr("New password:"));
 		break;
 
 	case VERIFY_PASSWORD:
-		tasti->setMessage(tr("Verify password:"));
+		keypad->setMessage(tr("Verify password:"));
 		break;
 
 	case ASK_PASSWORD:
-		tasti->setMessage(tr("Check password:"));
+		keypad->setMessage(tr("Check password:"));
 		break;
 	}
 }
