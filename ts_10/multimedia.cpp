@@ -218,7 +218,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			{
 				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
 				upnp_page = f.getFileSelector();
-				BtButton *b = addButton(descr, icon);
+				BtButton *b = addButton(descr, bt_global::skin->getImage("mediaclient"));
 				connect(b, SIGNAL(clicked()), SLOT(showUPnpPage()));
 			}
 			break;
