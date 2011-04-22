@@ -106,6 +106,7 @@ VideoPlayerPage::~VideoPlayerPage()
 
 void VideoPlayerPage::showPage()
 {
+	bt_global::page_stack.showUserPage(this);
 	MediaPlayerPage::showPage();
 	fullscreen = false;
 	resumePlayOnShow();
