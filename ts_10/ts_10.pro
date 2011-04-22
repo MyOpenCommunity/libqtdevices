@@ -25,6 +25,8 @@ else {
 	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp
 }
 
+#DEFINES += TRACK_IMAGES_MEMORY
+
 VPATH = ../devices ..
 include(../common.pri)
 include(../devices.pri)

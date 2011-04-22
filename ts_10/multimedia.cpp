@@ -159,7 +159,18 @@ void MultimediaSectionPage::currentPlayerExited()
 void MultimediaSectionPage::gotoPlayerPage()
 {
 	if (current_player)
+	{
+		// Because from the current player we can turn back to the upnp page we
+		// have to connect/disconnect the upnp page from the MultimediaSectionPage.
+		// We do this even if the current player is not playing an upnp file (because
+		// it doesn't make problems).
+		if (upnp_page)
+		{
+			disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+			connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+		}
 		current_player->showPage();
+	}
 }
 
 int MultimediaSectionPage::sectionId() const
@@ -218,7 +229,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			{
 				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
 				upnp_page = f.getFileSelector();
-				BtButton *b = addButton(descr, icon);
+				BtButton *b = addButton(descr, bt_global::skin->getImage("mediaclient"));
 				connect(b, SIGNAL(clicked()), SLOT(showUPnpPage()));
 			}
 			break;
@@ -274,6 +285,7 @@ void MultimediaSectionPage::showUPnpPage()
 {
 	// Because the upnp_page is the same for every MultimediaSectionPage created
 	// we have to connect/disconnect the page from its container.
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
 	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
 	upnp_page->showPage();
 }

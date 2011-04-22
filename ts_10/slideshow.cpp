@@ -25,7 +25,7 @@
 #include "displaycontrol.h" // forceOperativeMode
 #include "labels.h" // ImageLabel
 #include "pagestack.h"
-#include "generic_functions.h" // checkImageLoad
+#include "generic_functions.h" // checkImageLoad, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
 
 #include <QHBoxLayout>
@@ -38,16 +38,10 @@
 #define SLIDESHOW_TIMEOUT 10000
 #define BUTTONS_TIMEOUT 5000
 
-// Enable/disable the dump of the memory before and after the loading of the images
-#define TRACK_MEMORY 0
-
 namespace
 {
 	QImage loadImage(const QString &image)
 	{
-		if (!checkImageLoad(image))
-			return QImage();
-
 		return QImage(image);
 	}
 }
@@ -196,11 +190,15 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowPage::showImage(int index)
 {
-#if TRACK_MEMORY
-	qDebug() << "SlideshowPage::showImage before loading the image";
-	dumpSystemMemory();
-#endif
+	if (!checkImageLoad(image_list[index]))
+	{
+		qDebug() << "Unable to load the image";
+		return;
+	}
 
+#if TRACK_IMAGES_MEMORY
+	startTrackMemory();
+#endif
 	if (async_load)
 		async_load->deleteLater();
 
@@ -218,9 +216,8 @@ void SlideshowPage::imageReady()
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
 
-#if TRACK_MEMORY
-	qDebug() << "SlideshowPage::imageReady after loading the image";
-	dumpSystemMemory();
+#if TRACK_IMAGES_MEMORY
+	stopTrackMemory();
 #endif
 
 	title->setText(QFileInfo(image_list[controller->currentImage()]).fileName());
@@ -358,10 +355,15 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 
 void SlideshowWindow::showImage(int index)
 {
-#if TRACK_MEMORY
-	qDebug() << "SlideshowWindow::showImage before loading the image";
-	dumpSystemMemory();
+#if TRACK_IMAGES_MEMORY
+	startTrackMemory();
 #endif
+
+	if (!checkImageLoad(image_list[index]))
+	{
+		qDebug() << "Unable to load the image";
+		return;
+	}
 
 	if (async_load)
 		async_load->deleteLater();
@@ -380,9 +382,8 @@ void SlideshowWindow::imageReady()
 
 	image->setPixmap(QPixmap::fromImage(async_load->result()));
 
-#if TRACK_MEMORY
-	qDebug() << "SlideshowWindow::imageReady after loading the image";
-	dumpSystemMemory();
+#if TRACK_IMAGES_MEMORY
+	stopTrackMemory();
 #endif
 
 	async_load->deleteLater();

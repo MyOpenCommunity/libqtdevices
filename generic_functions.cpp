@@ -21,7 +21,7 @@
 
 #include "generic_functions.h"
 #include "xml_functions.h"
-
+#include "hardware_functions.h"
 
 #include <QMapIterator>
 #include <QTextStream>
@@ -43,6 +43,11 @@
 #include <stdio.h> // rename
 
 #define DELAYED_WRITE_INTERVAL 3000
+
+// The maximum width & height supported for images
+#define IMAGE_MAX_WIDTH 3200
+#define IMAGE_MAX_HEIGHT 2100
+
 
 namespace
 {
@@ -151,6 +156,12 @@ QStringList getFileExtensions(EntryInfo::Type type)
 	}
 
 	return exts;
+}
+
+void lShift(QList<bool> &boolList)
+{
+    for (int i = 0; i < boolList.length()-1; ++i)
+        boolList.swap(boolList.length()-1, i);
 }
 
 QStringList getFileFilter(EntryInfo::Type type)
@@ -637,37 +648,73 @@ bool checkImageLoad(const QString &path)
 	if (!file.open(QFile::ReadOnly))
 	{
 		qDebug() << "checkImageLoad: can't open" << path;
-
 		return false;
 	}
 
 	QImageReader rd(&file);
 	QSize sz = rd.size();
 
+	int byte_per_pixel = 4;
+	if (rd.imageFormat() != QImage::Format_RGB32)
+		qWarning() << "checkImageLoad: Unknown image format";
+
 	if (!sz.isValid())
 	{
 		qDebug() << "checkImageLoad: invalid size for" << path;
-
 		return false;
 	}
 
-#if DEBUG
-	qDebug() << "checkImageLoad: mallocing" << sz.width() * sz.height() * 3 / (1024 * 1024) << "MB";
+//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
+//	{
+//		qWarning() << "checkImageLoad -> Image resolution too high";
+//		return false;
+//	}
+
+	int required = sz.width() * sz.height() * byte_per_pixel / 1024;
+	int available = getMemFree();
+
+#if TRACK_IMAGES_MEMORY
+	qDebug() << "checkImageLoad: memory required" << required << "available:" << available;
 #endif
-	void *mem = malloc(sz.width() * sz.height() * 3);
-	if (!mem)
+
+	// From empirical tests we found that the actual memory usage is about 140% - 160% of
+	// the size calculated (every image is loaded from the disk, uncompressed and then
+	// scaled to fit the screen).
+
+	if (required * 1.6 > available)
 	{
-		qDebug() << "checkImageLoad: failed to allocate memory" << path << sz;
-
+		qWarning() << "checkImageLoad -> Not enough memory available to load the requested image";
 		return false;
 	}
-
-	free(mem);
-#if DEBUG
-	qDebug() << "checkImageLoad: image" << path << "size" << sz << "OK";
-#endif
 
 	return true;
+}
+
+
+volatile bool stop_track_memory;
+
+void checkMemFree()
+{
+	static int memfree;
+	memfree = getMemFree();
+	while (!stop_track_memory)
+	{
+		memfree = qMin(memfree, getMemFree());
+		usleep(50);
+	}
+	qDebug() << "Minimum free memory:" << memfree;
+}
+
+void startTrackMemory()
+{
+	stop_track_memory = false;
+
+	QtConcurrent::run(&checkMemFree);
+}
+
+void stopTrackMemory()
+{
+	stop_track_memory = true;
 }
 
 #include "generic_functions.moc"
