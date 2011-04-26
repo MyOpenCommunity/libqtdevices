@@ -186,13 +186,6 @@ void setCfgValue(QString field, int value, int item_id, int num_item=1, const QS
 
 /*!
 	\ingroup Core
-	\brief shift list of boolean by step positions
-	\a It could be useful
- */
-void lShift(QList<bool> &boolList);
-
-/*!
-	\ingroup Core
 	\brief Save one or more values in the configuration file related to a specific object.
 
 	\a data is the map of the fields to save. The map has as key the path of the
@@ -225,6 +218,13 @@ void setCfgValue(QString field, QString value, int item_id, const QString &filen
 void setCfgValue(QString field, int value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
 #endif
+
+/*!
+	\ingroup Core
+	\brief Shift list of boolean by step positions
+ */
+void lShift(QList<bool> &boolList);
+
 
 /*!
 	\ingroup Core
