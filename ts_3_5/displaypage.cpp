@@ -33,6 +33,7 @@
 DisplayPage::DisplayPage(const QDomNode &config_node)
 {
 	buildPage();
+	setSpacing(10);
 	loadItems(config_node);
 }
 

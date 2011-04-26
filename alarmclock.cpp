@@ -526,6 +526,7 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq)
 	AlarmNavigation *navigation = new AlarmNavigation(type == AlarmClock::SOUND_DIFF);
 
 	content = new SingleChoiceContent;
+	content->layout()->setSpacing(10);
 	content->addBanner(SingleChoice::createBanner(tr("once")), AlarmClock::ONCE);
 	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::ALWAYS);
 	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::WEEKDAYS);

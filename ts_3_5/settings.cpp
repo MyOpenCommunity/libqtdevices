@@ -38,6 +38,9 @@
 Settings::Settings(const QDomNode &config_node)
 {
 	buildPage();
+	// Because there are no banners with text under buttons, this is the quickly
+	// way to adjust the spacing.
+	setSpacing(10);
 	loadItems(config_node);
 }
 

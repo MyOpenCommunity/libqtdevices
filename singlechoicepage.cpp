@@ -33,6 +33,7 @@ SingleChoicePage::SingleChoicePage(const QString &title)
 {
 #ifdef LAYOUT_TS_3_5
 	buildPage(new SingleChoiceContent, new NavigationBar("ok"), title);
+	setSpacing(10);
 #else
 	buildPage(new SingleChoiceContent, new NavigationBar, title);
 #endif
