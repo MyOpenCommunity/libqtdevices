@@ -36,7 +36,7 @@ class Bann3Buttons : public BannerNew
 {
 Q_OBJECT
 protected:
-	Bann3Buttons(QWidget *parent);
+	Bann3Buttons(QWidget *parent = 0);
 
 	/*
 	 * \param left Left button icon

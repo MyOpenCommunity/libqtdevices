@@ -53,20 +53,23 @@ BannSinglePuls::BannSinglePuls(QWidget *parent) :
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
+
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+
 	// TODO maybe it it better to rewrite the banner using a QGridLayout, like Bann2Buttons
 #ifdef LAYOUT_TS_10
 	hbox->setSpacing(3);
+	main_layout->setSpacing(0);
 #else
-	hbox->setSpacing(0);
+	hbox->setSpacing(10);
+	main_layout->setSpacing(5);
 #endif
 	hbox->addWidget(center, 1, Qt::AlignRight);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(hbox);
-	l->addWidget(text);
+	main_layout->addLayout(hbox);
+	main_layout->addWidget(text);
 }
 
 void BannSinglePuls::initBanner(const QString &right, const QString &_center, const QString &banner_text)

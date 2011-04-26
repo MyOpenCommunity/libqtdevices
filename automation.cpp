@@ -80,6 +80,9 @@ namespace
 Automation::Automation(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
+#ifdef LAYOUT_TS_3_5
+	setSpacing(5);
+#endif
 	loadItems(config_node);
 }
 

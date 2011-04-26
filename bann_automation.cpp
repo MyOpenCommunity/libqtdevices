@@ -222,8 +222,7 @@ void GateLightingActuator::activate()
 }
 
 
-InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr, int openserver_id) :
-	Bann3Buttons(0)
+InterblockedActuatorGroup::InterblockedActuatorGroup(const QStringList &addresses, const QString &descr, int openserver_id)
 {
 	foreach (const QString &where, addresses)
 		actuators.append(bt_global::add_device_to_cache(new AutomationDevice(where, PULL, openserver_id), NO_INIT));

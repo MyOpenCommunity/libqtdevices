@@ -63,11 +63,16 @@ Bann3Buttons::Bann3Buttons(QWidget *parent) :
 	hbox->addWidget(center_button, 1, Qt::AlignHCenter);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(hbox);
-	l->addWidget(text);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+
+#ifdef LAYOUT_TS_3_5
+	main_layout->setSpacing(5);
+#else
+	main_layout->setSpacing(0);
+#endif
+	main_layout->addLayout(hbox);
+	main_layout->addWidget(text);
 }
 
 void Bann3Buttons::initBanner(const QString &left, const QString &center, const QString &right,

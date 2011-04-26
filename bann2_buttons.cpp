@@ -90,7 +90,8 @@ void Bann2Buttons::createBanner()
 	l->setHorizontalSpacing(5);
 	l->setVerticalSpacing(0);
 #else
-	l->setSpacing(10);
+	l->setHorizontalSpacing(10);
+	l->setVerticalSpacing(5);
 #endif
 	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->setColumnStretch(0, 1);
