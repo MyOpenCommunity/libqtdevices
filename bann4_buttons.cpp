@@ -182,7 +182,13 @@ BannLevel::BannLevel(QWidget *parent) :
 
 	QVBoxLayout *vbox = new QVBoxLayout(this);
 	vbox->setContentsMargins(0, 0, 0, 0);
+
+#ifdef LAYOUT_TS_3_5
+	vbox->setSpacing(5);
+#else
 	vbox->setSpacing(0);
+#endif
+
 	vbox->addLayout(grid);
 	vbox->addWidget(text);
 

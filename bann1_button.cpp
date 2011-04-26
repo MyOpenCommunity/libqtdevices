@@ -135,17 +135,24 @@ BannOn2Labels::BannOn2Labels(QWidget *parent) :
 
 	QHBoxLayout *hbox = new QHBoxLayout;
 	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(0);
+
 	hbox->addWidget(center_text, 1, Qt::AlignCenter);
 	hbox->addWidget(left_icon);
 	hbox->addWidget(right_icon);
 	hbox->addWidget(right_button, 0, Qt::AlignRight);
 
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(hbox);
-	l->addWidget(text);
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->addLayout(hbox);
+	main_layout->addWidget(text);
+
+#ifdef LAYOUT_TS_3_5
+	main_layout->setSpacing(5);
+	hbox->setSpacing(10);
+#else
+	main_layout->setSpacing(0);
+	hbox->setSpacing(0);
+#endif
 }
 
 void BannOn2Labels::initBanner(const QString &right, const QString &_right_icon, const QString &_left_icon,
