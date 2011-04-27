@@ -59,7 +59,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		_display_type(type)
 {
 	QGridLayout *main_layout = new QGridLayout(this);
-	main_layout->setSpacing(0);
+
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
 	BtButton *btn1, *btn2, *btn3;
@@ -81,6 +81,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 	}
 
 #ifdef LAYOUT_TS_10
+	main_layout->setSpacing(0);
 	hour = getLabel();
 	main_layout->addWidget(hour, 1, 0);
 
@@ -104,6 +105,7 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 	if (second)
 		main_layout->setColumnMinimumWidth(3, 25);
 #else
+	main_layout->setSpacing(5);
 	num = new QLCDNumber(this);
 	num->setSegmentStyle(QLCDNumber::Flat);
 	num->setNumDigits(_display_type == DISPLAY_SECONDS ? 8 : 5);

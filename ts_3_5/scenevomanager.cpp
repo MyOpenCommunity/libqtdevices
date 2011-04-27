@@ -34,7 +34,7 @@ ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, S
 {
 	Q_UNUSED(title)
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 5, 0, 10);
+	main_layout->setContentsMargins(5, 5, 5, 15);
 	main_layout->setSpacing(0);
 
 	conditions_stack = new QStackedLayout;
@@ -53,20 +53,17 @@ ScenEvoManager::ScenEvoManager(QString title, ScenEvoTimeCondition *time_cond, S
 	bottom_layout->setContentsMargins(0, 0, 0, 0);
 	bottom_layout->setSpacing(0);
 
-	BtButton *prev_button = new BtButton;
-	prev_button->setImage(bt_global::skin->getImage("back"));
+	BtButton *prev_button = new BtButton(bt_global::skin->getImage("back"));
 	connect(prev_button, SIGNAL(clicked()), SLOT(prev()));
 	bottom_layout->addWidget(prev_button);
 	bottom_layout->addStretch(1);
 
-	next_button = new BtButton;
-	next_button->setImage(bt_global::skin->getImage("forward"));
+	next_button = new BtButton(bt_global::skin->getImage("forward"));
 	connect(next_button, SIGNAL(clicked()), SLOT(next()));
 	bottom_layout->addWidget(next_button);
 	bottom_layout->addStretch(1);
 
-	BtButton *ok = new BtButton;
-	ok->setImage(bt_global::skin->getImage("ok"));
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok, SIGNAL(clicked()), SLOT(ok()));
 	bottom_layout->addWidget(ok);
 

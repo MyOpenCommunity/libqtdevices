@@ -39,6 +39,8 @@ namespace
 	inline PullMode getPullMode(const QDomNode &node)
 	{
 		QDomNode element = getChildWithName(node, "pul");
+		if (element.isNull())
+			return NOT_PULL;
 		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "where"))));
 		bool ok;
 		int value = element.toElement().text().toInt(&ok);
@@ -76,13 +78,17 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
 
 	QVBoxLayout *main_layout = new QVBoxLayout(this);
-	main_layout->setContentsMargins(0, 5, 0, 10);
-	main_layout->setSpacing(0);
 
 #ifdef LAYOUT_TS_3_5
+	main_layout->setSpacing(20);
+	main_layout->setContentsMargins(10, 5, 0, 20);
+
 	QLabel *top_image = new QLabel;
 	top_image->setPixmap(bt_global::skin->getImage("watch"));
 	main_layout->addWidget(top_image, 0, Qt::AlignHCenter);
+#else
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 5, 0, 10);
 #endif
 	main_layout->addWidget(&time_edit, 0, Qt::AlignHCenter);
 
