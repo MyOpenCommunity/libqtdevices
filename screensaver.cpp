@@ -78,7 +78,7 @@ namespace
 
 	QImage loadImageScaled(const QString &image, const QSize &size)
 	{
-		if (!checkImageLoad(image))
+		if (!checkImageSize(image))
 			return QImage();
 
 		return QImage(image).scaled(size, Qt::KeepAspectRatio);

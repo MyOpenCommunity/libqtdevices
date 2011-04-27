@@ -640,13 +640,40 @@ bool silentExecute(const QString &program, QStringList args)
 	return smartExecute(program, args);
 }
 
-bool checkImageLoad(const QString &path)
+bool checkImageSize(const QString &path)
 {
 	QFile file(path);
 
 	if (!file.open(QFile::ReadOnly))
 	{
-		qDebug() << "checkImageLoad: can't open" << path;
+		qDebug() << "checkImageSize: can't open" << path;
+		return false;
+	}
+
+	QImageReader rd(&file);
+	QSize sz = rd.size();
+
+	if (!sz.isValid())
+	{
+		qDebug() << "checkImageSize: invalid size for" << path;
+		return false;
+	}
+
+//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
+//	{
+//		qWarning() << "checkImageSize -> Image resolution too high";
+//		return false;
+//	}
+	return true;
+}
+
+bool checkImageMemory(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QFile::ReadOnly))
+	{
+		qDebug() << "checkImageMemory: can't open" << path;
 		return false;
 	}
 
@@ -655,25 +682,19 @@ bool checkImageLoad(const QString &path)
 
 	int byte_per_pixel = 4;
 	if (rd.imageFormat() != QImage::Format_RGB32)
-		qWarning() << "checkImageLoad: Unknown image format";
+		qWarning() << "checkImageMemory: Unknown image format";
 
 	if (!sz.isValid())
 	{
-		qDebug() << "checkImageLoad: invalid size for" << path;
+		qDebug() << "checkImageMemory: invalid size for" << path;
 		return false;
 	}
-
-//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
-//	{
-//		qWarning() << "checkImageLoad -> Image resolution too high";
-//		return false;
-//	}
 
 	int required = sz.width() * sz.height() * byte_per_pixel / 1024;
 	int available = getMemFree();
 
 #if TRACK_IMAGES_MEMORY
-	qDebug() << "checkImageLoad: memory required" << required << "available:" << available;
+	qDebug() << "checkImageMemory: memory required" << required <<  "for" << path << "available:" << available;
 #endif
 
 	// From empirical tests we found that the actual memory usage is about 140% - 160% of
@@ -682,7 +703,7 @@ bool checkImageLoad(const QString &path)
 
 	if (required * 1.6 > available)
 	{
-		qWarning() << "checkImageLoad -> Not enough memory available to load the requested image";
+		qWarning() << "checkImageMemory -> Not enough memory available to load the requested image";
 		return false;
 	}
 

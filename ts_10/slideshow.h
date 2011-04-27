@@ -112,8 +112,11 @@ private slots:
 	void showImage(int image);
 	void displayFullScreen();
 	void imageReady();
+	void loadImage();
 
 private:
+	bool goto_fullscreen;
+	QString image_to_load;
 	QLabel *title;
 	ImageLabel *image;
 	QList<QString> image_list;
@@ -160,8 +163,11 @@ private slots:
 	void displayNoFullScreen();
 	void showButtons();
 	void imageReady();
+	void loadImage();
 
 private:
+	bool goto_normalscreen;
+	QString image_to_load;
 	// used to automatically hide the buttons
 	QTimer buttons_timer;
 	MultimediaPlayerButtons *buttons;

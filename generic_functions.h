@@ -324,10 +324,15 @@ bool silentExecute(const QString &program, QStringList args = QStringList());
 
 /*!
 	\ingroup Core
+	\brief Returns true if the image has width & heigth less that the maximum allowed
+*/
+bool checkImageSize(const QString &path);
+
+/*!
+	\ingroup Core
 	\brief Returns true if the image can be loaded without exausting the ram
 */
-//
-bool checkImageLoad(const QString &path);
+bool checkImageMemory(const QString &path);
 
 
 // Useful for debug, these functions can be used to print the minimum
