@@ -354,7 +354,7 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 		int minute = getTextChild(item_node, "minute").toInt();
 		int days = getTextChild(item_node, "days").toInt();
 
-		b = new bannAlarmClockIcon(item_id, hour, minute,
+		b = new BannAlarmClockIcon(item_id, hour, minute,
 					   bt_global::skin->getImage("on"),
 					   bt_global::skin->getImage("off"),
 					   bt_global::skin->getImage("state_icon"),
