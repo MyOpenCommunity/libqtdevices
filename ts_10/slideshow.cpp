@@ -28,6 +28,7 @@
 #include "generic_functions.h" // checkImageSize, checkImageMemory, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
 
+#include <QImageReader>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileInfo>
@@ -42,7 +43,7 @@ namespace
 {
 	QImage buildImage(const QString &image)
 	{
-		return QImage(image);
+		return loadImage(image);
 	}
 }
 

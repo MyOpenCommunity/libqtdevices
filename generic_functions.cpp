@@ -669,6 +669,10 @@ bool checkImageSize(const QString &path)
 
 bool checkImageMemory(const QString &path)
 {
+	QString extension = QFileInfo(path).suffix().toLower();
+	if (extension == "jpg" || extension == "jpeg")
+		return true;
+
 	QFile file(path);
 
 	if (!file.open(QFile::ReadOnly))
@@ -700,7 +704,6 @@ bool checkImageMemory(const QString &path)
 	// From empirical tests we found that the actual memory usage is about 140% - 160% of
 	// the size calculated (every image is loaded from the disk, uncompressed and then
 	// scaled to fit the screen).
-
 	if (required * 1.6 > available)
 	{
 		qWarning() << "checkImageMemory -> Not enough memory available to load the requested image";
@@ -710,6 +713,16 @@ bool checkImageMemory(const QString &path)
 	return true;
 }
 
+QImage loadImage(const QString &image, int width, int height)
+{
+	QImageReader r(image);
+	QSize s = r.size();
+	int w = width > 0 ? width : maxWidth();
+	int h = height > 0 ? height : maxHeight();
+	s.scale(w, h, Qt::KeepAspectRatio);
+	r.setScaledSize(s);
+	return r.read();
+}
 
 volatile bool stop_track_memory;
 

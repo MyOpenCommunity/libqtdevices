@@ -334,6 +334,15 @@ bool checkImageSize(const QString &path);
 */
 bool checkImageMemory(const QString &path);
 
+/*!
+	\ingroup Core
+	\brief Loads an \a image scaled to the given \a width and \a height.
+
+	\note If width and height are not specified, the implementation uses
+	the maxWidth() and maxHeight() functions to detect the screen size.
+*/
+QImage loadImage(const QString &image, int width = -1, int height = -1);
+
 
 // Useful for debug, these functions can be used to print the minimum
 // amount of free memory between start and stop.
