@@ -70,12 +70,9 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		int minute = getTextChild(item_node, "minute").toInt();
 		int alarmset = getTextChild(item_node, "alarmset").toInt();
 
-		b = new BannAlarmClock(item_id, hour, minute,
-				       bt_global::skin->getImage("state_on"),
-				       bt_global::skin->getImage("state_off"),
-				       bt_global::skin->getImage("edit"),
-				       getTextChild(item_node, "descr"),
-				       enabled, type, alarmset);
+		b = new BannAlarmClock(item_id, hour, minute, bt_global::skin->getImage("state_on"),
+			bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"),
+			getTextChild(item_node, "descr"), enabled, type, alarmset);
 
 		break;
 	}
@@ -101,11 +98,9 @@ banner *Settings::getBanner(const QDomNode &item_node)
 		break;
 	}
 	case PASSWORD:
-		// TODO PASSWORD below needs to be changed when removing CONFIG_TS_3_5
-		b = new BannPassword(
-			bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
-			bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PASSWORD,
-			getTextChild(item_node, "value"), getTextChild(item_node, "enabled").toInt());
+		b = new BannPassword(bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
+				bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PASSWORD,
+				getTextChild(item_node, "password"), getTextChild(item_node, "actived").toInt());
 		break;
 	case LANSETTINGS:
 	{

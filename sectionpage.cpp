@@ -106,10 +106,18 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		// Home page buttons don't have description set
 		QString descr = getTextChild(item, "descr");
 
+#if LAYOUT_TS_3_5
+		int x = getTextChild(item, "left").toInt();
+		int y = getTextChild(item, "top").toInt();
+#else
+		int x = 0;
+		int y = 0;
+#endif
+
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
 		if (Page *p = getPage(pageid))
-			addPage(p, descr, icon, icon_on, 0, 0);
+			addPage(p, descr, icon, icon_on, x, y);
 #endif
 
 		if (wdtime.elapsed() > 1000)

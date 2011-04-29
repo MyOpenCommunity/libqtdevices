@@ -584,6 +584,7 @@ void BtMain::loadConfiguration()
 	QDomNode pagemenu_home = getHomepageNode();
 	home_page = new HomePage(pagemenu_home);
 
+#ifdef LAYOUT_TS_10
 	QDomNode video_node = getPageNode(VIDEODOORENTRY);
 	// Touch X can receive calls even if the videodoorentry section is not
 	// configured (but the configuration specifies it as an internal place).
@@ -591,6 +592,8 @@ void BtMain::loadConfiguration()
 	// only to manage the ringtone and the loading of the VCTCallPage/IntercomPage.
 	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
 		(void) new VideoDoorEntry;
+#endif // LAYOUT_TS_10
+
 #endif
 
 	bt_global::page_stack.setHomePage(home_page);
