@@ -1362,7 +1362,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<!-- Timed and variable timed light -->
 		<cid>2007</cid>
 		<img_on>illuminazione/on.png</img_on>
-		<img_lamp_time_on>illuminazione/imglamptime.png</img_lamp_time_on>
+		<img_lamp_time_on>illuminazione/imglamptimeon.png</img_lamp_time_on>
+		<img_lamp_time_off>illuminazione/imglamptimeoff.png</img_lamp_time_off>
 		<img_lamp_cycle>illuminazione/cicla.png</img_lamp_cycle>
 	</item>
 	<item>

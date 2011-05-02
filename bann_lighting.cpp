@@ -378,10 +378,10 @@ TempLight::TempLight(const QString &descr, const QString &where, int openserver_
 		     DeviceType device_type, PullMode pull_mode) :
 	BannOnOff2Labels(0)
 {
-	QString icon_on_off = bt_global::skin->getImage("lamp_time_on");
-	initBanner(bt_global::skin->getImage("lamp_cycle"), getBostikName(icon_on_off, "on"),
-		   getBostikName(icon_on_off, "off"),
-		   bt_global::skin->getImage("on"), OFF, descr, QString());
+	QString icon_off = bt_global::skin->getImage("lamp_time_off");
+	QString icon_on = bt_global::skin->getImage("lamp_time_on");
+	initBanner(bt_global::skin->getImage("lamp_cycle"), icon_on,
+		icon_off, bt_global::skin->getImage("on"), OFF, descr, QString());
 
 	dev = bt_global::add_device_to_cache(createLightingDevice(where, openserver_id, device_type, pull_mode));
 
