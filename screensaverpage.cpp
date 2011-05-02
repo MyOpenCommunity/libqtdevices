@@ -76,7 +76,6 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("Bouncing logo")), ScreenSaver::LOGO);
 #endif
 	//addBanner(tr("Deform"), ScreenSaver::DEFORM); // the deform is for now unavailable!
-	// TODO maybe we want an OK button for touch 10 as well
 
 #ifdef LAYOUT_TS_10
 	CheckableBanner *b = SingleChoice::createBanner(tr("Slideshow"), bt_global::skin->getImage("change_settings"));

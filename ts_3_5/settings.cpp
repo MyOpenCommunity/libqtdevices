@@ -48,6 +48,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
+	int item_id = getTextChild(item_node, "itemID").toInt();
 	banner *b = 0;
 
 	QString descr = getTextChild(item_node, "descr");
@@ -55,15 +56,21 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	switch (id)
 	{
 	case SET_BEEP:
+	{
+#ifdef CONFIG_TS_3_5
+		bool enable = getTextChild(item_node, "value").toInt();
+#else
+		bool enable = getTextChild(item_node, "enabled").toInt();
+#endif
 		b = new BannBeep(getTextChild(item_node, "itemID").toInt(),
-				getTextChild(item_node, "value").toInt(),
+				enable,
 				bt_global::skin->getImage("state_on"),
 				bt_global::skin->getImage("state_off"),
 				getTextChild(item_node, "descr"));
 		break;
+	}
 	case SET_ALARMCLOCK:
 	{
-		int item_id = getTextChild(item_node, "itemID").toInt();
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
@@ -99,7 +106,7 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	}
 	case PASSWORD:
 		b = new BannPassword(bt_global::skin->getImage("state_on"), bt_global::skin->getImage("state_off"),
-				bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), PASSWORD,
+				bt_global::skin->getImage("edit"), getTextChild(item_node, "descr"), item_id,
 				getTextChild(item_node, "password"), getTextChild(item_node, "actived").toInt());
 		break;
 	case LANSETTINGS:

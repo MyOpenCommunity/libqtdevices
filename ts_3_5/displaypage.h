@@ -25,6 +25,7 @@
 #include "bannerpage.h"
 
 class QDomNode;
+class QVBoxLayout;
 
 
 class DisplayPage : public BannerPage
@@ -35,6 +36,14 @@ public:
 
 private:
 	void loadItems(const QDomNode &config_node);
+	void loadCleanScreen(int wait_time);
+#ifndef BT_HARDWARE_X11
+	void loadCalibration(QString icon);
+	void loadBrightness(QString icon);
+#endif
+	void loadScreenSaver(QString icon, const QDomNode &config_node);
+
+	QVBoxLayout *main_layout;
 };
 
 
