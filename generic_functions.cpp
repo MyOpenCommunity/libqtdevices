@@ -39,7 +39,7 @@
 #include <QTimer>
 #include <QtConcurrentRun>
 
-#include <fcntl.h>
+#include <fcntl.h> // open
 #include <stdio.h> // rename
 
 #define DELAYED_WRITE_INTERVAL 3000
@@ -161,7 +161,7 @@ QStringList getFileExtensions(EntryInfo::Type type)
 void lShift(QList<bool> &boolList)
 {
 	for (int i = 0; i < boolList.length()-1; ++i)
-		boolList.swap(boolList.length()-1, i);
+                boolList.swap(i, i+1);
 }
 
 QStringList getFileFilter(EntryInfo::Type type)
@@ -256,10 +256,7 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
 		// Write an empty file to warn other process that the configuration file has changed.
-		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-		if (fd >= 0)
-			close(fd);
-
+		createFlagFile(FILE_CHANGE_CONF);
 		return true;
 	}
 
@@ -641,13 +638,44 @@ bool silentExecute(const QString &program, QStringList args)
 	return smartExecute(program, args);
 }
 
-bool checkImageLoad(const QString &path)
+bool checkImageSize(const QString &path)
 {
 	QFile file(path);
 
 	if (!file.open(QFile::ReadOnly))
 	{
-		qDebug() << "checkImageLoad: can't open" << path;
+		qDebug() << "checkImageSize: can't open" << path;
+		return false;
+	}
+
+	QImageReader rd(&file);
+	QSize sz = rd.size();
+
+	if (!sz.isValid())
+	{
+		qDebug() << "checkImageSize: invalid size for" << path;
+		return false;
+	}
+
+//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
+//	{
+//		qWarning() << "checkImageSize -> Image resolution too high";
+//		return false;
+//	}
+	return true;
+}
+
+bool checkImageMemory(const QString &path)
+{
+	QString extension = QFileInfo(path).suffix().toLower();
+	if (extension == "jpg" || extension == "jpeg")
+		return true;
+
+	QFile file(path);
+
+	if (!file.open(QFile::ReadOnly))
+	{
+		qDebug() << "checkImageMemory: can't open" << path;
 		return false;
 	}
 
@@ -656,40 +684,43 @@ bool checkImageLoad(const QString &path)
 
 	int byte_per_pixel = 4;
 	if (rd.imageFormat() != QImage::Format_RGB32)
-		qWarning() << "checkImageLoad: Unknown image format";
+		qWarning() << "checkImageMemory: Unknown image format";
 
 	if (!sz.isValid())
 	{
-		qDebug() << "checkImageLoad: invalid size for" << path;
+		qDebug() << "checkImageMemory: invalid size for" << path;
 		return false;
 	}
-
-//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
-//	{
-//		qWarning() << "checkImageLoad -> Image resolution too high";
-//		return false;
-//	}
 
 	int required = sz.width() * sz.height() * byte_per_pixel / 1024;
 	int available = getMemFree();
 
 #if TRACK_IMAGES_MEMORY
-	qDebug() << "checkImageLoad: memory required" << required << "available:" << available;
+	qDebug() << "checkImageMemory: memory required" << required <<  "for" << path << "available:" << available;
 #endif
 
 	// From empirical tests we found that the actual memory usage is about 140% - 160% of
 	// the size calculated (every image is loaded from the disk, uncompressed and then
 	// scaled to fit the screen).
-
 	if (required * 1.6 > available)
 	{
-		qWarning() << "checkImageLoad -> Not enough memory available to load the requested image";
+		qWarning() << "checkImageMemory -> Not enough memory available to load the requested image";
 		return false;
 	}
 
 	return true;
 }
 
+QImage loadImage(const QString &image, int width, int height)
+{
+	QImageReader r(image);
+	QSize s = r.size();
+	int w = width > 0 ? width : maxWidth();
+	int h = height > 0 ? height : maxHeight();
+	s.scale(w, h, Qt::KeepAspectRatio);
+	r.setScaledSize(s);
+	return r.read();
+}
 
 volatile bool stop_track_memory;
 

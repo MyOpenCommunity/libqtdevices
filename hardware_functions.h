@@ -140,4 +140,7 @@ void dumpSystemMemory();
 // Return the available memory in KB (-1 if the information is not available)
 int getMemFree();
 
+// Create a file used as a flag to notify something to the other openserver stack processes.
+void createFlagFile(QString filename);
+
 #endif // HARDWARE_FUNCTIONS_H

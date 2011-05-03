@@ -569,3 +569,11 @@ int getMemFree()
 	return data["MemFree"] + data["Cached"];
 }
 
+void createFlagFile(QString filename)
+{
+	// We don't care about UTF8, the flag files are used for internal purpose.
+	int fd = open(qPrintable(filename), O_CREAT, 0666);
+	if (fd >= 0)
+		close(fd);
+}
+

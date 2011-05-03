@@ -108,6 +108,9 @@ QDomElement getConfElement(QString path);
 // The file to generate when changing the configuration file to avoid being resetted from bt_processi
 #define FILE_CHANGE_CONF "BTOUCH_CHANGE_CONF"
 
+// The file to generate when the configuration is successfully loaded
+#define FILE_CONF_LOADED "BTouch_checkconfok"
+
 // The file name to create for software watchdog
 #define FILE_WDT "/var/tmp/bticino/bt_wd/BTouch_qws"
 
@@ -122,7 +125,6 @@ QDomElement getConfElement(QString path);
 
 // The delay to use in the starting phase to avoid bottlenecks in the scs bus.
 #define TS_NUMBER_FRAME_DELAY 500
-
 
 #ifdef CONFIG_TS_3_5
 enum Section
