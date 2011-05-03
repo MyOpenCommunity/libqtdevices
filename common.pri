@@ -22,6 +22,7 @@ contains(LAYOUT, ts_10) {
 TRGT_NAME = BTouch
 
 contains(CONF_FILE, ts_10) {
+	DEFINES += CONFIG_TS_10
 	message(Using TS 10\'\' config file.)
 } else {
 	DEFINES += CONFIG_TS_3_5
