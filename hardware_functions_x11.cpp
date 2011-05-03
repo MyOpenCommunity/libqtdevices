@@ -208,3 +208,10 @@ int getMemFree()
 	return -1;
 }
 
+void createFlagFile(QString filename)
+{
+	// On X11 there are no openserver stack processes active, so we have nothing to
+	// notify.
+	Q_UNUSED(filename);
+}
+

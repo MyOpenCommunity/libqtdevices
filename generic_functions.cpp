@@ -39,7 +39,7 @@
 #include <QTimer>
 #include <QtConcurrentRun>
 
-#include <fcntl.h>
+#include <fcntl.h> // open
 #include <stdio.h> // rename
 
 #define DELAYED_WRITE_INTERVAL 3000
@@ -256,10 +256,7 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
 		// Write an empty file to warn other process that the configuration file has changed.
-		int fd = open(FILE_CHANGE_CONF, O_CREAT, 0666);
-		if (fd >= 0)
-			close(fd);
-
+		createFlagFile(FILE_CHANGE_CONF);
 		return true;
 	}
 
