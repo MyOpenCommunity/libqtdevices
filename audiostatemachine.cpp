@@ -139,12 +139,12 @@ namespace
 
 	void silenceVCTAudio()
 	{
-                system("/home/bticino/bin/zarlink 044a 7104 WR");
+		system("/home/bticino/bin/zarlink 044a 7104 WR");
 	}
 
 	void restoreVCTAudio()
 	{
-                system("/home/bticino/bin/zarlink 044a 7004 WR");
+		system("/home/bticino/bin/zarlink 044a 7004 WR");
 	}
 
 	void activateLocalAmplifier()
