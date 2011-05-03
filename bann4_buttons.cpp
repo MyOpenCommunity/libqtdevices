@@ -132,7 +132,12 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TS_3_5
+	grid->setHorizontalSpacing(10);
+	grid->setVerticalSpacing(5);
+#else
 	grid->setSpacing(0);
+#endif
 	grid->addWidget(left_button, 0, 0);
 	grid->addWidget(center_left_button, 0, 1);
 	grid->addWidget(center_right_button, 0, 2);
