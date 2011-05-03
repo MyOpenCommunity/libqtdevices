@@ -3,7 +3,7 @@
 	<!-- Touch 3.5'' skin file-->
 	<ver_xml>1.0</ver_xml>
 	<css>
-PageContainer, QLabel, QLCDNumber, Version { background-color:#1E1E1E; color:#D8D8D8; }
+WindowContainer, PageContainer, QLabel, QLCDNumber, Version { background-color:#1E1E1E; color:#D8D8D8; }
 BtButton { border: 0px; }
 QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
 QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
@@ -12,19 +12,20 @@ QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
 QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
 TextOnImageLabel { qproperty-text_color:#D8D8D8; }
 EnergyGraph {
-    qproperty-primary_color: #1449C8;
-    qproperty-secondary_color: #3587FF;
-    qproperty-border_color: blue;
-    qproperty-axis_color: white;
-    qproperty-text_color: white;
+	qproperty-primary_color: #1449C8;
+	qproperty-secondary_color: #3587FF;
+	qproperty-border_color: blue;
+	qproperty-axis_color: white;
+	qproperty-text_color: white;
 }
 EnergyTableContent {
-    qproperty-border_color: #41474d;
-    qproperty-heading_color: #3587ff;
-    qproperty-odd_row_color: #41474d;
-    qproperty-even_row_color: #2e3236;
-    qproperty-text_color: #d8d8d8;
+	qproperty-border_color: #41474d;
+	qproperty-heading_color: #3587ff;
+	qproperty-odd_row_color: #41474d;
+	qproperty-even_row_color: #2e3236;
+	qproperty-text_color: #d8d8d8;
 }
+
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }
 	</css>
@@ -32,20 +33,16 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_back>arrlf.png</img_back>
 		<img_forward>arrrg.png</img_forward>
 		<img_ok>btnok.png</img_ok>
-		<img_choice>btnemty.png</img_choice>
 		<img_scroll_up>arrup.png</img_scroll_up>
 		<img_scroll_down>arrdw.png</img_scroll_down>
 		<img_arrow_up>arrup.png</img_arrow_up>
 		<img_arrow_down>arrdw.png</img_arrow_down>
 		<img_plus>btnplus.png</img_plus>
 		<img_minus>btnmin.png</img_minus>
-		<img_fast_forward>btnforward.png</img_fast_forward>
-		<img_fast_backward>btnbackward.png</img_fast_backward>
 		<img_cycle>btnavanti.png</img_cycle>
 		<img_on>btnon.png</img_on>
 		<img_off>btnoff.png</img_off>
 		<img_stop>btnstop.png</img_stop>
-		<img_empty_icon>empty.png</img_empty_icon>
 		<img_info>btninfo.png</img_info>
 		<img_cancel>btncanc.png</img_cancel>
 		<img_num_0>num0.png</img_num_0>
@@ -58,57 +55,139 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_num_7>num7.png</img_num_7>
 		<img_num_8>num8.png</img_num_8>
 		<img_num_9>num9.png</img_num_9>
+	</common>
+
+	<!-- Start HomePage buttons -->
+	<item>
+		<!-- Settings -->
+		<cid>14</cid>
+		<img_link_icon>appconf.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Lighting -->
+		<cid>2</cid>
+		<img_link_icon>appillum.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Automation -->
+		<cid>3</cid>
+		<img_link_icon>appmov.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Scenarios -->
+		<cid>1</cid>
+		<img_link_icon>appscen.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Evolved scenarios -->
+		<cid>9</cid>
+		<img_link_icon>appscev.png</img_link_icon>
+	</item>
+	<!-- End HomePage buttons -->
+
+	<!-- Start Settings items -->
+	<item>
+		<!-- Beep -->
+		<cid>14001</cid>
+		<img_state_on>beepon.png</img_state_on>
+		<img_state_off>beepoff.png</img_state_off>
+	</item>
+	<item>
+		<!-- Change date/time button -->
+		<!-- uses: info -->
+		<cid>14002</cid>
+		<img_date_icon>calendario.png</img_date_icon>
+		<img_time_icon>orologio.png</img_time_icon>
+	</item>
+	<item>
+		<!-- Password -->
+		<cid>14003</cid>
+		<img_state_on>pswon.png</img_state_on>
+		<img_state_off>pswoff.png</img_state_off>
+		<img_edit>btnpswchg.png</img_edit>
+	</item>
+	<item>
+		<!-- display -->
+		<cid>14007</cid>
+		<img_display_items>set.png</img_display_items>
+		<img_cleanscreen>btnclean.png</img_cleanscreen>
 		<img_unchecked>btnempty.png</img_unchecked>
 		<img_checked>btnemptyp.png</img_checked>
+	</item>
+	<item>
+		<!-- lan settings -->
+		<!-- uses: info -->
+		<cid>14008</cid>
+		<img_network_enable>ethon.png</img_network_enable>
+		<img_network_disable>ethoff.png</img_network_disable>
+	</item>
+	<item>
+		<!-- version page -->
+		<cid>806</cid>
 		<img_logo>my_home.png</img_logo>
-	</common>
+		<img_bticino>bticino.png</img_bticino>
+	</item>
+	<!-- End Settings items -->
+
+	<!-- Start Lighting items -->
 	<item>
-		<!--
-		Antintrusion section
-		Other tags used: img_scroll_up, img_scroll_down, img_back, img_on, img_off, img_info
-		-->
-		<cid>3</cid>
-		<img_partial>btnparzializzazione.png</img_partial>
-		<img_partial_on>btnparzializza.png</img_partial_on>
-		<img_partial_off>btnsparzializza.png</img_partial_off>
-		<img_alarm_partial_on>btnparzializzap.png</img_alarm_partial_on>
-		<img_alarm_partial_off>btnsparzializzap.png</img_alarm_partial_off>
-		<img_alarm_state>antifurto.png</img_alarm_state>
-		<img_zone>imgzona.png</img_zone>
-		<img_alarm_on>imgantintrusione.png</img_alarm_on>
-		<img_alarm_off>imgantintrusioneoff.png</img_alarm_off>
-		<img_alarm_del>btndel.png</img_alarm_del>
-		<img_technic_alarm_page>imgalltec.png</img_technic_alarm_page>
-		<img_intrusion_alarm_page>imgallintr.png</img_intrusion_alarm_page>
-		<img_tamper_alarm_page>imgallintr.png</img_tamper_alarm_page>
-		<img_panic_alarm_page>imgallintr.png</img_panic_alarm_page>
+		<!-- dimmer (10/100) -->
+		<!-- Notes: Divided in 2 parts, left and right. For tag 'img_dimmer', appends 'sxlN' for left image and 'dxlN' for right image, where N
+		     is dimmer level rounded to the nearest multiple of 5.
+		     For tag 'img_dimmer_broken', appends 'sx' for left image and 'dx' for right image -->
+		<!-- uses: on, off -->
+		<cid>2001</cid>
+		<img_dimmer>ondimmer.png</img_dimmer>
+		<img_dimmer_broken>dimow.png</img_dimmer_broken>
 	</item>
 	<item>
-		<!--
-		Thermal Regulation section
-		Other tags used: img_scroll_up, img_scroll_down, img_back
-		-->
-		<cid>5</cid>
-		<img_plant>impianto.png</img_plant>
-		<img_probe>zona.png</img_probe>
-		<img_extprobe>sonda_esterna.png</img_extprobe>
-		<img_air_conditioning>AirConditioning.png</img_air_conditioning>
+		<!-- Single light -->
+		<!-- uses: on, off -->
+		<cid>2003</cid>
+		<img_actuator_state>lamp.png</img_actuator_state>
 	</item>
 	<item>
-		<!--
-		Thermal Regulation section
-		Other tags used: img_scroll_up, img_scroll_down, img_back
-		-->
-		<cid>15</cid>
-		<img_plant>impianto.png</img_plant>
-		<img_probe>zona.png</img_probe>
-		<img_extprobe>sonda_esterna.png</img_extprobe>
-		<img_air_conditioning>AirConditioning.png</img_air_conditioning>
+		<!-- light group -->
+		<!-- uses: on, off -->
+		<cid>2004</cid>
+		<img_lamp_group_on>lampgrpon.png</img_lamp_group_on>
 	</item>
 	<item>
-		<cid>10</cid>
-		<img_command>btnspecial.png</img_command>
+		<!-- light group in automation -->
+		<cid>3013</cid>
+		<img_lamp_group_on>lampgrpon.png</img_lamp_group_on>
 	</item>
+	<item>
+		<!-- dimmer group -->
+		<!-- uses: on, off -->
+		<cid>2005</cid>
+		<img_dimmer_grp_sx>ondimgrpsx.png</img_dimmer_grp_sx>
+		<img_dimmer_grp_dx>ondimgrpdx.png</img_dimmer_grp_dx>
+	</item>
+	<item>
+		<!-- Timed and variable timed light -->
+		<!-- uses: on, off -->
+		<cid>2007</cid>
+		<img_lamp_time_on>lamptime.png</img_lamp_time_on>
+		<img_lamp_time_off>lamptimeoff.png</img_lamp_time_off>
+		<img_lamp_cycle>btncycle.png</img_lamp_cycle>
+	</item>
+	<item>
+		<!-- Fixed timed light -->
+		<!-- uses: on -->
+		<cid>2010</cid>
+		<img_lamp_status>lampt.png</img_lamp_status>
+		<img_lamp_time>time.png</img_lamp_time>
+	</item>
+	<item>
+		<!-- staircase light -->
+		<!-- uses: on -->
+		<cid>2011</cid>
+		<img_action_icon>lampstair.png</img_action_icon>
+	</item>
+	<!-- End Lighting items -->
+
+	<!-- Start Automation items -->
 	<item>
 		<cid>101</cid>
 		<img_actuator_state>tappa.png</img_actuator_state>
@@ -116,251 +195,146 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_close>arrdw.png</img_close>
 	</item>
 	<item>
-		<cid>102</cid>
+		<!-- blind -->
+		<!--Notes:
+		    In STOP state, image in 'img_actuator_state' will be used.
+		    In OPENING state, an 'o' will be appended to the image in 'img_actuator_state'.
+		    In CLOSING state, a 'c' will be appended.
+		-->
+		<!-- uses: stop -->
+		<cid>3001</cid>
+		<img_close>btnclose.png</img_close>
+		<img_open>btnopen.png</img_open>
 		<img_actuator_state>tenda.png</img_actuator_state>
-		<img_open>btnopen.png</img_open>
-		<img_close>btnclose.png</img_close>
 	</item>
 	<item>
-		<cid>103</cid>
-		<img_actuator_state>garage.png</img_actuator_state>
-		<img_open>arrup.png</img_open>
+		<!-- pivoting door -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<cid>3002</cid>
 		<img_close>arrdw.png</img_close>
+		<img_open>arrup.png</img_open>
+		<img_actuator_state>garage.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>104</cid>
-		<img_actuator_state>canc.png</img_actuator_state>
-		<img_open>btnopen.png</img_open>
+		<!-- shutter -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<cid>3003</cid>
+		<img_close>arrdw.png</img_close>
+		<img_open>arrup.png</img_open>
+		<img_actuator_state>tappa.png</img_actuator_state>
+	</item>
+	<item>
+		<!-- gate automation -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<cid>3004</cid>
 		<img_close>btnclose.png</img_close>
+		<img_open>btnopen.png</img_open>
+		<img_actuator_state>canc.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>105</cid>
-		<img_actuator_state>vent.png</img_actuator_state>
-	</item>
-	<item>
-		<!-- Must have the same tags as cid 105 -->
-		<cid>106</cid>
-		<img_actuator_state>idro.png</img_actuator_state>
-	</item>
-	<item>
-		<!-- Must have the same tags as cid 105 -->
-		<cid>107</cid>
-		<img_actuator_state>carico.png</img_actuator_state>
-	</item>
-	<item>
-		<cid>108</cid>
-		<img_action_icon>funcautom.png</img_action_icon>
-	</item>
-	<item>
-		<cid>113</cid>
-		<img_stop>stopmovs.png</img_stop>
-	</item>
-	<item>
-		<cid>118</cid>
+		<!-- gate lighting -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<cid>3005</cid>
 		<img_gate>canc.png</img_gate>
 	</item>
 	<item>
-		<cid>200</cid>
-		<img_dimmer>ondimmer.png</img_dimmer>
-		<img_dimmer_broken>dimow.png</img_dimmer_broken>
+		<!-- gate lighting/VCT IP -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<cid>3015</cid>
+		<img_gate>canc.png</img_gate>
+        </item>
+	<item>
+		<!-- gate vct -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<cid>3006</cid>
+		<img_gate>canc.png</img_gate>
 	</item>
 	<item>
-		<!-- Must have the same tags as cid 105 -->
-		<cid>201</cid>
-		<img_actuator_state>lamp.png</img_actuator_state>
+		<!-- ventilation -->
+		<!-- Notes:
+		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
+		     In OFF state, 'off' will be appended.
+		-->
+		<!-- uses: on, off -->
+		<cid>3007</cid>
+		<img_actuator_state>vent.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>202</cid>
-		<img_dimmer_grp_sx>ondimgrpsx.png</img_dimmer_grp_sx>
-		<img_dimmer_grp_dx>ondimgrpdx.png</img_dimmer_grp_dx>
+		<!-- irrigation -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on, off -->
+		<cid>3008</cid>
+		<img_actuator_state>idro.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>203</cid>
-		<img_lamp_group_on>lampgrpon.png</img_lamp_group_on>
+		<!-- loads -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on, off -->
+		<cid>3009</cid>
+		<img_actuator_state>carico.png</img_actuator_state>
 	</item>
 	<item>
-		<cid>205</cid>
-		<img_lamp_cycle>btncycle.png</img_lamp_cycle>
-		<img_lamp_time_on>lamptime.png</img_lamp_time_on>
-		<img_lamp_time_off>lamptimeoff.png</img_lamp_time_off>
+		<!-- door lock automation-->
+		<!-- uses: on -->
+		<cid>3010</cid>
+		<img_action_icon>funcautom.png</img_action_icon>
 	</item>
 	<item>
-		<!-- Same tags as cid 108 -->
-		<cid>207</cid>
-		<img_action_icon>lampstair.png</img_action_icon>
+		<!-- door lock vct-->
+		<!-- uses: on -->
+		<cid>3011</cid>
+		<img_action_icon>funcautom.png</img_action_icon>
 	</item>
 	<item>
-		<cid>209</cid>
-		<img_lamp_status>lampt.png</img_lamp_status>
-		<img_lamp_time>time.png</img_lamp_time>
-	</item>
-	<!-- antintrusion -->
-	<item>
-		<cid>300</cid>
-		<img_antintrusion_on>imgantintrusione.png</img_antintrusion_on>
-		<img_antintrusion_off>imgantintrusioneoff.png</img_antintrusion_off>
-		<img_zone>imgzona.png</img_zone>
-		<img_parz>btnparzializza.png</img_parz>
-		<img_sparz>btnsparzializza.png</img_sparz>
+		<!-- door lock automation/VCT IP-->
+		<cid>3016</cid>
+		<img_action_icon>funcautom.png</img_action_icon>
 	</item>
 	<item>
-		<cid>500</cid>
-		<img_probe_manual>btnman.png</img_probe_manual>
-		<img_probe_auto>btnauto.png</img_probe_auto>
-		<img_probe_antifreeze>sondaantigelo.png</img_probe_antifreeze>
-		<img_probe_off>sondaoff.png</img_probe_off>
-		<img_zone>zona.png</img_zone>
-		<img_fan_1_on>fancoil1on.png</img_fan_1_on>
-		<img_fan_1_off>fancoil1off.png</img_fan_1_off>
-		<img_fan_2_on>fancoil2on.png</img_fan_2_on>
-		<img_fan_2_off>fancoil2off.png</img_fan_2_off>
-		<img_fan_3_on>fancoil3on.png</img_fan_3_on>
-		<img_fan_3_off>fancoil3off.png</img_fan_3_off>
-		<img_fan_4_on>fancoilAon.png</img_fan_4_on>
-		<img_fan_4_off>fancoilAoff.png</img_fan_4_off>
+		<!-- ppt stat -->
+		<cid>3012</cid>
+		<img_pptstat_open>pptstatoff.png</img_pptstat_open>
+		<img_pptstat_close>pptstaton.png</img_pptstat_close>
 	</item>
 	<item>
-		<cid>501</cid>
-		<img_probe_manual>btnman.png</img_probe_manual>
-		<img_probe_auto>btnauto.png</img_probe_auto>
-		<img_probe_antifreeze>sondaantigelo.png</img_probe_antifreeze>
-		<img_probe_off>sondaoff.png</img_probe_off>
-		<img_zone>zona.png</img_zone>
-		<img_fan_1_on>fancoil1on.png</img_fan_1_on>
-		<img_fan_1_off>fancoil1off.png</img_fan_1_off>
-		<img_fan_2_on>fancoil2on.png</img_fan_2_on>
-		<img_fan_2_off>fancoil2off.png</img_fan_2_off>
-		<img_fan_3_on>fancoil3on.png</img_fan_3_on>
-		<img_fan_3_off>fancoil3off.png</img_fan_3_off>
-		<img_fan_4_on>fancoilAon.png</img_fan_4_on>
-		<img_fan_4_off>fancoilAoff.png</img_fan_4_off>
+		<!-- automation group -->
+		<!-- uses: scroll_up, scroll_down -->
+		<cid>3014</cid>
+		<img_stop>stopmovs.png</img_stop>
 	</item>
+	<!-- End Automation items -->
+
+	<!-- Start Scenario items -->
 	<item>
-		<cid>502</cid>
-		<img_probe_manual>btnman.png</img_probe_manual>
-		<img_probe_auto>btnauto.png</img_probe_auto>
-		<img_probe_antifreeze>sondaantigelo.png</img_probe_antifreeze>
-		<img_probe_off>sondaoff.png</img_probe_off>
-		<img_zone>zona.png</img_zone>
-		<img_fan_1_on>fancoil1on.png</img_fan_1_on>
-		<img_fan_1_off>fancoil1off.png</img_fan_1_off>
-		<img_fan_2_on>fancoil2on.png</img_fan_2_on>
-		<img_fan_2_off>fancoil2off.png</img_fan_2_off>
-		<img_fan_3_on>fancoil3on.png</img_fan_3_on>
-		<img_fan_3_off>fancoil3off.png</img_fan_3_off>
-		<img_fan_4_on>fancoilAon.png</img_fan_4_on>
-		<img_fan_4_off>fancoilAoff.png</img_fan_4_off>
-	</item>
-	<item>
-		<cid>510</cid>
-		<img_regulator_antifreeze>sondaantigelo.png</img_regulator_antifreeze>
-		<img_regulator_off>sondaoff.png</img_regulator_off>
-		<img_off_button>off.png</img_off_button>
-		<img_regulator_manual>manuale.png</img_regulator_manual>
-		<img_regulator_manual_timed>manuale_temporizzato.png</img_regulator_manual_timed>
-		<img_regulator_program>settimanale.png</img_regulator_program>
-		<img_regulator_scenario>scenari.png</img_regulator_scenario>
-		<img_regulator_holiday>feriale.png</img_regulator_holiday>
-		<img_regulator_weekend>festivo.png</img_regulator_weekend>
-		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
-		<img_summer>estate.png</img_summer>
-		<img_winter>inverno.png</img_winter>
-		<img_summer_program>programma_estivo.png</img_summer_program>
-		<img_winter_program>programma_invernale.png</img_winter_program>
-		<img_summer_scenario>scenario_estivo.png</img_summer_scenario>
-		<img_winter_scenario>scenario_invernale.png</img_winter_scenario>
-		<img_settings>set.png</img_settings>
-		<img_regulator>centrale.png</img_regulator>
-		<img_summer_flat>estate_s.png</img_summer_flat>
-		<img_winter_flat>inverno_s.png</img_winter_flat>
-		<img_date_icon>calendario.png</img_date_icon>
-		<img_time_icon>orologio.png</img_time_icon>
-	</item>
-	<item>
-		<cid>512</cid>
-		<img_regulator_antifreeze>sondaantigelo.png</img_regulator_antifreeze>
-		<img_regulator_off>sondaoff.png</img_regulator_off>
-		<img_off_button>off.png</img_off_button>
-		<img_regulator_manual>manuale.png</img_regulator_manual>
-		<img_regulator_manual_timed>manuale_temporizzato.png</img_regulator_manual_timed>
-		<img_regulator_program>settimanale.png</img_regulator_program>
-		<img_regulator_scenario>scenari.png</img_regulator_scenario>
-		<img_regulator_holiday>feriale.png</img_regulator_holiday>
-		<img_regulator_weekend>festivo.png</img_regulator_weekend>
-		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
-		<img_summer>estate.png</img_summer>
-		<img_winter>inverno.png</img_winter>
-		<img_summer_program>programma_estivo.png</img_summer_program>
-		<img_winter_program>programma_invernale.png</img_winter_program>
-		<img_settings>set.png</img_settings>
-		<img_regulator>centrale.png</img_regulator>
-		<img_summer_flat>estate_s.png</img_summer_flat>
-		<img_winter_flat>inverno_s.png</img_winter_flat>
-		<img_date_icon>calendario.png</img_date_icon>
-		<img_time_icon>orologio.png</img_time_icon>
-	</item>
-	<!-- RDS radio -->
-	<item>
-		<cid>600</cid>
-		<img_cycle>btncycle.png</img_cycle>
-		<img_auto_on>btnauto.png</img_auto_on>
-		<img_auto_off>btnautooff.png</img_auto_off>
-		<img_man_on>btnman.png</img_man_on>
-		<img_man_off>btnmanoff.png</img_man_off>
-		<img_memory>btnmem.png</img_memory>
-	</item>
-	<item>
-		<cid>701</cid>
+		<!-- Scenario Module -->
+		<!-- uses: forward, on, stop -->
+		<cid>1002</cid>
 		<img_edit>setscen.png</img_edit>
 		<img_start_prog>progscen.png</img_start_prog>
 		<img_del_scen>delscen.png</img_del_scen>
 		<img_label>scen.png</img_label>
 	</item>
 	<item>
-		<cid>804</cid>
-		<img_display>arrrg.png</img_display>
-		<img_display_items>set.png</img_display_items>
-		<img_cleanscreen>btnclean.png</img_cleanscreen>
+		<!-- PPT scenario -->
+		<cid>1003</cid>
+		<img_pptsce_on>btnon.png</img_pptsce_on>
+		<img_pptsce_off>btnoff.png</img_pptsce_off>
+		<img_pptsce_increase>pptscedx.png</img_pptsce_increase>
+		<img_pptsce_decrease>pptscesx.png</img_pptsce_decrease>
 	</item>
+	<!-- End Scenario items -->
+
+	<!-- Start Evolved Scenario items -->
 	<item>
-		<cid>807</cid>
-		<img_network>set.png</img_network>
-		<img_network_enable>ethon.png</img_network_enable>
-		<img_network_disable>ethoff.png</img_network_disable>
-	</item>
-	<item>
-		<!-- energy management -->
-		<cid>16</cid>
-		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
-		<img_cost_electricity>electricity.png</img_cost_electricity>
-		<img_cost_water>water.png</img_cost_water>
-		<img_cost_dhw>dhw.png</img_cost_dhw>
-		<img_cost_gas>gas.png</img_cost_gas>
-		<img_cost_conditioning>heating_cooling.png</img_cost_conditioning>
-	</item>
-	<item>
-		<!-- energy data -->
-		<cid>17</cid>
-		<img_bg_banner>empty_180.png</img_bg_banner>
-		<img_graph>chart.png</img_graph>
-		<img_table>table.png</img_table>
-		<img_select>arrrg.png</img_select>
-		<img_empty>empty.png</img_empty>
-		<img_currency>currency.png</img_currency>
-		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
-		<img_cost_electricity>electricity.png</img_cost_electricity>
-		<img_cost_water>water.png</img_cost_water>
-		<img_cost_dhw>dhw.png</img_cost_dhw>
-		<img_cost_gas>gas.png</img_cost_gas>
-		<img_cost_conditioning>heating_cooling.png</img_cost_conditioning>
-	</item>
-	<!-- Load management -->
-	<item>
-		<cid>18</cid>
-		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
-	</item>
-	<item>
-		<cid>1000</cid>
+		<!-- Evolved scenario -->
+		<!-- uses: plus, minus, arrow_up, arrow_down, back, forward, ok-->
+		<cid>9001</cid>
 		<img_enable_scen>btnscevab.png</img_enable_scen>
 		<img_disable_scen>btnscevdis.png</img_disable_scen>
 		<img_start>btnstart120.png</img_start>
@@ -373,159 +347,12 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_probe>imgtermo.png</img_probe>
 	</item>
 	<item>
-		<cid>1001</cid>
+		<!-- Scheduled scenario -->
+		<cid>9002</cid>
 		<img_enable_scen>btnscevab.png</img_enable_scen>
 		<img_disable_scen>btnscevdis.png</img_disable_scen>
 		<img_start>btnstart.png</img_start>
 		<img_stop>btnstopred.png</img_stop>
 	</item>
-	<item>
-		<cid>1400</cid>
-		<img_energy_type>electricity.png</img_energy_type>
-	</item>
-	<item>
-		<cid>1401</cid>
-		<img_energy_type>water.png</img_energy_type>
-	</item>
-	<item>
-		<cid>1402</cid>
-		<img_energy_type>gas.png</img_energy_type>
-	</item>
-	<item>
-		<cid>1403</cid>
-		<img_energy_type>dhw.png</img_energy_type>
-	</item>
-	<item>
-		<cid>1404</cid>
-		<img_energy_type>heating_cooling.png</img_energy_type>
-	</item>
-	<item>
-		<cid>1406</cid>
-		<img_energy_type>EnergyData_custom.png</img_energy_type>
-	</item>
-	<!-- supervision menu/stop'n'go -->
-	<item>
-		<cid>1300</cid>
-		<img_center_icon>S&amp;G_Chiuso.png</img_center_icon>
-	</item>
-	<!-- Load diagnostic -->
-	<item>
-		<cid>1304</cid>
-		<img_center_icon>LoadManagement.png</img_center_icon>
-		<img_state_icon>Load.png</img_state_icon>
-	</item>
-	<!-- Load management with central unit -->
-	<item>
-		<cid>1500</cid>
-		<img_load>LoadManagement.png</img_load>
-		<img_empty_background>empty_180.png</img_empty_background>
-		<img_on>btnOnret.png</img_on>
-		<img_not_forced>btnLoadManAb.png</img_not_forced>
-		<img_forced>btnLoadManDis.png</img_forced>
-		<img_reset>btnReset.png</img_reset>
-		<img_currency>currency.png</img_currency>
-	</item>
-	<!-- Load management, no central unit -->
-	<item>
-		<cid>1501</cid>
-		<img_load>LoadManagement.png</img_load>
-		<img_empty_background>empty_180.png</img_empty_background>
-		<img_reset>btnReset.png</img_reset>
-		<img_currency>currency.png</img_currency>
-	</item>
-	<item>
-		<cid>603</cid>
-		<img_preset>preset.png</img_preset>
-		<img_treble>louds.png</img_treble>
-		<img_bass>lows.png</img_bass>
-		<img_balance>balance_0.png</img_balance>
-		<img_balance_sx>balance_sx.png</img_balance_sx>
-		<img_balance_dx>balance_dx.png</img_balance_dx>
-		<img_loud>loud.png</img_loud>
-		<img_loud_on>loud.png</img_loud_on>
-		<img_loud_off>loud_off.png</img_loud_off>
-		<img_more>more.png</img_more>
-		<img_less>less.png</img_less>
-		<img_settings>audiosetting.png</img_settings>
-		<img_volume_active>onampl.png</img_volume_active>
-		<img_volume_inactive>offampl.png</img_volume_inactive>
-	</item>
-	<item>
-	<cid>119</cid>
-		<img_pptstat_open>pptstatoff.png</img_pptstat_open>
-		<img_pptstat_close>pptstaton.png</img_pptstat_close>
-	</item>
-	<item>
-	<cid>702</cid>
-		<img_pptsce_on>btnon.png</img_pptsce_on>
-		<img_pptsce_off>btnoff.png</img_pptsce_off>
-		<img_pptsce_increase>pptscedx.png</img_pptsce_increase>
-		<img_pptsce_decrease>pptscesx.png</img_pptsce_decrease>
-	</item>
-	<item>
-	<cid>800</cid>
-		<img_state_on>beepon.png</img_state_on>
-		<img_state_off>beepoff.png</img_state_off>
-		<img_edit>btninfo.png</img_edit>
-	</item>
-	<item>
-	<cid>801</cid>
-		<img_alarm_icon>svegliaon.png</img_alarm_icon>
-		<img_state_on>svegliaon.png</img_state_on>
-		<img_state_off>svegliaoff.png</img_state_off>
-		<img_edit>btninfo.png</img_edit>
-	</item>
-	<item>
-	<cid>802</cid>
-		<img_date_icon>calendario.png</img_date_icon>
-		<img_time_icon>orologio.png</img_time_icon>
-	</item>
-	<item>
-	<cid>803</cid>
-		<img_edit>btninfo.png</img_edit>
-		<img_logo>my_home.png</img_logo>
-		<img_colorbar>colorbar.png</img_colorbar>
-	</item>
-	<item>
-	<cid>805</cid>
-		<img_state_on>pswon.png</img_state_on>
-		<img_state_off>pswoff.png</img_state_off>
-		<img_edit>btnpswchg.png</img_edit>
-	</item>
-	<item>
-	<cid>806</cid>
-		<img_logo>my_home.png</img_logo>
-		<img_bticino>bticino.png</img_bticino>
-	</item>
-	<item>
-		<cid>513</cid>
-		<img_air_single>UnitAirConditioning.png</img_air_single>
-		<img_air_single_temp>empty.png</img_air_single_temp>
-		<img_air_general>GroupAirConditioning.png</img_air_general>
-		<img_split_cmd>btnon.png</img_split_cmd>
-		<img_split_settings>set.png</img_split_settings>    
-	</item>
-	<item>
-		<cid>516</cid>
-		<img_air_single>UnitAirConditioning.png</img_air_single>
-		<img_air_single_temp>empty.png</img_air_single_temp>
-		<img_air_general>GroupAirConditioning.png</img_air_general>
-		<img_split_cmd>btnon.png</img_split_cmd>
-		<img_split_settings>set.png</img_split_settings>
-		<img_swing_on>btnon.png</img_swing_on>
-		<img_swing_off>btnoff.png</img_swing_off>
-		<img_custom_button>CustomAirConditioning.png</img_custom_button>
-		<img_plus_disabled>btnPiu.png</img_plus_disabled>
-		<img_minus_disabled>btnMeno.png</img_minus_disabled>
-		<img_cycle_speed>btnCiclaFancoil.png</img_cycle_speed>
-		<img_cycle_mode>btnCiclaMod.png</img_cycle_mode>
-		<img_setstate_error>airconditioning_error.png</img_setstate_error>
-	</item>
-	<item>
-		<!-- Temporary for videodoorentry entrance panel -->
-		<cid>1100</cid>
-		<img_entrance_panel_light>btnlucescale.png</img_entrance_panel_light>
-		<img_entrance_panel>imgPE.png</img_entrance_panel>
-		<img_entrance_panel_key>btnserratura.png</img_entrance_panel_key>
-	</item>
+	<!-- End Evolved Scenario items -->
 </style>
