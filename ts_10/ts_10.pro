@@ -55,17 +55,10 @@ HEADERS += favoriteswidget.h \
 	iconsettings.h \
 	messages.h \
 	mount_watcher.h \
-	multimedia.h \
-	multimedia_buttons.h \
-	multimedia_filelist.h \
-	ipradio.h \
 	scenevomanager.h \
 	slideshow.h \
-	sounddiffusionpage.h \
 	vctcall.h \
-	mediaplayerpage.h \
 	videoplayer.h \
-	audioplayer.h \
 	webcam.h
 
 
@@ -74,17 +67,10 @@ SOURCES += favoriteswidget.cpp \
 	iconsettings.cpp \
 	messages.cpp \
 	mount_watcher.cpp \
-	multimedia.cpp \
-	multimedia_buttons.cpp \
-	multimedia_filelist.cpp \
-	ipradio.cpp \
 	scenevomanager.cpp \
 	slideshow.cpp \
-	sounddiffusionpage.cpp \
 	vctcall.cpp \
-	mediaplayerpage.cpp \
 	videoplayer.cpp \
-	audioplayer.cpp \
 	webcam.cpp
 
 OTHER_FILES += skin.xml

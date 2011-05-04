@@ -101,6 +101,7 @@ HEADERS += actuators.h \
 	airconditioning.h \
 	alarmclock.h \
 	alarmpage.h \
+	audioplayer.h \
 	audiosource.h \
 	bann_amplifiers.h \
 	antintrusion.h \
@@ -153,6 +154,7 @@ HEADERS += actuators.h \
 	iconpage.h \
 	iconwindow.h \
 	imageselectionhandler.h \
+	ipradio.h \
 	itemlist.h \
 	items.h \
 	keypad.h \
@@ -163,6 +165,10 @@ HEADERS += actuators.h \
 	load_management.h \
 	main.h \
 	mediaplayer.h \
+	mediaplayerpage.h \
+	multimedia.h \
+	multimedia_buttons.h \
+	multimedia_filelist.h \
 	navigation_bar.h \
 	openclient.h \
 	page.h \
@@ -184,6 +190,7 @@ HEADERS += actuators.h \
 	singlechoicepage.h \
 	skinmanager.h \
 	specialpage.h \
+	sounddiffusionpage.h \
 	statemachine.h \
 	state_button.h \
 	stopngo.h \
@@ -207,6 +214,7 @@ SOURCES += actuators.cpp \
 	airconditioning.cpp \
 	alarmclock.cpp \
 	alarmpage.cpp \
+	audioplayer.cpp \
 	audiosource.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
@@ -258,6 +266,7 @@ SOURCES += actuators.cpp \
 	iconpage.cpp \
 	iconwindow.cpp \
 	imageselectionhandler.cpp \
+	ipradio.cpp \
 	itemlist.cpp \
 	items.cpp \
 	keypad.cpp \
@@ -268,6 +277,10 @@ SOURCES += actuators.cpp \
 	load_management.cpp \
 	main.cpp \
 	mediaplayer.cpp \
+	mediaplayerpage.cpp \
+	multimedia.cpp \
+	multimedia_buttons.cpp \
+	multimedia_filelist.cpp \
 	navigation_bar.cpp \
 	openclient.cpp \
 	page.cpp \
@@ -288,6 +301,7 @@ SOURCES += actuators.cpp \
 	sectionpage.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
+	sounddiffusionpage.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \
