@@ -42,9 +42,9 @@ class QScrollArea;
 #define MESSAGES_MAX 10
 
 /*!
-        \ingroup Char messages
-        \def CHARS_MAX
-        The maximum number of charecters.
+	\ingroup Messages
+	\def CHARS_MAX
+	The maximum number of characters.
 */
 #define CHARS_MAX 145
 
