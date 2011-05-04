@@ -149,6 +149,8 @@ private slots:
 	void requestStatusIfCurrentWidget(Page *curr);
 	void plantInserted();
 	void cleanupAlarmPage(QObject *page);
+	void playRingtone();
+	void ringtoneFinished();
 };
 
 

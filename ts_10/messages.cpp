@@ -10,6 +10,8 @@
 #include "devices_cache.h"
 #include "btmain.h" // showHomePage, makeActive
 #include "pagestack.h"
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QLabel>
 #include <QLayout>
@@ -407,6 +409,10 @@ int MessagesListPage::sectionId() const
 
 void MessagesListPage::newMessage(const DeviceValues &values_list)
 {
+	connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
+	if (bt_global::audio_states->currentState() != AudioStates::PLAY_RINGTONE)
+		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+
 	Q_ASSERT_X(values_list[MessageDevice::DIM_MESSAGE].canConvert<Message>(), "MessagesListPage::newMessage", "conversion error");
 	bt_global::skin->setCidState(skin_cid);
 	Message message = values_list[MessageDevice::DIM_MESSAGE].value<Message>();
@@ -460,6 +466,19 @@ void MessagesListPage::newMessage(const DeviceValues &values_list)
 	bt_global::btmain->makeActive();
 	bt_global::page_stack.showUserPage(page);
 	page->showPage();
+}
+
+void MessagesListPage::playRingtone()
+{
+	disconnect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
+	connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
+	bt_global::ringtones->playRingtone(Ringtones::MESSAGE);
+}
+
+void MessagesListPage::ringtoneFinished()
+{
+	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+	disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
 }
 
 void MessagesListPage::cleanUpAlert()

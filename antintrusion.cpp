@@ -31,6 +31,8 @@
 #include "main.h" // ANTIINTRUSION
 #include "skinmanager.h"
 #include "icondispatcher.h"
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <openmsg.h>
 
@@ -303,6 +305,10 @@ void Antintrusion::manageFrame(OpenMsg &msg)
 
 void Antintrusion::addAlarm(QString descr, int t, int zona)
 {
+	connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
+	if (bt_global::audio_states->currentState() != AudioStates::PLAY_RINGTONE)
+		bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+
 	bt_global::skin->setCidState(skin_cid);
 
 	QString alarm_description = descr;
@@ -333,6 +339,19 @@ void Antintrusion::addAlarm(QString descr, int t, int zona)
 	bt_global::btmain->makeActive();
 	curr->showPage();
 	checkAlarmCount();
+}
+
+void Antintrusion::playRingtone()
+{
+	disconnect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
+	connect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
+	bt_global::ringtones->playRingtone(Ringtones::ALARM);
+}
+
+void Antintrusion::ringtoneFinished()
+{
+	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
+	disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
 }
 
 void Antintrusion::showHomePage()

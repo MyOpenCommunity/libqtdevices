@@ -345,6 +345,9 @@ private slots:
 
 	void checkForUnread();
 
+	void playRingtone();
+	void ringtoneFinished();
+
 };
 
 
