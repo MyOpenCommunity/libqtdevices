@@ -55,6 +55,19 @@ SongSearch *MultimediaSectionPage::song_search = NULL;
 AudioPlayerPage *MultimediaSectionPage::current_player = 0;
 bool MultimediaSectionPage::usb_initialized = false;
 
+namespace
+{
+	template<class R>
+	R makeAbsolute(QFileInfoList files)
+	{
+		R result;
+
+		foreach (const QFileInfo &fi, files)
+			result.append(fi.absoluteFilePath());
+
+		return result;
+	}
+}
 
 FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser, MountType _type,
 	const QString &label, const QString &icon_mounted, const QString &icon_unmounted) :
@@ -411,20 +424,6 @@ void SongSearch::playAudioFiles(QStringList things, int type)
 
 	current_source = -1;
 	page->playAudioFilesBackground(things, 0);
-}
-
-namespace
-{
-	template<class R>
-	R makeAbsolute(QFileInfoList files)
-	{
-		R result;
-
-		foreach (const QFileInfo &fi, files)
-			result.append(fi.absoluteFilePath());
-
-		return result;
-	}
 }
 
 SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile terminate)
