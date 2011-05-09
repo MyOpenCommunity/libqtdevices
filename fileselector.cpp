@@ -22,6 +22,7 @@
 #include "fileselector.h"
 #include "icondispatcher.h"
 #include "btmain.h" // bt_global::btmain
+#include "labels.h"
 
 #ifdef BT_HARDWARE_TS_10
 #include "mount_watcher.h"
@@ -30,25 +31,9 @@
 #include <QTime>
 #include <QDebug>
 #include <QLabel>
-#include <QApplication>
 #include <QVariant>
 
-
 #define MEDIASERVER_MSEC_WAIT_TIME 300
-
-inline QTime startTimeCounter()
-{
-	QTime timer;
-	timer.start();
-	return timer;
-}
-
-inline void waitTimeCounter(const QTime& timer, int msec)
-{
-	int wait_time = msec - timer.elapsed();
-	if (wait_time > 0)
-		usleep(wait_time * 1000);
-}
 
 
 FileSelector::FileSelector(TreeBrowser *_browser)
@@ -217,7 +202,7 @@ void FileSelector::startOperation()
 {
 	Q_ASSERT_X(working == NULL, "FileSelector::startOperation", "Multiple operations in progress");
 
-	working = new FileSelectorWaitDialog(this, MEDIASERVER_MSEC_WAIT_TIME);
+	working = new WaitLabel(this, MEDIASERVER_MSEC_WAIT_TIME);
 	connect(this, SIGNAL(Closed()), working, SLOT(abort()));
 }
 
@@ -251,28 +236,3 @@ void FileSelector::unmounted(const QString &dir)
 #endif
 
 
-FileSelectorWaitDialog::FileSelectorWaitDialog(Page *parent, int _timeout) :
-	QLabel(parent), timeout(_timeout)
-{
-	elapsed = startTimeCounter();
-
-	setProperty("Loading", true);
-	setGeometry(parent->geometry());
-
-	show();
-	qApp->processEvents();
-}
-
-void FileSelectorWaitDialog::waitForTimeout()
-{
-	waitTimeCounter(elapsed, timeout);
-
-	hide();
-	deleteLater();
-}
-
-void FileSelectorWaitDialog::abort()
-{
-	hide();
-	deleteLater();
-}
