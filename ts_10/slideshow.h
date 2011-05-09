@@ -160,6 +160,7 @@ public slots:
 signals:
 	void imageLoaded();
 	void imageNotLoaded();
+	void closePage();
 
 protected:
 	// kills the slideshow timer

@@ -177,7 +177,7 @@ SlideshowPage::SlideshowPage()
 
 	// close the slideshow page when the user clicks the stop button on the
 	// full screen slide show
-	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
+	connect(window, SIGNAL(closePage()), SLOT(handleClose()));
 	goto_fullscreen = false;
 }
 
@@ -492,7 +492,13 @@ void SlideshowWindow::startSlideshow()
 void SlideshowWindow::handleClose()
 {
 	controller->stopSlideshow();
-	emit Closed();
+	// We cannot simply use the Closed signal to close the window, because the signal
+	// is also used to remove the Window from the stack (so, we can show the wrong
+	// page or trigger an assert when calling the fileselector::showPage twice).
+	// We use a different signal and manually remove the Window from the stack
+	// to avoid the problem.
+	bt_global::page_stack.closeWindow(this);
+	emit closePage();
 }
 
 void SlideshowWindow::hideEvent(QHideEvent *)
