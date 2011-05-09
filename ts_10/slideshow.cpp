@@ -53,6 +53,8 @@ SlideshowController::SlideshowController(QObject *parent)
 	: QObject(parent),
 	timer(this)
 {
+	timer.setSingleShot(true);
+	timer.setInterval(SLIDESHOW_TIMEOUT);
 	connect(&timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
 }
 
@@ -62,33 +64,31 @@ void SlideshowController::initialize(int total, int current)
 	current_image = current;
 }
 
+void SlideshowController::startImageTimer()
+{
+	if (active)
+		timer.start();
+}
+
 void SlideshowController::prevImageUser()
 {
 	// if the slideshow timer is active, restart it after changing current image
-	bool active = slideshowActive();
-	if (active)
+	if (active && timer.isActive())
 		timer.stop();
 
 	current_image -= 1;
 	if (current_image < 0)
 		current_image = total_images - 1;
 	emit showImage(current_image);
-
-	if (active)
-		timer.start(SLIDESHOW_TIMEOUT);
 }
 
 void SlideshowController::nextImageUser()
 {
 	// if the slideshow timer is active, restart it after changing current image
-	bool active = slideshowActive();
-	if (active)
+	if (active && timer.isActive())
 		timer.stop();
 
 	nextImageSlideshow();
-
-	if (active)
-		timer.start(SLIDESHOW_TIMEOUT);
 }
 
 void SlideshowController::nextImageSlideshow()
@@ -101,25 +101,27 @@ void SlideshowController::nextImageSlideshow()
 
 void SlideshowController::startSlideshow()
 {
-	if (slideshowActive())
+	if (active)
 		return;
-	timer.start(SLIDESHOW_TIMEOUT);
+	active = true;
+	timer.start();
 	bt_global::display->forceOperativeMode(true);
 	emit slideshowStarted();
 }
 
 void SlideshowController::stopSlideshow()
 {
-	if (!slideshowActive())
+	if (!active)
 		return;
-	timer.stop();
+	if (timer.isActive())
+		timer.stop();
 	bt_global::display->forceOperativeMode(false);
 	emit slideshowStopped();
 }
 
 bool SlideshowController::slideshowActive()
 {
-	return timer.isActive();
+	return active;
 }
 
 int SlideshowController::currentImage()
@@ -169,6 +171,10 @@ SlideshowPage::SlideshowPage()
 	connect(controller, SIGNAL(showImage(int)), SLOT(showImage(int)));
 	connect(nav_bar, SIGNAL(backClick()), SLOT(handleClose()));
 
+	// To automatically get the next image after the previuos one is loaded.
+	connect(this, SIGNAL(imageLoaded()), controller, SLOT(startImageTimer()));
+	connect(this, SIGNAL(imageNotLoaded()), controller, SLOT(startImageTimer()));
+
 	// close the slideshow page when the user clicks the stop button on the
 	// full screen slide show
 	connect(window, SIGNAL(Closed()), SLOT(handleClose()));
@@ -195,6 +201,7 @@ void SlideshowPage::showImage(int index)
 	if (!checkImageSize(image_list[index]))
 	{
 		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
+		emit imageNotLoaded();
 		return;
 	}
 
@@ -208,6 +215,7 @@ void SlideshowPage::loadImage()
 	if (!checkImageMemory(image_to_load))
 	{
 		qDebug() << "Unable to load the image" << image_to_load;
+		emit imageNotLoaded();
 		return;
 	}
 
@@ -227,6 +235,7 @@ void SlideshowPage::loadImage()
 void SlideshowPage::imageReady()
 {
 	qDebug() << "Image loading complete";
+	emit imageLoaded();
 
 	if (!image_to_load.isNull())
 	{
@@ -264,6 +273,7 @@ void SlideshowPage::startSlideshow()
 
 void SlideshowPage::handleClose()
 {
+	qDebug() << "SlideshowPage::handleClose";
 	controller->stopSlideshow();
 	emit Closed();
 }
@@ -357,6 +367,10 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 
 	connect(controller, SIGNAL(showImage(int)), this, SLOT(showImage(int)));
 
+	// To automatically get the next image after the previuos one is loaded.
+	connect(this, SIGNAL(imageLoaded()), controller, SLOT(startImageTimer()));
+	connect(this, SIGNAL(imageNotLoaded()), controller, SLOT(startImageTimer()));
+
 	// timer to hide the buttons
 	buttons_timer.setSingleShot(true);
 	connect(&buttons_timer, SIGNAL(timeout()), buttons, SLOT(hide()));
@@ -400,6 +414,7 @@ void SlideshowWindow::showImage(int index)
 	if (!checkImageSize(image_list[index]))
 	{
 		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
+		emit imageNotLoaded();
 		return;
 	}
 
@@ -413,6 +428,7 @@ void SlideshowWindow::loadImage()
 	if (!checkImageMemory(image_to_load))
 	{
 		qDebug() << "Unable to load the image" << image_to_load;
+		emit imageNotLoaded();
 		return;
 	}
 
@@ -432,6 +448,7 @@ void SlideshowWindow::loadImage()
 void SlideshowWindow::imageReady()
 {
 	qDebug() << "Image loading complete";
+	emit imageLoaded();
 
 	if (!image_to_load.isNull())
 	{

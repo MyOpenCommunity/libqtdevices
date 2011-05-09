@@ -62,6 +62,8 @@ public slots:
 	void startSlideshow();
 	void stopSlideshow();
 
+	void startImageTimer();
+
 signals:
 	// emitted when the slideshow is starting/stopping
 	void slideshowStarted();
@@ -72,7 +74,9 @@ signals:
 
 private:
 	int total_images, current_image;
+	bool active;
 	QTimer timer;
+
 };
 
 
@@ -100,6 +104,8 @@ public slots:
 
 signals:
 	void cleanedUp();
+	void imageLoaded();
+	void imageNotLoaded();
 
 protected:
 	// kills the slideshow timer
@@ -150,6 +156,10 @@ public slots:
 
 	// starts the slide show from the current image
 	void startSlideshow();
+
+signals:
+	void imageLoaded();
+	void imageNotLoaded();
 
 protected:
 	// kills the slideshow timer
