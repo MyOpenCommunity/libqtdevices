@@ -44,7 +44,7 @@
 
 #define DELAYED_WRITE_INTERVAL 3000
 
-// The maximum width & height supported for images
+// The maximum width & height supported for images (not used for jpeg)
 #define IMAGE_MAX_WIDTH 3200
 #define IMAGE_MAX_HEIGHT 2100
 
@@ -641,6 +641,13 @@ bool checkImageSize(const QString &path)
 {
 	QFile file(path);
 
+	QString extension = QFileInfo(path).suffix().toLower();
+	// When we load a jpeg image from disk Qt uses an optimization that loads
+	// the image using the scaled size (and not the original size). So we have
+	// no problem (and no limit) to load jpeg images.
+	if (extension == "jpg" || extension == "jpeg")
+		return true;
+
 	if (!file.open(QFile::ReadOnly))
 	{
 		qDebug() << "checkImageSize: can't open" << path;
@@ -656,17 +663,16 @@ bool checkImageSize(const QString &path)
 		return false;
 	}
 
-//	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
-//	{
-//		qWarning() << "checkImageSize -> Image resolution too high";
-//		return false;
-//	}
+	if (sz.width() > IMAGE_MAX_WIDTH || sz.height() > IMAGE_MAX_HEIGHT)
+		return false;
+
 	return true;
 }
 
 bool checkImageMemory(const QString &path)
 {
 	QString extension = QFileInfo(path).suffix().toLower();
+	// See the comment on checkImageSize
 	if (extension == "jpg" || extension == "jpeg")
 		return true;
 
@@ -702,10 +708,7 @@ bool checkImageMemory(const QString &path)
 	// the size calculated (every image is loaded from the disk, uncompressed and then
 	// scaled to fit the screen).
 	if (required * 1.6 > available)
-	{
-		qWarning() << "checkImageMemory -> Not enough memory available to load the requested image";
 		return false;
-	}
 
 	return true;
 }

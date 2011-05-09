@@ -132,6 +132,9 @@ private:
 	// when we exit from the page due to a videocall or an alarm we want to paused
 	// and then restore the slideshow.
 	bool paused;
+
+	void showPixmap(const QPixmap &pixmap, const QString &text_title);
+	void showMessage(const QString &text, const QString &text_title);
 };
 
 
@@ -188,6 +191,9 @@ private:
 	SlideshowPage *page;
 	QPointer<QFutureWatcher<QImage> > async_load;
 	bool paused;
+
+	void showPixmap(const QPixmap &pixmap);
+	void showMessage(const QString &text);
 };
 
 #endif // SLIDESHOW_H

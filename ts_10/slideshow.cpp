@@ -27,6 +27,7 @@
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageSize, checkImageMemory, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
+#include "fontmanager.h" // bt_global::font
 
 #include <QImageReader>
 #include <QHBoxLayout>
@@ -115,6 +116,7 @@ void SlideshowController::stopSlideshow()
 		return;
 	if (timer.isActive())
 		timer.stop();
+	active = false;
 	bt_global::display->forceOperativeMode(false);
 	emit slideshowStopped();
 }
@@ -146,6 +148,7 @@ SlideshowPage::SlideshowPage()
 
 	// pixmap used to display the image
 	image = new ImageLabel;
+	image->setFont(bt_global::font->get(FontManager::TEXT));
 
 	MultimediaPlayerButtons *buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_PAGE);
 
@@ -191,7 +194,7 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
-	image->setPixmap(QPixmap());
+	showPixmap(QPixmap(), QString());
 	showImage(element);
 	showPage();
 }
@@ -201,6 +204,7 @@ void SlideshowPage::showImage(int index)
 	if (!checkImageSize(image_list[index]))
 	{
 		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
+		showMessage(tr("Image not supported"), QFileInfo(image_list[index]).fileName());
 		emit imageNotLoaded();
 		return;
 	}
@@ -210,11 +214,28 @@ void SlideshowPage::showImage(int index)
 		loadImage();
 }
 
+void SlideshowPage::showPixmap(const QPixmap &pixmap, const QString &text_title)
+{
+	image->setStyleSheet("");
+	image->setText(QString());
+	image->setPixmap(pixmap);
+	title->setText(text_title);
+}
+
+void SlideshowPage::showMessage(const QString &text, const QString &text_title)
+{
+	image->setPixmap(QPixmap());
+	image->setStyleSheet("background: black");
+	image->setText(text);
+	title->setText(text_title);
+}
+
 void SlideshowPage::loadImage()
 {
 	if (!checkImageMemory(image_to_load))
 	{
 		qDebug() << "Unable to load the image" << image_to_load;
+		showMessage(tr("Image exceed memory size"), QFileInfo(image_to_load).fileName());
 		emit imageNotLoaded();
 		return;
 	}
@@ -256,14 +277,12 @@ void SlideshowPage::imageReady()
 		return;
 	}
 
-	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	showPixmap(QPixmap::fromImage(async_load->result()), QFileInfo(image_list[controller->currentImage()]).fileName());
 	async_load->deleteLater();
 
 #if TRACK_IMAGES_MEMORY
 	stopTrackMemory();
 #endif
-
-	title->setText(QFileInfo(image_list[controller->currentImage()]).fileName());
 }
 
 void SlideshowPage::startSlideshow()
@@ -338,6 +357,7 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 
 	// pixmap used to display the image
 	image = new ImageLabel;
+	image->setFont(bt_global::font->get(FontManager::TEXT));
 
 	buttons = new MultimediaPlayerButtons(MultimediaPlayerButtons::IMAGE_WINDOW);
 	buttons->hide();
@@ -404,9 +424,23 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
-	image->setPixmap(QPixmap());
+	showPixmap(QPixmap());
 	showImage(element);
 	showWindow();
+}
+
+void SlideshowWindow::showPixmap(const QPixmap &pixmap)
+{
+	image->setStyleSheet("");
+	image->setText(QString());
+	image->setPixmap(pixmap);
+}
+
+void SlideshowWindow::showMessage(const QString &text)
+{
+	image->setPixmap(QPixmap());
+	image->setStyleSheet("background: black");
+	image->setText(text);
 }
 
 void SlideshowWindow::showImage(int index)
@@ -414,6 +448,7 @@ void SlideshowWindow::showImage(int index)
 	if (!checkImageSize(image_list[index]))
 	{
 		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
+		showMessage(tr("Image not supported"));
 		emit imageNotLoaded();
 		return;
 	}
@@ -428,6 +463,7 @@ void SlideshowWindow::loadImage()
 	if (!checkImageMemory(image_to_load))
 	{
 		qDebug() << "Unable to load the image" << image_to_load;
+		showMessage(tr("Image exceed memory size"));
 		emit imageNotLoaded();
 		return;
 	}
@@ -469,7 +505,7 @@ void SlideshowWindow::imageReady()
 		return;
 	}
 
-	image->setPixmap(QPixmap::fromImage(async_load->result()));
+	showPixmap(QPixmap::fromImage(async_load->result()));
 	async_load->deleteLater();
 
 #if TRACK_IMAGES_MEMORY
