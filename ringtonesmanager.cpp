@@ -31,7 +31,6 @@
 #include <QDir>
 
 
-
 RingtonesManager::RingtonesManager(QString ringtone_file)
 {
 	QFile fh(ringtone_file);
@@ -56,11 +55,8 @@ RingtonesManager::RingtonesManager(QString ringtone_file)
 
 void RingtonesManager::playRingtone(Ringtones::Type t)
 {
-	if (!type_to_ringtone.contains(t))
-	{
-		qWarning() << "Unable to play a ringtone for type: " << t;
+	if (!type_to_ringtone.contains(t)) // The ringtone is not configured, we simply skip it
 		return;
-	}
 
 	qDebug() << "RingtonesManager::playRingtone:" << ringtone_to_file[type_to_ringtone[t]]
 		<< "for type:" << t;

@@ -144,6 +144,8 @@ private slots:
 	void toggleActivation();
 	void doAction();
 	void valueReceived(const DeviceValues &values_list);
+	void playRingtone();
+	void ringtoneFinished();
 
 private:
 	enum Action

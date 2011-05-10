@@ -36,6 +36,7 @@
 #include <QTimeLine>
 #include <QPointer>
 #include <QFutureWatcher>
+#include <QTime>
 
 class Page;
 class QLabel;
@@ -127,6 +128,7 @@ protected:
 		\brief Constructor
 
 		Should be called by ScreenSaver subclasses that need periodical refreshes.
+		The \a refresh_time is in milliseconds.
 	*/
 	ScreenSaver(int refresh_time);
 
@@ -141,13 +143,6 @@ protected:
 		\brief Stops to periodically call the refresh() method.
 	*/
 	void stopRefresh();
-
-	/*!
-		\brief Sets the interval at with call the refresh() method.
-
-		\sa ScreenSaver::refresh(), ScreenSaver()
-	*/
-	void setRefreshInterval(int msecs);
 
 protected slots:
 	/*!
@@ -296,10 +291,11 @@ protected:
 	virtual void paintEvent(QPaintEvent *e);
 
 protected slots:
-	virtual void refresh();
+	virtual void refresh() {}
 
 private slots:
 	void imageReady();
+	void refreshSlideshow();
 
 private:
 	// iterator for images
@@ -310,6 +306,7 @@ private:
 	QPointer<QFutureWatcher<QImage> > async_load;
 	qreal opacity;
 	QString last_image_file;
+	QTimer *slideshow_timer;
 
 private slots:
 	void updateOpacity(qreal new_value);

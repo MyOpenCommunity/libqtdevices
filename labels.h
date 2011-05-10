@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QLabel>
+#include <QTime>
 
 class QResizeEvent;
 class QShowEvent;
@@ -99,7 +100,10 @@ private:
 };
 
 
-// common code to display an image
+/*!
+	\ingroup Core
+	\brief A label useful to display an image resized respecting the ratio.
+*/
 class ImageLabel : public QLabel
 {
 Q_OBJECT
@@ -117,5 +121,25 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *e);
 };
 
+
+/*!
+	\ingroup Core
+	\brief A label which can be used to notify the user that the system is busy
+*/
+class WaitLabel : public QLabel
+{
+Q_OBJECT
+public:
+	WaitLabel(QWidget *parent, int timeout);
+
+	void waitForTimeout();
+
+public slots:
+	void abort();
+
+private:
+	QTime elapsed;
+	int timeout;
+};
 
 #endif

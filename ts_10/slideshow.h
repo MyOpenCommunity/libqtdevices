@@ -32,6 +32,7 @@
 
 class QLabel;
 class ImageLabel;
+class WaitLabel;
 class SlideshowWindow;
 class MultimediaPlayerButtons;
 
@@ -62,6 +63,8 @@ public slots:
 	void startSlideshow();
 	void stopSlideshow();
 
+	void startImageTimer();
+
 signals:
 	// emitted when the slideshow is starting/stopping
 	void slideshowStarted();
@@ -72,7 +75,9 @@ signals:
 
 private:
 	int total_images, current_image;
+	bool active;
 	QTimer timer;
+
 };
 
 
@@ -100,6 +105,8 @@ public slots:
 
 signals:
 	void cleanedUp();
+	void imageLoaded();
+	void imageNotLoaded();
 
 protected:
 	// kills the slideshow timer
@@ -112,11 +119,10 @@ private slots:
 	void showImage(int image);
 	void displayFullScreen();
 	void imageReady();
-	void loadImage();
+	void prevImageUser();
+	void nextImageUser();
 
 private:
-	bool goto_fullscreen;
-	QString image_to_load;
 	QLabel *title;
 	ImageLabel *image;
 	QList<QString> image_list;
@@ -126,6 +132,12 @@ private:
 	// when we exit from the page due to a videocall or an alarm we want to paused
 	// and then restore the slideshow.
 	bool paused;
+
+	WaitLabel *working;
+	bool show_working;
+
+	void showPixmap(const QPixmap &pixmap, const QString &text_title);
+	void showMessage(const QString &text, const QString &text_title);
 };
 
 
@@ -151,6 +163,11 @@ public slots:
 	// starts the slide show from the current image
 	void startSlideshow();
 
+signals:
+	void imageLoaded();
+	void imageNotLoaded();
+	void closePage();
+
 protected:
 	// kills the slideshow timer
 	void hideEvent(QHideEvent *event);
@@ -163,11 +180,10 @@ private slots:
 	void displayNoFullScreen();
 	void showButtons();
 	void imageReady();
-	void loadImage();
+	void prevImageUser();
+	void nextImageUser();
 
 private:
-	bool goto_normalscreen;
-	QString image_to_load;
 	// used to automatically hide the buttons
 	QTimer buttons_timer;
 	MultimediaPlayerButtons *buttons;
@@ -177,6 +193,12 @@ private:
 	SlideshowPage *page;
 	QPointer<QFutureWatcher<QImage> > async_load;
 	bool paused;
+
+	WaitLabel *working;
+	bool show_working;
+
+	void showPixmap(const QPixmap &pixmap);
+	void showMessage(const QString &text);
 };
 
 #endif // SLIDESHOW_H

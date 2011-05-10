@@ -34,8 +34,27 @@
 #include <QSizePolicy>
 #include <QMouseEvent>
 #include <QPixmap>
+#include <QApplication>
+
 
 #define SCROLL_INTERVAL 500
+
+namespace
+{
+	inline QTime startTimeCounter()
+	{
+		QTime timer;
+		timer.start();
+		return timer;
+	}
+
+	inline void waitTimeCounter(const QTime& timer, int msec)
+	{
+		int wait_time = msec - timer.elapsed();
+		if (wait_time > 0)
+			usleep(wait_time * 1000);
+	}
+}
 
 
 ScrollingLabel::ScrollingLabel(QWidget *parent)
@@ -228,3 +247,29 @@ void ImageLabel::mouseReleaseEvent(QMouseEvent *e)
 
 	emit clicked();
 }
+
+
+WaitLabel::WaitLabel(QWidget *parent, int _timeout) :
+	QLabel(parent), timeout(_timeout)
+{
+	elapsed = startTimeCounter();
+	setGeometry(parent->geometry());
+
+	show();
+	qApp->processEvents();
+}
+
+void WaitLabel::waitForTimeout()
+{
+	waitTimeCounter(elapsed, timeout);
+
+	hide();
+	deleteLater();
+}
+
+void WaitLabel::abort()
+{
+	hide();
+	deleteLater();
+}
+

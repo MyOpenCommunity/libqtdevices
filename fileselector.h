@@ -28,9 +28,9 @@
 #include <QMap>
 #include <QList>
 #include <QLabel>
-#include <QTime>
 
-class FileSelectorWaitDialog;
+
+class WaitLabel;
 class QShowEvent;
 class QHideEvent;
 
@@ -107,25 +107,8 @@ private:
 	/// Change the current dir, return false in case of error.
 	bool changePath(QString new_path);
 
-	FileSelectorWaitDialog *working;
+	WaitLabel *working;
 	EntryInfoList files_list;
-};
-
-
-class FileSelectorWaitDialog : public QLabel
-{
-Q_OBJECT
-public:
-	FileSelectorWaitDialog(Page *parent, int timeout);
-
-	void waitForTimeout();
-
-public slots:
-	void abort();
-
-private:
-	QTime elapsed;
-	int timeout;
 };
 
 
