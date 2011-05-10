@@ -249,8 +249,6 @@ WaitLabel::WaitLabel(QWidget *parent, int _timeout) :
 	QLabel(parent), timeout(_timeout)
 {
 	elapsed = startTimeCounter();
-
-	setProperty("Loading", true);
 	setGeometry(parent->geometry());
 
 	show();

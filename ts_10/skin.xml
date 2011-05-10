@@ -37,7 +37,7 @@ QWidget[Favorites="true"] { background-image: url(cfg/extra/1/skin/preferiti.png
 HeaderLogo { background-image: url(cfg/extra/1/skin/topstatusbar_3.png); }
 QWidget[VerticalSeparator="true"] { background-image: url(cfg/extra/1/skin/sepvert.png); background-position: top center; background-repeat: no-repeat; }
 ItemList > QWidget { background-image: url(cfg/extra/1/skin/multimediale/backfileaudio.png); }
-FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
+WaitLabel { background-color: #000000; background-image: url(cfg/extra/1/skin/clessidra.png); background-position: center center; background-repeat: no-repeat; }
 FeedItemWidget > QTextEdit { background-color: #c0c0c0; color: #000000; }
 MessagesListPage QLabel[UnreadMessage="true"] { color:#FF0000; }
 MessagesListPage QLabel[UnreadMessage="false"] { color:#6FB2FF; }

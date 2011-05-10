@@ -23,7 +23,7 @@
 #include "navigation_bar.h"
 #include "multimedia_buttons.h"
 #include "displaycontrol.h" // forceOperativeMode
-#include "labels.h" // ImageLabel
+#include "labels.h" // ImageLabel, WaitLabel
 #include "pagestack.h"
 #include "generic_functions.h" // checkImageSize, checkImageMemory, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
@@ -39,6 +39,7 @@
 
 #define SLIDESHOW_TIMEOUT 10000
 #define BUTTONS_TIMEOUT 5000
+#define IMAGELOAD_MSEC_WAIT_TIME 300
 
 namespace
 {
@@ -160,8 +161,8 @@ SlideshowPage::SlideshowPage()
 	buildPage(content, nav_bar);
 
 	// signals for navigation and to start/stop slideshow
-	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
-	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
+	connect(buttons, SIGNAL(previous()), SLOT(prevImageUser()));
+	connect(buttons, SIGNAL(next()), SLOT(nextImageUser()));
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
 	connect(buttons, SIGNAL(play()), controller, SLOT(startSlideshow()));
 	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
@@ -181,13 +182,27 @@ SlideshowPage::SlideshowPage()
 	// close the slideshow page when the user clicks the stop button on the
 	// full screen slide show
 	connect(window, SIGNAL(closePage()), SLOT(handleClose()));
-	goto_fullscreen = false;
+
+	working = 0;
+	show_working = false;
 }
 
 SlideshowPage::~SlideshowPage()
 {
 	if (async_load)
 		async_load->deleteLater();
+}
+
+void SlideshowPage::prevImageUser()
+{
+	show_working = true;
+	controller->prevImageUser();
+}
+
+void SlideshowPage::nextImageUser()
+{
+	show_working = true;
+	controller->nextImageUser();
 }
 
 void SlideshowPage::displayImages(QList<QString> images, unsigned element)
@@ -197,21 +212,6 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 	showPixmap(QPixmap(), QString());
 	showImage(element);
 	showPage();
-}
-
-void SlideshowPage::showImage(int index)
-{
-	if (!checkImageSize(image_list[index]))
-	{
-		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
-		showMessage(tr("Image not supported"), QFileInfo(image_list[index]).fileName());
-		emit imageNotLoaded();
-		return;
-	}
-
-	image_to_load = image_list[index];
-	if (!async_load)
-		loadImage();
 }
 
 void SlideshowPage::showPixmap(const QPixmap &pixmap, const QString &text_title)
@@ -230,12 +230,22 @@ void SlideshowPage::showMessage(const QString &text, const QString &text_title)
 	title->setText(text_title);
 }
 
-void SlideshowPage::loadImage()
+void SlideshowPage::showImage(int index)
 {
-	if (!checkImageMemory(image_to_load))
+	QString image = image_list[index];
+
+	if (!checkImageSize(image))
 	{
-		qDebug() << "Unable to load the image" << image_to_load;
-		showMessage(tr("Image exceed memory size"), QFileInfo(image_to_load).fileName());
+		qDebug() << "The image" << image << "exceed the maximum size";
+		showMessage(tr("Image not supported"), QFileInfo(image).fileName());
+		emit imageNotLoaded();
+		return;
+	}
+
+	if (!checkImageMemory(image))
+	{
+		qDebug() << "Unable to load the image" << image;
+		showMessage(tr("Image exceed memory size"), QFileInfo(image).fileName());
 		emit imageNotLoaded();
 		return;
 	}
@@ -244,40 +254,34 @@ void SlideshowPage::loadImage()
 	startTrackMemory();
 #endif
 
-	qDebug() << "Loading image" << image_to_load;
+	qDebug() << "Loading image" << image << this;
 
 	async_load = new QFutureWatcher<QImage>();
 	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
 
-	async_load->setFuture(QtConcurrent::run(&buildImage, image_to_load));
-	image_to_load = QString();
+	async_load->setFuture(QtConcurrent::run(&buildImage, image));
+	if (show_working)
+	{
+		Q_ASSERT_X(working == 0, "SlideshowPage::loadImage", "Multiple operations in progress");
+		working = new WaitLabel(this, IMAGELOAD_MSEC_WAIT_TIME);
+		connect(this, SIGNAL(Closed()), working, SLOT(abort()));
+		show_working = false;
+	}
 }
 
 void SlideshowPage::imageReady()
 {
-	qDebug() << "Image loading complete";
+	if (working)
+	{
+		working->waitForTimeout();
+		working = 0;
+	}
+
+	qDebug() << "Image loading complete" << this;
 	emit imageLoaded();
 
-	if (!image_to_load.isNull())
-	{
-		async_load->deleteLater();
-
-#if TRACK_IMAGES_MEMORY
-		stopTrackMemory();
-#endif
-		loadImage();
-		return;
-	}
-
-	if (goto_fullscreen)
-	{
-		async_load->deleteLater();
-		async_load = 0;
-		displayFullScreen();
-		return;
-	}
-
 	showPixmap(QPixmap::fromImage(async_load->result()), QFileInfo(image_list[controller->currentImage()]).fileName());
+	async_load->disconnect();
 	async_load->deleteLater();
 
 #if TRACK_IMAGES_MEMORY
@@ -322,24 +326,19 @@ void SlideshowPage::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
-	goto_fullscreen = false;
 }
 
 void SlideshowPage::displayFullScreen()
 {
-	if (async_load)
-	{
-		qDebug() << "Wait for fullscreen mode";
-		goto_fullscreen = true;
-		return;
-	}
-
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	window->displayImages(image_list, controller->currentImage());
 
 	if (async_load)
+	{
+		async_load->disconnect();
 		async_load->deleteLater();
+	}
 
 	if (active)
 		window->startSlideshow();
@@ -374,8 +373,8 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	l->addWidget(image, 1);
 
 	// signals for navigation and to start/stop slideshow
-	connect(buttons, SIGNAL(previous()), controller, SLOT(prevImageUser()));
-	connect(buttons, SIGNAL(next()), controller, SLOT(nextImageUser()));
+	connect(buttons, SIGNAL(previous()), SLOT(prevImageUser()));
+	connect(buttons, SIGNAL(next()), SLOT(nextImageUser()));
 	connect(buttons, SIGNAL(stop()), SLOT(handleClose()));
 	connect(buttons, SIGNAL(play()), controller, SLOT(startSlideshow()));
 	connect(buttons, SIGNAL(pause()), controller, SLOT(stopSlideshow()));
@@ -403,7 +402,21 @@ SlideshowWindow::SlideshowWindow(SlideshowPage *slideshow_page)
 	connect(buttons, SIGNAL(next()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(play()), SLOT(showButtons()));
 	connect(buttons, SIGNAL(pause()), SLOT(showButtons()));
-	goto_normalscreen = false;
+
+	working = 0;
+	show_working = false;
+}
+
+void SlideshowWindow::prevImageUser()
+{
+	show_working = true;
+	controller->prevImageUser();
+}
+
+void SlideshowWindow::nextImageUser()
+{
+	show_working = true;
+	controller->nextImageUser();
 }
 
 SlideshowWindow::~SlideshowWindow()
@@ -445,24 +458,19 @@ void SlideshowWindow::showMessage(const QString &text)
 
 void SlideshowWindow::showImage(int index)
 {
-	if (!checkImageSize(image_list[index]))
+	QString image = image_list[index];
+
+	if (!checkImageSize(image))
 	{
-		qDebug() << "The image" << image_list[index] << "exceed the maximum size";
+		qDebug() << "The image" << image << "exceed the maximum size";
 		showMessage(tr("Image not supported"));
 		emit imageNotLoaded();
 		return;
 	}
 
-	image_to_load = image_list[index];
-	if (!async_load)
-		loadImage();
-}
-
-void SlideshowWindow::loadImage()
-{
-	if (!checkImageMemory(image_to_load))
+	if (!checkImageMemory(image))
 	{
-		qDebug() << "Unable to load the image" << image_to_load;
+		qDebug() << "Unable to load the image" << image;
 		showMessage(tr("Image exceed memory size"));
 		emit imageNotLoaded();
 		return;
@@ -472,40 +480,34 @@ void SlideshowWindow::loadImage()
 	startTrackMemory();
 #endif
 
-	qDebug() << "Loading image" << image_to_load;
+	qDebug() << "Loading image" << image;
 
 	async_load = new QFutureWatcher<QImage>();
 	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+	async_load->setFuture(QtConcurrent::run(&buildImage, image));
 
-	async_load->setFuture(QtConcurrent::run(&buildImage, image_to_load));
-	image_to_load = QString();
+	if (show_working)
+	{
+		Q_ASSERT_X(working == 0, "SlideshowPage::loadImage", "Multiple operations in progress");
+		working = new WaitLabel(this, IMAGELOAD_MSEC_WAIT_TIME);
+		connect(this, SIGNAL(Closed()), working, SLOT(abort()));
+		show_working = false;
+	}
 }
 
 void SlideshowWindow::imageReady()
 {
+	if (working)
+	{
+		working->waitForTimeout();
+		working = 0;
+	}
+
 	qDebug() << "Image loading complete";
 	emit imageLoaded();
 
-	if (!image_to_load.isNull())
-	{
-		async_load->deleteLater();
-
-#if TRACK_IMAGES_MEMORY
-		stopTrackMemory();
-#endif
-		loadImage();
-		return;
-	}
-
-	if (goto_normalscreen)
-	{
-		async_load->deleteLater();
-		async_load = 0;
-		displayNoFullScreen();
-		return;
-	}
-
 	showPixmap(QPixmap::fromImage(async_load->result()));
+	async_load->disconnect();
 	async_load->deleteLater();
 
 #if TRACK_IMAGES_MEMORY
@@ -551,18 +553,10 @@ void SlideshowWindow::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
-	goto_normalscreen = false;
 }
 
 void SlideshowWindow::displayNoFullScreen()
 {
-	if (async_load)
-	{
-		qDebug() << "Wait for normal mode";
-		goto_normalscreen = true;
-		return;
-	}
-
 	bool active = controller->slideshowActive();
 	controller->stopSlideshow();
 	page->displayImages(image_list, controller->currentImage());
