@@ -137,11 +137,6 @@ void ScreenSaver::stopRefresh()
 	timer->stop();
 }
 
-void ScreenSaver::setRefreshInterval(int msecs)
-{
-	timer->setInterval(msecs);
-}
-
 void ScreenSaver::start(Window *w)
 {
 	bt_global::page_stack.showUserWindow(this);
@@ -374,16 +369,20 @@ void ScreenSaverText::customizeLine()
 
 
 ScreenSaverSlideshow::ScreenSaverSlideshow() :
-	ScreenSaver(slideshow_timeout)
+	ScreenSaver(10000000) // A loooong time, we use a different timer
 {
 	blending_timeline.setDuration(2000);
 	blending_timeline.setFrameRange(0, 1);
 	connect(&blending_timeline, SIGNAL(valueChanged(qreal)), SLOT(updateOpacity(qreal)));
+
+	slideshow_timer = new QTimer(this);
+	slideshow_timer->setSingleShot(true);
+	slideshow_timer->setInterval(slideshow_timeout);
+	connect(slideshow_timer, SIGNAL(timeout()), SLOT(refreshSlideshow()));
 }
 
 void ScreenSaverSlideshow::start(Window *w)
 {
-	setRefreshInterval(slideshow_timeout);
 	iter = new ImageIterator(SLIDESHOW_FILENAME);
 	iter->setFileFilter(getFileFilter(EntryInfo::IMAGE));
 	ScreenSaver::start(w);
@@ -393,7 +392,7 @@ void ScreenSaverSlideshow::start(Window *w)
 	// TODO: take background from skin
 	next_image.fill(QColor(Qt::black));
 	// this call will update both current_image and next_image
-	refresh();
+	refreshSlideshow();
 }
 
 void ScreenSaverSlideshow::stop()
@@ -424,7 +423,7 @@ void ScreenSaverSlideshow::paintEvent(QPaintEvent *e)
 	p.drawPixmap(centeredOrigin(e->rect(), next_image.rect()), next_image);
 }
 
-void ScreenSaverSlideshow::refresh()
+void ScreenSaverSlideshow::refreshSlideshow()
 {
 	QString img;
 
@@ -447,7 +446,6 @@ void ScreenSaverSlideshow::refresh()
 
 				async_load = new QFutureWatcher<QImage>();
 				connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
-
 				async_load->setFuture(QtConcurrent::run(&loadImageScaled, img, size()));
 			}
 		}
@@ -460,7 +458,6 @@ void ScreenSaverSlideshow::refresh()
 		next_image.fill(Qt::black);
 		update();
 	}
-
 }
 
 void ScreenSaverSlideshow::imageReady()
@@ -470,6 +467,8 @@ void ScreenSaverSlideshow::imageReady()
 
 	if (!next_image.isNull())
 		blending_timeline.start();
+
+	slideshow_timer->start();
 }
 
 void ScreenSaverSlideshow::updateOpacity(qreal new_value)
