@@ -532,7 +532,7 @@ AlertMessagePage QLabel#Text { background-color: #000000; }
 	<!-- UPnP -->
 	<item>
 		<cid>16006</cid>
-                <img_link_icon>multimediale/media.png</img_link_icon>
+		<img_link_icon>multimediale/media.png</img_link_icon>
 	</item>
 	<!-- sound diffusion system -->
 	<item>
