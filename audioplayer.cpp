@@ -102,7 +102,9 @@ void UPnpListManager::handleResponse(const XmlResponse &response)
 
 void UPnpListManager::handleError(int response, int code)
 {
-	if (response == XmlResponses::TRACK_SELECTION && code == XmlError::SERVER_DOWN)
+	// NOTE: See the comment on managing errors in UPnpClientBrowser::handleError
+	if ((response == XmlResponses::TRACK_SELECTION || response == XmlResponses::INVALID) &&
+			code == XmlError::SERVER_DOWN)
 		emit serverDown();
 }
 

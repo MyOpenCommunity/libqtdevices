@@ -533,7 +533,7 @@ AlarmList > QWidget {  background-image: url(); }
 	<!-- UPnP -->
 	<item>
 		<cid>16006</cid>
-                <img_link_icon>multimediale/media.png</img_link_icon>
+		<img_link_icon>multimediale/media.png</img_link_icon>
 	</item>
 	<!-- sound diffusion system -->
 	<item>

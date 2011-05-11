@@ -212,6 +212,14 @@ namespace
 		return result;
 	}
 
+	QHash<int,QVariant> handle_notifications(const QDomNode &node)
+	{
+		QHash<int,QVariant> result;
+		// For now, the only notification is about the server down.
+		result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::SERVER_DOWN));
+		return result;
+	}
+
 	QHash<int,QVariant> handle_browsing(const QDomNode &node, const QString cmdname, XmlResponses::Type cmdtype)
 	{
 		QHash<int,QVariant> result;
@@ -367,6 +375,7 @@ XmlDevice::XmlDevice()
 	xml_handlers["AW26C11"] = handle_selection;
 	xml_handlers["AW26C10"] = handle_selection;
 	xml_handlers["AW26C16"] = handle_setcontext;
+	xml_handlers["CW26C2"] = handle_notifications;
 }
 
 XmlDevice::~XmlDevice()

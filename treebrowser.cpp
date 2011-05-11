@@ -320,6 +320,13 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 
 void UPnpClientBrowser::handleError(int response, int code)
 {
+	// Commands (and so, responses) are usually related to the navigation of items
+	// (managed by this class) or to playing items (managed by the UPnpListManager).
+	// However sometimes happens that a reponse can interest both: in these
+	// cases we have to manage it only in one of the XmlDevice users, to avoid
+	// multiple actions that can cause problems.
+	// This is the case of the SERVER_DOWN error.
+
 	switch (response)
 	{
 	case XmlResponses::WELCOME:
@@ -353,10 +360,11 @@ void UPnpClientBrowser::handleError(int response, int code)
 			emit directoryChangeError();
 		break;
 	case XmlResponses::TRACK_SELECTION:
-		emit genericError();
-		break;
 	case XmlResponses::INVALID:
-		emit genericError();
+		// Server down error is managed by the UPnpListManager class, see the comment
+		// on the top of this method for more details
+		if (code != XmlError::SERVER_DOWN)
+			emit genericError();
 		break;
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleError", "Unhandled response.");
