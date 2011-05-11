@@ -215,7 +215,7 @@ namespace
 	QHash<int,QVariant> handle_notifications(const QDomNode &node)
 	{
 		QHash<int,QVariant> result;
-		// TODO: do something! :)
+		// For now, the only notification is about the server down.
 		result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::SERVER_DOWN));
 		return result;
 	}
