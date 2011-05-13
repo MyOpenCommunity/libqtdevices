@@ -92,6 +92,11 @@ public:
 		RADIO_MEMORY_NUMBER = SMALLTEXT,
 		RADIO_STATION = SMALLTEXT,
 		RADIO_ENVIRONMENT = TITLE,
+
+		// audio player
+		PLAYER_TITLE = HOMEPAGEWIDGET,                   /*!< song title (first line) */
+		PLAYER_AUTHOR = TITLE,                           /*!< song author/info (second line) */
+		PLAYER_INFO = BANNERDESCRIPTION,                 /*!< current track and elapsed time */
 	};
 #else
 	/*!

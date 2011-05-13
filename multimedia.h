@@ -23,7 +23,10 @@
 #define MULTIMEDIA_H
 
 #include "iconpage.h"
+
+#ifdef LAYOUT_TS_10
 #include "mount_watcher.h" // MountType, bt_global::mount_watcher
+#endif
 
 #include <QFutureWatcher>
 
@@ -57,6 +60,8 @@ class MountWatcher;
 */
 
 
+#ifdef LAYOUT_TS_10
+
 /*!
 	\ingroup Multimedia
 	\brief Button that monitors the state of a mount point
@@ -84,6 +89,53 @@ private:
 	QString directory;
 	MountType type;
 };
+
+
+/*!
+	\ingroup Multimedia
+	\ingroup SoundDiffusion
+	\brief Start playing one of the available multimedia audio sources.
+
+	Search asynchronously for a web radio or mp3 to play; used when the touch is
+	turned on as a source and nothing is playing.
+*/
+class SongSearch : public QObject
+{
+Q_OBJECT
+public:
+	SongSearch(QList<int> sources, FileSystemBrowseButton *usb, FileSystemBrowseButton *sd, IPRadioPage *radio);
+
+	void startSearch();
+
+private:
+	typedef QPair<QStringList, bool * volatile> AsyncRes;
+
+	void terminateSearch();
+	void nextSource();
+	void playAudioFiles(QStringList things, int type);
+
+	// called in a separate thread
+	static AsyncRes scanPath(const QString &path, bool *terminate);
+
+private slots:
+	void pathScanComplete();
+
+private:
+	// the page IDs of the available sources
+	QList<int> sources;
+	// -1 when the search is not active; index in the sources array during search
+	int current_source;
+
+	// available sources
+	FileSystemBrowseButton *usb_button, *sd_button;
+	IPRadioPage *ip_radio;
+
+	// terminate the current search; only set once to true in the main thread
+	// and only read in the slave thread
+	bool * volatile terminate;
+};
+
+#endif
 
 
 /*!
@@ -150,49 +202,7 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
 
 
-/*!
-	\ingroup Multimedia
-	\ingroup SoundDiffusion
-	\brief Start playing one of the available multimedia audio sources.
 
-	Search asynchronously for a web radio or mp3 to play; used when the touch is
-	turned on as a source and nothing is playing.
-*/
-class SongSearch : public QObject
-{
-Q_OBJECT
-public:
-	SongSearch(QList<int> sources, FileSystemBrowseButton *usb, FileSystemBrowseButton *sd, IPRadioPage *radio);
-
-	void startSearch();
-
-private:
-	typedef QPair<QStringList, bool * volatile> AsyncRes;
-
-	void terminateSearch();
-	void nextSource();
-	void playAudioFiles(QStringList things, int type);
-
-	// called in a separate thread
-	static AsyncRes scanPath(const QString &path, bool *terminate);
-
-private slots:
-	void pathScanComplete();
-
-private:
-	// the page IDs of the available sources
-	QList<int> sources;
-	// -1 when the search is not active; index in the sources array during search
-	int current_source;
-
-	// available sources
-	FileSystemBrowseButton *usb_button, *sd_button;
-	IPRadioPage *ip_radio;
-
-	// terminate the current search; only set once to true in the main thread
-	// and only read in the slave thread
-	bool * volatile terminate;
-};
 
 #endif // MULTIMEDIA_H
 

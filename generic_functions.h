@@ -234,7 +234,6 @@ void lShift(QList<bool> &boolList);
 */
 void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
-#ifdef LAYOUT_TS_10
 
 /*!
 	\ingroup Core
@@ -251,7 +250,6 @@ int localVolumeToAmplifier(int vol);
 */
 int scsToLocalVolume(int vol);
 
-#endif
 
 /*!
 	\ingroup Core

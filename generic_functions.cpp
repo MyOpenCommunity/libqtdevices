@@ -531,8 +531,6 @@ void setCfgValue(QString field, int value, int item_id, const QString &filename)
 
 #endif
 
-#ifdef LAYOUT_TS_10
-
 int localVolumeToAmplifier(int vol)
 {
 	return qRound(vol * 31 / 8.0);
@@ -546,7 +544,6 @@ int scsToLocalVolume(int vol)
 	return qRound(vol * 8 / 31.0);
 }
 
-#endif
 
 int scsToGraphicalVolume(int vol)
 {

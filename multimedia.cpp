@@ -25,7 +25,9 @@
 #include "xml_functions.h"
 #include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
+#ifdef LAYOUT_TS_10
 #include "webcam.h"
+#endif
 #include "ipradio.h"
 #include "feedmanager.h"
 #include "state_button.h"
@@ -55,6 +57,8 @@ SongSearch *MultimediaSectionPage::song_search = NULL;
 AudioPlayerPage *MultimediaSectionPage::current_player = 0;
 bool MultimediaSectionPage::usb_initialized = false;
 
+#ifdef LAYOUT_TS_10
+
 namespace
 {
 	template<class R>
@@ -68,6 +72,7 @@ namespace
 		return result;
 	}
 }
+
 
 FileSystemBrowseButton::FileSystemBrowseButton(MountWatcher &watch, FileSelector *_browser, MountType _type,
 	const QString &label, const QString &icon_mounted, const QString &icon_unmounted) :
@@ -111,207 +116,6 @@ void FileSystemBrowseButton::unmounted(const QString &path, MountType t)
 void FileSystemBrowseButton::browse()
 {
 	browser->showPage();
-}
-
-
-
-MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelectorFactory *f, const QString &title)
-{
-	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM),
-		"MultimediaSectionPage::MultimediaSectionPage", "ITEMS_FILESYSTEM == true");
-
-	if (!usb_initialized)
-	{
-		usbHotplug();
-		usb_initialized = true;
-	}
-	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-
-	factory = f;
-	showed_items = items;
-
-	QString descr;
-	if (title.isEmpty())
-		descr = getTextChild(config_node, "descr");
-	else
-		descr = title;
-
-	NavigationBar *nav_bar = new NavigationBar("play_file");
-	buildPage(new IconContent, nav_bar, descr);
-	loadItems(config_node);
-
-	play_button = nav_bar->forward_button;
-	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
-	play_button->hide();
-}
-
-MultimediaSectionPage::~MultimediaSectionPage()
-{
-	delete factory;
-}
-
-void MultimediaSectionPage::showEvent(QShowEvent *)
-{
-	play_button->setVisible(current_player != 0);
-	if (current_player)
-		connect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
-}
-
-void MultimediaSectionPage::hideEvent(QHideEvent *)
-{
-	if (current_player)
-		disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
-}
-
-void MultimediaSectionPage::currentPlayerExited()
-{
-	play_button->setVisible(false);
-	disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
-}
-
-void MultimediaSectionPage::gotoPlayerPage()
-{
-	if (current_player)
-	{
-		// Because from the current player we can turn back to the upnp page we
-		// have to connect/disconnect the upnp page from the MultimediaSectionPage.
-		// We do this even if the current player is not playing an upnp file (because
-		// it doesn't make problems).
-		if (upnp_page)
-		{
-			disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
-			connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
-		}
-		current_player->showPage();
-	}
-}
-
-int MultimediaSectionPage::sectionId() const
-{
-	return MULTIMEDIA;
-}
-
-void MultimediaSectionPage::loadItems(const QDomNode &config_node)
-{
-	// for SongSearch
-	QList<int> sources;
-	FileSystemBrowseButton *usb_button = NULL, *sd_button = NULL;
-	IPRadioPage *ip_radio = NULL;
-
-	foreach (const QDomNode &item, getChildren(config_node, "item"))
-	{
-		SkinContext cxt(getTextChild(item, "cid").toInt());
-		QString icon = bt_global::skin->getImage("link_icon");
-		QString descr = getTextChild(item, "descr");
-
-		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
-		int item_id = getTextChild(item, "id").toInt();
-
-		Page *p = 0;
-
-		// use the item_id for now because some of the items do not
-		// have a linked page
-		switch (item_id)
-		{
-		case PAGE_USB:
-		case PAGE_SD:
-		{
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
-			{
-				FileSelector *selector = factory->getFileSelector();
-				FileSystemBrowseButton *t = new FileSystemBrowseButton(*bt_global::mount_watcher, selector,
-					item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr, bt_global::skin->getImage("mounted"),
-					bt_global::skin->getImage("unmounted"));
-				page_content->addWidget(t);
-				connect(selector, SIGNAL(Closed()), this, SLOT(showPage()));
-
-				sources.append(item_id);
-
-				if (item_id == PAGE_USB)
-					usb_button = t;
-				else
-					sd_button = t;
-			}
-			break;
-		}
-		case PAGE_UPNP:
-			if (!bt_global::xml_device)
-				bt_global::xml_device = new XmlDevice;
-
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
-			{
-				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
-				upnp_page = f.getFileSelector();
-				BtButton *b = addButton(descr, icon);
-				connect(b, SIGNAL(clicked()), SLOT(showUPnpPage()));
-			}
-			break;
-#ifdef BUILD_EXAMPLES
-		case PAGE_PDF:
-		{
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
-			{
-				MultimediaFileListFactory f(TreeBrowser::DIRECTORY, EntryInfo::DIRECTORY | EntryInfo::PDF, false);
-				FileSelector *selector = f.getFileSelector();
-				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), selector,
-										       MOUNT_USB, descr,
-										       bt_global::skin->getImage("mounted"),
-										       bt_global::skin->getImage("unmounted"));
-				page_content->addWidget(t);
-				connect(browser, SIGNAL(Closed()), this, SLOT(showPage()));
-			}
-			break;
-		}
-#endif
-		case PAGE_WEB_CAM:
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
-				p = new WebcamListPage(page_node);
-			break;
-		case PAGE_WEB_RADIO:
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBRADIO))
-				p = ip_radio = new IPRadioPage(page_node);
-			sources.append(item_id);
-			break;
-		case PAGE_RSS:
-			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_RSS))
-				p = new FeedManager(page_node);
-			break;
-		default:
-			qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
-		}
-
-		if (p)
-		{
-			p->inizializza();
-			addPage(p, descr, icon);
-		}
-	}
-
-	bt_global::mount_watcher->startWatching();
-	bt_global::mount_watcher->notifyAll();
-
-	if (showed_items == ITEMS_ALL && !song_search)
-		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);
-}
-
-void MultimediaSectionPage::showUPnpPage()
-{
-	// Because the upnp_page is the same for every MultimediaSectionPage created
-	// we have to connect/disconnect the page from its container.
-	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
-	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
-	upnp_page->showPage();
-}
-
-void MultimediaSectionPage::uPnpPageClosed()
-{
-	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
-	showPage();
-}
-
-void MultimediaSectionPage::playSomethingRandomly()
-{
-	song_search->startSearch();
 }
 
 
@@ -457,3 +261,217 @@ SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile t
 
 	return qMakePair(QStringList(), terminate);
 }
+
+#endif
+
+
+MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelectorFactory *f, const QString &title)
+{
+	Q_ASSERT_X(items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM),
+		"MultimediaSectionPage::MultimediaSectionPage", "ITEMS_FILESYSTEM == true");
+
+	if (!usb_initialized)
+	{
+		usbHotplug();
+		usb_initialized = true;
+	}
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
+
+	factory = f;
+	showed_items = items;
+
+	QString descr;
+	if (title.isEmpty())
+		descr = getTextChild(config_node, "descr");
+	else
+		descr = title;
+
+	NavigationBar *nav_bar = new NavigationBar("play_file");
+	buildPage(new IconContent, nav_bar, descr);
+	loadItems(config_node);
+
+	play_button = nav_bar->forward_button;
+	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
+	play_button->hide();
+}
+
+MultimediaSectionPage::~MultimediaSectionPage()
+{
+	delete factory;
+}
+
+void MultimediaSectionPage::showEvent(QShowEvent *)
+{
+	play_button->setVisible(current_player != 0);
+	if (current_player)
+		connect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+}
+
+void MultimediaSectionPage::hideEvent(QHideEvent *)
+{
+	if (current_player)
+		disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+}
+
+void MultimediaSectionPage::currentPlayerExited()
+{
+	play_button->setVisible(false);
+	disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+}
+
+void MultimediaSectionPage::gotoPlayerPage()
+{
+	if (current_player)
+	{
+		// Because from the current player we can turn back to the upnp page we
+		// have to connect/disconnect the upnp page from the MultimediaSectionPage.
+		// We do this even if the current player is not playing an upnp file (because
+		// it doesn't make problems).
+		if (upnp_page)
+		{
+			disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+			connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+		}
+		current_player->showPage();
+	}
+}
+
+int MultimediaSectionPage::sectionId() const
+{
+	return MULTIMEDIA;
+}
+
+void MultimediaSectionPage::loadItems(const QDomNode &config_node)
+{
+#ifdef LAYOUT_TS_10
+	FileSystemBrowseButton *usb_button = NULL, *sd_button = NULL;
+#endif
+
+	// for SongSearch
+	QList<int> sources;
+	IPRadioPage *ip_radio = NULL;
+
+	foreach (const QDomNode &item, getChildren(config_node, "item"))
+	{
+		SkinContext cxt(getTextChild(item, "cid").toInt());
+		QString icon = bt_global::skin->getImage("link_icon");
+		QString descr = getTextChild(item, "descr");
+
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+		int item_id = getTextChild(item, "id").toInt();
+
+		Page *p = 0;
+
+		// use the item_id for now because some of the items do not
+		// have a linked page
+		switch (item_id)
+		{
+#ifdef LAYOUT_TS_10
+		case PAGE_USB:
+		case PAGE_SD:
+		{
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
+			{
+				FileSelector *selector = factory->getFileSelector();
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(*bt_global::mount_watcher, selector,
+					item_id == PAGE_USB ? MOUNT_USB : MOUNT_SD, descr, bt_global::skin->getImage("mounted"),
+					bt_global::skin->getImage("unmounted"));
+				page_content->addWidget(t);
+				connect(selector, SIGNAL(Closed()), this, SLOT(showPage()));
+
+				sources.append(item_id);
+
+				if (item_id == PAGE_USB)
+					usb_button = t;
+				else
+					sd_button = t;
+			}
+			break;
+		}
+		case PAGE_WEB_CAM:
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
+				p = new WebcamListPage(page_node);
+			break;
+#endif
+		case PAGE_UPNP:
+			if (!bt_global::xml_device)
+				bt_global::xml_device = new XmlDevice;
+
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
+			{
+				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
+				upnp_page = f.getFileSelector();
+				BtButton *b = addButton(descr, icon);
+				connect(b, SIGNAL(clicked()), SLOT(showUPnpPage()));
+			}
+			break;
+#ifdef BUILD_EXAMPLES
+		case PAGE_PDF:
+		{
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_FILESYSTEM))
+			{
+				MultimediaFileListFactory f(TreeBrowser::DIRECTORY, EntryInfo::DIRECTORY | EntryInfo::PDF, false);
+				FileSelector *selector = f.getFileSelector();
+				FileSystemBrowseButton *t = new FileSystemBrowseButton(MountWatcher::getWatcher(), selector,
+										       MOUNT_USB, descr,
+										       bt_global::skin->getImage("mounted"),
+										       bt_global::skin->getImage("unmounted"));
+				page_content->addWidget(t);
+				connect(browser, SIGNAL(Closed()), this, SLOT(showPage()));
+			}
+			break;
+		}
+#endif
+		case PAGE_WEB_RADIO:
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBRADIO))
+				p = ip_radio = new IPRadioPage(page_node);
+			sources.append(item_id);
+			break;
+		case PAGE_RSS:
+			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_RSS))
+				p = new FeedManager(page_node);
+			break;
+		default:
+			qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
+		}
+
+		if (p)
+		{
+			p->inizializza();
+			addPage(p, descr, icon);
+		}
+	}
+
+#ifdef LAYOUT_TS_10
+	bt_global::mount_watcher->startWatching();
+	bt_global::mount_watcher->notifyAll();
+
+	if (showed_items == ITEMS_ALL && !song_search)
+		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);
+#endif
+
+}
+
+void MultimediaSectionPage::showUPnpPage()
+{
+	// Because the upnp_page is the same for every MultimediaSectionPage created
+	// we have to connect/disconnect the page from its container.
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	upnp_page->showPage();
+}
+
+void MultimediaSectionPage::uPnpPageClosed()
+{
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	showPage();
+}
+
+void MultimediaSectionPage::playSomethingRandomly()
+{
+#ifdef LAYOUT_TS_10
+	song_search->startSearch();
+#endif
+}
+
+

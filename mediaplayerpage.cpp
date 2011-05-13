@@ -22,9 +22,11 @@
 #include "mediaplayerpage.h"
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
-#include "mount_watcher.h" // bt_global::mount_watcher
 #include "audiostatemachine.h"
 
+#ifdef LAYOUT_TS_10
+#include "mount_watcher.h" // bt_global::mount_watcher
+#endif
 
 FileListManager::FileListManager()
 {
@@ -93,9 +95,10 @@ MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 	player = new MediaPlayer(this);
 	temporary_pause = false;
 
+#ifdef LAYOUT_TS_10
 	// terminate player when unmounted
 	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
-
+#endif
 	// pause local playback when receiving a VCT call
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));
 	connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));

@@ -23,10 +23,12 @@
 #include "navigation_bar.h"
 #include "skinmanager.h"
 #include "itemlist.h"
-#include "slideshow.h"
-#include "videoplayer.h"
 #include "audioplayer.h"
+#ifdef LAYOUT_TS_10
+#include "slideshow.h"
 #include "mount_watcher.h"
+#include "videoplayer.h"
+#endif
 #ifdef PDF_EXAMPLE
 #include "examples/pdf/pages/pdfpage.h"
 #endif
@@ -94,11 +96,13 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	play_file = bt_global::skin->getImage("play_file");
 	browse_directory = bt_global::skin->getImage("browse_directory");
 
+#ifdef LAYOUT_TS_10
 	slideshow = new SlideshowPage;
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 	connect(slideshow, SIGNAL(cleanedUp()), SLOT(cleanUp()));
 
 	videoplayer = new VideoPlayerPage;
+#endif
 
 #ifdef PDF_EXAMPLE
 	pdfdisplay = new PdfPage;
@@ -365,15 +369,17 @@ void MultimediaFileListPage::startPlayback(int item)
 		urls.append(fn.path);
 	}
 
-	if (last_clicked_type == EntryInfo::IMAGE)
-		slideshow->displayImages(urls, last_clicked);
-	else if (last_clicked_type == EntryInfo::VIDEO)
-		videoplayer->displayVideos(files_list, last_clicked);
-	else if (last_clicked_type == EntryInfo::AUDIO)
+	if (last_clicked_type == EntryInfo::AUDIO)
 	{
 		audioplayer->playAudioFiles(filtered, last_clicked);
 		connectAudioPage();
 	}
+#ifdef LAYOUT_TS_10
+	else if (last_clicked_type == EntryInfo::VIDEO)
+		videoplayer->displayVideos(files_list, last_clicked);
+	else if (last_clicked_type == EntryInfo::IMAGE)
+		slideshow->displayImages(urls, last_clicked);
+#endif
 #ifdef PDF_EXAMPLE
 	else if (type == EntryInfo::PDF)
 		pdfdisplay->displayPdf(current_file.path);
