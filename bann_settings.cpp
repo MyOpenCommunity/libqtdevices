@@ -101,10 +101,10 @@ void BannAlarmClock::inizializza(bool forza)
 #else
 
 BannAlarmClockIcon::BannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
-					   QString icon_off, QString icon_state, QString icon_edit, QString text, int enabled, int tipo, int days) :
+					   QString icon_off, QString icon_state_on, QString icon_state_off, QString icon_edit, QString text, int enabled, int tipo, int days) :
 	BannOnOffState(0, static_cast<StateButton*>(0))
 {
-	initBanner(icon_on, icon_state, icon_edit, enabled ? ON : OFF, text);
+	initBanner(icon_on, icon_state_on, icon_state_off, icon_edit, enabled ? ON : OFF, text);
 
 	left_button = static_cast<StateButton *>(Bann2Buttons::left_button);
 	left_button->setOnImage(icon_off);

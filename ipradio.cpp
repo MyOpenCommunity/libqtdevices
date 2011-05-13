@@ -37,8 +37,13 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 
 	player = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::IP_RADIO);
 
-	buildPage(item_list, item_list, new NavigationBar,
-		new PageTitleWidget(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT));
+	PageTitleWidget *title_widget = 0;
+
+#ifdef LAYOUT_TS_10
+	title_widget = new PageTitleWidget(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+#endif
+
+	buildPage(item_list, item_list, new NavigationBar, title_widget);
 	layout()->setContentsMargins(13, 5, 25, 10);
 
 	loadItems(config_node);

@@ -34,12 +34,18 @@ Amplifier::Amplifier(const QString &descr, const QString &where) : BannLevel(0)
 	volume_value = 0;
 	active = false;
 
+	// The images for the amplifier level are from 0 to 8 for ts 10'' and from 1 to 9
+	// for ts 3.5''. The function scsToGraphicalVolume adjust the scs value
+	// properly.
+
+	QString initial_value = QString::number(scsToGraphicalVolume(volume_value));
+
 	center_left_active = bt_global::skin->getImage("volume_on_left");
 	center_right_active = bt_global::skin->getImage("volume_on_right");
 	center_left_inactive = bt_global::skin->getImage("volume_off_left");
 	center_right_inactive = bt_global::skin->getImage("volume_off_right");
-	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, QString::number(volume_value)),
-		getBostikName(center_right_inactive, QString::number(volume_value)), bt_global::skin->getImage("on"), descr);
+	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, initial_value),
+		getBostikName(center_right_inactive, initial_value), bt_global::skin->getImage("on"), descr);
 
 	dev = AmplifierDevice::createDevice(where);
 
@@ -97,8 +103,8 @@ AmplifierGroup::AmplifierGroup(QStringList addresses, const QString &descr) : Ba
 	center_right_active = bt_global::skin->getImage("volume_on_right");
 	center_left_inactive = bt_global::skin->getImage("volume_off_left");
 	center_right_inactive = bt_global::skin->getImage("volume_off_right");
-	initBanner(bt_global::skin->getImage("off"), getBostikName(center_left_inactive, "0"),
-		getBostikName(center_right_inactive, "0"), bt_global::skin->getImage("on"), descr);
+	initBanner(bt_global::skin->getImage("off"), center_left_inactive,
+		center_right_inactive, bt_global::skin->getImage("on"), descr);
 
 	foreach (const QString &where, addresses)
 		devices.append(AmplifierDevice::createDevice(where));
@@ -126,9 +132,8 @@ void AmplifierGroup::turnOn()
 	foreach (AmplifierDevice *dev, devices)
 		dev->turnOn();
 
-	// always use the 0-volume icons, since groups do not have a definite volume
-	setCenterLeftIcon(getBostikName(center_left_active, "0"));
-	setCenterRightIcon(getBostikName(center_right_active, "0"));
+	setCenterLeftIcon(center_left_active);
+	setCenterRightIcon(center_right_active);
 }
 
 void AmplifierGroup::turnOff()
@@ -136,7 +141,6 @@ void AmplifierGroup::turnOff()
 	foreach (AmplifierDevice *dev, devices)
 		dev->turnOff();
 
-	// always use the 0-volume icons, since groups do not have a definite volume
-	setCenterLeftIcon(getBostikName(center_left_inactive, "0"));
-	setCenterRightIcon(getBostikName(center_right_inactive, "0"));
+	setCenterLeftIcon(center_left_inactive);
+	setCenterRightIcon(center_right_inactive);
 }

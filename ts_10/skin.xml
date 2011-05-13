@@ -694,9 +694,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_balance>diffusione/balance_0.png</img_balance>
 		<img_balance_sx>diffusione/balance_sx.png</img_balance_sx>
 		<img_balance_dx>diffusione/balance_dx.png</img_balance_dx>
-		<img_loud>diffusione/loud.png</img_loud>
-		<img_loud_on>diffusione/loud.png</img_loud_on>
-		<img_loud_off>diffusione/loud_off.png</img_loud_off>
+		<img_loud_on>diffusione/loudon.png</img_loud_on>
+		<img_loud_off>diffusione/loudoff.png</img_loud_off>
 		<img_more>diffusione/more.png</img_more>
 		<img_less>diffusione/less.png</img_less>
 		<img_settings>diffusione/audiosetting.png</img_settings>
@@ -1121,7 +1120,7 @@ AlarmList > QWidget {  background-image: url(); }
 	<item>
 		<cid>11020</cid>
 		<!--
-		Other images: on, off, cycle
+		Other images: on, off
 		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<img_volume_on_left>diffusione/onvolampsxl.png</img_volume_on_left>
@@ -1134,12 +1133,11 @@ AlarmList > QWidget {  background-image: url(); }
 		<cid>11021</cid>
 		<!--
 		Other images: on, off
-		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
-		<img_volume_on_left>diffusione/onampgrpsxl.png</img_volume_on_left>
-		<img_volume_off_left>diffusione/onampgrpsxl.png</img_volume_off_left>
-		<img_volume_on_right>diffusione/onampgrpdxl.png</img_volume_on_right>
-		<img_volume_off_right>diffusione/onampgrpdxl.png</img_volume_off_right>
+		<img_volume_on_left>diffusione/onampgrpsxl0.png</img_volume_on_left>
+		<img_volume_off_left>diffusione/onampgrpsxl0.png</img_volume_off_left>
+		<img_volume_on_right>diffusione/onampgrpdxl0.png</img_volume_on_right>
+		<img_volume_off_right>diffusione/onampgrpdxl0.png</img_volume_off_right>
 	</item>
 	<!-- power amplifier (mono sound diffusion) -->
 	<item>
@@ -1259,22 +1257,19 @@ AlarmList > QWidget {  background-image: url(); }
 	</item>
 	<item>
 		<!-- ventilation -->
-		<!-- Notes:
-		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
-		     In OFF state, 'off' will be appended.
-		-->
 		<cid>3007</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
-		<img_actuator_state>automazione/imgvent.png</img_actuator_state>
+		<img_actuator_state_on>automazione/imgventon.png</img_actuator_state_on>
+		<img_actuator_state_off>automazione/imgventoff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- irrigation -->
-		<!-- See Notes section on previous cid -->
 		<cid>3008</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
-		<img_actuator_state>automazione/imgidro.png</img_actuator_state>
+		<img_actuator_state_on>automazione/imgidroon.png</img_actuator_state_on>
+		<img_actuator_state_off>automazione/imgidrooff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- loads -->
@@ -1282,7 +1277,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<cid>3009</cid>
 		<img_off>automazione/off.png</img_off>
 		<img_on>automazione/on.png</img_on>
-		<img_actuator_state>automazione/imgcarico.png</img_actuator_state>
+		<img_actuator_state_on>automazione/imgcaricoon.png</img_actuator_state_on>
+		<img_actuator_state_off>automazione/imgcaricooff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- door lock automation-->
@@ -1338,7 +1334,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<cid>2003</cid>
 		<img_off>illuminazione/off.png</img_off>
 		<img_on>illuminazione/on.png</img_on>
-		<img_actuator_state>illuminazione/imglamp.png</img_actuator_state>
+		<img_actuator_state_on>illuminazione/imglampon.png</img_actuator_state_on>
+		<img_actuator_state_off>illuminazione/imglampoff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- light group -->
@@ -1807,7 +1804,8 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_off>setup/off.png</img_off>
 		<img_on>setup/on.png</img_on>
 		<img_on>setup/on.png</img_on>
-		<img_state_icon>setup/imgsveglia.png</img_state_icon>
+		<img_state_icon_on>setup/imgsvegliaon.png</img_state_icon_on>
+		<img_state_icon_off>setup/imgsvegliaoff.png</img_state_icon_off>
 		<img_edit>setup/info.png</img_edit>
 		<img_alarm_icon>setup/imgsvegliab.png</img_alarm_icon>
 		<img_arrow_up>setup/piu.png</img_arrow_up>

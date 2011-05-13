@@ -282,6 +282,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
 	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
+#ifdef LAYOUT_TS_10
 	// create the tray icon and add it to tray
 	if (!tray_icon)
 	{
@@ -289,6 +290,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		bt_global::btmain->trayBar()->addButton(tray_icon, TrayBar::AUDIO_PLAYER);
 		tray_icon->hide();
 	}
+#endif
 
 	connect(player, SIGNAL(mplayerStarted()), SLOT(playerStarted()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(refreshPlayInfo()));
@@ -545,7 +547,9 @@ void AudioPlayerPage::playerStarted()
 	stream_title_exist = false;
 	filename_exist = false;
 	MultimediaSectionPage::current_player = this;
+#ifdef LAYOUT_TS_10
 	tray_icon->setVisible(true);
+#endif
 }
 
 void AudioPlayerPage::playerStopped()
@@ -559,5 +563,7 @@ void AudioPlayerPage::playerStopped()
 		emit playerExited();
 		MultimediaSectionPage::current_player = 0;
 	}
+#ifdef LAYOUT_TS_10
 	tray_icon->setVisible(false);
+#endif
 }

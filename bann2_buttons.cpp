@@ -55,17 +55,19 @@ BannOnOffState::BannOnOffState(QWidget *parent) :
 {
 }
 
-void BannOnOffState::initBanner(const QString &left, const QString &_center, const QString &right,
+void BannOnOffState::initBanner(const QString &left, const QString &_center_on, const QString &_center_off, const QString &right,
 	States init_state, const QString &banner_text)
 {
-	center = _center;
-	Bann2Buttons::initBanner(left, center, right, banner_text);
+	center_on = _center_on;
+	center_off = _center_off;
+
+	Bann2Buttons::initBanner(left, center_off, right, banner_text);
 	setState(init_state);
 }
 
 void BannOnOffState::setState(States new_state)
 {
-	setBackgroundImage(getBostikName(center, new_state == ON ? "on" : "off"));
+	setBackgroundImage(new_state == ON ? center_on : center_off);
 }
 
 

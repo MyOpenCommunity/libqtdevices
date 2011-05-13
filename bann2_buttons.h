@@ -170,7 +170,7 @@ public:
 
 	BannOnOffState(QWidget *parent);
 
-	void initBanner(const QString &left, const QString &center, const QString &right,
+	void initBanner(const QString &left, const QString &center_on, const QString &center_off, const QString &right,
 		States init_state, const QString &banner_text);
 	void setState(States new_state);
 
@@ -183,7 +183,7 @@ protected:
 	}
 
 private:
-	QString center;
+	QString center_on, center_off;
 };
 
 

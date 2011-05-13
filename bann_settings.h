@@ -68,7 +68,7 @@ class BannAlarmClockIcon : public BannOnOffState
 Q_OBJECT
 public:
 	BannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
-		QString icon_off, QString icon_state, QString icon_edit, QString text,
+		QString icon_off, QString icon_state_on, QString icon_state_off, QString icon_edit, QString text,
 		int enabled, int tipo, int days);
 
 	void setAbil(bool);

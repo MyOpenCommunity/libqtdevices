@@ -83,6 +83,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>9</cid>
 		<img_link_icon>appscev.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Monochannel sound diffusion -->
+		<cid>11</cid>
+		<img_link_icon>appdiff.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
@@ -144,7 +149,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Single light -->
 		<!-- uses: on, off -->
 		<cid>2003</cid>
-		<img_actuator_state>lamp.png</img_actuator_state>
+		<img_actuator_state_on>lampon.png</img_actuator_state_on>
+		<img_actuator_state_off>lampoff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- light group -->
@@ -257,27 +263,25 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	</item>
 	<item>
 		<!-- ventilation -->
-		<!-- Notes:
-		     In ON state, 'on' will be appended to 'img_actuator_state' icon.
-		     In OFF state, 'off' will be appended.
-		-->
 		<!-- uses: on, off -->
 		<cid>3007</cid>
-		<img_actuator_state>vent.png</img_actuator_state>
+		<img_actuator_state_on>venton.png</img_actuator_state_on>
+		<img_actuator_state_off>ventoff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- irrigation -->
-		<!-- See Notes section on previous cid -->
 		<!-- uses: on, off -->
 		<cid>3008</cid>
-		<img_actuator_state>idro.png</img_actuator_state>
+		<img_actuator_state_on>idroon.png</img_actuator_state_on>
+		<img_actuator_state_off>idrooff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- loads -->
 		<!-- See Notes section on previous cid -->
 		<!-- uses: on, off -->
 		<cid>3009</cid>
-		<img_actuator_state>carico.png</img_actuator_state>
+		<img_actuator_state_on>caricoon.png</img_actuator_state_on>
+		<img_actuator_state_off>caricooff.png</img_actuator_state_off>
 	</item>
 	<item>
 		<!-- door lock automation-->
@@ -355,4 +359,53 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_stop>btnstopred.png</img_stop>
 	</item>
 	<!-- End Evolved Scenario items -->
+
+	<!-- Start Monochannel Sound diffusion items -->
+	<item>
+		<!-- Sound diffusion page -->
+		<cid>11000</cid>
+		<img_cycle>btncycle.png</img_cycle>
+		<img_details>audiosetting.png</img_details>
+		<img_next>btnforward.png</img_next>
+		<img_previous>btnbackward.png</img_previous>
+	</item>
+	<item>
+		<cid>11020</cid>
+		<!-- amplifier normal ambient -->
+		<!-- uses: on, off
+		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<cid>11021</cid>
+		<!-- amplifier group normal ambient -->
+		<!-- uses: on, off -->
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<cid>11022</cid>
+		<!-- power amplifier -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<!-- End Monochannel Sound diffusion items -->
 </style>

@@ -399,7 +399,7 @@ PowerAmplifierLoud::PowerAmplifierLoud(PowerAmplifierDevice *d, const QString &b
 	BannOnOffState(parent)
 {
 	dev = d;
-	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("loud"),
+	initBanner(bt_global::skin->getImage("off"), bt_global::skin->getImage("loud_on"), bt_global::skin->getImage("loud_off"),
 		bt_global::skin->getImage("on"), OFF, banner_text);
 	connect(right_button, SIGNAL(clicked()), SLOT(on()));
 	connect(left_button, SIGNAL(clicked()), SLOT(off()));

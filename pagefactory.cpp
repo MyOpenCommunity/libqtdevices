@@ -24,14 +24,16 @@
 #include "xml_functions.h" // getPageNode
 #include "btmain.h" // bt_global::btmain
 #include "videodoorentry.h"
+
 #ifdef LAYOUT_TS_10
 #include "multimedia.h"
 #include "multimedia_filelist.h"
 #include "messages.h"
-#include "sounddiffusionpage.h"
 #else
 #include "settings.h"
 #endif
+
+#include "sounddiffusionpage.h"
 #include "antintrusion.h"
 #include "automation.h"
 #include "lighting.h"
@@ -121,11 +123,11 @@ Page *getPage(int page_id)
 	case MESSAGES:
 		page = new MessagesListPage(page_node);
 		break;
+#endif
 	case SOUNDDIFFUSION:
 	case SOUNDDIFFUSION_MULTI:
 		page = new SoundDiffusionPage(page_node);
 		break;
-#endif
 
 	case LOAD_MANAGEMENT:
 		page = new LoadManagement(page_node);

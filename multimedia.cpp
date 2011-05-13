@@ -281,10 +281,12 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	showed_items = items;
 
 	QString descr;
+#ifdef LAYOUT_TS_10
 	if (title.isEmpty())
 		descr = getTextChild(config_node, "descr");
 	else
 		descr = title;
+#endif
 
 	NavigationBar *nav_bar = new NavigationBar("play_file");
 	buildPage(new IconContent, nav_bar, descr);
@@ -432,7 +434,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 				p = new FeedManager(page_node);
 			break;
 		default:
-			qFatal("Unhandled page id in MultimediaSectionPage::loadItems");
+			qFatal(qPrintable(QString("Unhandled page id %1 in MultimediaSectionPage::loadItems").arg(item_id)));
 		}
 
 		if (p)

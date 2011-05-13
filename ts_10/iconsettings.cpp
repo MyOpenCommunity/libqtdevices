@@ -355,12 +355,13 @@ banner *IconSettings::getBanner(const QDomNode &item_node)
 		int days = getTextChild(item_node, "days").toInt();
 
 		b = new BannAlarmClockIcon(item_id, hour, minute,
-					   bt_global::skin->getImage("on"),
-					   bt_global::skin->getImage("off"),
-					   bt_global::skin->getImage("state_icon"),
-					   bt_global::skin->getImage("edit"),
-					   getTextChild(item_node, "descr"),
-					   enabled, type, days);
+					bt_global::skin->getImage("on"),
+					bt_global::skin->getImage("off"),
+					bt_global::skin->getImage("state_icon_on"),
+					bt_global::skin->getImage("state_icon_off"),
+					bt_global::skin->getImage("edit"),
+					getTextChild(item_node, "descr"),
+					enabled, type, days);
 
 		break;
 	}
