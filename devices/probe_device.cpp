@@ -110,14 +110,11 @@ ControlledProbeDevice::ControlledProbeDevice(QString where, QString central, QSt
 	central_type = _central_type;
 	central_where = QString("#") + central;
 	has_central_info = false;
-	new_request_allowed = true;
 	local_offset = 0;
 	local_status = ST_NORMAL;
 	status = ST_NONE;
 	set_point = -1;
 	setpoint_need_update = false;
-
-	connect(&new_request_timer, SIGNAL(timeout()), SLOT(timeoutElapsed()));
 }
 
 void ControlledProbeDevice::setManual(unsigned setpoint)
@@ -181,7 +178,6 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (central_type == CENTRAL_99ZONES && where_full == "#0" && !has_central_info)
 	{
-		new_request_allowed = true;
 		has_central_info = true;
 		sendRequest(QString());
 
@@ -214,12 +210,6 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case GEN_MANUAL:
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
 			values_list[DIM_STATUS] = status = ST_MANUAL;
-		if (new_request_allowed)
-		{
-			sendFrame("*#4*" + where_full.mid(1) + "##");
-			new_request_timer.start(TIMEOUT_TIME);
-			new_request_allowed = false;
-		}
 		has_central_info = false;
 		break;
 	case WIN_AUTOMATIC:
@@ -227,12 +217,6 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case GEN_AUTOMATIC:
 		if (local_status != ST_OFF && local_status != ST_PROTECTION)
 			values_list[DIM_STATUS] = status = ST_AUTO;
-		if (new_request_allowed)
-		{
-			sendFrame("*#4*" + where_full.mid(1) + "##");
-			new_request_timer.start(TIMEOUT_TIME);
-			new_request_allowed = false;
-		}
 		has_central_info = false;
 		break;
 	case PROT_ANTIFREEZE:
@@ -341,10 +325,4 @@ void ControlledProbeDevice::requestSetpoint()
 {
 	if (setpoint_need_update)
 		requestStatus();
-}
-
-void ControlledProbeDevice::timeoutElapsed()
-{
-	new_request_allowed = true;
-	new_request_timer.stop();
 }
