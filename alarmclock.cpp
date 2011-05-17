@@ -442,6 +442,7 @@ void AlarmClock::alarmTimeout()
 	// restore display state
 	bt_global::btmain->freeze(false);
 	bt_global::btmain->alarm_clock_on = false;
+	bt_global::display->forceOperativeMode(false);
 
 	emit alarmClockFired();
 }
