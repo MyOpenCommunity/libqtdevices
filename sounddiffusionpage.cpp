@@ -127,7 +127,11 @@ enum
 SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
 {
 	QHBoxLayout *l = new QHBoxLayout(this);
+#ifdef LAYOUT_TS_3_5
+	l->setContentsMargins(0, 0, 0, 5);
+#else
 	l->setContentsMargins(10, 0, 17, 10);
+#endif
 	l->setSpacing(10);
 
 	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
@@ -263,6 +267,7 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	main_layout->setSpacing(0);
 	if (top_widget)
 		main_layout->addWidget(top_widget);
+
 	main_layout->addWidget(content, 1);
 	buildPage(main_widget, content, new NavigationBar, getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT);
 	loadItems(conf_node);
