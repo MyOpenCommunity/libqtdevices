@@ -28,7 +28,6 @@
 #include <QGridLayout>
 
 
-#define BAN4BUT_DIM 60
 
 #define TIME_RIP_REGOLAZ 500
 
@@ -139,8 +138,18 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) :
 	grid->setSpacing(0);
 #endif
 	grid->addWidget(left_button, 0, 0);
-	grid->addWidget(center_left_button, 0, 1);
-	grid->addWidget(center_right_button, 0, 2);
+
+	// Sometimes we have two images that compose an unique image for the user:
+	// to handle this case (setCentralSpacing(false)) we use a horizontal layout
+	// and remove the spacing from the two images.
+	center_layout = new QHBoxLayout;
+	center_layout->setContentsMargins(0, 0, 0, 0);
+	center_layout->setSpacing(10);
+
+	center_layout->addWidget(center_left_button);
+	center_layout->addWidget(center_right_button);
+
+	grid->addLayout(center_layout, 0, 1, 1, 2);
 	grid->addWidget(right_button, 0, 3);
 	for (int i = 0; i < grid->columnCount(); ++i)
 		grid->setColumnStretch(i, 1);
@@ -160,10 +169,7 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 
 void Bann4Buttons::setCentralSpacing(bool spaced)
 {
-	QGridLayout *l = static_cast<QGridLayout*>(layout());
-
-	l->itemAtPosition(0, 1)->setAlignment(spaced ? Qt::AlignHCenter : Qt::AlignRight);
-	l->itemAtPosition(0, 2)->setAlignment(spaced? Qt::AlignHCenter : Qt::AlignLeft);
+	center_layout->setSpacing(spaced ? 10 : 0);
 }
 
 

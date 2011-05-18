@@ -29,7 +29,7 @@
 
 class BtButton;
 class ScrollingLabel;
-
+class QHBoxLayout;
 class QWidget;
 
 /*
@@ -70,7 +70,7 @@ class Bann4Buttons : public BannerNew
 {
 Q_OBJECT
 protected:
-	Bann4Buttons(QWidget *parent);
+	Bann4Buttons(QWidget *parent = 0);
 	void initBanner(const QString &right, const QString &center_right, const QString &center_left,
 		const QString &left, const QString &banner_text);
 
@@ -83,6 +83,7 @@ protected:
 
 private:
 	ScrollingLabel *text;
+	QHBoxLayout *center_layout;
 };
 
 
