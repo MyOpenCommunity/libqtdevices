@@ -434,7 +434,7 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 				p = new FeedManager(page_node);
 			break;
 		default:
-			qFatal(qPrintable(QString("Unhandled page id %1 in MultimediaSectionPage::loadItems").arg(item_id)));
+			qFatal("Unhandled page id %d in MultimediaSectionPage::loadItems", item_id);
 		}
 
 		if (p)
