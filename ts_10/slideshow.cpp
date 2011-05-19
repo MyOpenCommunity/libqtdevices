@@ -255,7 +255,6 @@ void SlideshowPage::showImage(int index)
 	startTrackMemory();
 #endif
 
-
 	if (show_working)
 	{
 		Q_ASSERT_X(working == 0, "SlideshowPage::loadImage", "Multiple operations in progress");
@@ -279,6 +278,16 @@ void SlideshowPage::imageReady()
 		working->waitForTimeout();
 		working = 0;
 	}
+
+	// Can happen that we call twice the showImage method, even if the WaitLabel
+	// blocks most of the user actions (for example: open the page and click next
+	// _before_ the image is loaded).
+	// Thanks to the jpg scaling optimization (see the checkImageSize for details)
+	// most of the times this is not a problem, so we simply avoid that calling
+	// twice the imageReady method produces a segfault (because the second time
+	// the async_load is null).
+	if (sender() != async_load)
+		return;
 
 	qDebug() << "Image loading complete";
 	emit imageLoaded();
@@ -505,6 +514,10 @@ void SlideshowWindow::imageReady()
 		working->waitForTimeout();
 		working = 0;
 	}
+
+	// See the comment on SlideshowPage::imageReady
+	if (sender() != async_load)
+		return;
 
 	qDebug() << "Image loading complete";
 	emit imageLoaded();
