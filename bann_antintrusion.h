@@ -24,6 +24,10 @@
 
 #include "bann2_buttons.h"
 
+#ifdef LAYOUT_TS_3_5
+#include "bann4_buttons.h"
+#endif
+
 #include <QWidget>
 
 class AntintrusionDevice;
@@ -34,7 +38,12 @@ class QLabel;
 	\ingroup Antintrusion
 	\brief Represents a zone of the antintrusion system.
 */
-class AntintrusionZone : public Bann2Buttons
+class AntintrusionZone :
+#ifdef LAYOUT_TS_10
+	public Bann2Buttons
+#else
+	public Bann4Buttons
+#endif
 {
 Q_OBJECT
 

@@ -88,6 +88,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>11</cid>
 		<img_link_icon>appdiff.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Antintrusion -->
+		<cid>13</cid>
+		<img_link_icon>appant.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
@@ -370,29 +375,29 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_previous>btnbackward.png</img_previous>
 	</item>
 	<item>
-		<cid>11020</cid>
 		<!-- amplifier normal ambient -->
 		<!-- uses: on, off
-		Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
+		<cid>11020</cid>
 		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
 		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
 		<img_volume_on_right>onampldxl.png</img_volume_on_right>
 		<img_volume_off_right>offampldxl.png</img_volume_off_right>
 	</item>
 	<item>
-		<cid>11021</cid>
 		<!-- amplifier group normal ambient -->
 		<!-- uses: on, off -->
+		<cid>11021</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
 		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
 		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
-		<cid>11022</cid>
 		<!-- power amplifier -->
 		<!-- uses: on, off, minus, plus -->
+		<cid>11022</cid>
 		<img_preset>preset.png</img_preset>
 		<img_treble>louds.png</img_treble>
 		<img_bass>lows.png</img_bass>
@@ -408,4 +413,67 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_volume_inactive>offampl.png</img_volume_inactive>
 	</item>
 	<!-- End Monochannel Sound diffusion items -->
+
+	<!-- Start Antintrusion items -->
+	<item>
+		<!-- Antintrusion page -->
+		<!-- uses: on, off -->
+		<cid>13000</cid>
+		<img_partial>btnparzializzazione.png</img_partial>
+		<img_alarm_state_off>antifurtodis.png</img_alarm_state_off>
+		<img_alarm_state_on>antifurtoins.png</img_alarm_state_on>
+		<img_zone_active>btnsparzializza.png</img_zone_active>
+		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_status_on>imgantintrusione.png</img_zone_status_on>
+		<img_zone_status_off>imgantintrusioneoff.png</img_zone_status_off>
+	</item>
+	<item>
+		<!-- Antintrusion zone 1 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13001</cid>
+		<img_zone>imgzona1.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 2 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13002</cid>
+		<img_zone>imgzona2.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 3 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13003</cid>
+		<img_zone>imgzona3.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 4 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13004</cid>
+		<img_zone>imgzona4.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 5 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13005</cid>
+		<img_zone>imgzona5.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 6 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13006</cid>
+		<img_zone>imgzona6.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 7 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13007</cid>
+		<img_zone>imgzona7.png</img_zone>
+	</item>
+	<item>
+		<!-- Antintrusion zone 8 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<cid>13008</cid>
+		<img_zone>imgzona8.png</img_zone>
+	</item>
+	<!-- End Antintrusion items -->
 </style>

@@ -36,13 +36,25 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 	partialized = false;
 	partialization_enabled = true;
 	zone_description = descr;
+
 	left_off = bt_global::skin->getImage("zone_inactive");
 	left_on = bt_global::skin->getImage("zone_active");
+
+#ifdef LAYOUT_TS_3_5
+	QString status_off = bt_global::skin->getImage("zone_status_off");
+	QString status_on = bt_global::skin->getImage("zone_status_on");
+
+	initBanner(QString(), status_off, bt_global::skin->getImage("zone"), left_off, descr);
+	setCentralSpacing(false);
+	center_right_button->disable();
+	center_left_button->disable();
+#else
+	initBanner(left_off, QString(), descr);
+#endif
+
+	connect(left_button, SIGNAL(clicked()), SLOT(leftClicked()));
 	disabled_left_off = getPressName(left_off);
 	disabled_left_on = getPressName(left_on);
-
-	initBanner(left_off, QString(), descr);
-	connect(left_button, SIGNAL(clicked()), SLOT(leftClicked()));
 }
 
 QString AntintrusionZone::zoneDescription() const
@@ -95,7 +107,9 @@ BannAntintrusion::BannAntintrusion(QWidget *parent) : Bann2Buttons(parent)
 	state_on = bt_global::skin->getImage("alarm_state_on");
 
 	initBanner(turn_on, state_off, bt_global::skin->getImage("info"), QString());
+#ifdef LAYOUT_TS_10
 	layout()->setSpacing(5); // TODO: blah! Find a better way to set the spacing!
+#endif
 	showAlarmsButton(false);
 
 	connect(left_button, SIGNAL(clicked()), this, SIGNAL(toggleActivation()));

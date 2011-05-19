@@ -147,7 +147,6 @@ AlarmListPage::AlarmListPage()
 	label_date->setAlignment(Qt::AlignLeft);
 	header_layout->addWidget(label_date, 1);
 
-	PageTitleWidget *title = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
 	AlarmList *item_list = new AlarmList(0, 4);
 
 	QWidget *main_widget = new QWidget;
@@ -158,6 +157,12 @@ AlarmListPage::AlarmListPage()
 	main_layout->addWidget(item_list, 1);
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(removeAlarmItem(int)));
+
+	PageTitleWidget *title = 0;
+
+#ifdef LAYOUT_TS_10
+	title = new PageTitleWidget(tr("Alarms"), SMALL_TITLE_HEIGHT);
+#endif
 
 	buildPage(main_widget, item_list, new NavigationBar, title);
 	need_update = false;
@@ -375,21 +380,24 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(antintrusion_system, SIGNAL(toggleActivation()), SLOT(toggleActivation()));
 	connect(antintrusion_system, SIGNAL(showAlarms()), alarm_manager, SLOT(showAlarmList()));
 
-	action = NONE;
 	QWidget *top_widget = new QWidget;
 
 	QHBoxLayout *layout = new QHBoxLayout(top_widget);
-	layout->setContentsMargins(10, 0, 20, 10);
+
 	layout->setSpacing(5);
 	layout->addWidget(antintrusion_system);
 	layout->addStretch(1);
 
+	action = NONE;
+
 #ifdef LAYOUT_TS_10
+	layout->setContentsMargins(10, 0, 20, 10);
 	partial_button = new BtButton(bt_global::skin->getImage("partial"));
 	layout->addWidget(partial_button);
-#endif
 
-	connect(partial_button, SIGNAL(clicked()), SLOT(partialize()));
+#else
+	layout->setContentsMargins(0, 0, 0, 25);
+#endif
 
 	BannerContent *content = new BannerContent;
 	QWidget *main_widget = new QWidget;
@@ -399,7 +407,16 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	main_layout->addWidget(top_widget);
 	main_layout->addWidget(content, 1);
 
+#ifdef LAYOUT_TS_10
 	buildPage(main_widget, content, new NavigationBar, getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+#else
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
+	partial_button = nav_bar->forward_button;
+	buildPage(main_widget, content, nav_bar);
+#endif
+
+	connect(partial_button, SIGNAL(clicked()), SLOT(partialize()));
+
 	loadZones(config_node);
 
 	QList<int> states;
