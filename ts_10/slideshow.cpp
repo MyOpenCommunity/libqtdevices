@@ -55,6 +55,7 @@ SlideshowController::SlideshowController(QObject *parent)
 	: QObject(parent),
 	timer(this)
 {
+	active = false;
 	timer.setSingleShot(true);
 	timer.setInterval(SLIDESHOW_TIMEOUT);
 	connect(&timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
