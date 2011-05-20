@@ -89,9 +89,6 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 	for (int i = 0; i < AMPLI_NUM; i++)
 		alarm_volumes[i] = -1;
 
-	// left shift to align with software
-	lShift(alarm_days);
-
 #ifdef LAYOUT_TS_3_5
 	alarm_time_page = new AlarmClockTime(alarm_time);
 	alarm_type_page = new AlarmClockFreq(alarm_type, alarm_freq);
