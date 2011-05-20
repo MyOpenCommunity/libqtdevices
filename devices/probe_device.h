@@ -200,15 +200,13 @@ protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
 private slots:
-	void timeoutElapsed();
 	void requestSetpoint();
 
 private:
 	QString simple_where;
 	ProbeType type;
 	CentralType central_type;
-	bool has_central_info, new_request_allowed;
-	QTimer new_request_timer;
+	bool has_central_info;
 	QString central_where;
 	bool setpoint_need_update;
 

@@ -55,6 +55,7 @@ SlideshowController::SlideshowController(QObject *parent)
 	: QObject(parent),
 	timer(this)
 {
+	active = false;
 	timer.setSingleShot(true);
 	timer.setInterval(SLIDESHOW_TIMEOUT);
 	connect(&timer, SIGNAL(timeout()), SLOT(nextImageSlideshow()));
@@ -254,12 +255,6 @@ void SlideshowPage::showImage(int index)
 	startTrackMemory();
 #endif
 
-	qDebug() << "Loading image" << image << this;
-
-	async_load = new QFutureWatcher<QImage>();
-	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
-
-	async_load->setFuture(QtConcurrent::run(&buildImage, image));
 	if (show_working)
 	{
 		Q_ASSERT_X(working == 0, "SlideshowPage::loadImage", "Multiple operations in progress");
@@ -267,6 +262,13 @@ void SlideshowPage::showImage(int index)
 		connect(this, SIGNAL(Closed()), working, SLOT(abort()));
 		show_working = false;
 	}
+
+	qDebug() << "Loading image" << image;
+
+	async_load = new QFutureWatcher<QImage>();
+	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+
+	async_load->setFuture(QtConcurrent::run(&buildImage, image));
 }
 
 void SlideshowPage::imageReady()
@@ -277,7 +279,17 @@ void SlideshowPage::imageReady()
 		working = 0;
 	}
 
-	qDebug() << "Image loading complete" << this;
+	// Can happen that we call twice the showImage method, even if the WaitLabel
+	// blocks most of the user actions (for example: open the page and click next
+	// _before_ the image is loaded).
+	// Thanks to the jpg scaling optimization (see the checkImageSize for details)
+	// most of the times this is not a problem, so we simply avoid that calling
+	// twice the imageReady method produces a segfault (because the second time
+	// the async_load is null).
+	if (sender() != async_load)
+		return;
+
+	qDebug() << "Image loading complete";
 	emit imageLoaded();
 
 	showPixmap(QPixmap::fromImage(async_load->result()), QFileInfo(image_list[controller->currentImage()]).fileName());
@@ -480,11 +492,6 @@ void SlideshowWindow::showImage(int index)
 	startTrackMemory();
 #endif
 
-	qDebug() << "Loading image" << image;
-
-	async_load = new QFutureWatcher<QImage>();
-	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
-	async_load->setFuture(QtConcurrent::run(&buildImage, image));
 
 	if (show_working)
 	{
@@ -493,6 +500,11 @@ void SlideshowWindow::showImage(int index)
 		connect(this, SIGNAL(Closed()), working, SLOT(abort()));
 		show_working = false;
 	}
+
+	qDebug() << "Loading image" << image;
+	async_load = new QFutureWatcher<QImage>();
+	connect(async_load, SIGNAL(finished()), SLOT(imageReady()));
+	async_load->setFuture(QtConcurrent::run(&buildImage, image));
 }
 
 void SlideshowWindow::imageReady()
@@ -502,6 +514,10 @@ void SlideshowWindow::imageReady()
 		working->waitForTimeout();
 		working = 0;
 	}
+
+	// See the comment on SlideshowPage::imageReady
+	if (sender() != async_load)
+		return;
 
 	qDebug() << "Image loading complete";
 	emit imageLoaded();
