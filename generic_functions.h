@@ -221,13 +221,6 @@ void setCfgValue(QString field, int value, int item_id, const QString &filename=
 
 /*!
 	\ingroup Core
-	\brief Shift list of boolean by step positions
- */
-void lShift(QList<bool> &boolList);
-
-
-/*!
-	\ingroup Core
 	\brief Sets config values for nodes that do not have an id.
 
 	\note We have to specify a root node to avoid duplicates.

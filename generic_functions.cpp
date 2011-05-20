@@ -158,12 +158,6 @@ QStringList getFileExtensions(EntryInfo::Type type)
 	return exts;
 }
 
-void lShift(QList<bool> &boolList)
-{
-	for (int i = 0; i < boolList.length()-1; ++i)
-                boolList.swap(i, i+1);
-}
-
 QStringList getFileFilter(EntryInfo::Type type)
 {
 	QStringList filters;
