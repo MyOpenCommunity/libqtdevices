@@ -9,17 +9,10 @@ LAYOUT = ts_3_5
 #CONF_FILE = ts_3_5
 CONF_FILE = ts_10
 
-# Test architecture depending on the compiler used.
-# In this case we are searching for the substring 'arm'
-TEST_ARCH = $$find(QMAKE_CXX,arm)
 
-isEmpty(TEST_ARCH) {
-	# x86
-	DEFINES += OPENSERVER_ADDR=\\\"btouch_3_5\\\"
-	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_3_5\\\"
-	DEFINES += BT_HARDWARE_X11
-}
-else {
+include(../setup.pri)
+
+contains(HARDWARE, embedded) {
 	DEFINES += BT_HARDWARE_TS_3_5
 	INCLUDEPATH += QWSMOUSE
 	HEADERS += QWSMOUSE/qmouse_qws.h \
@@ -27,6 +20,12 @@ else {
 
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
+}
+else {
+	# x86
+	DEFINES += OPENSERVER_ADDR=\\\"btouch_3_5\\\"
+	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_3_5\\\"
+	DEFINES += BT_HARDWARE_X11
 }
 
 VPATH = ../devices ..

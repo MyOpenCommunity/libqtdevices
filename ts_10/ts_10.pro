@@ -8,11 +8,9 @@
 LAYOUT = ts_10
 CONF_FILE = ts_10
 
-# Test architecture depending on the compiler used.
-# In this case we are searching for the substring 'arm'
-TEST_ARCH = $$find(QMAKE_CXX,arm)
+include(../setup.pri)
 
-isEmpty(TEST_ARCH) {
+contains(HARDWARE, x11) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_10\\\"
 	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_10\\\"
@@ -24,8 +22,6 @@ else {
 	HEADERS += QWSMOUSE/qmouselinuxtp_qws.h QWSMOUSE/qmouse_qws.h
 	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp
 }
-
-#DEFINES += TRACK_IMAGES_MEMORY
 
 VPATH = ../devices ..
 include(../common.pri)
