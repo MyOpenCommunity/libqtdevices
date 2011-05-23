@@ -403,13 +403,6 @@ void DisplayControl::makeActive()
 
 	if (current_state != DISPLAY_OPERATIVE)
 	{
-		if (current_state != DISPLAY_FREEZED)
-		{
-			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
-			emit stopscreensaver(); // emitted both in DISPLAY_OFF and DISPLAY_SCREENSAVER
-			if (screensaver && screensaver->isRunning())
-				screensaver->stop();
-		}
 		// If the user has protected its touch with the password, we have to do
 		// all the things to show the event that calls the makeActive leaving
 		// the tounch in the freeze state so when the user clicks on the screen

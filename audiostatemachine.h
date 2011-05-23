@@ -34,7 +34,7 @@ namespace AudioStates
 {
 	enum
 	{
-		IDLE,                  /*!< Base state, always on the stack (power off local amplifier). */
+		IDLE = 0,              /*!< Base state, always on the stack (power off local amplifier). */
 		BEEP_ON,               /*!< Beep active (local amplifier on). */
 		MUTE,                  /*!< Videocall mute state. */
 		PLAY_MEDIA_TO_SPEAKER, /*!< Reproduce a media file using local speaker (no sound diffusion). */

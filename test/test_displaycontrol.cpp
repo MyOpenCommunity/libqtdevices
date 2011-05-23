@@ -285,6 +285,24 @@ void TestDisplayControl::testMakeActivePostScreensaver()
 	QCOMPARE(spy.count(), 1);
 }
 
+void TestDisplayControl::testMakeActivePostScreenOff()
+{
+	display->startTime();
+
+	sleepSecs(display->screenoff_time);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QCOMPARE(display->current_state, DISPLAY_OFF);
+	QCOMPARE(display->screensaver->isRunning(), false);
+	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
+
+	display->makeActive();
+	QCOMPARE(display->current_state, DISPLAY_OPERATIVE);
+	QCOMPARE(display->screensaver->isRunning(), false);
+	QVERIFY(bt_global::audio_states->currentState() == AudioStates::IDLE);
+}
+
 void TestDisplayControl::testScreensaverPostMakeActive()
 {
 	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
