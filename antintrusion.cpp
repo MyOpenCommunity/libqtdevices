@@ -203,7 +203,13 @@ int AlarmListPage::alarmId(int alarm_type, int zone)
 
 void AlarmListPage::newAlarm(const QString &zone_description, int alarm_id, int alarm_type, int zone)
 {
+#ifdef LAYOUT_TS_10
 	QString icon = bt_global::skin->getImage(getAlarmTagname(alarm_type));
+#else
+	// Because on ts 3.5 the AlarmListPage is never shown we use an image always present
+	// only to silent warnings from SkinManager.
+	QString icon = bt_global::skin->getImage("ok");
+#endif
 	QString description = getAlarmDescription(alarm_type);
 	QList<QVariant> data;
 	data.append(QDateTime::currentDateTime());

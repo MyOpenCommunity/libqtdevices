@@ -27,6 +27,7 @@
 #include "skinmanager.h"
 #include "pagestack.h"
 #include "main.h" // ANTIINTRUSION
+#include "labels.h" // ImageLabel
 
 #include <QPixmap>
 #include <QWidget>
@@ -55,16 +56,18 @@ AlarmPage::AlarmPage(const QString &icon, const QString &d, const QString &zone,
 	QVBoxLayout *l = new QVBoxLayout(content);
 	l->setContentsMargins(0, 20, 0, 30);
 	l->setSpacing(10);
-	image = new QLabel;
-	image->setPixmap(*bt_global::icons_cache.getIcon(icon));
-	image->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	image = new ImageLabel(icon);
+	image->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
 	l->addWidget(image);
 
+	l->addSpacing(35);
 	description = new QLabel;
 	description->setFont(bt_global::font->get(FontManager::TEXT));
-	description->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	description->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
 	description->setText(descr);
 	l->addWidget(description);
+
+	l->addStretch();
 
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
 	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(Prev()));

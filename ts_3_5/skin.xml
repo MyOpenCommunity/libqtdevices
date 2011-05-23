@@ -417,7 +417,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<!-- Start Antintrusion items -->
 	<item>
 		<!-- Antintrusion page -->
-		<!-- uses: on, off -->
+		<!-- uses: on, off, info -->
 		<cid>13000</cid>
 		<img_partial>btnparzializzazione.png</img_partial>
 		<img_alarm_state_off>antifurtodis.png</img_alarm_state_off>
@@ -426,6 +426,12 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
 		<img_zone_status_on>imgantintrusione.png</img_zone_status_on>
 		<img_zone_status_off>imgantintrusioneoff.png</img_zone_status_off>
+		<!-- Alarm page -->
+		<img_alarm_del>btndel.png</img_alarm_del>
+		<img_technic_alarm_page>imgalltec.png</img_technic_alarm_page>
+		<img_intrusion_alarm_page>imgallintr.png</img_intrusion_alarm_page>
+		<img_tamper_alarm_page>imgallintr.png</img_tamper_alarm_page>
+		<img_panic_alarm_page>imgallintr.png</img_panic_alarm_page>
 	</item>
 	<item>
 		<!-- Antintrusion zone 1 -->
