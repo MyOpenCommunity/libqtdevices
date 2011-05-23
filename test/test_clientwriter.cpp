@@ -83,6 +83,14 @@ QTcpSocket *TestClientWriter::newConnection(ClientWriter *client)
 	return socket;
 }
 
+void TestClientWriter::waitForData(ClientWriter *client)
+{
+	client->socket->waitForReadyRead(0);
+	// The processEvents is required due to the asyncronous nature of the
+	// slot connected to the readyRead() signal
+	qApp->processEvents();
+}
+
 void TestClientWriter::testSingleFrame()
 {
 	ClientWriter *client = createClient(Client::COMMAND);
@@ -169,7 +177,7 @@ void TestClientWriter::testAck()
 
 	command->write(ACK_FRAME);
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QCOMPARE(frame_sender.ack_history.first(), qMakePair(true, frame));
 }
@@ -187,7 +195,7 @@ void TestClientWriter::testAckNotReceived()
 
 	command->write(ACK_FRAME);
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QCOMPARE(frame_sender.ack_history.size(), 0);
 }
@@ -206,7 +214,7 @@ void TestClientWriter::testNak()
 
 	command->write(NAK_FRAME);
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QCOMPARE(frame_sender.ack_history.first(), qMakePair(false, frame));
 }
@@ -234,7 +242,7 @@ void TestClientWriter::testAckMultipleWho()
 		command->write(i < 3 ? ACK_FRAME : NAK_FRAME);
 
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QList<QPair<bool, QString> > expected;
 	expected.append(qMakePair(true, QString("*#5*#1##")));
@@ -271,7 +279,7 @@ void TestClientWriter::testAckMultipleReceivers()
 		command->write((i % 2) == 0 ? ACK_FRAME : NAK_FRAME);
 
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QList<QPair<bool, QString> > expected4;
 	expected4.append(qMakePair(false, QString("*#4*#01##")));
@@ -307,7 +315,7 @@ void TestClientWriter::testMultipleAckNak()
 		command->write(i < 4 ? ACK_FRAME : NAK_FRAME);
 
 	command->flush();
-	client->socket->waitForReadyRead(0);
+	waitForData(client);
 
 	QList<QPair<bool, QString> > expected;
 	expected.append(qMakePair(true, QString("*#1*82##")));

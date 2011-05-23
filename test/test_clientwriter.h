@@ -72,6 +72,7 @@ private:
 	QTcpSocket *newConnection(ClientWriter *client);
 	QString readAll(QTcpSocket *socket);
 	ClientWriter *createClient(Client::Type t);
+	void waitForData(ClientWriter *client);
 };
 
 #endif
