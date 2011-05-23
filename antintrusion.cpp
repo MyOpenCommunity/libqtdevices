@@ -474,6 +474,8 @@ void Antintrusion::loadZones(const QDomNode &config_node)
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		int zone_number = getTextChild(item, "where").mid(1).toInt();
 		AntintrusionZone *b = new AntintrusionZone(zone_number, getTextChild(item, "descr"));
+		// Sync the graphical aspect with the device status
+		dev->partializeZone(zone_number, b->isPartialized());
 		connect(b, SIGNAL(requestPartialization(int,bool)), dev, SLOT(partializeZone(int,bool)));
 		page_content->appendBanner(b);
 		zones[zone_number - 1] = b;
