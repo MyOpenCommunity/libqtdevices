@@ -537,6 +537,9 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 		case AntintrusionDevice::DIM_SYSTEM_INSERTED:
 		{
 			bool inserted = it.value().toBool();
+#ifdef LAYOUT_TS_3_5
+			partial_button->setVisible(!inserted);
+#endif
 			antintrusion_system->setState(inserted);
 			for (int i = 0; i < NUM_ZONES; ++i)
 				if (zones[i])

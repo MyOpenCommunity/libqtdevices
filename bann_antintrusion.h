@@ -39,10 +39,10 @@ class QLabel;
 	\brief Represents a zone of the antintrusion system.
 */
 class AntintrusionZone :
-#ifdef LAYOUT_TS_10
-	public Bann2Buttons
-#else
+#ifdef LAYOUT_TS_3_5
 	public Bann4Buttons
+#else
+	public Bann2Buttons
 #endif
 {
 Q_OBJECT
@@ -61,7 +61,12 @@ private slots:
 	void leftClicked();
 
 private:
-	QString left_on, left_off, disabled_left_on, disabled_left_off;
+	QString left_on, left_off;
+#ifdef LAYOUT_TS_3_5
+	QString status_on, status_off;
+#else
+	QString disabled_left_on, disabled_left_off;
+#endif
 	QString zone_description;
 	int zone_number;
 	bool partialized;
