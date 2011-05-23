@@ -667,8 +667,7 @@ void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 
 SplitErrorPage::SplitErrorPage(const QString &image)
 {
-	ImageLabel *icon = new ImageLabel;
-	icon->setPixmap(*bt_global::icons_cache.getIcon(image));
+	ImageLabel *icon = new ImageLabel(image);
 
 	connect(icon, SIGNAL(clicked()), SLOT(handleClose()));
 

@@ -108,7 +108,7 @@ class ImageLabel : public QLabel
 {
 Q_OBJECT
 public:
-	ImageLabel();
+	ImageLabel(QString image_path = QString());
 
 	// if the pixmap is too big for the label, it is scaled down, respecting
 	// proportions, otherwise it is displayed as it is

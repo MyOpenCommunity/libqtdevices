@@ -222,10 +222,13 @@ void TextOnImageLabel::setTextColor(QString color)
 }
 
 
-ImageLabel::ImageLabel()
+ImageLabel::ImageLabel(QString image_path)
 {
 	setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	setAlignment(Qt::AlignCenter);
+
+	if (!image_path.isNull())
+		setPixmap(*bt_global::icons_cache.getIcon(image_path));
 }
 
 void ImageLabel::setPixmap(const QPixmap &pixmap)
