@@ -76,7 +76,7 @@ void TestDisplayControl::testFreeze()
 {
 	// We can't set an interval smaller than this because the time elapsed
 	// in the screensaver is calculated in seconds, using the time() unix function.
-	int small_interval = 100;
+	int small_interval = 200;
 	QSignalSpy spy(display, SIGNAL(freezed()));
 	display->freeze_time = 2;
 	display->startTime();
