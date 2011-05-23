@@ -26,6 +26,7 @@
 #include "btbutton.h"
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
+#include "hardware_functions.h" // maxWidth()
 
 #include <QLabel>
 #include <QButtonGroup>
@@ -75,7 +76,7 @@ Keypad::Keypad(bool back_button)
 
 	mode = CLEAN;
 
-	msg_label->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	msg_label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 	msg_label->setFont(bt_global::font->get(FontManager::TEXT));
 	msg_label->setText(tr("PASSWORD:"));
 
@@ -92,7 +93,7 @@ Keypad::Keypad(bool back_button)
 
 #ifdef LAYOUT_TS_3_5
 	k->setHorizontalSpacing(25);
-	k->setVerticalSpacing(15);
+	k->setVerticalSpacing(10);
 #else
 	k->setAlignment(Qt::AlignHCenter);
 	k->setSpacing(20);
@@ -108,7 +109,7 @@ Keypad::Keypad(bool back_button)
 	// bottom labels
 	QHBoxLayout *p = new QHBoxLayout;
 #ifdef LAYOUT_TS_3_5
-	p->setContentsMargins(0, 20, 0, 0);
+	p->setContentsMargins(0, 10, 0, 0);
 #else
 	p->setContentsMargins(0, 0, 0, 0);
 #endif
@@ -210,8 +211,14 @@ void Keypad::resetText()
 KeypadWithState::KeypadWithState(const QList<int> &s)
 {
 	states_layout = new QHBoxLayout;
+#ifdef LAYOUT_TS_3_5
+	states_layout->setContentsMargins(5, 15, 5, 5);
+	states_layout->setSpacing(0);
+#else
 	states_layout->setContentsMargins(5, 5, 5, 5);
 	states_layout->setSpacing(5);
+#endif
+
 	states_layout->setAlignment(Qt::AlignHCenter);
 	insertLayout(states_layout);
 
@@ -239,6 +246,14 @@ void KeypadWithState::drawStates(const QList<int> &s)
 #ifdef LAYOUT_TS_3_5
 	QFont state_font = bt_global::font->get(FontManager::TEXT);
 
+	// We want the label bigger than the text, as bigger as we can.
+	int left, top, right, bottom;
+	layout()->getContentsMargins(&left, &top, &right, &bottom);
+	int max_width = maxWidth() - left - right;
+	states_layout->getContentsMargins(&left, &top, &right, &bottom);
+	max_width = max_width - left - right;
+	int state_width = (max_width / s.size()) - states_layout->spacing();
+
 	for (int i = 0; i < s.size(); ++i)
 	{
 		QLabel *state = new QLabel;
@@ -253,6 +268,7 @@ void KeypadWithState::drawStates(const QList<int> &s)
 			state->setText(QString::number(i + 1));
 		}
 
+		state->setFixedSize(state_width, state_width);
 		states_layout->addWidget(state);
 		states.append(state);
 	}
