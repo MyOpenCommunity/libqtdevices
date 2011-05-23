@@ -88,16 +88,15 @@ Keypad::Keypad(bool back_button)
 
 	// digits, ok, cancel buttons
 	QGridLayout *k = new QGridLayout;
+	k->setContentsMargins(0, 0, 0, 0);
 
-#ifdef LAYOUT_TS_10
-	k->setAlignment(Qt::AlignHCenter);
-	k->setSpacing(20);
-#else
+#ifdef LAYOUT_TS_3_5
 	k->setHorizontalSpacing(25);
 	k->setVerticalSpacing(15);
+#else
+	k->setAlignment(Qt::AlignHCenter);
+	k->setSpacing(20);
 #endif
-
-	k->setContentsMargins(0, 0, 0, 0);
 
 	for (int i = 0; i < 9; ++i)
 		k->addWidget(digits[i + 1], i / 3, i % 3);
@@ -238,12 +237,12 @@ void KeypadWithState::setStates(const QList<int> &s)
 void KeypadWithState::drawStates(const QList<int> &s)
 {
 #ifdef LAYOUT_TS_3_5
-	QFont aFont = bt_global::font->get(FontManager::TEXT);
+	QFont state_font = bt_global::font->get(FontManager::TEXT);
 
 	for (int i = 0; i < s.size(); ++i)
 	{
 		QLabel *state = new QLabel;
-		state->setFont(aFont);
+		state->setFont(state_font);
 		state->setAlignment(Qt::AlignCenter);
 
 		if (s[i] == -1)
@@ -255,6 +254,7 @@ void KeypadWithState::drawStates(const QList<int> &s)
 		}
 
 		states_layout->addWidget(state);
+		states.append(state);
 	}
 #else
 	for (int i = 0; i < s.size(); ++i)
