@@ -22,7 +22,6 @@ HEADERS += actuators.h \
 	alarmclock.h \
 	alarmpage.h \
 	audioplayer.h \
-	audiosource.h \
 	bann_amplifiers.h \
 	antintrusion.h \
 	audiostatemachine.h \
@@ -111,6 +110,7 @@ HEADERS += actuators.h \
 	skinmanager.h \
 	specialpage.h \
 	sounddiffusionpage.h \
+	soundsources.h \
 	statemachine.h \
 	state_button.h \
 	stopngo.h \
@@ -135,7 +135,6 @@ SOURCES += actuators.cpp \
 	alarmclock.cpp \
 	alarmpage.cpp \
 	audioplayer.cpp \
-	audiosource.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
 	automation.cpp \
@@ -222,6 +221,7 @@ SOURCES += actuators.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
 	sounddiffusionpage.cpp \
+	soundsources.cpp \
 	specialpage.cpp \
 	statemachine.cpp \
 	state_button.cpp \

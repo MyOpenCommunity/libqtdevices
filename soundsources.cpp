@@ -19,7 +19,7 @@
  */
 
 
-#include "audiosource.h"
+#include "soundsources.h"
 #include "media_device.h"
 #include "page.h"
 #include "state_button.h"

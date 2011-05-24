@@ -25,7 +25,7 @@
 
 #include "bannerpage.h"
 #include "banner.h"
-#include "audiosource.h"
+#include "soundsources.h"
 
 class QDomNode;
 class QLabel;
