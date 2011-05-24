@@ -30,7 +30,6 @@
 #include "labels.h" // TextOnImageLabel
 #include "radio.h" // RadioInfo
 #include "devices_cache.h"
-#include "main.h" // bt_global::config
 #include "multimedia_filelist.h"
 #include "multimedia.h"
 #include "radio.h" // RadioPage
@@ -222,7 +221,7 @@ void RadioSource::sourceShowed()
 }
 
 
-SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
+SoundSources::SoundSources(const QString &source_address, const QString &area, const QList<SourceDescription> &src)
 {
 	QHBoxLayout *l = new QHBoxLayout(this);
 #ifdef LAYOUT_TS_3_5
@@ -253,7 +252,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		}
 		else
 		{
-			if (s.type == SourceDescription::MULTIMEDIA && s.where == (*bt_global::config)[SOURCE_ADDRESS])
+			if (s.type == SourceDescription::MULTIMEDIA && s.where == source_address)
 			{
 				if (!s.details)
 				{

@@ -148,7 +148,7 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	// this handles the case for special ambient, which must not show sources
 	if (!sources.isEmpty())
 	{
-		top_widget = new SoundSources(area, sources);
+		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, sources);
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 
@@ -259,7 +259,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 		if (s.type == SourceDescription::RADIO || s.type == SourceDescription::AUX)
 			filtered_sources.append(s);
 
-	SoundSources *top_widget = new SoundSources(area, filtered_sources);
+	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, filtered_sources);
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
 	QWidget *main_widget = new QWidget;

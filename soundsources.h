@@ -165,7 +165,7 @@ class SoundSources : public QWidget
 {
 Q_OBJECT
 public:
-	SoundSources(const QString &area, const QList<SourceDescription> &sources);
+	SoundSources(const QString &source_address, const QString &area, const QList<SourceDescription> &sources);
 
 signals:
 	void pageClosed();
