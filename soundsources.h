@@ -138,24 +138,20 @@ private:
  */
 struct SourceDescription
 {
+	enum Type
+	{
+		AUX,
+		RADIO,
+		MULTIMEDIA
+	};
+
 	QString descr;
 	QString where;
-	int id;
 	int cid;
 	mutable Page *details;
+	Type type;
 };
 Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
-
-
-enum
-{
-	SOURCE_RADIO_MONO = 11001,
-	SOURCE_AUX_MONO = 11002,
-	SOURCE_MULTIMEDIA_MONO = 11003,
-	SOURCE_RADIO_MULTI = 12001,
-	SOURCE_AUX_MULTI = 12002,
-	SOURCE_MULTIMEDIA_MULTI = 12003,
-};
 
 
 /*!

@@ -52,6 +52,16 @@ Page *SoundDiffusionPage::sound_diffusion_page = NULL;
 Page *SoundDiffusionPage::alarm_clock_page = NULL;
 Page *SoundAmbientPage::current_ambient_page = NULL;
 
+enum
+{
+	SOURCE_RADIO_MONO = 11001,
+	SOURCE_AUX_MONO = 11002,
+	SOURCE_MULTIMEDIA_MONO = 11003,
+	SOURCE_RADIO_MULTI = 12001,
+	SOURCE_AUX_MULTI = 12002,
+	SOURCE_MULTIMEDIA_MULTI = 12003
+};
+
 namespace
 {
 	QStringList getAddresses(const QDomNode &addresses_node)
@@ -246,8 +256,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 
 	QList<SourceDescription> filtered_sources;
 	foreach (const SourceDescription &s, sources)
-		if (s.id == SOURCE_RADIO_MONO || s.id == SOURCE_RADIO_MULTI ||
-		    s.id == SOURCE_AUX_MONO || s.id == SOURCE_AUX_MULTI)
+		if (s.type == SourceDescription::RADIO || s.type == SourceDescription::AUX)
 			filtered_sources.append(s);
 
 	SoundSources *top_widget = new SoundSources(area, filtered_sources);
@@ -360,7 +369,21 @@ QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_
 	foreach (const QDomNode &source, getChildren(sources_node, "item"))
 	{
 		SourceDescription d;
-		d.id = getTextChild(source, "id").toInt();
+		switch (getTextChild(source, "id").toInt())
+		{
+		case SOURCE_AUX_MONO:
+		case SOURCE_AUX_MULTI:
+			d.type = SourceDescription::AUX;
+			break;
+		case SOURCE_RADIO_MONO:
+		case SOURCE_RADIO_MULTI:
+			d.type = SourceDescription::RADIO;
+			break;
+		default: // SOURCE_MULTIMEDIA_MONO, SOURCE_MULTIMEDIA_MULTI
+			d.type = SourceDescription::MULTIMEDIA;
+			break;
+		}
+
 		d.cid = getTextChild(source, "cid").toInt();
 		d.descr = getTextChild(source, "descr");
 		d.where = getTextChild(source, "where");

@@ -243,25 +243,17 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 		SkinContext ctx(s.cid);
 		AudioSource *w = NULL;
 
-		switch (s.id)
-		{
-		case SOURCE_RADIO_MONO:
-		case SOURCE_RADIO_MULTI:
+		if (s.type == SourceDescription::RADIO)
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 			if (!s.details)
 				s.details = new RadioPage(dev);
 
 			w = new RadioSource(area, dev, static_cast<RadioPage*>(s.details));
-			break;
 		}
-		case SOURCE_AUX_MONO:
-		case SOURCE_AUX_MULTI:
-		case SOURCE_MULTIMEDIA_MONO:
-		case SOURCE_MULTIMEDIA_MULTI:
+		else
 		{
-			if ((s.id == SOURCE_MULTIMEDIA_MONO || s.id == SOURCE_MULTIMEDIA_MULTI) &&
-				s.where == (*bt_global::config)[SOURCE_ADDRESS])
+			if (s.type == SourceDescription::MULTIMEDIA && s.where == (*bt_global::config)[SOURCE_ADDRESS])
 			{
 				if (!s.details)
 				{
@@ -280,13 +272,7 @@ SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &
 
 				w = new AuxSource(area, dev, s.descr);
 			}
-
-			break;
 		}
-		default:
-			qWarning() << "Ignoring source" << s.id;
-			continue;
-		};
 
 		sources->addWidget(w);
 		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
