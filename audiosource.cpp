@@ -29,7 +29,14 @@
 #include "media_device.h" // SourceDevice, VirtualSourceDevice, RadioSourceDevice
 #include "labels.h" // TextOnImageLabel
 #include "radio.h" // RadioInfo
+#include "devices_cache.h"
+#include "main.h" // bt_global::config
+#include "multimedia_filelist.h"
+#include "multimedia.h"
+#include "radio.h" // RadioPage
 
+#include <QDomNode>
+#include <QStackedWidget>
 #include <QBoxLayout>
 #include <QDebug>
 
@@ -212,5 +219,110 @@ void RadioSource::sourceHidden()
 void RadioSource::sourceShowed()
 {
 	radio_info->isShown(true);
+}
+
+
+SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
+{
+	QHBoxLayout *l = new QHBoxLayout(this);
+#ifdef LAYOUT_TS_3_5
+	l->setContentsMargins(0, 0, 0, 5);
+#else
+	l->setContentsMargins(10, 0, 17, 10);
+#endif
+	l->setSpacing(10);
+
+	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
+	sources = new QStackedWidget;
+
+	l->addWidget(cycle);
+	l->addWidget(sources);
+
+	foreach (const SourceDescription &s, src)
+	{
+		SkinContext ctx(s.cid);
+		AudioSource *w = NULL;
+
+		switch (s.id)
+		{
+		case SOURCE_RADIO_MONO:
+		case SOURCE_RADIO_MULTI:
+		{
+			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
+			if (!s.details)
+				s.details = new RadioPage(dev);
+
+			w = new RadioSource(area, dev, static_cast<RadioPage*>(s.details));
+			break;
+		}
+		case SOURCE_AUX_MONO:
+		case SOURCE_AUX_MULTI:
+		case SOURCE_MULTIMEDIA_MONO:
+		case SOURCE_MULTIMEDIA_MULTI:
+		{
+			if ((s.id == SOURCE_MULTIMEDIA_MONO || s.id == SOURCE_MULTIMEDIA_MULTI) &&
+				s.where == (*bt_global::config)[SOURCE_ADDRESS])
+			{
+				if (!s.details)
+				{
+					MultimediaFileListFactory *factory = new MultimediaFileListFactory(TreeBrowser::DIRECTORY,
+						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
+					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
+				}
+
+				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
+
+				w = new MediaSource(area, dev, s.descr, s.details);
+			}
+			else
+			{
+				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
+
+				w = new AuxSource(area, dev, s.descr);
+			}
+
+			break;
+		}
+		default:
+			qWarning() << "Ignoring source" << s.id;
+			continue;
+		};
+
+		sources->addWidget(w);
+		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+		connect(w, SIGNAL(pageClosed()), SIGNAL(pageClosed()));
+	}
+
+	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
+}
+
+void SoundSources::hideEvent(QHideEvent *)
+{
+	for (int i = 0; i < sources->count(); ++i)
+		static_cast<AudioSource*>(sources->widget(i))->sourceHidden();
+}
+
+void SoundSources::showEvent(QShowEvent *)
+{
+	for (int i = 0; i < sources->count(); ++i)
+		static_cast<AudioSource*>(sources->widget(i))->sourceShowed();
+}
+
+void SoundSources::sourceCycle()
+{
+	int index = sources->currentIndex();
+	int next = (index + 1) % sources->count();
+
+	sources->setCurrentIndex(next);
+}
+
+void SoundSources::sourceStateChanged(bool active)
+{
+	if (!active)
+		return;
+
+	AudioSource *source = static_cast<AudioSource*>(sender());
+
+	sources->setCurrentWidget(source);
 }
 

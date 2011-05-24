@@ -30,12 +30,9 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "bann_amplifiers.h" // Amplifier
 #include "poweramplifier.h" // BannPowerAmplifier, PowerAmplifierPage
-#include "audiosource.h" // RadioSource, AuxSource, MediaSource
 #include "media_device.h"
 #include "devices_cache.h"
 #include "multimedia.h" // MultimediaSectionPage
-#include "multimedia_filelist.h"
-#include "radio.h" // RadioPage
 #include "navigation_bar.h"
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
@@ -46,7 +43,6 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
-#include <QStackedWidget>
 
 
 #define TEMPORARY_OFF_TIMEOUT 1000
@@ -113,120 +109,6 @@ void SoundAmbient::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
-
-enum
-{
-	SOURCE_RADIO_MONO = 11001,
-	SOURCE_AUX_MONO = 11002,
-	SOURCE_MULTIMEDIA_MONO = 11003,
-	SOURCE_RADIO_MULTI = 12001,
-	SOURCE_AUX_MULTI = 12002,
-	SOURCE_MULTIMEDIA_MULTI = 12003,
-};
-
-SoundSources::SoundSources(const QString &area, const QList<SourceDescription> &src)
-{
-	QHBoxLayout *l = new QHBoxLayout(this);
-#ifdef LAYOUT_TS_3_5
-	l->setContentsMargins(0, 0, 0, 5);
-#else
-	l->setContentsMargins(10, 0, 17, 10);
-#endif
-	l->setSpacing(10);
-
-	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
-	sources = new QStackedWidget;
-
-	l->addWidget(cycle);
-	l->addWidget(sources);
-
-	foreach (const SourceDescription &s, src)
-	{
-		SkinContext ctx(s.cid);
-		AudioSource *w = NULL;
-
-		switch (s.id)
-		{
-		case SOURCE_RADIO_MONO:
-		case SOURCE_RADIO_MULTI:
-		{
-			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
-			if (!s.details)
-				s.details = new RadioPage(dev);
-
-			w = new RadioSource(area, dev, static_cast<RadioPage*>(s.details));
-			break;
-		}
-		case SOURCE_AUX_MONO:
-		case SOURCE_AUX_MULTI:
-		case SOURCE_MULTIMEDIA_MONO:
-		case SOURCE_MULTIMEDIA_MULTI:
-		{
-			if ((s.id == SOURCE_MULTIMEDIA_MONO || s.id == SOURCE_MULTIMEDIA_MULTI) &&
-			    s.where == (*bt_global::config)[SOURCE_ADDRESS])
-			{
-				if (!s.details)
-				{
-					MultimediaFileListFactory *factory = new MultimediaFileListFactory(TreeBrowser::DIRECTORY,
-						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
-					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
-				}
-
-				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));
-
-				w = new MediaSource(area, dev, s.descr, s.details);
-			}
-			else
-			{
-				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
-
-				w = new AuxSource(area, dev, s.descr);
-			}
-
-			break;
-		}
-		default:
-			qWarning() << "Ignoring source" << s.id;
-			continue;
-		};
-
-		sources->addWidget(w);
-		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
-		connect(w, SIGNAL(pageClosed()), SIGNAL(pageClosed()));
-	}
-
-	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
-}
-
-void SoundSources::hideEvent(QHideEvent *)
-{
-	for (int i = 0; i < sources->count(); ++i)
-		static_cast<AudioSource*>(sources->widget(i))->sourceHidden();
-}
-
-void SoundSources::showEvent(QShowEvent *)
-{
-	for (int i = 0; i < sources->count(); ++i)
-		static_cast<AudioSource*>(sources->widget(i))->sourceShowed();
-}
-
-void SoundSources::sourceCycle()
-{
-	int index = sources->currentIndex();
-	int next = (index + 1) % sources->count();
-
-	sources->setCurrentIndex(next);
-}
-
-void SoundSources::sourceStateChanged(bool active)
-{
-	if (!active)
-		return;
-
-	AudioSource *source = static_cast<AudioSource*>(sender());
-
-	sources->setCurrentWidget(source);
-}
 
 
 enum BannerType

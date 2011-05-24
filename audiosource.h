@@ -31,6 +31,7 @@ class VirtualSourceDevice;
 class RadioSourceDevice;
 class RadioInfo;
 class RadioPage;
+class QStackedWidget;
 
 
 /*!
@@ -129,5 +130,62 @@ private slots:
 private:
 	RadioInfo *radio_info;
 };
+
+
+/*!
+	\ingroup SoundDiffusion
+	\brief Source configuration data from configuration file.
+ */
+struct SourceDescription
+{
+	QString descr;
+	QString where;
+	int id;
+	int cid;
+	mutable Page *details;
+};
+Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
+
+
+enum
+{
+	SOURCE_RADIO_MONO = 11001,
+	SOURCE_AUX_MONO = 11002,
+	SOURCE_MULTIMEDIA_MONO = 11003,
+	SOURCE_RADIO_MULTI = 12001,
+	SOURCE_AUX_MULTI = 12002,
+	SOURCE_MULTIMEDIA_MULTI = 12003,
+};
+
+
+/*!
+	\ingroup SoundDiffusion
+	\brief Contains one AudioSource subclass for each configured source, and the button to turn on the source.
+
+	There is a separate %SoundSources and AudioSource subclass instance for each environment; however,
+	source configuration pages (RDS radio details, multimedia source list) are shared by all environments.
+ */
+class SoundSources : public QWidget
+{
+Q_OBJECT
+public:
+	SoundSources(const QString &area, const QList<SourceDescription> &sources);
+
+signals:
+	void pageClosed();
+
+protected:
+	virtual void showEvent(QShowEvent *);
+	virtual void hideEvent(QHideEvent *);
+
+private slots:
+	void sourceCycle();
+	void sourceStateChanged(bool active);
+
+private:
+	QStackedWidget *sources;
+};
+
+
 
 #endif // AUDIOSOURCE_H

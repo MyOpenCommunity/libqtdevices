@@ -25,11 +25,11 @@
 
 #include "bannerpage.h"
 #include "banner.h"
+#include "audiosource.h"
 
 class QDomNode;
 class QLabel;
 class BtButton;
-class QStackedWidget;
 class AmplifierDevice;
 class VirtualAmplifierDevice;
 class VirtualSourceDevice;
@@ -82,50 +82,6 @@ private:
 	BtButton *right_button;
 };
 
-
-/*!
-	\ingroup SoundDiffusion
-	\brief Source configuration data from configuration file.
- */
-struct SourceDescription
-{
-	QString descr;
-	QString where;
-	int id;
-	int cid;
-	mutable Page *details;
-};
-Q_DECLARE_TYPEINFO(SourceDescription, Q_MOVABLE_TYPE);
-
-
-
-/*!
-	\ingroup SoundDiffusion
-	\brief Contains one AudioSource subclass for each configured source, and the button to turn on the source.
-
-	There is a separate %SoundSources and AudioSource subclass instance for each environment; however,
-	source configuration pages (RDS radio details, multimedia source list) are shared by all environments.
- */
-class SoundSources : public QWidget
-{
-Q_OBJECT
-public:
-	SoundSources(const QString &area, const QList<SourceDescription> &sources);
-
-signals:
-	void pageClosed();
-
-protected:
-	virtual void showEvent(QShowEvent *);
-	virtual void hideEvent(QHideEvent *);
-
-private slots:
-	void sourceCycle();
-	void sourceStateChanged(bool active);
-
-private:
-	QStackedWidget *sources;
-};
 
 
 /*!
