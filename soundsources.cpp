@@ -252,6 +252,9 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 		}
 		else
 		{
+			// If the type is Multimedia but the address is not the BTouch one we
+			// load a generic AuxSource combined with a SourceDevice (because the
+			// aux source can manage all the remote commands of a multimedia remote source).
 			if (s.type == SourceDescription::MULTIMEDIA && s.where == source_address)
 			{
 				if (!s.details)
