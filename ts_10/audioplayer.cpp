@@ -28,7 +28,7 @@
 #include "btbutton.h"
 #include "mediaplayer.h"
 #include "hardware_functions.h" // setVolum
-#include "btmain.h"
+#include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
 #include "sounddiffusionpage.h" // showCurrentAmbientPage
 #include "main.h" // MULTIMEDIA
@@ -38,6 +38,7 @@
 #include "multimedia.h"
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"
+#include "displaycontrol.h" // bt_global::display
 
 #include <QFontMetrics>
 #include <QGridLayout>
@@ -106,6 +107,11 @@ void UPnpListManager::handleError(int response, int code)
 	if ((response == XmlResponses::TRACK_SELECTION || response == XmlResponses::INVALID) &&
 			code == XmlError::SERVER_DOWN)
 		emit serverDown();
+
+	// Because the serverDown error can change the current page and hide the screensaver,
+	// we have to restore the normal status of the display.
+	if (bt_global::display->currentState() != DISPLAY_OPERATIVE)
+		bt_global::btmain->makeActive();
 }
 
 void UPnpListManager::nextFile()
