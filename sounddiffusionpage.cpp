@@ -52,7 +52,7 @@ Page *SoundDiffusionPage::sound_diffusion_page = NULL;
 Page *SoundDiffusionPage::alarm_clock_page = NULL;
 Page *SoundAmbientPage::current_ambient_page = NULL;
 
-enum
+enum SourceType
 {
 	SOURCE_RADIO_MONO = 11001,
 	SOURCE_AUX_MONO = 11002,
@@ -61,6 +61,27 @@ enum
 	SOURCE_AUX_MULTI = 12002,
 	SOURCE_MULTIMEDIA_MULTI = 12003
 };
+
+enum AmplifierType
+{
+	AMPLIFIER = 11020,
+	AMPLIFIER_GROUP = 11021,
+	BANN_POWER_AMPLIFIER = 11022,
+};
+
+enum AmbientType
+{
+	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
+	ITEM_AMBIENT_1 = 12021,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_2 = 12022,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_3 = 12023,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_4 = 12024,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_5 = 12025,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_6 = 12026,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_7 = 12027,                    // normal ambient (with a zone)
+	ITEM_AMBIENT_8 = 12028,                    // normal ambient (with a zone)
+};
+
 
 namespace
 {
@@ -119,14 +140,6 @@ void SoundAmbient::connectRightButton(Page *p)
 	connectButtonToPage(right_button, p);
 }
 
-
-
-enum BannerType
-{
-	AMPLIFIER = 11020,
-	AMPLIFIER_GROUP = 11021,
-	BANN_POWER_AMPLIFIER = 11022,
-};
 
 SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
 {
@@ -308,19 +321,6 @@ void SoundAmbientAlarmPage::showPage()
 	BannerPage::showPage();
 }
 
-
-enum Items
-{
-	ITEM_SPECIAL_AMBIENT = 12020,              // special ambient
-	ITEM_AMBIENT_1 = 12021,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_2 = 12022,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_3 = 12023,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_4 = 12024,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_5 = 12025,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_6 = 12026,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_7 = 12027,                    // normal ambient (with a zone)
-	ITEM_AMBIENT_8 = 12028,                    // normal ambient (with a zone)
-};
 
 SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 {
