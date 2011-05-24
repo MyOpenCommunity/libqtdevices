@@ -61,8 +61,7 @@ enum DisplayStatus
 	\ingroup Core
 	\brief The global controller of the properties of the display.
 
-	Controls the status of the display, setting the status using the setState() method or
-	retrieving it using the currentState() one.
+	Controls the status of the display, setting the status using the setState() method.
 	Normally, the freezed status enter after a while that the screen is not touched,
 	but you can prevent this setting the forceOperativeMode(). The method
 	isForcedOperativeMode() can be used to know if the screen was forced.
@@ -161,7 +160,13 @@ public:
 	// set the screensaver and blank screen timeouts in seconds
 	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
 
-	// stop the screen saver but keep the screen frozen if password protection is active.
+	/*!
+		\brief Restore the 'operative' status
+		This method should be used when an action that change the current page
+		is triggered by a spontaneous event and stops the screensaver if running
+		or exit from the blank screen (keeping the screen frozen if password
+		protection is active).
+	*/
 	void makeActive();
 
 	/// Freeze or unfreeze the application
