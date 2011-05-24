@@ -224,17 +224,21 @@ void RadioSource::sourceShowed()
 SoundSources::SoundSources(const QString &source_address, const QString &area, const QList<SourceDescription> &src)
 {
 	QHBoxLayout *l = new QHBoxLayout(this);
-#ifdef LAYOUT_TS_3_5
-	l->setContentsMargins(0, 0, 0, 5);
-#else
-	l->setContentsMargins(10, 0, 17, 10);
-#endif
 	l->setSpacing(10);
 
-	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
-	sources = new QStackedWidget;
+#ifdef LAYOUT_TS_3_5
+	l->setContentsMargins(0, 0, 0, 5);
+#endif
 
+#ifdef LAYOUT_TS_10
+	l->setContentsMargins(10, 0, 17, 10);
+
+	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
+	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
 	l->addWidget(cycle);
+#endif
+
+	sources = new QStackedWidget;
 	l->addWidget(sources);
 
 	foreach (const SourceDescription &s, src)
@@ -281,7 +285,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 		connect(w, SIGNAL(pageClosed()), SIGNAL(pageClosed()));
 	}
 
-	connect(cycle, SIGNAL(clicked()), SLOT(sourceCycle()));
+
 }
 
 void SoundSources::hideEvent(QHideEvent *)
