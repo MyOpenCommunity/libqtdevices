@@ -43,20 +43,20 @@
 AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details) :
 	BannerNew(0)
 {
-	left_button = new StateButton;
-	center_left_button = new StateButton;
-	center_right_button = new StateButton;
-	right_button = new BtButton;
 	details = _details;
 	area = _area;
 	dev = _dev;
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
 
+	left_button = new StateButton;
+	right_button = new BtButton;
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
-	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
-	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
 
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
+	center_left_button = new StateButton;
+	center_right_button = new StateButton;
+	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
+	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
 }
 
 void AudioSource::drawBanner(QWidget *central_widget)
@@ -65,7 +65,7 @@ void AudioSource::drawBanner(QWidget *central_widget)
 	left_button->setOffImage(bt_global::skin->getImage("turn_on"));
 	center_left_button->setOffImage(bt_global::skin->getImage("previous"));
 	center_right_button->setOffImage(bt_global::skin->getImage("next"));
-	initButton(right_button, bt_global::skin->getImage("details"));
+	right_button->setImage(bt_global::skin->getImage("details"));
 
 	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
@@ -107,8 +107,13 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 			return;
 
 		left_button->setStatus(active);
-		emit sourceStateChanged(active);
+		sourceStateChanged(active);
 	}
+}
+
+void AudioSource::sourceStateChanged(bool active)
+{
+	Q_UNUSED(active)
 }
 
 
@@ -130,8 +135,6 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 	drawBanner(center_icon);
-
-	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
 
 void MediaSource::sourceStateChanged(bool active)
@@ -153,8 +156,6 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage 
 	center_left_button->disable();
 	center_right_button->setStatus(StateButton::DISABLED);
 	center_right_button->disable();
-
-	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
 
 void RadioSource::showDetails()

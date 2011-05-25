@@ -49,13 +49,15 @@ public:
 	virtual void sourceShowed() {}
 	virtual void sourceHidden() {}
 
-signals:
-	void sourceStateChanged(bool active);
-
 protected:
 	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
 
+	// The actual drawing of the banner
 	void drawBanner(QWidget *central_widget);
+
+	// An hook called when the status of the source change. The default implementation
+	// does nothing.
+	virtual void sourceStateChanged(bool active);
 
 protected slots:
 	void turnOn();
@@ -100,7 +102,7 @@ public:
 	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
 
 private slots:
-	void sourceStateChanged(bool active);
+	virtual void sourceStateChanged(bool active);
 
 private:
 	TextOnImageLabel *center_icon;
@@ -124,7 +126,7 @@ protected slots:
 	virtual void showDetails();
 
 private slots:
-	void sourceStateChanged(bool active);
+	virtual void sourceStateChanged(bool active);
 
 private:
 	RadioInfo *radio_info;
