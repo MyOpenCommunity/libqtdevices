@@ -166,6 +166,43 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	}
 
 	BannerContent *content = new BannerContent;
+
+#ifdef LAYOUT_TS_3_5
+	// This page has a strange structure: the 'standard' content of the page
+	// must have the normal margins but the line must not. So we cannot use
+	// the buildPage() and we have to reproduce all its functionalities.
+
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 5, 0, 5);
+	main_layout->setSpacing(0);
+	top_widget->setContentsMargins(5, 0, 5, 0);
+	main_layout->addWidget(top_widget);
+
+	main_layout->addSpacing(5);
+	QLabel *line = new QLabel;
+	line->setFixedHeight(3);
+	line->setProperty("noStyle", true);
+	main_layout->addWidget(line);
+	main_layout->addSpacing(5);
+
+	content->setContentsMargins(5, 0, 5, 0);
+	main_layout->addWidget(content, 1);
+
+	__content = content;
+	NavigationBar *nav_bar = new NavigationBar;
+	// Because the NavigationBar uses a fixed geometry, we cannot use the
+	// setContentsMargins method.
+	QVBoxLayout *l = new QVBoxLayout;
+	l->setContentsMargins(5, 0, 5, 0);
+	l->addWidget(nav_bar);
+	main_layout->addLayout(l);
+
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+#else
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
 	main_layout->setContentsMargins(0, 0, 0, 0);
@@ -175,6 +212,8 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 
 	main_layout->addWidget(content, 1);
 	buildPage(main_widget, content, new NavigationBar, getTextChild(conf_node, "descr"), Page::TITLE_HEIGHT);
+#endif
+
 	loadItems(conf_node);
 
 	connect(this, SIGNAL(Closed()), SLOT(clearCurrentAmbient()));
