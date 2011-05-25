@@ -126,8 +126,10 @@ Q_OBJECT
 public:
 	RadioSource(const QString &area, RadioSourceDevice *dev, const QString &description, RadioPage *details);
 
+#ifdef LAYOUT_TS_10
 	virtual void sourceHidden();
 	virtual void sourceShowed();
+#endif
 
 protected slots:
 	virtual void showDetails();

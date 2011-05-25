@@ -224,19 +224,17 @@ void RadioSource::sourceStateChanged(bool active)
 #endif
 }
 
+#ifdef LAYOUT_TS_10
 void RadioSource::sourceHidden()
 {
-#ifdef LAYOUT_TS_10
 	radio_info->isShown(false);
-#endif
 }
 
 void RadioSource::sourceShowed()
 {
-#ifdef LAYOUT_TS_10
 	radio_info->isShown(true);
-#endif
 }
+#endif
 
 
 SoundSources::SoundSources(const QString &source_address, const QString &area, const QList<SourceDescription> &src)
@@ -303,8 +301,6 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 		connect(w, SIGNAL(sourceCycle()), SLOT(sourceCycle()));
 #endif
 	}
-
-
 }
 
 void SoundSources::hideEvent(QHideEvent *)
