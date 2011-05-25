@@ -49,15 +49,22 @@ public:
 	virtual void sourceShowed() {}
 	virtual void sourceHidden() {}
 
+signals:
+	void sourceStateChanged(bool active);
+
+#ifdef LAYOUT_TS_3_5
+	void sourceCycle();
+#endif
+
 protected:
 	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
 
+#ifdef LAYOUT_TS_3_5
+	void drawBanner(const QString &description);
+#else
 	// The actual drawing of the banner
 	void drawBanner(QWidget *central_widget);
-
-	// An hook called when the status of the source change. The default implementation
-	// does nothing.
-	virtual void sourceStateChanged(bool active);
+#endif
 
 protected slots:
 	void turnOn();
@@ -68,8 +75,14 @@ protected:
 	SourceDevice *dev;
 	Page *details;
 
-	StateButton *left_button, *center_left_button, *center_right_button;
+	StateButton *left_button;
 	BtButton *right_button;
+
+#ifdef LAYOUT_TS_3_5
+	BtButton *cycle_button;
+#else
+	StateButton *center_left_button, *center_right_button;
+#endif
 
 private slots:
 	void valueReceivedAudioSource(const DeviceValues &values_list);
@@ -85,9 +98,6 @@ class AuxSource : public AudioSource
 Q_OBJECT
 public:
 	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
-
-private:
-	TextOnImageLabel *center_icon;
 };
 
 
@@ -102,10 +112,7 @@ public:
 	MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details);
 
 private slots:
-	virtual void sourceStateChanged(bool active);
-
-private:
-	TextOnImageLabel *center_icon;
+	void sourceStateChanged(bool active);
 };
 
 
@@ -117,7 +124,7 @@ class RadioSource : public AudioSource
 {
 Q_OBJECT
 public:
-	RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage *details);
+	RadioSource(const QString &area, RadioSourceDevice *dev, const QString &description, RadioPage *details);
 
 	virtual void sourceHidden();
 	virtual void sourceShowed();
@@ -126,10 +133,12 @@ protected slots:
 	virtual void showDetails();
 
 private slots:
-	virtual void sourceStateChanged(bool active);
+	void sourceStateChanged(bool active);
 
+#ifdef LAYOUT_TS_10
 private:
 	RadioInfo *radio_info;
+#endif
 };
 
 

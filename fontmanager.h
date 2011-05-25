@@ -85,8 +85,8 @@ public:
 
 		// TODO, check if it is correct
 		// audio source text
-		AUDIO_SOURCE_TEXT = 1,
-		AUDIO_SOURCE_DESCRIPTION = 1,
+		AUDIO_SOURCE_TEXT = 2,
+		AUDIO_SOURCE_DESCRIPTION = 2,
 		// rds radio
 		RADIO_NAME = TITLE,
 		RADIO_MEMORY_NUMBER = SMALLTEXT,

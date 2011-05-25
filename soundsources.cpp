@@ -53,12 +53,40 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 	connect(left_button, SIGNAL(clicked()), SLOT(turnOn()));
 	connect(right_button, SIGNAL(clicked()), SLOT(showDetails()));
 
+#ifdef LAYOUT_TS_3_5
+	cycle_button = new BtButton(bt_global::skin->getImage("cycle"));
+	connect(cycle_button, SIGNAL(clicked()), SIGNAL(sourceCycle()));
+#else
 	center_left_button = new StateButton;
 	center_right_button = new StateButton;
 	connect(center_left_button, SIGNAL(clicked()), dev, SLOT(prevTrack()));
 	connect(center_right_button, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+#endif
 }
 
+#ifdef LAYOUT_TS_3_5
+void AudioSource::drawBanner(const QString &description)
+{
+	left_button->setOnImage(bt_global::skin->getImage("turned_on"));
+	left_button->setOffImage(bt_global::skin->getImage("turn_on"));
+	right_button->setImage(bt_global::skin->getImage("details"));
+
+	QGridLayout *grid = new QGridLayout(this);
+	grid->setContentsMargins(0, 0, 0, 0);
+	// We set no spacing because we want the text as large as the banner can.
+	grid->setSpacing(0);
+	grid->addWidget(left_button, 0, 0, 2, 1, Qt::AlignBottom);
+
+	QLabel *l = new ScrollingLabel(description);
+	l->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
+	grid->addWidget(l, 0, 1, 1, 1, Qt::AlignHCenter);
+	grid->addWidget(cycle_button, 1, 1, 1, 1, Qt::AlignHCenter);
+	grid->addWidget(right_button, 0, 2, 2, 1, Qt::AlignBottom);
+	grid->setColumnStretch(1, 1);
+	grid->setColumnMinimumWidth(2, right_button->width());
+	right_button->hide();
+}
+#else
 void AudioSource::drawBanner(QWidget *central_widget)
 {
 	left_button->setOnImage(bt_global::skin->getImage("turned_on"));
@@ -79,6 +107,7 @@ void AudioSource::drawBanner(QWidget *central_widget)
 
 	right_button->hide();
 }
+#endif
 
 void AudioSource::turnOn()
 {
@@ -107,34 +136,38 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 			return;
 
 		left_button->setStatus(active);
-		sourceStateChanged(active);
+		emit sourceStateChanged(active);
 	}
-}
-
-void AudioSource::sourceStateChanged(bool active)
-{
-	Q_UNUSED(active)
 }
 
 
 AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description) :
 	AudioSource(area, dev)
 {
-	center_icon = new TextOnImageLabel(0, description);
+#ifdef LAYOUT_TS_3_5
+	drawBanner(description);
+#else
+	TextOnImageLabel *center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 
 	drawBanner(center_icon);
+#endif
 }
 
 
 MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details) :
 	AudioSource(area, dev, details)
 {
-	center_icon = new TextOnImageLabel(0, description);
+#ifdef LAYOUT_TS_3_5
+	drawBanner(description);
+#else
+	TextOnImageLabel *center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 	drawBanner(center_icon);
+#endif
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
 
 void MediaSource::sourceStateChanged(bool active)
@@ -143,9 +176,13 @@ void MediaSource::sourceStateChanged(bool active)
 }
 
 
-RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage *details) :
+RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, const QString &description, RadioPage *details) :
 	AudioSource(area, dev, details)
 {
+#ifdef LAYOUT_TS_3_5
+	drawBanner(description);
+#else
+	Q_UNUSED(description);
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"), area, dev);
 
 	drawBanner(radio_info);
@@ -156,6 +193,8 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage 
 	center_left_button->disable();
 	center_right_button->setStatus(StateButton::DISABLED);
 	center_right_button->disable();
+#endif
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
 
 void RadioSource::showDetails()
@@ -167,6 +206,7 @@ void RadioSource::showDetails()
 void RadioSource::sourceStateChanged(bool active)
 {
 	right_button->setVisible(active);
+#ifdef LAYOUT_TS_10
 	if (active)
 	{
 		center_left_button->setStatus(StateButton::OFF);
@@ -181,16 +221,21 @@ void RadioSource::sourceStateChanged(bool active)
 		center_right_button->setStatus(StateButton::DISABLED);
 		center_right_button->disable();
 	}
+#endif
 }
 
 void RadioSource::sourceHidden()
 {
+#ifdef LAYOUT_TS_10
 	radio_info->isShown(false);
+#endif
 }
 
 void RadioSource::sourceShowed()
 {
+#ifdef LAYOUT_TS_10
 	radio_info->isShown(true);
+#endif
 }
 
 
@@ -201,9 +246,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 
 #ifdef LAYOUT_TS_3_5
 	l->setContentsMargins(0, 0, 0, 5);
-#endif
-
-#ifdef LAYOUT_TS_10
+#else
 	l->setContentsMargins(10, 0, 17, 10);
 
 	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle"));
@@ -217,7 +260,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 	foreach (const SourceDescription &s, src)
 	{
 		SkinContext ctx(s.cid);
-		AudioSource *w = NULL;
+		AudioSource *w = 0;
 
 		if (s.type == SourceDescription::RADIO)
 		{
@@ -225,7 +268,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 			if (!s.details)
 				s.details = new RadioPage(dev);
 
-			w = new RadioSource(area, dev, static_cast<RadioPage*>(s.details));
+			w = new RadioSource(area, dev, s.descr, static_cast<RadioPage*>(s.details));
 		}
 		else
 		{
@@ -256,6 +299,9 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 		sources->addWidget(w);
 		connect(w, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 		connect(w, SIGNAL(pageClosed()), SIGNAL(pageClosed()));
+#ifdef LAYOUT_TS_3_5
+		connect(w, SIGNAL(sourceCycle()), SLOT(sourceCycle()));
+#endif
 	}
 
 
