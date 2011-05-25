@@ -55,8 +55,7 @@ signals:
 protected:
 	AudioSource(const QString &area, SourceDevice *dev, Page *details = NULL);
 
-	void initBanner(const QString &left_on, const QString &left_off, const QString &center_left,
-			const QString &center_right, const QString &right);
+	void drawBanner(QWidget *central_widget);
 
 protected slots:
 	void turnOn();

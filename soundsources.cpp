@@ -59,14 +59,25 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
 }
 
-void AudioSource::initBanner(const QString &left_on, const QString &left_off, const QString &center_left,
-	const QString &center_right, const QString &right)
+void AudioSource::drawBanner(QWidget *central_widget)
 {
-	left_button->setOnImage(left_on);
-	left_button->setOffImage(left_off);
-	center_left_button->setOffImage(center_left);
-	center_right_button->setOffImage(center_right);
-	initButton(right_button, right);
+	left_button->setOnImage(bt_global::skin->getImage("turned_on"));
+	left_button->setOffImage(bt_global::skin->getImage("turn_on"));
+	center_left_button->setOffImage(bt_global::skin->getImage("previous"));
+	center_right_button->setOffImage(bt_global::skin->getImage("next"));
+	initButton(right_button, bt_global::skin->getImage("details"));
+
+	QHBoxLayout *hbox = new QHBoxLayout(this);
+	hbox->setContentsMargins(0, 0, 0, 0);
+	hbox->setSpacing(5);
+	hbox->addWidget(left_button);
+	hbox->addWidget(center_left_button);
+	hbox->addWidget(central_widget);
+	hbox->addWidget(center_right_button);
+	hbox->addWidget(right_button);
+	hbox->addStretch(1);
+
+	right_button->hide();
 }
 
 void AudioSource::turnOn()
@@ -106,19 +117,9 @@ AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &desc
 {
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-
-	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"), bt_global::skin->getImage("previous"),
-		   bt_global::skin->getImage("next"), QString());
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 
-	QHBoxLayout *hbox = new QHBoxLayout(this);
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(5);
-	hbox->addWidget(left_button);
-	hbox->addWidget(center_left_button);
-	hbox->addWidget(center_icon);
-	hbox->addWidget(center_right_button);
-	hbox->addStretch(1);
+	drawBanner(center_icon);
 }
 
 
@@ -127,22 +128,8 @@ MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QS
 {
 	center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
-
-	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"), bt_global::skin->getImage("previous"),
-		   bt_global::skin->getImage("next"), bt_global::skin->getImage("details"));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
-
-	QHBoxLayout *hbox = new QHBoxLayout(this);
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(5);
-	hbox->addWidget(left_button);
-	hbox->addWidget(center_left_button);
-	hbox->addWidget(center_icon);
-	hbox->addWidget(center_right_button);
-	hbox->addWidget(right_button);
-	hbox->addStretch(1);
-
-	right_button->hide();
+	drawBanner(center_icon);
 
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
@@ -158,9 +145,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage 
 {
 	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"), area, dev);
 
-	initBanner(bt_global::skin->getImage("turned_on"), bt_global::skin->getImage("turn_on"),
-		bt_global::skin->getImage("previous"), bt_global::skin->getImage("next"),
-		bt_global::skin->getImage("details"));
+	drawBanner(radio_info);
 
 	center_left_button->setDisabledImage(bt_global::skin->getImage("previous_disabled"));
 	center_right_button->setDisabledImage(bt_global::skin->getImage("next_disabled"));
@@ -169,20 +154,7 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, RadioPage 
 	center_right_button->setStatus(StateButton::DISABLED);
 	center_right_button->disable();
 
-	QHBoxLayout *hbox = new QHBoxLayout(this);
-	hbox->setContentsMargins(0, 0, 0, 0);
-	hbox->setSpacing(5);
-	hbox->addWidget(left_button);
-	hbox->addWidget(center_left_button);
-	hbox->addWidget(radio_info);
-	hbox->addWidget(center_right_button);
-	hbox->addWidget(right_button);
-	hbox->addStretch(1);
-
-	right_button->hide();
-
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
-
 }
 
 void RadioSource::showDetails()
