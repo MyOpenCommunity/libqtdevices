@@ -67,7 +67,6 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 #ifdef LAYOUT_TS_3_5
 void AudioSource::drawBanner(const QString &description)
 {
-	left_button->setOnImage(bt_global::skin->getImage("turned_on"));
 	left_button->setOffImage(bt_global::skin->getImage("turn_on"));
 	right_button->setImage(bt_global::skin->getImage("details"));
 

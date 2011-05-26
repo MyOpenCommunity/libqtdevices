@@ -372,12 +372,24 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 
 	</item>
 	<item>
-		<!-- source banner -->
+		<!--radio source banner -->
 		<cid>11001</cid>
 		<img_details>audiosetting.png</img_details>
-		<img_turn_on>btnon.png</img_turn_on>
-		<img_turned_on>btnon.png</img_turned_on>
+		<img_turn_on>btnradioon.png</img_turn_on>
 	</item>
+	<item>
+		<!--aux source banner -->
+		<cid>11002</cid>
+		<img_details>audiosetting.png</img_details>
+		<img_turn_on>btnauxon.png</img_turn_on>
+	</item>
+	<item>
+		<!--multimedia source banner -->
+		<cid>11003</cid>
+		<img_details>audiosetting.png</img_details>
+		<img_turn_on>btnmmon.png</img_turn_on>
+	</item>
+
 	<item>
 		<!-- amplifier normal ambient -->
 		<!-- uses: on, off
