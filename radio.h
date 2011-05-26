@@ -42,14 +42,10 @@ class RadioInfo : public QLabel
 {
 Q_OBJECT
 public:
-	RadioInfo(const QString &background_image, QString area, RadioSourceDevice *dev);
-
-	void setFrequency(int frequency);
-	void setChannel(int memory_channel);
-	void setRadioName(const QString &rds);
-
+	RadioInfo( QString area, RadioSourceDevice *dev);
 	void isShown(bool sh);
 	void setArea(const QString &area);
+	void setBackgroundImage(const QString &background_image);
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -62,6 +58,10 @@ private:
 	RadioSourceDevice *dev;
 	bool shown;
 	bool screensaver_running;
+
+	void setFrequency(int frequency);
+	void setChannel(int memory_channel);
+	void setRadioName(const QString &rds);
 };
 
 

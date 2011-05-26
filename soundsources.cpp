@@ -182,7 +182,8 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, const QStr
 	drawBanner(description);
 #else
 	Q_UNUSED(description);
-	radio_info = new RadioInfo(bt_global::skin->getImage("source_background"), area, dev);
+	radio_info = new RadioInfo(area, dev);
+	radio_info->setBackgroundImage(bt_global::skin->getImage("source_background"));
 
 	drawBanner(radio_info);
 

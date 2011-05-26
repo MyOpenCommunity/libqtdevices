@@ -61,17 +61,13 @@ namespace
 }
 
 
-RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSourceDevice *_dev)
+RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 {
 	screensaver_running = false;
 	shown = false;
 	area = _area;
 	dev = _dev;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-	QPixmap background = *bt_global::icons_cache.getIcon(background_image);
-
-	setMaximumSize(background.size());
-	setPixmap(background);
 
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(10, 0, 5, 0);
@@ -95,6 +91,14 @@ RadioInfo::RadioInfo(const QString &background_image, QString _area, RadioSource
 
 	connect(bt_global::display, SIGNAL(startscreensaver(Page*)), SLOT(screensaverStarted()));
 	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
+}
+
+void RadioInfo::setBackgroundImage(const QString &background_image)
+{
+	QPixmap background = *bt_global::icons_cache.getIcon(background_image);
+
+	setMaximumSize(background.size());
+	setPixmap(background);
 }
 
 void RadioInfo::setArea(const QString &_area)
@@ -183,8 +187,6 @@ void RadioInfo::setRadioName(const QString &rds)
 }
 
 
-
-
 RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 {
 	dev = _dev;
@@ -223,7 +225,8 @@ QWidget *RadioPage::createContent()
 	QWidget *content = new QWidget;
 
 	// radio description, with frequency and memory station
-	radio_info = new RadioInfo(bt_global::skin->getImage("details_display"), QString(), dev);
+	radio_info = new RadioInfo(QString(), dev);
+	radio_info->setBackgroundImage(bt_global::skin->getImage("details_display"));
 
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));
