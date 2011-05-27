@@ -29,8 +29,8 @@
 #include <QLabel>
 
 class BtButton;
-class QLCDNumber;
 class QLabel;
+class QLCDNumber;
 class RadioSourceDevice;
 
 
@@ -45,7 +45,14 @@ public:
 	RadioInfo( QString area, RadioSourceDevice *dev);
 	void isShown(bool sh);
 	void setArea(const QString &area);
+#ifdef LAYOUT_TS_10
 	void setBackgroundImage(const QString &background_image);
+#endif
+
+#ifdef LAYOUT_TS_3_5
+signals:
+	void nextStation();
+#endif
 
 private slots:
 	void valueReceived(const DeviceValues &values_list);
@@ -54,7 +61,13 @@ private slots:
 
 private:
 	QString area;
-	QLabel *radio_name, *frequency, *channel;
+	QLabel *radio_name, *channel;
+
+#ifdef LAYOUT_TS_3_5
+	QLCDNumber *frequency;
+#else
+	QLabel *frequency;
+#endif
 	RadioSourceDevice *dev;
 	bool shown;
 	bool screensaver_running;
@@ -84,7 +97,9 @@ protected:
 	virtual void hideEvent(QHideEvent *);
 
 private:
+#ifdef LAYOUT_TS_10
 	QWidget *createContent();
+#endif
 
 	// if set, use a fixed 50Hz step for the frequency up/down, do automatic tuning otherwise
 	bool manual;

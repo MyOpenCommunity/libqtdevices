@@ -38,6 +38,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QFile>
+#include <QLCDNumber>
 
 
 #define REQUEST_FREQUENCY_TIME 1000
@@ -69,21 +70,55 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	dev = _dev;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
-	QGridLayout *grid = new QGridLayout(this);
-	grid->setContentsMargins(10, 0, 5, 0);
-	grid->setSpacing(0);
-
 	radio_name = new QLabel;
 	radio_name->setFont(bt_global::font->get(FontManager::RADIO_NAME));
-	grid->addWidget(radio_name, 0, 0, 1, 1, Qt::AlignCenter);
 
 	channel = new QLabel;
 	channel->setFont(bt_global::font->get(FontManager::RADIO_MEMORY_NUMBER));
-	grid->addWidget(channel, 1, 0, 1, 1, Qt::AlignRight);
 
+#ifdef LAYOUT_TS_3_5
+	frequency = new QLCDNumber;
+	frequency->setSegmentStyle(QLCDNumber::Flat);
+	frequency->setSmallDecimalPoint(true);
+	frequency->setNumDigits(6);
+	frequency->setLineWidth(0);
+
+	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle_tracks"));
+	connect(cycle, SIGNAL(clicked()), SIGNAL(nextStation()));
+
+	// The LCDNumber has a primitive API that does not support text of different
+	// sizes. The only way to obtain a big LCDnumber is to force a specific
+	// width; unfortunately to obtain it we have to use a width of 190 pixels but
+	// the screen size is only 240, 230 exluding margins, so we have to overlap
+	// the LCDNumber with the other widgets (channel and cycle).
+
+	int freq_width = 190;
+	// the 10 below are for the margins of the page: 5 on the left, 5 on the right
+	int freq_x = maxWidth() - freq_width - 10;
+	frequency->setParent(this);
+	frequency->setGeometry(freq_x, 0, freq_width, cycle->height());
+
+	QGridLayout *grid = new QGridLayout(this);
+	grid->setContentsMargins(0, 0, 0, 0);
+	grid->setHorizontalSpacing(10);
+	grid->setVerticalSpacing(0);
+	grid->addWidget(cycle, 0, 0);
+	grid->addWidget(channel, 0, 1);
+	grid->addItem(new QSpacerItem(10, 10), 0, 2);
+	grid->addWidget(radio_name, 1, 0, 1, 3, Qt::AlignHCenter);
+	grid->setColumnStretch(2, 1);
+
+#else
 	frequency = new QLabel;
 	frequency->setFont(bt_global::font->get(FontManager::RADIO_STATION));
+
+	QGridLayout *grid = new QGridLayout(this);
+	grid->setContentsMargins(10, 0, 5, 0);
+	grid->setSpacing(0);
+	grid->addWidget(radio_name, 0, 0, 1, 1, Qt::AlignCenter);
+	grid->addWidget(channel, 1, 0, 1, 1, Qt::AlignRight);
 	grid->addWidget(frequency, 1, 0, 1, 1, Qt::AlignLeft);
+#endif
 
 	setFrequency(-1);
 	setChannel(-1);
@@ -93,6 +128,7 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(screensaverStopped()));
 }
 
+#ifdef LAYOUT_TS_10
 void RadioInfo::setBackgroundImage(const QString &background_image)
 {
 	QPixmap background = *bt_global::icons_cache.getIcon(background_image);
@@ -100,6 +136,7 @@ void RadioInfo::setBackgroundImage(const QString &background_image)
 	setMaximumSize(background.size());
 	setPixmap(background);
 }
+#endif
 
 void RadioInfo::setArea(const QString &_area)
 {
@@ -164,18 +201,40 @@ void RadioInfo::isShown(bool sh)
 
 void RadioInfo::setFrequency(const int freq)
 {
+	QString freq_text;
 	if (freq < 0)
-		frequency->setText(QString(tr("FM %1")).arg("-.--"));
+		freq_text = ("-.--");
 	else
-		frequency->setText(QString(tr("FM %1")).arg(freq / 100.0, 0, 'f', 2));
+		freq_text = QString::number(freq / 100.0, 'f', 2);
+
+#ifdef LAYOUT_TS_3_5
+	frequency->display(freq_text);
+#else
+	frequency->setText(QString(tr("FM %1").arg(freq_text));
+#endif
 }
 
 void RadioInfo::setChannel(int memory_channel)
 {
+	QString text;
 	if (memory_channel < 0)
-		channel->setText(QString(tr("Channel: %1")).arg("-"));
+	{
+#ifdef LAYOUT_TS_3_5
+		text = "--:";
+#else
+		text = QString(tr("Channel: %1")).arg("-");
+#endif
+	}
 	else
-		channel->setText(QString(tr("Channel: %1")).arg(memory_channel));
+	{
+#ifdef LAYOUT_TS_3_5
+		text = QString("%1:").arg(memory_channel);
+#else
+		text = QString(tr("Channel: %1")).arg(memory_channel);
+#endif
+	}
+
+	channel->setText(text);
 }
 
 void RadioInfo::setRadioName(const QString &rds)
@@ -194,7 +253,18 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 
+#ifdef LAYOUT_TS_3_5
+	radio_info = new RadioInfo(QString(), dev);
+	QWidget *main_widget = new QWidget;
+	QGridLayout *main_layout = new QGridLayout(main_widget);
+	main_layout->addWidget(radio_info, 0, 0, 1, 4);
+	buildPage(main_widget, nav_bar);
+
+	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
+
+#else
 	buildPage(createContent(), nav_bar, amb);
+#endif
 	memory_number = 0;
 	memory_timer.setInterval(MEMORY_PRESS_TIME);
 	memory_timer.setSingleShot(true);
@@ -220,6 +290,7 @@ void RadioPage::showEvent(QShowEvent *)
 	radio_info->isShown(true);
 }
 
+#ifdef LAYOUT_TS_10
 QWidget *RadioPage::createContent()
 {
 	QWidget *content = new QWidget;
@@ -292,6 +363,7 @@ QWidget *RadioPage::createContent()
 
 	return content;
 }
+#endif
 
 void RadioPage::changeStation(int station_num)
 {
