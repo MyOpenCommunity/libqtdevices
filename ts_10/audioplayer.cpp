@@ -39,6 +39,7 @@
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"
 #include "displaycontrol.h" // bt_global::display
+#include "pagestack.h" // bt_global::page_stack
 
 #include <QFontMetrics>
 #include <QGridLayout>
@@ -188,6 +189,7 @@ QVector<AudioPlayerPage *>AudioPlayerPage::audioPlayerPages()
 AudioPlayerPage::AudioPlayerPage(MediaType t)
 {
 	type = t;
+	popup_mode = false;
 	if (type == AudioPlayerPage::UPNP_FILE)
 	{
 		UPnpListManager* upnp = new UPnpListManager(bt_global::xml_device);
@@ -335,10 +337,24 @@ void AudioPlayerPage::clearLabels()
 	elapsed->setText(" ");
 }
 
+void AudioPlayerPage::showPage()
+{
+	// When we click the back button, the AudioPlayerPage must turn back
+	// to the 'album' of the first 'song' played. This is possible when the
+	// user navigates through the MultimediaFileListPage, which stores and saves
+	// the 'playing context'. But when the reproduction starts from a spontaneous
+	// event (i.e. the local source turned on) we can't save the context, so
+	// the back should return to the previous page, using the page stack.
+	if (popup_mode)
+		bt_global::page_stack.showUserPage(this);
+	Page::showPage();
+}
+
 void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
 {
 	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFilesBackground",
 		"The function must not be called with type UPNP_FILE!");
+	popup_mode = true;
 	FileListManager *lm = static_cast<FileListManager*>(list_manager);
 
 	EntryInfoList entries;
@@ -359,6 +375,7 @@ void AudioPlayerPage::playAudioFile(EntryInfo starting_file, int file_index, int
 	Q_ASSERT_X(type == AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFile",
 		"The function must be called with type UPNP_FILE!");
 
+	popup_mode = false;
 	UPnpListManager *um = static_cast<UPnpListManager*>(list_manager);
 	um->setStartingFile(starting_file);
 	um->setCurrentIndex(file_index);
@@ -385,6 +402,7 @@ void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 
 void AudioPlayerPage::playAudioFiles(EntryInfoList entries, unsigned element)
 {
+	popup_mode = false;
 	FileListManager *lm = static_cast<FileListManager*>(list_manager);
 
 	lm->setList(entries);

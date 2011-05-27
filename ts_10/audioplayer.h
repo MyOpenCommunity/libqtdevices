@@ -104,15 +104,17 @@ signals:
 	void playerExited();
 	void serverDown();
 
-protected:
-	virtual void startPlayback();
-
 public slots:
+	virtual void showPage();
+
 	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);
 
 	void playAudioFiles(QList<QString> files, unsigned element);
 	void playAudioFiles(EntryInfoList entries, unsigned element);
 	void playAudioFilesBackground(QList<QString> files, unsigned element);
+
+protected:
+	virtual void startPlayback();
 
 private:
 	void startMPlayer(QString filename, int time);
@@ -148,6 +150,7 @@ private:
 	int loop_starting_file; // the index of the song used to detect loop
 	int loop_total_time; // the total time used to detect a loop
 	QTime loop_time_counter; // used to count the time elapsed
+	bool popup_mode;
 };
 
 #endif
