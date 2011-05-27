@@ -29,6 +29,7 @@
 #include <QLabel>
 
 class BtButton;
+class StateButton;
 class QLabel;
 class QLCDNumber;
 class RadioSourceDevice;
@@ -106,9 +107,9 @@ private:
 
 	QTimer memory_timer, request_frequency;
 	int memory_number;
-	BtButton *minus_button, *plus_button, *auto_button, *manual_button;
+	BtButton *minus_button, *plus_button;
+	StateButton *auto_button, *manual_button;
 	QButtonGroup button_group;
-	QString manual_off, manual_on, auto_off, auto_on;
 	RadioInfo *radio_info;
 	RadioSourceDevice *dev;
 	static int save_sound_delay;

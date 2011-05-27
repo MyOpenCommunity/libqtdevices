@@ -31,6 +31,7 @@
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "main.h" // SOUND_PATH
 #include "hardware_functions.h" // beep
+#include "state_button.h"
 
 #include <QLabel>
 #include <QDebug>
@@ -303,13 +304,17 @@ QWidget *RadioPage::createContent()
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));
 	plus_button = new BtButton(bt_global::skin->getImage("plus"));
 
-	manual_off = bt_global::skin->getImage("man_off");
-	manual_on = bt_global::skin->getImage("man_on");
-	auto_off = bt_global::skin->getImage("auto_off");
-	auto_on = bt_global::skin->getImage("auto_on");
+	auto_button = new StateButton;
+	auto_button->setOffImage(bt_global::skin->getImage("auto_off"));
+	auto_button->setOnImage(bt_global::skin->getImage("auto_on"));
 
-	auto_button = new BtButton(auto_on);
-	manual_button = new BtButton(manual_off);
+	manual_button = new StateButton;
+	manual_button->setOffImage(bt_global::skin->getImage("man_off"));
+	manual_button->setOnImage(bt_global::skin->getImage("man_on"));
+
+	manual = false;
+	auto_button->setStatus(!manual);
+	manual_button->setStatus(manual);
 
 	connect(auto_button, SIGNAL(clicked()), SLOT(setAuto()));
 	connect(manual_button, SIGNAL(clicked()), SLOT(setManual()));
@@ -358,8 +363,6 @@ QWidget *RadioPage::createContent()
 	main->addWidget(radio_info);
 	main->addLayout(tuning);
 	main->addLayout(memory);
-
-	manual = false;
 
 	return content;
 }
@@ -442,8 +445,8 @@ void RadioPage::setAuto()
 
 	plus_button->setAutoRepeat(false);
 	minus_button->setAutoRepeat(false);
-	manual_button->setImage(manual_off);
-	auto_button->setImage(auto_on);
+	manual_button->setStatus(false);
+	auto_button->setStatus(true);
 }
 
 void RadioPage::setManual()
@@ -455,8 +458,8 @@ void RadioPage::setManual()
 
 	plus_button->setAutoRepeat(true);
 	minus_button->setAutoRepeat(true);
-	manual_button->setImage(manual_on);
-	auto_button->setImage(auto_off);
+	manual_button->setStatus(true);
+	auto_button->setStatus(false);
 }
 
 void RadioPage::nextStation()
