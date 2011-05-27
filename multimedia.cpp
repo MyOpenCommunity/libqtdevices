@@ -292,6 +292,7 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	buildPage(new IconContent, nav_bar, descr);
 	loadItems(config_node);
 
+	upnp_page = 0;
 	play_button = nav_bar->forward_button;
 	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
 	play_button->hide();
