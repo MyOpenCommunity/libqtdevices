@@ -210,7 +210,7 @@ void RadioInfo::setFrequency(const int freq)
 #ifdef LAYOUT_TS_3_5
 	frequency->display(freq_text);
 #else
-	frequency->setText(QString(tr("FM %1").arg(freq_text));
+	frequency->setText(QString(tr("FM %1").arg(freq_text)));
 #endif
 }
 
