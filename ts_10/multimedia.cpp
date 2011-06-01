@@ -125,12 +125,13 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 
 	NavigationBar *nav_bar = new NavigationBar("play_file");
 	buildPage(new IconContent, nav_bar, descr);
-	loadItems(config_node);
-
 	upnp_page = 0;
+
 	play_button = nav_bar->forward_button;
 	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
 	play_button->hide();
+
+	loadItems(config_node);
 }
 
 MultimediaSectionPage::~MultimediaSectionPage()
@@ -223,11 +224,11 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			break;
 		}
 		case PAGE_UPNP:
-			if (!bt_global::xml_device)
-				bt_global::xml_device = new XmlDevice;
-
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
 			{
+				if (!bt_global::xml_device)
+					bt_global::xml_device = new XmlDevice;
+
 				MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
 				upnp_page = f.getFileSelector();
 				BtButton *b = addButton(descr, icon);
