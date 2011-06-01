@@ -114,6 +114,8 @@ private:
 	RadioSourceDevice *dev;
 	static int save_sound_delay;
 
+	void createFrequencyButtons();
+
 private slots:
 	void frequencyUp();
 	void frequencyDown();

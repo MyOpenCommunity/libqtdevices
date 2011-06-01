@@ -378,6 +378,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_turn_on>btnradioon.png</img_turn_on>
 		<!-- radio source page -->
 		<img_cycle_tracks>btncycle.png</img_cycle_tracks>
+		<img_auto_off>btnautooff.png</img_auto_off>
+		<img_auto_on>btnauto.png</img_auto_on>
+		<img_man_off>btnmanoff.png</img_man_off>
+		<img_man_on>btnman.png</img_man_on>
+		<img_mem>btnmem.png</img_mem>
 	</item>
 	<item>
 		<!--aux source banner -->

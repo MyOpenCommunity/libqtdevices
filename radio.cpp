@@ -40,6 +40,7 @@
 #include <QPainter>
 #include <QFile>
 #include <QLCDNumber>
+#include <QStackedLayout>
 
 
 #define REQUEST_FREQUENCY_TIME 1000
@@ -257,12 +258,31 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 #ifdef LAYOUT_TS_3_5
 	radio_info = new RadioInfo(QString(), dev);
 	QWidget *main_widget = new QWidget;
-	QGridLayout *main_layout = new QGridLayout(main_widget);
-	main_layout->addWidget(radio_info, 0, 0, 1, 4);
-	buildPage(main_widget, nav_bar);
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->addWidget(radio_info);
+
 
 	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
 
+	QStackedLayout *stack = new QStackedLayout;
+
+	QWidget *w = new QWidget;
+	QGridLayout *grid = new QGridLayout(w);
+	grid->setSpacing(10);
+	grid->setContentsMargins(0, 0, 0, 0);
+	createFrequencyButtons();
+	BtButton *mem_button = new BtButton(bt_global::skin->getImage("mem"));
+	grid->addWidget(minus_button, 0, 0);
+	grid->addWidget(auto_button, 0, 1);
+	grid->addWidget(manual_button, 0, 2);
+	grid->addWidget(plus_button, 0, 3);
+	grid->addWidget(mem_button, 1, 0, 1, 4, Qt::AlignHCenter);
+
+	stack->addWidget(w);
+	main_layout->addLayout(stack);
+	buildPage(main_widget, nav_bar);
 #else
 	buildPage(createContent(), nav_bar, amb);
 #endif
@@ -291,15 +311,8 @@ void RadioPage::showEvent(QShowEvent *)
 	radio_info->isShown(true);
 }
 
-#ifdef LAYOUT_TS_10
-QWidget *RadioPage::createContent()
+void RadioPage::createFrequencyButtons()
 {
-	QWidget *content = new QWidget;
-
-	// radio description, with frequency and memory station
-	radio_info = new RadioInfo(QString(), dev);
-	radio_info->setBackgroundImage(bt_global::skin->getImage("details_display"));
-
 	// tuning control, manual/auto buttons
 	minus_button = new BtButton(bt_global::skin->getImage("minus"));
 	plus_button = new BtButton(bt_global::skin->getImage("plus"));
@@ -320,7 +333,20 @@ QWidget *RadioPage::createContent()
 	connect(manual_button, SIGNAL(clicked()), SLOT(setManual()));
 	connect(minus_button, SIGNAL(clicked()), SLOT(frequencyDown()));
 	connect(plus_button, SIGNAL(clicked()), SLOT(frequencyUp()));
+}
 
+#ifdef LAYOUT_TS_10
+QWidget *RadioPage::createContent()
+{
+	QWidget *content = new QWidget;
+
+	// radio description, with frequency and memory station
+	radio_info = new RadioInfo(QString(), dev);
+	radio_info->setBackgroundImage(bt_global::skin->getImage("details_display"));
+
+	createFrequencyButtons();
+
+	// Channel buttons
 	BtButton *next_station = new BtButton(bt_global::skin->getImage("next"));
 	BtButton *prev_station = new BtButton(bt_global::skin->getImage("previous"));
 	connect(next_station, SIGNAL(clicked()), SLOT(nextStation()));
