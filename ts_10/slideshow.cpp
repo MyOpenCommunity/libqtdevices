@@ -210,6 +210,7 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
+	show_working = true;
 	showPixmap(QPixmap(), QString());
 	showImage(element);
 	showPage();
@@ -449,6 +450,7 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
+	show_working = true;
 	showPixmap(QPixmap());
 	showImage(element);
 	showWindow();
@@ -491,7 +493,6 @@ void SlideshowWindow::showImage(int index)
 #if TRACK_IMAGES_MEMORY
 	startTrackMemory();
 #endif
-
 
 	if (show_working)
 	{
