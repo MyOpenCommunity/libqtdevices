@@ -22,17 +22,44 @@
 #include "multimedia_filelist.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
-#include "itemlist.h"
 #include "slideshow.h"
 #include "videoplayer.h"
 #include "audioplayer.h"
 #include "mount_watcher.h"
+#include "btbutton.h"
 #ifdef PDF_EXAMPLE
 #include "examples/pdf/pages/pdfpage.h"
 #endif
 
+#include <QButtonGroup>
 #include <QLayout>
 #include <QDebug>
+
+
+MultimediaList::MultimediaList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page)
+{
+
+}
+
+void MultimediaList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
+{
+	// In the current code when we click an audio item the reproduction starts
+	// immediately, and then the audio state machine change its state.
+	// If the beep is on the sound is performed on the mousePressEvents, that
+	// is _before_ the click and if the sound ends after the reproduction is
+	// started, the direct_audio_access of the audio state machine is set
+	// wrongly as false. So, when another event (like a videocall) trigger a
+	// sound, the audio state machine change immediately its state, and the sound
+	// is not played.
+	// The quickly way to resolve this problem is to disable the beep for audio files.
+
+	ItemList::addHorizontalBox(layout, item, id_btn);
+	if (item.data.toInt() == EntryInfo::AUDIO)
+	{
+		BtButton *btn = static_cast<BtButton*>(buttons_group->button(id_btn));
+		btn->enableBeep(false);
+	}
+}
 
 
 MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters, bool mount_enabled) :
@@ -45,7 +72,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(browser, SIGNAL(listReceived(EntryInfoList)), this, SLOT(displayFiles(EntryInfoList)), Qt::QueuedConnection);
 
 	rows_per_page = 4;
-	ItemList *item_list = new ItemList(0, rows_per_page);
+	ItemList *item_list = new MultimediaList(0, rows_per_page);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 
@@ -292,7 +319,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			icons << browse_directory;
 		}
 
-		ItemList::ItemInfo info(f.name, QString(), icons);
+		ItemList::ItemInfo info(f.name, QString(), icons, static_cast<int>(f.type));
 		names_list.append(info);
 		filtered_list.append(f);
 	}
