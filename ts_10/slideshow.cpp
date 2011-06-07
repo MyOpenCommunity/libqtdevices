@@ -28,6 +28,7 @@
 #include "generic_functions.h" // checkImageSize, checkImageMemory, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
 #include "fontmanager.h" // bt_global::font
+#include "mount_watcher.h"
 
 #include <QImageReader>
 #include <QHBoxLayout>
@@ -332,6 +333,8 @@ void SlideshowPage::hideEvent(QHideEvent *)
 		controller->stopSlideshow();
 		paused = true;
 	}
+
+	disconnect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
 }
 
 void SlideshowPage::showEvent(QShowEvent *)
@@ -339,6 +342,20 @@ void SlideshowPage::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
+
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+}
+
+void SlideshowPage::unmounted(const QString &dir)
+{
+	foreach (const QString &image, image_list)
+	{
+		if (image.startsWith(dir))
+		{
+			handleClose();
+			return;
+		}
+	}
 }
 
 void SlideshowPage::displayFullScreen()
@@ -563,6 +580,8 @@ void SlideshowWindow::hideEvent(QHideEvent *)
 		controller->stopSlideshow();
 		paused = true;
 	}
+
+	disconnect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
 }
 
 void SlideshowWindow::showEvent(QShowEvent *)
@@ -570,6 +589,20 @@ void SlideshowWindow::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
+
+	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+}
+
+void SlideshowWindow::unmounted(const QString &dir)
+{
+	foreach (const QString &image, image_list)
+	{
+		if (image.startsWith(dir))
+		{
+			handleClose();
+			return;
+		}
+	}
 }
 
 void SlideshowWindow::displayNoFullScreen()

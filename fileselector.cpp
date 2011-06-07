@@ -88,7 +88,7 @@ void FileSelector::setFiles(const EntryInfoList &files)
 
 void FileSelector::showPage()
 {
-	if (getRootPath().isEmpty())
+	if (getRootPath().isEmpty() || getRootPath() == "/")
 	{
 		// unmounted file system
 		emit Closed();

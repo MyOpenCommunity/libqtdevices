@@ -109,9 +109,8 @@ signals:
 	void imageNotLoaded();
 
 protected:
-	// kills the slideshow timer
+	// kills the slideshow timer and connect/disconnect the mount watcher
 	void hideEvent(QHideEvent *event);
-
 	void showEvent(QShowEvent *event);
 
 private slots:
@@ -121,6 +120,7 @@ private slots:
 	void imageReady();
 	void prevImageUser();
 	void nextImageUser();
+	void unmounted(const QString &dir);
 
 private:
 	QLabel *title;
@@ -169,9 +169,8 @@ signals:
 	void closePage();
 
 protected:
-	// kills the slideshow timer
+	// kills the slideshow timer and connect/disconnect the mount watcher
 	void hideEvent(QHideEvent *event);
-
 	void showEvent(QShowEvent *event);
 
 private slots:
@@ -182,6 +181,7 @@ private slots:
 	void imageReady();
 	void prevImageUser();
 	void nextImageUser();
+	void unmounted(const QString &dir);
 
 private:
 	// used to automatically hide the buttons
