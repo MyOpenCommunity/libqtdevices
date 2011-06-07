@@ -29,6 +29,10 @@
 #include "hardware_functions.h" // dumpSystemMemory
 #include "fontmanager.h" // bt_global::font
 
+#ifdef LAYOUT_TS_10
+#include "mount_watcher.h"
+#endif
+
 #include <QImageReader>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -210,6 +214,7 @@ void SlideshowPage::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
+	show_working = true;
 	showPixmap(QPixmap(), QString());
 	showImage(element);
 	showPage();
@@ -331,6 +336,10 @@ void SlideshowPage::hideEvent(QHideEvent *)
 		controller->stopSlideshow();
 		paused = true;
 	}
+
+#ifdef LAYOUT_TS_10
+	disconnect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+#endif
 }
 
 void SlideshowPage::showEvent(QShowEvent *)
@@ -338,6 +347,22 @@ void SlideshowPage::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
+
+#ifdef LAYOUT_TS_10
+	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+#endif
+}
+
+void SlideshowPage::unmounted(const QString &dir)
+{
+	foreach (const QString &image, image_list)
+	{
+		if (image.startsWith(dir))
+		{
+			handleClose();
+			return;
+		}
+	}
 }
 
 void SlideshowPage::displayFullScreen()
@@ -449,6 +474,7 @@ void SlideshowWindow::displayImages(QList<QString> images, unsigned element)
 {
 	controller->initialize(images.size(), element);
 	image_list = images;
+	show_working = true;
 	showPixmap(QPixmap());
 	showImage(element);
 	showWindow();
@@ -491,7 +517,6 @@ void SlideshowWindow::showImage(int index)
 #if TRACK_IMAGES_MEMORY
 	startTrackMemory();
 #endif
-
 
 	if (show_working)
 	{
@@ -562,6 +587,10 @@ void SlideshowWindow::hideEvent(QHideEvent *)
 		controller->stopSlideshow();
 		paused = true;
 	}
+
+#ifdef LAYOUT_TS_10
+	disconnect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+#endif
 }
 
 void SlideshowWindow::showEvent(QShowEvent *)
@@ -569,6 +598,22 @@ void SlideshowWindow::showEvent(QShowEvent *)
 	if (paused)
 		controller->startSlideshow();
 	paused = false;
+
+#ifdef LAYOUT_TS_10
+	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
+#endif
+}
+
+void SlideshowWindow::unmounted(const QString &dir)
+{
+	foreach (const QString &image, image_list)
+	{
+		if (image.startsWith(dir))
+		{
+			handleClose();
+			return;
+		}
+	}
 }
 
 void SlideshowWindow::displayNoFullScreen()

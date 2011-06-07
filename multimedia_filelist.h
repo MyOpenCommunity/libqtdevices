@@ -24,9 +24,9 @@
 
 #include "fileselector.h"
 #include "generic_functions.h"
+#include "itemlist.h"
 
 class QDomNode;
-class ItemList;
 class SlideshowPage;
 class VideoPlayerPage;
 class AudioPlayerPage;
@@ -35,6 +35,18 @@ class NavigationBar;
 #ifdef PDF_EXAMPLE
 class PdfPage;
 #endif
+
+
+
+class MultimediaList : public ItemList
+{
+Q_OBJECT
+public:
+	MultimediaList(QWidget *parent, int rows_per_page);
+
+protected:
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
+};
 
 
 

@@ -215,6 +215,7 @@ public:
 private slots:
 	void valueReceived(const DeviceValues &device_values);
 	void vctValueReceived(const DeviceValues &device_values); // Values received from the VCT device (if present)
+	void restoreVolume();
 
 	void audioStateChanged(int new_state, int old_state);
 	void reenableLocalAmplifier();
@@ -222,6 +223,7 @@ private slots:
 private:
 	VirtualAmplifierDevice *dev;
 	bool state;
+	bool B5_arrived;
 	int freezed_level; // the (scs) amplifier level, used when we have to freeze the current level and restore it later.
 	int level; // the current (scs) level of the amplifier
 };
