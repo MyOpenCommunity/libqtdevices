@@ -26,6 +26,8 @@
 
 #include <QTimer>
 #include <QLabel>
+#include <QList>
+
 
 class BtButton;
 class StateButton;
@@ -114,7 +116,9 @@ private:
 	RadioSourceDevice *dev;
 	static int save_sound_delay;
 
+	// Helper functions to share code between ts3 and ts10.
 	void createFrequencyButtons();
+	QList<BtButton*> createMemoryButtons();
 
 private slots:
 	void frequencyUp();
