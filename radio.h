@@ -33,6 +33,7 @@ class BtButton;
 class StateButton;
 class QLCDNumber;
 class RadioSourceDevice;
+class QStackedLayout;
 
 
 /*!
@@ -120,6 +121,10 @@ private:
 	void createFrequencyButtons();
 	QList<BtButton*> createMemoryButtons();
 
+#ifdef LAYOUT_TS_3_5
+	QStackedLayout *buttons_stack;
+#endif
+
 private slots:
 	void frequencyUp();
 	void frequencyDown();
@@ -147,6 +152,11 @@ private slots:
 	 * \brief Changes the state to manual search
 	 */
 	void setManual();
+
+#ifdef LAYOUT_TS_3_5
+	void showMemoryButtons();
+	void backClick();
+#endif
 };
 
 #endif // RADIO_H

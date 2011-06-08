@@ -273,23 +273,49 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 
 	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
 
-	QStackedLayout *stack = new QStackedLayout;
+	buttons_stack = new QStackedLayout;
+	main_layout->addLayout(buttons_stack);
 
-	QWidget *w = new QWidget;
-	QGridLayout *grid = new QGridLayout(w);
-	grid->setSpacing(10);
-	grid->setContentsMargins(0, 0, 0, 0);
+	QWidget *w1 = new QWidget;
+	buttons_stack->addWidget(w1);
+	QGridLayout *grid_frequency = new QGridLayout(w1);
+	grid_frequency->setSpacing(10);
+	grid_frequency->setContentsMargins(0, 0, 0, 0);
 	createFrequencyButtons();
 	BtButton *mem_button = new BtButton(bt_global::skin->getImage("mem"));
-	grid->addWidget(minus_button, 0, 0);
-	grid->addWidget(auto_button, 0, 1);
-	grid->addWidget(manual_button, 0, 2);
-	grid->addWidget(plus_button, 0, 3);
-	grid->addWidget(mem_button, 1, 0, 1, 4, Qt::AlignHCenter);
+	connect(mem_button, SIGNAL(clicked()), SLOT(showMemoryButtons()));
+	grid_frequency->addWidget(minus_button, 0, 0);
+	grid_frequency->addWidget(auto_button, 0, 1);
+	grid_frequency->addWidget(manual_button, 0, 2);
+	grid_frequency->addWidget(plus_button, 0, 3);
+	grid_frequency->addWidget(mem_button, 1, 0, 1, 4, Qt::AlignHCenter);
 
-	stack->addWidget(w);
-	main_layout->addLayout(stack);
+	QWidget *w2 = new QWidget;
+	buttons_stack->addWidget(w2);
+	QGridLayout *grid_memory = new QGridLayout(w2);
+	grid_memory->setSpacing(10);
+	grid_memory->setContentsMargins(0, 0, 0, 0);
+	int row = 0;
+	int column = 0;
+	foreach (BtButton *b, createMemoryButtons())
+	{
+		grid_memory->addWidget(b, row, column++);
+		if (column > 2)
+		{
+			column = 0;
+			++row;
+		}
+	}
+	BtButton *cancel_button = new BtButton(bt_global::skin->getImage("cancel"));
+	connect(cancel_button, SIGNAL(clicked()), SLOT(backClick()));
+	grid_memory->addWidget(cancel_button);
+
 	buildPage(main_widget, nav_bar);
+	// Cancel the standard implementation of the backClick and add the custom
+	// implementation required to handle properly the buttons_stack
+	disconnect(nav_bar, SIGNAL(backClick()), this, 0);
+	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
+
 #else
 	buildPage(createContent(), nav_bar, amb);
 #endif
@@ -303,6 +329,23 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	connect(&request_frequency, SIGNAL(timeout()), SLOT(requestFrequency()));
 }
 
+#ifdef LAYOUT_TS_3_5
+
+void RadioPage::showMemoryButtons()
+{
+	buttons_stack->setCurrentIndex(1);
+}
+
+void RadioPage::backClick()
+{
+	if (buttons_stack->currentIndex() == 0)
+		emit Closed();
+	else
+		buttons_stack->setCurrentIndex(0);
+}
+
+#endif
+
 void RadioPage::setArea(const QString &area)
 {
 	radio_info->setArea(area);
@@ -315,6 +358,12 @@ void RadioPage::hideEvent(QHideEvent *)
 
 void RadioPage::showEvent(QShowEvent *)
 {
+	// Always show the frequency buttons (this code is required when we force
+	// the exit from the page, i.e. when the screensaver with the special page
+	// starts).
+#ifdef LAYOUT_TS_3_5
+	buttons_stack->setCurrentIndex(0);
+#endif
 	radio_info->isShown(true);
 }
 
@@ -359,6 +408,7 @@ QList<BtButton*> RadioPage::createMemoryButtons()
 	connect(button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
 	return buttons;
 }
+
 
 #ifdef LAYOUT_TS_10
 QWidget *RadioPage::createContent()
