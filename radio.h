@@ -55,6 +55,9 @@ signals:
 	void nextStation();
 #endif
 
+protected:
+	virtual QSize sizeHint() const;
+
 private slots:
 	void valueReceived(const DeviceValues &values_list);
 	void screensaverStarted();

@@ -88,7 +88,7 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle_tracks"));
 	connect(cycle, SIGNAL(clicked()), SIGNAL(nextStation()));
 
-	// The LCDNumber has a primitive API that does not support text of different
+	// The LCDNumber has an old API that does not support text of different
 	// sizes. The only way to obtain a big LCDnumber is to force a specific
 	// width; unfortunately to obtain it we have to use a width of 190 pixels but
 	// the screen size is only 240, 230 exluding margins, so we have to overlap
@@ -239,6 +239,13 @@ void RadioInfo::setChannel(int memory_channel)
 	channel->setText(text);
 }
 
+QSize RadioInfo::sizeHint() const
+{
+	// The QLabel does not use the layout sizeHint as its sizeHint, so we force
+	// to do that.
+	return layout()->sizeHint();
+}
+
 void RadioInfo::setRadioName(const QString &rds)
 {
 	if (rds.isEmpty())
@@ -262,7 +269,6 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->addWidget(radio_info);
-
 
 	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
 
