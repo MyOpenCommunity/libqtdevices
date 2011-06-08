@@ -41,6 +41,7 @@
 #include <QFile>
 #include <QLCDNumber>
 #include <QStackedLayout>
+#include <QButtonGroup>
 
 
 #define REQUEST_FREQUENCY_TIME 1000
@@ -368,24 +369,24 @@ QWidget *RadioPage::createContent()
 	tuning->addWidget(composeButtons(auto_button, manual_button), 0, 4);
 
 	// memory numbers buttons
-	QList<BtButton *> buttons;
 	QHBoxLayout *memory = new QHBoxLayout;
 	memory->setContentsMargins(0, 0, 0, 0);
 	memory->setSpacing(10);
 	memory->addStretch(1);
+
+	QButtonGroup *button_group = new QButtonGroup(this);
 	for (int i = 0; i < 5; ++i)
 	{
 		BtButton *b = new BtButton(bt_global::skin->getImage(QString("num_%1").arg(i + 1)));
-		buttons << b;
 		// Each button must be associated with the memory location, which go 1-5 instead of 0-4
-		button_group.addButton(b, i + 1);
+		button_group->addButton(b, i + 1);
 		memory->addWidget(b);
 	}
 	// below it's not right. If the user presses the button for a long time, the station is saved.
 	// On click, change memory station
-	connect(&button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
-	connect(&button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
-	connect(&button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
+	connect(button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
+	connect(button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
+	connect(button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
 	memory->addStretch(1);
 
 	// add everything to layout

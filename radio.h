@@ -24,13 +24,11 @@
 
 #include "page.h"
 
-#include <QButtonGroup>
 #include <QTimer>
 #include <QLabel>
 
 class BtButton;
 class StateButton;
-class QLabel;
 class QLCDNumber;
 class RadioSourceDevice;
 
@@ -112,7 +110,6 @@ private:
 	int memory_number;
 	BtButton *minus_button, *plus_button;
 	StateButton *auto_button, *manual_button;
-	QButtonGroup button_group;
 	RadioInfo *radio_info;
 	RadioSourceDevice *dev;
 	static int save_sound_delay;
