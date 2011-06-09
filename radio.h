@@ -49,6 +49,8 @@ public:
 	void setArea(const QString &area);
 #ifdef LAYOUT_TS_10
 	void setBackgroundImage(const QString &background_image);
+#else
+	void showCycleButton(bool show);
 #endif
 
 #ifdef LAYOUT_TS_3_5
@@ -70,6 +72,7 @@ private:
 
 #ifdef LAYOUT_TS_3_5
 	QLCDNumber *frequency;
+	BtButton *cycle;
 #else
 	QLabel *frequency;
 #endif

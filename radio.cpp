@@ -86,7 +86,7 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	frequency->setNumDigits(6);
 	frequency->setLineWidth(0);
 
-	BtButton *cycle = new BtButton(bt_global::skin->getImage("cycle_tracks"));
+	cycle = new BtButton(bt_global::skin->getImage("cycle_tracks"));
 	connect(cycle, SIGNAL(clicked()), SIGNAL(nextStation()));
 
 	// The LCDNumber has an old API that does not support text of different
@@ -104,12 +104,16 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(0, 0, 0, 0);
 	grid->setHorizontalSpacing(10);
-	grid->setVerticalSpacing(0);
+	grid->setVerticalSpacing(5);
 	grid->addWidget(cycle, 0, 0);
 	grid->addWidget(channel, 0, 1);
 	grid->addItem(new QSpacerItem(10, 10), 0, 2);
 	grid->addWidget(radio_name, 1, 0, 1, 3, Qt::AlignHCenter);
 	grid->setColumnStretch(2, 1);
+
+	// To have a fixed layout when the cycle button is hide
+	grid->setColumnMinimumWidth(0, cycle->width());
+	grid->setRowMinimumHeight(0, cycle->height());
 
 #else
 	frequency = new QLabel;
@@ -139,6 +143,12 @@ void RadioInfo::setBackgroundImage(const QString &background_image)
 	setMaximumSize(background.size());
 	setPixmap(background);
 }
+#else
+void RadioInfo::showCycleButton(bool show)
+{
+	cycle->setVisible(show);
+}
+
 #endif
 
 void RadioInfo::setArea(const QString &_area)
@@ -266,15 +276,30 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 #ifdef LAYOUT_TS_3_5
 	radio_info = new RadioInfo(QString(), dev);
 	QWidget *main_widget = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
-	main_layout->setSpacing(0);
+
+	QGridLayout *main_layout = new QGridLayout(main_widget);
+	main_layout->setSpacing(5);
 	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->addWidget(radio_info);
+
+	QLabel *title_label = new QLabel(title);
+	title_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+
+	QLabel *ambient_label = new QLabel;
+	ambient_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
+	// The label for the ambient has a text only in the sounddiffusion
+	// multichannel. Because we want a fixed layout for both cases, we set
+	// the min height for the row as the sizeHint height of the label (that is
+	// equal to the height of the label with some text inside).
+	main_layout->setRowMinimumHeight(1, ambient_label->sizeHint().height());
+
+	main_layout->addWidget(title_label, 0, 0, 1, 1, Qt::AlignHCenter);
+	main_layout->addWidget(ambient_label, 1, 0, 1, 1, Qt::AlignHCenter);
+	main_layout->addWidget(radio_info, 2, 0);
 
 	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
 
 	buttons_stack = new QStackedLayout;
-	main_layout->addLayout(buttons_stack);
+	main_layout->addLayout(buttons_stack, 3, 0);
 
 	QWidget *w1 = new QWidget;
 	buttons_stack->addWidget(w1);
@@ -333,6 +358,7 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 
 void RadioPage::showMemoryButtons()
 {
+	radio_info->showCycleButton(false);
 	buttons_stack->setCurrentIndex(1);
 }
 
@@ -341,7 +367,10 @@ void RadioPage::backClick()
 	if (buttons_stack->currentIndex() == 0)
 		emit Closed();
 	else
+	{
+		radio_info->showCycleButton(true);
 		buttons_stack->setCurrentIndex(0);
+	}
 }
 
 #endif
@@ -362,6 +391,7 @@ void RadioPage::showEvent(QShowEvent *)
 	// the exit from the page, i.e. when the screensaver with the special page
 	// starts).
 #ifdef LAYOUT_TS_3_5
+	radio_info->showCycleButton(true);
 	buttons_stack->setCurrentIndex(0);
 #endif
 	radio_info->isShown(true);
