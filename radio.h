@@ -91,7 +91,7 @@ class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	RadioPage(RadioSourceDevice *dev, const QString &amb = tr("RDS Radio"));
+	RadioPage(RadioSourceDevice *dev, const QString &title = tr("RDS Radio"));
 
 	// The page is shared between different areas, so we need to set the area
 	// every time that it is shown.

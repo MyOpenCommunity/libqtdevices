@@ -256,7 +256,7 @@ void RadioInfo::setRadioName(const QString &rds)
 }
 
 
-RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
+RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 {
 	dev = _dev;
 	NavigationBar *nav_bar = new NavigationBar;
@@ -317,7 +317,7 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &amb)
 	connect(nav_bar, SIGNAL(backClick()), SLOT(backClick()));
 
 #else
-	buildPage(createContent(), nav_bar, amb);
+	buildPage(createContent(), nav_bar, title);
 #endif
 	memory_number = 0;
 	memory_timer.setInterval(MEMORY_PRESS_TIME);
