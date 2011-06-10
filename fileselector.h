@@ -109,6 +109,7 @@ private:
 
 	WaitLabel *working;
 	EntryInfoList files_list;
+	bool mounted_filesystem;
 };
 
 

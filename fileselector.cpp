@@ -51,6 +51,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(browser, SIGNAL(emptyDirectory()), SLOT(emptyDirectory()));
 	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
+	mounted_filesystem = true;
 #ifdef BT_HARDWARE_TS_10
 	// since this checks the root file path, it's OK to use it for all instances
 	connect(&MountWatcher::getWatcher(), SIGNAL(directoryUnmounted(const QString &, MountType)),
@@ -88,11 +89,8 @@ void FileSelector::setFiles(const EntryInfoList &files)
 
 void FileSelector::showPage()
 {
-	if (getRootPath().isEmpty() || getRootPath() == "/")
-	{
-		// unmounted file system
+	if (!mounted_filesystem)
 		emit Closed();
-	}
 	else
 	{
 		ScrollablePage::showPage();
@@ -180,6 +178,7 @@ void FileSelector::directoryChangeError()
 
 void FileSelector::setRootPath(const QString &start_path)
 {
+	mounted_filesystem = !start_path.isEmpty();
 	browser->setRootPath(start_path.split("/", QString::SkipEmptyParts));
 	pages_indexes.clear();
 	files_list.clear();
