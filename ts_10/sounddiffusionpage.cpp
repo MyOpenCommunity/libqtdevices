@@ -50,7 +50,7 @@
 
 
 #define TEMPORARY_OFF_TIMEOUT 1000
-#define RESTORE_VOLUME 900000
+#define RESTORE_VOLUME_SECS 900
 
 bool SoundDiffusionPage::is_multichannel = false;
 Page *SoundDiffusionPage::sound_diffusion_page = NULL;
@@ -653,8 +653,10 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 		//  We want the same behaviour than the actual amplifier
 		const int scs_silenced_level = 1;
 		dev->updateVolume(scs_silenced_level);
-		B5_arrived = false;
-		QTimer::singleShot(RESTORE_VOLUME, this, SLOT(restoreVolume()));
+		// If not arrived the frame that close the videodoorentry call, we have to wait 15 minutes (like the others amplifiers),
+		// after which we restore the volume of the local amplifier.
+		vct_end_call_frame = false;
+		QTimer::singleShot(RESTORE_VOLUME_SECS * 1000, this, SLOT(restoreVolume()));
 
 		// The freezed_level is used both to save and restore the volume of the
 		// local amplifier and to mark the "silenced state".
@@ -675,14 +677,14 @@ void LocalAmplifier::vctValueReceived(const DeviceValues &values_list)
 			bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(freezed_level));
 			dev->updateVolume(freezed_level);
 		}
-		B5_arrived = true;
+		vct_end_call_frame = true;
 		freezed_level = -1;
 	}
 }
 
 void LocalAmplifier::restoreVolume()
 {
-	if (!B5_arrived)
+	if (!vct_end_call_frame)
 	{
 		if (bt_global::audio_states->currentState() != AudioStates::PLAY_DIFSON)
 		{
@@ -694,7 +696,7 @@ void LocalAmplifier::restoreVolume()
 			bt_global::audio_states->setLocalAmplifierVolume(scsToLocalVolume(freezed_level));
 			dev->updateVolume(freezed_level);
 		}
-		B5_arrived = true;
+		vct_end_call_frame = true;
 		freezed_level = -1;
 	}
 }
