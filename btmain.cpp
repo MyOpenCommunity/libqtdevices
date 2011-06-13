@@ -82,7 +82,7 @@
 #define ACTIVITIES_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
 
-#if LAYOUT_TS_3_5
+#ifdef CONFIG_TS_3_5
 #define TS_NUM_BASE_ADDRESS 0x300
 #else
 #define TS_NUM_BASE_ADDRESS 0x700
@@ -98,7 +98,6 @@ namespace
 		if (!n.isNull())
 			dest = n.text();
 	}
-
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
 
@@ -496,7 +495,7 @@ void BtMain::loadGlobalConfig()
 
 	bool ok;
 	int num = getElement(scs_node, "coordinate_scs/diag_addr").text().toInt(&ok, 16);
-	if (ok && (num - TS_NUM_BASE_ADDRESS >= 0))
+	if (ok && (num - TS_NUM_BASE_ADDRESS >= 0 && num - TS_NUM_BASE_ADDRESS < 100))
 		(*config)[TS_NUMBER] = QString::number(num - TS_NUM_BASE_ADDRESS);
 	else
 	{
