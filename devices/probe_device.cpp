@@ -222,7 +222,7 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case PROT_ANTIFREEZE:
 		if (where_full[0] == '#')
 			break;
-		if (local_status != ST_OFF && local_status != ST_PROTECTION)
+		if (local_status != ST_OFF)
 			values_list[DIM_STATUS] = status = ST_PROTECTION;
 		break;
 	case PROT_THERMAL:
