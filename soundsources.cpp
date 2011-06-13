@@ -33,6 +33,9 @@
 #include "multimedia_filelist.h"
 #include "multimedia.h"
 #include "radio.h" // RadioPage
+#ifdef LAYOUT_TS_3_5
+#include "aux.h" // AuxPage
+#endif
 
 #include <QDomNode>
 #include <QStackedWidget>
@@ -139,20 +142,30 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 	}
 }
 
+#ifdef LAYOUT_TS_3_5
+AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description, Page *details) :
+	AudioSource(area, dev, details)
+{
+	drawBanner(description);
+	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
+}
 
+void AuxSource::sourceStateChanged(bool active)
+{
+	right_button->setVisible(active);
+}
+#else
 AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description) :
 	AudioSource(area, dev)
 {
-#ifdef LAYOUT_TS_3_5
-	drawBanner(description);
-#else
 	TextOnImageLabel *center_icon = new TextOnImageLabel(0, description);
 	center_icon->setFont(bt_global::font->get(FontManager::AUDIO_SOURCE_TEXT));
 	center_icon->setBackgroundImage(bt_global::skin->getImage("source_background"));
 
 	drawBanner(center_icon);
-#endif
+
 }
+#endif
 
 
 MediaSource::MediaSource(const QString &area, VirtualSourceDevice *dev, const QString &description, Page *details) :
@@ -289,8 +302,13 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 			else
 			{
 				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
-
+#ifdef LAYOUT_TS_3_5
+				if (!s.details)
+					s.details = new AuxPage(dev, s.descr);
+				w = new AuxSource(area, dev, s.descr, s.details);
+#else
 				w = new AuxSource(area, dev, s.descr);
+#endif
 			}
 		}
 

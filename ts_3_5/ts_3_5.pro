@@ -53,12 +53,14 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 
 # Add SOURCES and HEADERS with TS 3.5''-specific source files
 
-HEADERS += displaypage.h \
+HEADERS +=  aux.h \
+	displaypage.h \
 	brightnesspage.h \
 	scenevomanager.h \
 	settings.h
 
-SOURCES += displaypage.cpp \
+SOURCES += aux.cpp \
+	displaypage.cpp \
 	brightnesspage.cpp \
 	scenevomanager.cpp \
 	settings.cpp

@@ -97,7 +97,16 @@ class AuxSource : public AudioSource
 {
 Q_OBJECT
 public:
+#ifdef LAYOUT_TS_3_5
+	AuxSource(const QString &area, SourceDevice *dev, const QString &description,  Page *details);
+#else
 	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
+#endif
+
+#ifdef LAYOUT_TS_3_5
+private slots:
+	void sourceStateChanged(bool active);
+#endif
 };
 
 
