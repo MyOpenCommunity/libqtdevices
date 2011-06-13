@@ -92,12 +92,11 @@ RadioInfo::RadioInfo(QString _area, RadioSourceDevice *_dev)
 	// The LCDNumber has an old API that does not support text of different
 	// sizes. The only way to obtain a big LCDnumber is to force a specific
 	// width; unfortunately to obtain it we have to use a width of 190 pixels but
-	// the screen size is only 240, 230 exluding margins, so we have to overlap
+	// the screen size is only 240 (ignoring margins) so we have to overlap
 	// the LCDNumber with the other widgets (channel and cycle).
 
 	int freq_width = 190;
-	// the 10 below are for the margins of the page: 5 on the left, 5 on the right
-	int freq_x = maxWidth() - freq_width - 10;
+	int freq_x = maxWidth() - freq_width;
 	frequency->setParent(this);
 	frequency->setGeometry(freq_x, 0, freq_width, cycle->height());
 
@@ -279,7 +278,7 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 
 	QGridLayout *main_layout = new QGridLayout(main_widget);
 	main_layout->setSpacing(5);
-	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setContentsMargins(0, 0, 0, 8);
 
 	QLabel *title_label = new QLabel(title);
 	title_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
@@ -299,6 +298,8 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 	connect(radio_info, SIGNAL(nextStation()), SLOT(nextStation()));
 
 	buttons_stack = new QStackedLayout;
+	buttons_stack->setContentsMargins(0, 0, 0, 0);
+
 	main_layout->addLayout(buttons_stack, 3, 0);
 
 	QWidget *w1 = new QWidget;
