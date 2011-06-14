@@ -149,8 +149,12 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	}
 	else
 	{
+#ifdef LAYOUT_TS_3_5
+		buildPage();
+#else
 		buildPage(getTextChild(config_node, "descr"));
 		layout()->setContentsMargins(13, 5, 25, 18);
+#endif
 	}
 
 
