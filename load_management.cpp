@@ -245,6 +245,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 	QLabel *label = new QLabel(text);
 
 #ifdef LAYOUT_TS_3_5
+	label->setAlignment(Qt::AlignCenter);
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(accept()));
@@ -252,6 +253,7 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 
 	content = label;
 #else
+	label->setAlignment(Qt::AlignHCenter);
 	NavigationBar *nav_bar = new NavigationBar;
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
@@ -273,7 +275,6 @@ ConfirmationPage::ConfirmationPage(const QString &text)
 
 	label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	label->setWordWrap(true);
-	label->setAlignment(Qt::AlignHCenter);
 	label->setIndent(5);
 
 	buildPage(content, nav_bar, QString());
@@ -290,14 +291,16 @@ LoadDataContent::LoadDataContent(int _currency_decimals, int _rate_id)
 	current_value = 0;
 
 	first_period = new Bann2Buttons;
-	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("reset"), tr("date/time"));
+	first_period->initBanner(QString(), bt_global::skin->getImage("empty_background"),
+		bt_global::skin->getImage("reset"), tr("date/time"));
 	first_period->setCentralText("---");
 	first_period_value = 0;
 	connect(first_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
 	mapper.setMapping(first_period, FIRST_PERIOD);
 
 	second_period = new Bann2Buttons;
-	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"), bt_global::skin->getImage("reset"), tr("date/time"));
+	second_period->initBanner(QString(), bt_global::skin->getImage("empty_background"),
+		bt_global::skin->getImage("reset"), tr("date/time"));
 	second_period->setCentralText("---");
 	second_period_value = 0;
 	connect(second_period, SIGNAL(rightClicked()), &mapper, SLOT(map()));
@@ -466,6 +469,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	vlayout->addWidget(top);
 	vlayout->addWidget(content, 1, Qt::AlignHCenter);
 
+#ifdef LAYOUT_TS_10
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 	buttons_layout->addStretch(2);
 	if (isRateEnabled(config_node))
@@ -475,7 +479,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 		buttons_layout->addWidget(currency_button, 1, Qt::AlignCenter);
 	}
 	vlayout->addLayout(buttons_layout);
-
+#endif
 	buildPage(container, nav_bar, "", 0);
 }
 

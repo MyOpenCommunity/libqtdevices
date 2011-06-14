@@ -594,4 +594,31 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_link_icon>appLoadManagement.png</img_link_icon>
 	</item>
 	<!-- End Energy management items -->
+
+	<!-- Start Load management items -->
+	<item>
+		<!-- Load management page & Load data page -->
+		<!-- uses: back, ok -->
+		<cid>18000</cid>
+		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
+		<img_empty_background>empty_180.png</img_empty_background>
+		<img_reset>btnReset.png</img_reset>
+		<img_currency>currency.png</img_currency>
+	</item>
+	<item>
+		<!-- banner with central unit & deactivation time page -->
+		<!-- uses: info, plus, minus -->
+		<cid>18001</cid>
+		<img_on>btnOnret.png</img_on>
+		<img_not_forced>btnLoadManAb.png</img_not_forced>
+		<img_forced>btnLoadManDis.png</img_forced>
+		<img_load>LoadManagement.png</img_load>
+	</item>
+	<item>
+		<!-- banner without central unit -->
+		<!-- uses: info -->
+		<cid>18002</cid>
+		<img_load>LoadManagement.png</img_load>
+	</item>
+	<!-- End Load management items -->
 </style>
