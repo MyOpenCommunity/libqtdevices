@@ -93,6 +93,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>13</cid>
 		<img_link_icon>appant.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Energy data -->
+		<cid>7</cid>
+		<img_link_icon>energy_data.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
@@ -505,4 +510,60 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_zone>imgzona8.png</img_zone>
 	</item>
 	<!-- End Antintrusion items -->
+
+	<!-- Start Energy data items -->
+	<item>
+		<!-- Energy data page -->
+		<cid>7000</cid>
+		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
+		<img_select>arrrg.png</img_select>
+		<!-- Energy cost page -->
+		<!-- uses: plus, minus, ok-->
+		<img_cost_electricity>electricity.png</img_cost_electricity>
+		<img_cost_water>water.png</img_cost_water>
+		<img_cost_dhw>dhw.png</img_cost_dhw>
+		<img_cost_gas>gas.png</img_cost_gas>
+		<img_cost_conditioning>heating_cooling.png</img_cost_conditioning>
+		<!-- Energy interface page -->
+		<img_empty>empty.png</img_empty>
+		<!-- Energy View -->
+		<!-- uses: cycle -->
+		<img_fast_forward>btnforward.png</img_fast_forward>
+		<img_fast_backward>btnbackward.png</img_fast_backward>
+		<img_bg_banner>empty_180.png</img_bg_banner>
+		<img_graph>chart.png</img_graph>
+		<img_currency>currency.png</img_currency>
+		<img_table>table.png</img_table>
+	</item>
+	<item>
+		<!-- Energy type: electricity -->
+		<cid>7001</cid>
+		<img_energy_type>electricity.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy type: water -->
+		<cid>7002</cid>
+		<img_energy_type>water.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy type: gas -->
+		<cid>7003</cid>
+		<img_energy_type>gas.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy type: dhw -->
+		<cid>7004</cid>
+		<img_energy_type>dhw.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy type: heating/cooling -->
+		<cid>7005</cid>
+		<img_energy_type>heating_cooling.png</img_energy_type>
+	</item>
+	<item>
+		<!-- Energy type: custom -->
+		<cid>7006</cid>
+		<img_energy_type>EnergyData_custom.png</img_energy_type>
+	</item>
+	<!-- End Energy data items -->
 </style>

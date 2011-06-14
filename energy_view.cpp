@@ -61,34 +61,6 @@ namespace
 
 namespace
 {
-	QHash<QString, QPixmap> cache;
-
-	BtButton *getTrimmedButton(QWidget *parent, QString icon)
-	{
-	#define SM_BTN_WIDTH 60
-	#define SM_BTN_HEIGHT 40
-		BtButton *btn = new BtButton(parent);
-		QPixmap tmp;
-		if (cache.contains(icon))
-			tmp = cache[icon];
-		else
-		{
-			tmp = (*bt_global::icons_cache.getIcon(icon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
-			cache[icon] = tmp;
-		}
-		btn->setPixmap(tmp);
-		QString picon = getPressName(icon);
-		if (cache.contains(picon))
-			tmp = cache[picon];
-		else
-		{
-			tmp = (*bt_global::icons_cache.getIcon(picon)).copy(0, 10, SM_BTN_WIDTH, SM_BTN_HEIGHT);
-			cache[picon] = tmp;
-		}
-		btn->setPressedPixmap(tmp);
-		return btn;
-	}
-
 	QLabel *getLabel(QWidget *parent, QString text, FontManager::Type t)
 	{
 		QLabel *label = new QLabel(parent);
@@ -112,7 +84,6 @@ namespace
 	{
 		QGridLayout *l = static_cast<QGridLayout*>(parent->layout());
 		l->addWidget(child, l->rowCount(), 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
-//		l->addWidget(child, 1, Qt::AlignTop);
 	}
 
 	enum EnergyViewPage
@@ -168,10 +139,10 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
 #ifdef LAYOUT_TS_3_5
-	main_layout->setSpacing(0);
-	back_period = getTrimmedButton(this, bt_global::skin->getImage("fast_backward"));
-	forw_period = getTrimmedButton(this, bt_global::skin->getImage("fast_forward"));
-	btn_cycle = getTrimmedButton(this, bt_global::skin->getImage("cycle"));
+	main_layout->setSpacing(8);
+	back_period = new BtButton(bt_global::skin->getImage("fast_backward"));
+	forw_period = new BtButton(bt_global::skin->getImage("fast_forward"));
+	btn_cycle = new BtButton(bt_global::skin->getImage("cycle"));
 	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SMALLTEXT);
 #else
 	main_layout->setSpacing(5);
@@ -373,10 +344,12 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 
 	// title section
 	main_layout->addWidget(getLabel(this, energy_type, FontManager::TEXT), 0, Qt::AlignCenter);
+	main_layout->addSpacing(5);
 
 	time_period = new TimePeriodSelection;
 	connect(time_period, SIGNAL(timeChanged(int, QDate)), SLOT(changeTimePeriod(int, QDate)));
 	main_layout->addWidget(time_period);
+	main_layout->addSpacing(8);
 
 	widget_container = new QStackedWidget;
 	widget_container->addWidget(buildBannerWidget());
@@ -824,7 +797,6 @@ QWidget *EnergyView::buildBannerWidget()
 	mapper->setMapping(cumulative_day_banner, EnergyDevice::CUMULATIVE_DAY);
 
 	current_banner = new BannCurrentEnergy(tr("Current"), dev);
-
 
 	QWidget *daily_widget = createWidgetWithGridLayout();
 	addWidgetToLayout(daily_widget, cumulative_day_banner);
