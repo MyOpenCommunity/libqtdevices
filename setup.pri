@@ -105,5 +105,9 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 
 # Custom defines for BTouch tests
 #
+# show the usage of memory during the loading of images (slideshow)
 #DEFINES += TRACK_IMAGES_MEMORY
+#
+# produces random data to simulate the graphs of energy.
+#DEFINES += TEST_ENERGY_GRAPH
 
