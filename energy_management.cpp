@@ -27,6 +27,7 @@
 #include "main.h" // SUPERVISION, LOAD_MANAGEMENT
 #include "btbutton.h"
 #include "navigation_bar.h"
+#include "icondispatcher.h"
 
 #include <QVBoxLayout>
 
@@ -35,7 +36,6 @@ bool EnergyManagement::is_built = false;
 
 
 EnergyManagement::EnergyManagement(const QDomNode &conf_node)
-	: SectionPage()
 {
 	SkinContext cxt(getTextChild(conf_node, "cid").toInt());
 
@@ -77,7 +77,11 @@ EnergyManagement::EnergyManagement(const QDomNode &conf_node)
 	{
 #ifdef LAYOUT_TS_3_5
 		QPoint pos = rect().bottomRight();
-		pos -= QPoint(69, 79);
+		// Align with the back button (thanks to the icons cache, we don't care about
+		// calculating the positioning using the size of the button's image)
+		QPixmap *pixmap = bt_global::icons_cache.getIcon(bt_global::skin->getImage("currency_exchange"));
+		QSize size = pixmap->size();
+		pos -= QPoint(size.width() + 5, size.height() + 14);
 
 		addPage(new EnergyCost, getTextChild(conf_node, "descr"),
 			bt_global::skin->getImage("currency_exchange"), QString(), pos.x(), pos.y());

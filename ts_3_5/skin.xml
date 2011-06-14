@@ -98,6 +98,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>7</cid>
 		<img_link_icon>energy_data.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Energy management -->
+		<cid>15</cid>
+		<img_link_icon>energy_mng.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
@@ -566,4 +571,27 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_energy_type>EnergyData_custom.png</img_energy_type>
 	</item>
 	<!-- End Energy data items -->
+
+	<!-- Start Energy management items -->
+	<item>
+		<!-- Energy management page -->
+		<cid>15000</cid>
+		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
+	</item>
+	<item>
+		<!-- Supervision link -->
+		<cid>15001</cid>
+		<img_link_icon>supervisione_impianto.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Energy data link -->
+		<cid>15002</cid>
+		<img_link_icon>energy_data.png</img_link_icon>
+	</item>
+	<item>
+		<!-- Load management link -->
+		<cid>15003</cid>
+		<img_link_icon>appLoadManagement.png</img_link_icon>
+	</item>
+	<!-- End Energy management items -->
 </style>
