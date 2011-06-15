@@ -35,7 +35,7 @@
 
 enum
 {
-#ifdef LAYOUT_TS_10
+#ifdef CONFIG_TS_10
 	CLASS_STOPNGO = 6001,
 	LOAD_DIAGNOSTIC = 6002
 #else
