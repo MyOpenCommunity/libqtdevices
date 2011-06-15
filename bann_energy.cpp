@@ -237,6 +237,9 @@ BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) 
 	states[LoadsDevice::LOAD_CRITICAL] = bt_global::skin->getImage("state_icon_critical");
 
 	initBanner(states[LoadsDevice::LOAD_OK], QString(), description, FontManager::TEXT);
+#ifdef LAYOUT_TS_3_5
+	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+#endif
 	// the left button is used like a label, to avoid creating yet another banner
 	left_button->disable();
 
