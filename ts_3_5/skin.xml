@@ -577,6 +577,13 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Energy management page -->
 		<cid>15000</cid>
 		<img_currency_exchange>currency_exchange.png</img_currency_exchange>
+		<!-- Energy cost page -->
+		<!-- uses: plus, minus, ok-->
+		<img_cost_electricity>electricity.png</img_cost_electricity>
+		<img_cost_water>water.png</img_cost_water>
+		<img_cost_dhw>dhw.png</img_cost_dhw>
+		<img_cost_gas>gas.png</img_cost_gas>
+		<img_cost_conditioning>heating_cooling.png</img_cost_conditioning>
 	</item>
 	<item>
 		<!-- Supervision link -->
