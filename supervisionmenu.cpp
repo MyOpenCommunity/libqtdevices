@@ -123,6 +123,7 @@ void SupervisionMenu::showPage()
 
 LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 {
+	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 #ifdef LAYOUT_TS_3_5
 	buildPage();
 #else

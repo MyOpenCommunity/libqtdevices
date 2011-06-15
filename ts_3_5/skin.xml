@@ -628,4 +628,23 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_load>LoadManagement.png</img_load>
 	</item>
 	<!-- End Load management items -->
+
+	<!-- Start Supervision items -->
+	<item>
+		<!-- Stop & Go banner -->
+		<cid>6001</cid>
+		<img_center_icon>S&amp;G_Chiuso.png</img_center_icon>
+	</item>
+	<item>
+		<!-- Load diagnostic banner-->
+		<cid>6002</cid>
+		<img_center_icon>LoadManagement.png</img_center_icon>
+	</item>
+	<item>
+		<cid>6150</cid>
+		<img_state_icon_ok>Load1.png</img_state_icon_ok>
+		<img_state_icon_warning>Load2.png</img_state_icon_warning>
+		<img_state_icon_critical>Load3.png</img_state_icon_critical>
+	</item>
+	<!-- End Supervision items -->
 </style>

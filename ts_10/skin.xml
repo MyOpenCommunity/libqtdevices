@@ -1998,18 +1998,26 @@ AlarmList > QWidget {  background-image: url(); }
 	</item>
 	<item>
 		<!--
-		Stop & Go
+		Stop & Go banner
 		-->
 		<cid>6001</cid>
 		<img_center_icon>supervisioneimpianto/sng_chiuso.png</img_center_icon>
 	</item>
 	<item>
 		<!--
-		Load diagnostic
+		Load diagnostic banner
 		-->
 		<cid>6002</cid>
 		<img_center_icon>supervisioneimpianto/loadmanagement.png</img_center_icon>
-		<img_state_icon>supervisioneimpianto/load.png</img_state_icon>
+	</item>
+	<item>
+		<!--
+		Load diagnostic page
+		-->
+		<cid>6150</cid>
+		<img_state_icon_ok>supervisioneimpianto/load1.png</img_state_icon_ok>
+		<img_state_icon_warning>supervisioneimpianto/load2.png</img_state_icon_warning>
+		<img_state_icon_critical>supervisioneimpianto/load3.png</img_state_icon_critical>
 	</item>
 	<item>
 		<!--

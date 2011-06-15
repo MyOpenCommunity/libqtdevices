@@ -28,6 +28,9 @@
 #include "device.h"        // DeviceValues
 #include "bttime.h" // BtTime
 
+#include <QString>
+#include <QHash>
+
 struct EnergyRate;
 class EnergyDevice;
 class LoadsDevice;
@@ -130,7 +133,7 @@ private slots:
 	void valueReceived(const DeviceValues &values_list);
 
 private:
-	QString state_icon;
+	QHash<int, QString> states;
 };
 
 

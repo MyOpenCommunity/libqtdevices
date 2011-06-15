@@ -128,7 +128,7 @@ void TestLoadsDevice::receiveLoad()
 {
 	DeviceTester t(dev, LoadsDevice::DIM_LOAD);
 
-	t.check(QString("*#18*%1*73*4##").arg(dev->where), 4);
+	t.check(QString("*#18*%1*73*3##").arg(dev->where), static_cast<int>(LoadsDevice::LOAD_CRITICAL));
 }
 
 void TestLoadsDevice::receiveTotals()

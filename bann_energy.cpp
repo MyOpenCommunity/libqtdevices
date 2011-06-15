@@ -232,9 +232,11 @@ int BannEnergyCost::getRateId()
 BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) :
 	Bann2Buttons(0)
 {
-	state_icon = bt_global::skin->getImage("state_icon");
+	states[LoadsDevice::LOAD_OK] = bt_global::skin->getImage("state_icon_ok");
+	states[LoadsDevice::LOAD_WARNING] = bt_global::skin->getImage("state_icon_warning");
+	states[LoadsDevice::LOAD_CRITICAL] = bt_global::skin->getImage("state_icon_critical");
 
-	initBanner(state_icon, QString(), description, FontManager::TEXT);
+	initBanner(states[LoadsDevice::LOAD_OK], QString(), description, FontManager::TEXT);
 	// the left button is used like a label, to avoid creating yet another banner
 	left_button->disable();
 
@@ -253,7 +255,8 @@ void BannLoadDiagnostic::valueReceived(const DeviceValues &values_list)
 
 void BannLoadDiagnostic::setState(int state)
 {
-	left_button->setImage(getBostikName(state_icon, QString::number(state)));
+	if (states.contains(state))
+		left_button->setImage(states[state]);
 }
 
 
