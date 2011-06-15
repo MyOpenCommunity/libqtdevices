@@ -322,7 +322,7 @@ private:
 /*
  * Banner with a central LCD and two lateral buttons to change the value.
  *
- * This banner sends the signal valueChanged() after the user has stoped to use the controls.
+ * This banner sends the signal valueChanged() after the user has stopped to use the controls.
  */
 class BannLCDRange : public BannerNew
 {
@@ -336,9 +336,6 @@ public:
 	int value() const;
 
 	void setNumDigits(int n);
-
-protected:
-	void initBanner();
 
 signals:
 	void valueChanged(int value);

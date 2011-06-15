@@ -338,12 +338,22 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 
 #define INPUT_INTERVAL 500
 
-BannLCDRange::BannLCDRange(QWidget *parent) :
-	BannerNew(parent), control_timer(new QTimer(this)), lcd(new QLCDNumber),
-	minus(new BtButton), plus(new BtButton),
-	min(0), max(100)
+BannLCDRange::BannLCDRange(QWidget *parent) : BannerNew(parent)
 {
-	initBanner();
+	control_timer = new QTimer(this);
+
+	minus = new BtButton(bt_global::skin->getImage("minus"));
+	minus->setAutoRepeat(true);
+	plus = new BtButton(bt_global::skin->getImage("plus"));
+	plus->setAutoRepeat(true);
+
+	lcd = new QLCDNumber;
+	lcd->setMinimumHeight(50);
+	lcd->setSegmentStyle(QLCDNumber::Flat);
+	lcd->setFrameShape(QFrame::NoFrame);
+
+	min = 0;
+	max = 100;
 
 	connect(control_timer, SIGNAL(timeout()), SLOT(emitValueChanged()));
 	connect(minus, SIGNAL(clicked()), SLOT(minusClicked()));
@@ -388,21 +398,6 @@ void BannLCDRange::setNumDigits(int n)
 int BannLCDRange::value() const
 {
 	return lcd->intValue();
-}
-
-void BannLCDRange::initBanner()
-{
-	control_timer->setInterval(INPUT_INTERVAL);
-
-	minus->setImage(bt_global::skin->getImage("minus"));
-	minus->setAutoRepeat(true);
-
-	plus->setImage(bt_global::skin->getImage("plus"));
-	plus->setAutoRepeat(true);
-
-	lcd->setMinimumHeight(50);
-	lcd->setSegmentStyle(QLCDNumber::Flat);
-	lcd->setFrameShape(QFrame::NoFrame);
 }
 
 void BannLCDRange::startTimer()
