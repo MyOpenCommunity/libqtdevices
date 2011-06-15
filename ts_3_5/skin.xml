@@ -641,10 +641,31 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_center_icon>LoadManagement.png</img_center_icon>
 	</item>
 	<item>
+		<!-- Load diagnostic page -->
 		<cid>6150</cid>
 		<img_state_icon_ok>Load1.png</img_state_icon_ok>
 		<img_state_icon_warning>Load2.png</img_state_icon_warning>
 		<img_state_icon_critical>Load3.png</img_state_icon_critical>
 	</item>
+	<item>
+		<!-- Stop & Go pages -->
+		<!-- uses: forward -->
+		<cid>6100</cid>
+		<img_status_closed>S&amp;G_Chiuso.png</img_status_closed>
+		<img_status_opened>S&amp;G_Aperto.png</img_status_opened>
+		<img_status_locked>S&amp;G_Aperto_Blocco.png</img_status_locked>
+		<img_status_cc>S&amp;G_Aperto_Cortocircuito.png</img_status_cc>
+		<img_status_ground_fail>S&amp;G_Aperto_Guastoversoterra.png</img_status_ground_fail>
+		<img_status_vmax>S&amp;G_Aperto_Sovratensione.png</img_status_vmax>
+		<img_open>btnon.png</img_open>
+		<img_close>btnoff.png</img_close>
+		<img_autoreset_enabled>a_riarmo.png</img_autoreset_enabled>
+		<img_autoreset_disabled>d_riarmo.png</img_autoreset_disabled>
+		<img_tracking_enabled>a_verifica_impianto.png</img_tracking_enabled>
+		<img_tracking_disabled>d_verifica_impianto.png</img_tracking_disabled>
+		<img_autocheck_enabled>a_autotest.png</img_autocheck_enabled>
+		<img_autocheck_disabled>d_autotest.png</img_autocheck_disabled>
+	</item>
+
 	<!-- End Supervision items -->
 </style>

@@ -213,7 +213,15 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device)
 	dev = device;
 	autoreset_button = new StateButton;
 	QWidget *content = new QWidget;
-	QVBoxLayout *layout = new QVBoxLayout;
+	QVBoxLayout *layout = new QVBoxLayout(content);
+
+#ifdef LAYOUT_TS_3_5
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(10);
+	QLabel *l = new QLabel(title);
+	l->setFont(bt_global::font->get(FontManager::TEXT));
+	layout->addWidget(l, 0, Qt::AlignHCenter);
+#endif
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
@@ -224,8 +232,6 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device)
 									   this, SLOT(switchAutoReset())));
 
 	layout->addStretch();
-
-	content->setLayout(layout);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
@@ -266,7 +272,17 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	tracking_label = new QLabel(tr("Test"));
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout(content);
+
+#ifdef LAYOUT_TS_3_5
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(10);
+
+	QLabel *l = new QLabel(title);
+	l->setFont(bt_global::font->get(FontManager::TEXT));
+	layout->addWidget(l, 0, Qt::AlignHCenter);
+#else
 	layout->setSpacing(40);
+#endif
 
 	status_banner = new BannStopAndGo(dev, "close", "open");
 	connect(status_banner, SIGNAL(statusChanged(StopAndGo::Status)), SLOT(statusChanged(StopAndGo::Status)));
@@ -275,7 +291,11 @@ StopAndGoPlusPage::StopAndGoPlusPage(const QString &title, StopAndGoPlusDevice *
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
+#ifdef LAYOUT_TS_10
 	buttons_layout->setContentsMargins(124, 0, 126, 0);
+#else
+	buttons_layout->setContentsMargins(30, 18, 30, 18);
+#endif
 	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
@@ -353,14 +373,28 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	autotest_banner = new BannLCDRange;
 	QWidget *content = new QWidget;
 	QVBoxLayout *layout = new QVBoxLayout(content);
+
+#ifdef LAYOUT_TS_10
 	layout->setContentsMargins(5, 5, 5, 17);
+#else
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setSpacing(10);
+
+	QLabel *l = new QLabel(title);
+	l->setFont(bt_global::font->get(FontManager::TEXT));
+	layout->addWidget(l, 0, Qt::AlignHCenter);
+#endif
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
+#ifdef LAYOUT_TS_10
 	buttons_layout->setContentsMargins(156, 0, 151, 0);
+#else
+	buttons_layout->setContentsMargins(0, 0, 0, 0);
+#endif
 	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
 											   this, SLOT(switchAutoReset())));
