@@ -23,6 +23,8 @@
 #include "media_device.h"
 #include "fontmanager.h" // bt_global::font
 #include "navigation_bar.h"
+#include "skinmanager.h" // bt_global::skin
+#include "btbutton.h"
 
 #include <QLabel>
 #include <QGridLayout>
@@ -32,8 +34,8 @@ AuxPage::AuxPage(SourceDevice *dev, const QString &description)
 {
 	QWidget *content = new QWidget;
 	QGridLayout *main_layout = new QGridLayout(content);
-	main_layout->setSpacing(10);
-	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(41);
+	main_layout->setContentsMargins(0, 25, 0, 0);
 
 	QLabel *title_label = new QLabel(description);
 	title_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
@@ -47,6 +49,14 @@ AuxPage::AuxPage(SourceDevice *dev, const QString &description)
 	// the min height for the row as the sizeHint height of the label (that is
 	// equal to the height of the label with some text inside).
 	main_layout->setRowMinimumHeight(1, ambient_label->sizeHint().height());
+
+	// To obtain the same positioning of the old ui we add a spacer.
+	main_layout->addItem(new QSpacerItem(10, 5, QSizePolicy::Expanding, QSizePolicy::Fixed), 2, 0, 1, 1);
+
+	BtButton *next_source = new BtButton(bt_global::skin->getImage("next_source"));
+	connect(next_source, SIGNAL(clicked()), dev, SLOT(nextTrack()));
+	main_layout->addWidget(next_source, 3, 0, 1, 1, Qt::AlignHCenter | Qt::AlignTop);
+	main_layout->setRowStretch(3, 1);
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);

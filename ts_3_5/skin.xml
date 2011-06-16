@@ -379,7 +379,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- Sound diffusion page -->
 		<cid>11000</cid>
-
 	</item>
 	<item>
 		<!--radio source banner -->
@@ -399,6 +398,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>11002</cid>
 		<img_details>audiosetting.png</img_details>
 		<img_turn_on>btnauxon.png</img_turn_on>
+		<!-- aux source page -->
+		<img_next_source>btnforward.png</img_next_source>
 	</item>
 	<item>
 		<!--multimedia source banner -->
