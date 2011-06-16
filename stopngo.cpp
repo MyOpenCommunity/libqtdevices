@@ -378,22 +378,24 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	layout->setContentsMargins(5, 5, 5, 17);
 #else
 	layout->setContentsMargins(0, 0, 0, 0);
-	layout->setSpacing(10);
+	layout->setSpacing(0);
 
 	QLabel *l = new QLabel(title);
 	l->setFont(bt_global::font->get(FontManager::TEXT));
 	layout->addWidget(l, 0, Qt::AlignHCenter);
+	layout->addSpacing(10);
 #endif
 
 	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
-	layout->addSpacing(30);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
 #ifdef LAYOUT_TS_10
+	layout->addSpacing(30);
 	buttons_layout->setContentsMargins(156, 0, 151, 0);
 #else
-	buttons_layout->setContentsMargins(0, 0, 0, 0);
+	layout->addSpacing(10);
+	buttons_layout->setContentsMargins(30, 8, 30, 4);
 #endif
 	buttons_layout->addLayout(getCommandButton(autoreset_button, "autoreset_enabled",
 											   "autoreset_disabled", tr("Enable"),
@@ -404,7 +406,9 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 											   this, SLOT(switchAutoTest())));
 	layout->addLayout(buttons_layout);
 
+#ifdef LAYOUT_TS_10
 	layout->addStretch();
+#endif
 
 	autotest_banner->setRange(1, 180);
 	autotest_banner->setNumDigits(3);
@@ -412,6 +416,9 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	connect(autotest_banner, SIGNAL(valueChanged(int)), dev, SLOT(sendSelftestFreq(int)));
 	layout->addWidget(autotest_banner, 0, Qt::AlignHCenter);
 
+#ifdef LAYOUT_TS_3_5
+	layout->addStretch();
+#endif
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
@@ -419,7 +426,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	buildPage(content, nav_bar, title, TITLE_HEIGHT);
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
-};
+}
 
 int StopAndGoBTestPage::sectionId() const
 {
