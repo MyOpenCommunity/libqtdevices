@@ -29,7 +29,7 @@
 #include <QDir>
 #include <QTime>
 
-// Set 1 to this define to dump the content of the responses from openxmlserver.
+// Set to 1 this define to dump the content of the responses from openxmlserver.
 #define DUMP_OPENXML 0
 #define DUMP_DIR "cfg/extra/0"
 
