@@ -337,6 +337,8 @@ public:
 
 	void setNumDigits(int n);
 
+	virtual QSize sizeHint() const;
+
 signals:
 	void valueChanged(int value);
 

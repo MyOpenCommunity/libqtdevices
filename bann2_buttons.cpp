@@ -26,6 +26,7 @@
 #include "generic_functions.h" // getBostikName
 #include "labels.h" // TextOnImageLabel
 #include "btmain.h" // bt_global::btmain
+#include "hardware_functions.h" // maxWidth()
 
 #include <QWidget>
 #include <QLabel>
@@ -359,15 +360,37 @@ BannLCDRange::BannLCDRange(QWidget *parent) : BannerNew(parent)
 	connect(minus, SIGNAL(clicked()), SLOT(minusClicked()));
 	connect(plus, SIGNAL(clicked()), SLOT(plusClicked()));
 
-	QHBoxLayout *hbox = new QHBoxLayout;
+#ifdef LAYOUT_TS_3_5
+	// Empirical alignment to force the banner to occupy the whole width, with the
+	// lcd aligned in the center. We cannot use layouts thanks to the old api
+	// for the QLCDNumber (see the comment on RadioInfo).
+	lcd->setParent(this);
+	lcd->setGeometry(10, 0, maxWidth() - 40, minus->height() + 10);
+	minus->setParent(this);
+	minus->move(0, 5);
+
+	plus->setParent(this);
+	plus->move(maxWidth() - plus->width() - 10, 5);
+
+#else
+	QHBoxLayout *hbox = new QHBoxLayout(this);
 	hbox->setContentsMargins(0, 0, 0, 0);
 	hbox->setSpacing(5);
 
 	hbox->addWidget(minus, 0, Qt::AlignLeft);
+
 	hbox->addWidget(lcd, 1, Qt::AlignCenter);
 	hbox->addWidget(plus, 0, Qt::AlignRight);
+#endif
+}
 
-	setLayout(hbox);
+QSize BannLCDRange::sizeHint() const
+{
+#ifdef LAYOUT_TS_3_5
+	return QSize(maxWidth() - 10, minus->height() + 10);
+#else
+	return layout()->sizeHint();
+#endif
 }
 
 void BannLCDRange::setRange(int minimum, int maximum)
