@@ -19,8 +19,8 @@
  */
 
 
-#ifndef BANNER
-#define BANNER
+#ifndef BANNER_H
+#define BANNER_H
 
 
 #define MAX_NUM_ICON    46
@@ -478,4 +478,4 @@ private:
 };
 
 
-#endif //BANNER
+#endif // BANNER_H
