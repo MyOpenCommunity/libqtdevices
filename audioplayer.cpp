@@ -35,7 +35,9 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
-#include "multimedia.h"
+#ifdef LAYOUT_TS_10
+#include "multimedia.h" // MultimediaSectionPage
+#endif
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"
 #include "displaycontrol.h" // bt_global::display
@@ -569,8 +571,8 @@ void AudioPlayerPage::playerStarted()
 	stream_url_exist = false;
 	stream_title_exist = false;
 	filename_exist = false;
-	MultimediaSectionPage::current_player = this;
 #ifdef LAYOUT_TS_10
+	MultimediaSectionPage::current_player = this;
 	tray_icon->setVisible(true);
 #endif
 }
@@ -581,12 +583,12 @@ void AudioPlayerPage::playerStopped()
 	if (isPlayerPaused())
 		return;
 
+#ifdef LAYOUT_TS_10
 	if (MultimediaSectionPage::current_player == this)
 	{
 		emit playerExited();
 		MultimediaSectionPage::current_player = 0;
 	}
-#ifdef LAYOUT_TS_10
 	tray_icon->setVisible(false);
 #endif
 }

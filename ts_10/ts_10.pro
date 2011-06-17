@@ -50,6 +50,7 @@ HEADERS += favoriteswidget.h \
 	headerwidget.h \
 	iconsettings.h \
 	messages.h \
+	multimedia.h \
 	mount_watcher.h \
 	scenevomanager.h \
 	slideshow.h \
@@ -62,6 +63,7 @@ SOURCES += favoriteswidget.cpp \
 	headerwidget.cpp \
 	iconsettings.cpp \
 	messages.cpp \
+	multimedia.cpp \
 	mount_watcher.cpp \
 	scenevomanager.cpp \
 	slideshow.cpp \

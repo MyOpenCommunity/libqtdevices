@@ -31,7 +31,9 @@
 #include "radio.h" // RadioInfo
 #include "devices_cache.h"
 #include "multimedia_filelist.h"
+#ifdef LAYOUT_TS_10
 #include "multimedia.h"
+#endif
 #include "radio.h" // RadioPage
 #ifdef LAYOUT_TS_3_5
 #include "aux.h" // AuxPage
@@ -292,7 +294,9 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 				{
 					MultimediaFileListFactory *factory = new MultimediaFileListFactory(TreeBrowser::DIRECTORY,
 						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
+#ifdef LAYOUT_TS_10
 					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
+#endif
 				}
 
 				VirtualSourceDevice *dev = bt_global::add_device_to_cache(new VirtualSourceDevice(s.where));

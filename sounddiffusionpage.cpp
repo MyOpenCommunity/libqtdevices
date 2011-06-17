@@ -32,7 +32,9 @@
 #include "poweramplifier.h" // BannPowerAmplifier, PowerAmplifierPage
 #include "media_device.h"
 #include "devices_cache.h"
+#ifdef LAYOUT_TS_10
 #include "multimedia.h" // MultimediaSectionPage
+#endif
 #include "navigation_bar.h"
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
@@ -767,10 +769,12 @@ void LocalSource::startLocalPlayback(bool force)
 			return;
 	}
 
+#ifdef LAYOUT_TS_10
 	// try to play something searching on each media source
 	// using the multimedia configuration order (es. usb -> sd -> ip radio)
 	if (force)
 		MultimediaSectionPage::playSomethingRandomly();
+#endif
 }
 
 void LocalSource::pauseLocalPlayback()

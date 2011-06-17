@@ -85,7 +85,6 @@ HEADERS += actuators.h \
 	main.h \
 	mediaplayer.h \
 	mediaplayerpage.h \
-	multimedia.h \
 	multimedia_buttons.h \
 	multimedia_filelist.h \
 	navigation_bar.h \
@@ -197,7 +196,6 @@ SOURCES += actuators.cpp \
 	main.cpp \
 	mediaplayer.cpp \
 	mediaplayerpage.cpp \
-	multimedia.cpp \
 	multimedia_buttons.cpp \
 	multimedia_filelist.cpp \
 	navigation_bar.cpp \
