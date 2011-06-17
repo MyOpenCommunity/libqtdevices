@@ -22,20 +22,28 @@
 #ifndef LOADS_H
 #define LOADS_H
 
-#include "bann1_button.h" // class bannOnSx
+#include "bann2_buttons.h"
 #include "bannerpage.h"
+
+#include <QString>
+
 
 class QDomNode;
 
 
-class bannLoads : public bannOnSx
+
+class BannLoad : public Bann2Buttons
 {
 Q_OBJECT
 public:
-	bannLoads(Page *parent, QString indirizzo, QString IconaSx);
+	BannLoad(const QString &descr, const QString &where);
+
 private slots:
-	void Attiva();
+	void active();
+private:
+	QString load_where;
 };
+
 
 
 class Loads : public BannerPage
