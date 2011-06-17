@@ -33,6 +33,7 @@ class BtButton;
 class TextOnImageLabel;
 class StateButton;
 class ScrollingLabel;
+class QGridLayout;
 
 
 // Small base class for all 2 buttons banners that can have linked pages.
@@ -137,6 +138,8 @@ protected:
 	TextOnImageLabel *center_icon;
 	ScrollingLabel *center_label;
 	ScrollingLabel *description;
+
+	QGridLayout *main_layout;
 
 private:
 	void createBanner();

@@ -87,22 +87,22 @@ void Bann2Buttons::createBanner()
 	center_label = 0;
 	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
-	QGridLayout *l = new QGridLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
+	main_layout = new QGridLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 #ifdef LAYOUT_TS_10
-	l->setHorizontalSpacing(5);
-	l->setVerticalSpacing(0);
+	main_layout->setHorizontalSpacing(5);
+	main_layout->setVerticalSpacing(0);
 #else
-	l->setHorizontalSpacing(10);
-	l->setVerticalSpacing(5);
+	main_layout->setHorizontalSpacing(10);
+	main_layout->setVerticalSpacing(5);
 #endif
-	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
-	l->setColumnStretch(0, 1);
+	main_layout->addWidget(left_button, 0, 0, Qt::AlignLeft);
+	main_layout->setColumnStretch(0, 1);
 	// central widget added in initBanner()
-	l->setColumnStretch(1, 2);
-	l->addWidget(right_button, 0, 2, Qt::AlignRight);
-	l->setColumnStretch(2, 1);
-	l->addWidget(description, 1, 0, 1, 3);
+	main_layout->setColumnStretch(1, 2);
+	main_layout->addWidget(right_button, 0, 2, Qt::AlignRight);
+	main_layout->setColumnStretch(2, 1);
+	main_layout->addWidget(description, 1, 0, 1, 3);
 
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClicked()));
 	connect(right_button, SIGNAL(pressed()), SIGNAL(rightPressed()));
@@ -117,14 +117,13 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
 	center_label = new ScrollingLabel;
-	static_cast<QGridLayout*>(layout())->addWidget(center_label, 0, 1, Qt::AlignCenter);
+	main_layout->addWidget(center_label, 0, 1, Qt::AlignCenter);
 
 	initButton(left_button, left);
 	initButton(right_button, right);
 	if (right.isEmpty())
 	{
-		QGridLayout *l = static_cast<QGridLayout*>(layout());
-		l->setColumnStretch(2, 0);
+		main_layout->setColumnStretch(2, 0);
 	}
 	center_label->setScrollingText(banner_text);
 	QFont central_font = bt_global::font->get(text_font);
@@ -138,7 +137,8 @@ void Bann2Buttons::initBanner(const QString &left, const QString &center, const 
 			      FontManager::Type description_font)
 {
 	center_icon = new TextOnImageLabel;
-	static_cast<QGridLayout*>(layout())->addWidget(center_icon, 0, 1);
+
+	main_layout->addWidget(center_icon, 0, 1);
 
 	initButton(left_button, left);
 	initButton(right_button, right);
@@ -154,7 +154,7 @@ void Bann2Buttons::setTextAlignment(Qt::Alignment align)
 		// Reset the alignment of the cell that contains the label if the requested
 		// label alignment not contains AlignHCenter.
 		if ((align & Qt::AlignHCenter) == 0)
-			static_cast<QGridLayout*>(layout())->itemAtPosition(0, 1)->setAlignment(0);
+			main_layout->itemAtPosition(0, 1)->setAlignment(0);
 
 		center_label->setAlignment(align);
 	}

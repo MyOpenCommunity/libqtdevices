@@ -144,7 +144,7 @@ BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
 	initBanner(QString(), bt_global::skin->getImage("bg_banner"), QString(), text);
 #ifdef LAYOUT_TS_3_5
 	// TODO hack to make the banner align correctly
-	static_cast<QGridLayout *>(layout())->setColumnStretch(0, 0);
+	main_layout->setColumnStretch(0, 0);
 #endif
 	setCentralText("---");
 	dev = _dev;
