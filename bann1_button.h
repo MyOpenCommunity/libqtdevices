@@ -110,30 +110,6 @@ signals:
 };
 
 
-// Describes a banner with a button on the right and a text on the remaining area.
-class bannOnDx : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnDx(QWidget *parent, QString icon=QString(), Page *page=0);
-
-signals:
-	void click();
-};
-
-
-// describes a banner with a button on the left and a text on the remaining area.
-class bannOnSx : public BannerOld
-{
-Q_OBJECT
-public:
-	bannOnSx(QWidget *parent, QString icon=QString());
-	BtButton *getButton();
-signals:
-	void click();
-};
-
-
 // Encapsulates a list of states that can be cycled using a button on the left.
 // Every state has an id and a description.
 class BannStates : public BannerNew

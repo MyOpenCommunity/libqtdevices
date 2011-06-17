@@ -193,41 +193,6 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-
-
-bannOnDx::bannOnDx(QWidget *parent, QString icon, Page *page) : BannerOld(parent)
-{
-	banner_height = BUT_DIM;
-	addItem(BUT1, banner_width - BUT_DIM, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
-	addItem(TEXT, 0, 0, banner_width-BUT_DIM, banner_height);
-	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
-
-	if (!icon.isEmpty())
-		SetIcons(icon, 1);
-
-	connectDxButton(page);
-	Draw();
-}
-
-
-bannOnSx::bannOnSx(QWidget *parent, QString icon) : BannerOld(parent)
-{
-	banner_height = BUT_DIM;
-	addItem(BUT1, 0, (banner_height - BUT_DIM)/2, BUT_DIM, BUT_DIM);
-	addItem(TEXT, BUT_DIM, 0, banner_width - BUT_DIM, banner_height);
-	connect(this, SIGNAL(sxClick()), this, SIGNAL(click()));
-
-	if (!icon.isEmpty())
-		SetIcons(icon, 1);
-	Draw();
-}
-
-BtButton *bannOnSx::getButton()
-{
-	return sxButton;
-}
-
-
 BannStates::BannStates(QWidget *parent) : BannerNew(parent)
 {
 	banner_height = BUT_DIM;
