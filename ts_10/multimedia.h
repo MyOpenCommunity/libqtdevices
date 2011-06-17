@@ -23,10 +23,7 @@
 #define MULTIMEDIA_H
 
 #include "iconpage.h"
-
-#ifdef LAYOUT_TS_10
 #include "mount_watcher.h" // MountType, bt_global::mount_watcher
-#endif
 
 #include <QFutureWatcher>
 
@@ -59,8 +56,6 @@ class MountWatcher;
 	depending on touchscreen model and configuration.
 */
 
-
-#ifdef LAYOUT_TS_10
 
 /*!
 	\ingroup Multimedia
@@ -135,8 +130,6 @@ private:
 	bool * volatile terminate;
 };
 
-#endif
-
 
 /*!
 	\ingroup Multimedia
@@ -200,8 +193,6 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
-
-
 
 
 #endif // MULTIMEDIA_H

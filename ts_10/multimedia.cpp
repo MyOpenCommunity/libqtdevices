@@ -25,9 +25,7 @@
 #include "xml_functions.h"
 #include "main.h" // MULTIMEDIA
 #include "skinmanager.h"
-#ifdef LAYOUT_TS_10
 #include "webcam.h"
-#endif
 #include "ipradio.h"
 #include "feedmanager.h"
 #include "state_button.h"
@@ -57,7 +55,6 @@ SongSearch *MultimediaSectionPage::song_search = NULL;
 AudioPlayerPage *MultimediaSectionPage::current_player = 0;
 bool MultimediaSectionPage::usb_initialized = false;
 
-#ifdef LAYOUT_TS_10
 
 namespace
 {
@@ -262,7 +259,6 @@ SongSearch::AsyncRes SongSearch::scanPath(const QString &path, bool * volatile t
 	return qMakePair(QStringList(), terminate);
 }
 
-#endif
 
 
 MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, MultimediaSectionPage::Items items, FileSelectorFactory *f, const QString &title)
@@ -281,12 +277,10 @@ MultimediaSectionPage::MultimediaSectionPage(const QDomNode &config_node, Multim
 	showed_items = items;
 
 	QString descr;
-#ifdef LAYOUT_TS_10
 	if (title.isEmpty())
 		descr = getTextChild(config_node, "descr");
 	else
 		descr = title;
-#endif
 
 	NavigationBar *nav_bar = new NavigationBar("play_file");
 	buildPage(new IconContent, nav_bar, descr);
@@ -347,9 +341,7 @@ int MultimediaSectionPage::sectionId() const
 
 void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 {
-#ifdef LAYOUT_TS_10
 	FileSystemBrowseButton *usb_button = NULL, *sd_button = NULL;
-#endif
 
 	// for SongSearch
 	QList<int> sources;
@@ -370,7 +362,6 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		// have a linked page
 		switch (item_id)
 		{
-#ifdef LAYOUT_TS_10
 		case PAGE_USB:
 		case PAGE_SD:
 		{
@@ -396,7 +387,6 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_WEBCAM))
 				p = new WebcamListPage(page_node);
 			break;
-#endif
 		case PAGE_UPNP:
 			if (showed_items.testFlag(MultimediaSectionPage::ITEMS_UPNP))
 			{
@@ -446,14 +436,11 @@ void MultimediaSectionPage::loadItems(const QDomNode &config_node)
 		}
 	}
 
-#ifdef LAYOUT_TS_10
 	bt_global::mount_watcher->startWatching();
 	bt_global::mount_watcher->notifyAll();
 
 	if (showed_items == ITEMS_ALL && !song_search)
 		song_search = new SongSearch(sources, usb_button, sd_button, ip_radio);
-#endif
-
 }
 
 void MultimediaSectionPage::showUPnpPage()
@@ -473,9 +460,7 @@ void MultimediaSectionPage::uPnpPageClosed()
 
 void MultimediaSectionPage::playSomethingRandomly()
 {
-#ifdef LAYOUT_TS_10
 	song_search->startSearch();
-#endif
 }
 
 
