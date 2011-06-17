@@ -470,8 +470,8 @@ protected:
 	ScrollingLabel *createTextLabel(Qt::Alignment align, const QFont &font);
 	void connectButtonToPage(BtButton *b, Page *p);
 	virtual void hideEvent(QHideEvent *event);
-	void initButton(BtButton *btn, const QString &icon);
-	void initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font);
+	bool initButton(BtButton *btn, const QString &icon);
+	bool initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font);
 
 private:
 	QVector<Page *> linked_pages;

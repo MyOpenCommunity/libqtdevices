@@ -754,7 +754,7 @@ void BannerNew::inizializza(bool forza)
 		p->inizializza();
 }
 
-void BannerNew::initButton(BtButton *btn, const QString &icon)
+bool BannerNew::initButton(BtButton *btn, const QString &icon)
 {
 	if (icon.isEmpty())
 	{
@@ -762,22 +762,24 @@ void BannerNew::initButton(BtButton *btn, const QString &icon)
 		btn->hide();
 		btn->disconnect();
 		btn->deleteLater();
+		return false;
 	}
-	else
-		btn->setImage(icon);
+
+	btn->setImage(icon);
+	return true;
 }
 
-void BannerNew::initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font)
+bool BannerNew::initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font)
 {
 	if (text.isEmpty())
 	{
 		lbl->hide();
 		lbl->disconnect();
 		lbl->deleteLater();
+		return false;
 	}
-	else
-	{
-		lbl->setScrollingText(text);
-		lbl->setFont(font);
-	}
+
+	lbl->setScrollingText(text);
+	lbl->setFont(font);
+	return true;
 }
