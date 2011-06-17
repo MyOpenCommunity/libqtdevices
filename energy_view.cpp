@@ -300,8 +300,7 @@ QString TimePeriodSelection::dateDisplayed()
 Bann2Buttons *getBanner(QString primary_text)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	Bann2Buttons *bann = new Bann2Buttons;
-	bann->initBanner(QString(), bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
+	Bann2Buttons *bann = new BannLargeDisplay(bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
 			 primary_text);
 	bann->setCentralText("---");
 

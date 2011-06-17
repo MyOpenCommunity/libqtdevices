@@ -28,6 +28,7 @@
 #include "energy_device.h"
 #include "loads_device.h"
 #include "generic_functions.h" // getBostikName
+#include "labels.h" // TextOnImageLabel
 
 #include <QLocale>
 #include <QDebug>
@@ -136,16 +137,25 @@ void BannEnergyInterface::rateChanged(int rate_id)
 }
 
 
+
+BannLargeDisplay::BannLargeDisplay(const QString &display_background, const QString &right, const QString &descr)
+{
+	center_icon = new TextOnImageLabel;
+
+	initButton(left_button, QString());
+	initButton(right_button, right);
+	main_layout->addWidget(center_icon, 0, 0, 1, 2);
+
+	center_icon->setBackgroundImage(display_background);
+	initLabel(description, descr, bt_global::font->get(FontManager::BANNERDESCRIPTION));
+}
+
+
 // BannCurrentEnergy implementation
 
 BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
-	Bann2Buttons(0)
+	BannLargeDisplay(bt_global::skin->getImage("bg_banner"), QString(), text)
 {
-	initBanner(QString(), bt_global::skin->getImage("bg_banner"), QString(), text);
-#ifdef LAYOUT_TS_3_5
-	// TODO hack to make the banner align correctly
-	main_layout->setColumnStretch(0, 0);
-#endif
 	setCentralText("---");
 	dev = _dev;
 }

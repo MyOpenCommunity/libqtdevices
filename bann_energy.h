@@ -69,11 +69,21 @@ private:
 };
 
 
+// An highly specialized class that has a large label (with both image and text)
+// on the left and a button (optional) on the right.
+class BannLargeDisplay : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	BannLargeDisplay(const QString &display_background, const QString &right, const QString &descr);
+};
+
+
 /*!
 	\ingroup EnergyData
 	\brief Displays the current consumptions for an interface.
 */
-class BannCurrentEnergy : public Bann2Buttons
+class BannCurrentEnergy : public BannLargeDisplay
 {
 public:
 	BannCurrentEnergy(const QString &text, EnergyDevice *dev);
@@ -135,6 +145,7 @@ private slots:
 private:
 	QHash<int, QString> states;
 };
+
 
 
 /*!
