@@ -103,6 +103,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>15</cid>
 		<img_link_icon>energy_mng.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Loads -->
+		<cid>5</cid>
+		<img_link_icon>appccar.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
