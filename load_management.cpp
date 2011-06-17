@@ -314,6 +314,7 @@ LoadDataContent::LoadDataContent(int _currency_decimals, int _rate_id)
 	QVBoxLayout *main = new QVBoxLayout(this);
 	main->setContentsMargins(0, 0, 0, 0);
 	main->setSpacing(5);
+
 	main->addWidget(current_consumption, 0, Qt::AlignHCenter);
 	main->addWidget(first_period);
 	main->addWidget(second_period);
@@ -463,7 +464,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	QVBoxLayout *vlayout = new QVBoxLayout(container);
 
 	vlayout->setSpacing(0);
-	vlayout->setContentsMargins(0, 0, 0, 18);
+	vlayout->setContentsMargins(0, 0, 0, 0);
 	vlayout->addWidget(top);
 	vlayout->addWidget(content, 1, Qt::AlignHCenter);
 
@@ -477,6 +478,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 		buttons_layout->addWidget(currency_button, 1, Qt::AlignCenter);
 	}
 	vlayout->addLayout(buttons_layout);
+	vlayout->addSpacing(18);
 #endif
 	buildPage(container, nav_bar, "", 0);
 }
