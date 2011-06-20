@@ -19,7 +19,7 @@
  */
 
 
-#include "multimedia.h"
+#include "multimedia_sectionpage.h"
 #include "multimedia_filelist.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"

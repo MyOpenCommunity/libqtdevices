@@ -50,8 +50,8 @@ HEADERS += favoriteswidget.h \
 	headerwidget.h \
 	iconsettings.h \
 	messages.h \
-	multimedia.h \
 	mount_watcher.h \
+	multimedia_sectionpage.h \
 	scenevomanager.h \
 	slideshow.h \
 	vctcall.h \
@@ -63,8 +63,8 @@ SOURCES += favoriteswidget.cpp \
 	headerwidget.cpp \
 	iconsettings.cpp \
 	messages.cpp \
-	multimedia.cpp \
 	mount_watcher.cpp \
+	multimedia_sectionpage.cpp \
 	scenevomanager.cpp \
 	slideshow.cpp \
 	vctcall.cpp \

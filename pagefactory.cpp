@@ -26,7 +26,7 @@
 #include "videodoorentry.h"
 
 #ifdef LAYOUT_TS_10
-#include "multimedia.h"
+#include "multimedia_sectionpage.h"
 #include "multimedia_filelist.h"
 #include "messages.h"
 #else

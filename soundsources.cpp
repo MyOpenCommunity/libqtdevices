@@ -32,7 +32,7 @@
 #include "devices_cache.h"
 #include "multimedia_filelist.h"
 #ifdef LAYOUT_TS_10
-#include "multimedia.h"
+#include "multimedia_sectionpage.h"
 #else
 #include "multimedia_container.h"
 #endif
