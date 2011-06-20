@@ -31,10 +31,21 @@
 #include <QLabel>
 #include <QFont>
 
-enum {
+// The default index of each icon type
+#ifdef LAYOUT_TS_10
+enum
+{
 	ITEM_ICON = 0,
 	BUTTON_ICON
 };
+#else
+enum
+{
+	BUTTON_ICON = 0
+};
+
+#endif
+
 
 ItemList::ItemInfo::ItemInfo(QString n, QString descr, QStringList i, QVariant d)
 {
@@ -53,23 +64,30 @@ ItemList::ItemList(int _rows_per_page, QWidget *parent) :
 
 	QGridLayout *main_layout = static_cast<QGridLayout *>(layout());
 
+#ifdef LAYOUT_TS_10
 	main_layout->setContentsMargins(0, 5, 5, 0);
 	main_layout->setSpacing(3);
+#else
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(10);
+#endif
 	buttons_group = new QButtonGroup(this);
 	connect(buttons_group, SIGNAL(buttonClicked(int)), SLOT(clicked(int)));
 }
 
 void ItemList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
-	Q_ASSERT_X(item.icons.size() >= 2, "ItemList::addHorizontalBox()", "too few icons to construct the horizontal box");
-
 	QFont font = bt_global::font->get(FontManager::TEXT);
 
-	// top level widget (to set background using stylesheet)
-	QWidget *boxWidget = new QWidget;
-	boxWidget->setFixedHeight(68);
+	// top level widget (to set background on ts 10 using stylesheet)
+	QWidget *box_widget = new QWidget;
+	QHBoxLayout *box = new QHBoxLayout(box_widget);
 
-	QHBoxLayout *box = new QHBoxLayout(boxWidget);
+#ifdef LAYOUT_TS_10
+	Q_ASSERT_X(item.icons.size() >= 2, "ItemList::addHorizontalBox()", "too few icons to construct the horizontal box");
+
+	box_widget->setFixedHeight(68);
+
 	box->setContentsMargins(5, 5, 5, 5);
 
 	// file icon on the left
@@ -88,14 +106,24 @@ void ItemList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int i
 	labels->addWidget(description, 1);
 
 	box->addLayout(labels, 1);
+#else
+	Q_ASSERT_X(item.icons.size() == 1, "ItemList::addHorizontalBox()", "wrong number of icons to build the horizontal box");
+	box->setContentsMargins(0, 0, 0, 0);
+
+	Q_UNUSED(item.description)
+	QLabel *name = new ScrollingLabel(item.name);
+	name->setFont(font);
+
+	box->addWidget(name);
+#endif
 
 	// button on the right
-	BtButton *btn = new BtButton;
-	btn->setImage(item.icons[BUTTON_ICON]);
+	BtButton *btn = new BtButton(item.icons[BUTTON_ICON]);
 	box->addWidget(btn, 0, Qt::AlignRight);
 
 	buttons_group->addButton(btn, id_btn);
-	layout->addWidget(boxWidget, layout->rowCount(), 0);
+
+	layout->addWidget(box_widget, layout->rowCount(), 0);
 }
 
 void ItemList::drawContent()

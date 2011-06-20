@@ -114,8 +114,9 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));
 	connect(nav_bar, SIGNAL(upClick()), SLOT(pageUp()));
 	connect(nav_bar, SIGNAL(downClick()), SLOT(pageDown()));
-
+#ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(13, 5, 25, 10);
+#endif
 
 	// order here must match the order in enum Type
 	file_icons.insert(EntryInfo::DIRECTORY, bt_global::skin->getImage("directory_icon"));
@@ -317,6 +318,7 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		const EntryInfo& f = list.at(i);
 		QStringList icons;
 
+#ifdef LAYOUT_TS_10
 		if (f.type != EntryInfo::DIRECTORY)
 		{
 			EntryInfo::Type t = f.type;
@@ -331,7 +333,9 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 			icons << file_icons[EntryInfo::DIRECTORY];
 			icons << browse_directory;
 		}
-
+#else
+		icons << bt_global::skin->getImage("forward");
+#endif
 		ItemList::ItemInfo info(f.name, QString(), icons, static_cast<int>(f.type));
 		names_list.append(info);
 		filtered_list.append(f);

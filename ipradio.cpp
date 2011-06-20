@@ -44,7 +44,9 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 #endif
 
 	buildPage(item_list, item_list, new NavigationBar, title_widget);
+#ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(13, 5, 25, 10);
+#endif
 
 	loadItems(config_node);
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
@@ -64,8 +66,12 @@ void IPRadioPage::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		QStringList icons;
+#ifdef LAYOUT_TS_10
 		icons << bt_global::skin->getImage("ipradio_icon");
 		icons << bt_global::skin->getImage("forward");
+#else
+		icons << bt_global::skin->getImage("forward");
+#endif
 
 		ItemList::ItemInfo info(getTextChild(item, "title"), getTextChild(item, "descr"),
 					icons,

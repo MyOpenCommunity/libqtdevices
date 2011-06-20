@@ -42,6 +42,7 @@ enum
 MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
 {
 	buildPage();
+	setSpacing(10);
 	radio_page = 0;
 	upnp_page = 0;
 	loadItems(config_node);
