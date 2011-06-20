@@ -228,7 +228,8 @@ private:
 	int level; // the current (scs) level of the amplifier
 };
 
-/**
+
+/*!
 	\ingroup SoundDiffusion
 	\brief Handles the device logic for the local sound diffusion source.
 
