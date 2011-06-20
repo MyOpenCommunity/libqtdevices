@@ -384,6 +384,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- Sound diffusion page -->
 		<cid>11000</cid>
+		<img_goto_sounddiffusion>appdiffsmall.png</img_goto_sounddiffusion>
 	</item>
 	<item>
 		<!--radio source banner -->

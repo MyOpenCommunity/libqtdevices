@@ -25,6 +25,7 @@
 #include "audioplayer.h"
 #include "itemlist.h"
 #include "navigation_bar.h"
+#include "sounddiffusionpage.h" // SoundDiffusionPage::showCurrentAmbientPage
 
 #include <QLayout>
 
@@ -39,17 +40,29 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 
 	PageTitleWidget *title_widget = 0;
 
+	NavigationBar *nav_bar;
+
 #ifdef LAYOUT_TS_10
 	title_widget = new PageTitleWidget(getTextChild(config_node, "descr"), SMALL_TITLE_HEIGHT);
+	nav_bar = new NavigationBar;
+#else
+	nav_bar = new NavigationBar("goto_sounddiffusion");
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(gotoSoundDiffusion()));
 #endif
 
-	buildPage(item_list, item_list, new NavigationBar, title_widget);
+	buildPage(item_list, item_list, nav_bar, title_widget);
+
 #ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(13, 5, 25, 10);
 #endif
 
 	loadItems(config_node);
 	connect(page_content, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
+}
+
+void IPRadioPage::gotoSoundDiffusion()
+{
+	SoundDiffusionPage::showCurrentAmbientPage();
 }
 
 void IPRadioPage::showPage()

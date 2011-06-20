@@ -87,6 +87,8 @@ private slots:
 	void loopDetected();
 	void handleServerDown();
 
+	void gotoSoundDiffusion();
+
 private:
 	// icons for different file type
 	QHash<int,QString> file_icons;

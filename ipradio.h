@@ -52,6 +52,7 @@ private:
 private slots:
 	void itemIsClicked(int index);
 	void radioClosed();
+	void gotoSoundDiffusion();
 
 private:
 	AudioPlayerPage *player;

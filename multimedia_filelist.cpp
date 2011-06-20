@@ -24,6 +24,7 @@
 #include "skinmanager.h"
 #include "audioplayer.h"
 #include "btbutton.h"
+#include "sounddiffusionpage.h" // SoundDiffusionPage::showCurrentAmbientPage
 
 #ifdef LAYOUT_TS_10
 #include "slideshow.h"
@@ -82,14 +83,22 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	connect(this, SIGNAL(Closed()), item_list, SLOT(clear()));
 
+	nav_bar = 0;
+
 #ifdef BT_HARDWARE_TS_10
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");
 		connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 	}
-	else
 #endif
+
+#ifdef LAYOUT_TS_3_5
+	nav_bar = new NavigationBar("goto_sounddiffusion");
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(gotoSoundDiffusion()));
+#endif
+
+	if (!nav_bar)
 		nav_bar = new NavigationBar;
 
 #ifdef LAYOUT_TS_10
@@ -143,6 +152,11 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(pdfdisplay, SIGNAL(Closed()), SLOT(showPageNoReload()));
 #endif
 	last_clicked_type = EntryInfo::UNKNOWN;
+}
+
+void MultimediaFileListPage::gotoSoundDiffusion()
+{
+	SoundDiffusionPage::showCurrentAmbientPage();
 }
 
 void MultimediaFileListPage::audioPageClosed()
