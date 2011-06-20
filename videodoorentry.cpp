@@ -784,7 +784,7 @@ IntercomMenu::IntercomMenu(const QDomNode &config_node, VideoDoorEntryDevice *de
 VctSettings::VctSettings(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
-	buildPage(new BannerContent(0, 1), new NavigationBar, getTextChild(config_node, "descr"));
+	buildPage(new BannerContent(1), new NavigationBar, getTextChild(config_node, "descr"));
 	page_content->layout()->setSpacing(30);
 	page_content->layout()->setContentsMargins(18, 0, 207, 0);
 	loadItems(config_node);

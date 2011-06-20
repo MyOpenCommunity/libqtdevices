@@ -37,7 +37,7 @@ namespace
 TcpBannerPage::TcpBannerPage(QWidget *parent)
 	: BannerPage(parent)
 {
-	BannerContent *content = new BannerContent(0, 1);
+	BannerContent *content = new BannerContent(1);
 
 	// Container for banners
 	QWidget *container = new QWidget;

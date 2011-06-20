@@ -196,7 +196,7 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
 	QWidget *content = new QWidget;
 	QGridLayout *l = new QGridLayout(content);
-	BannerContent *banners = new BannerContent(0, 1);
+	BannerContent *banners = new BannerContent(1);
 
 	QLabel *icon = new QLabel;
 	icon->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("central_icon")));

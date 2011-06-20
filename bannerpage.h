@@ -116,7 +116,7 @@ class BannerContent : public ScrollableContent
 Q_OBJECT
 public:
 #ifdef LAYOUT_TS_3_5
-	BannerContent(QWidget *parent=0);
+	BannerContent(QWidget *parent = 0);
 #else
 	/*!
 		\brief Constructor.
@@ -126,7 +126,7 @@ public:
 		\note For the 3.5" the \a columns parameter does not exists because
 			  banners are always arranged in one column.
 	*/
-	BannerContent(QWidget *parent=0, int columns=2);
+	BannerContent(int columns = 2, QWidget *parent = 0);
 #endif
 
 	/*!

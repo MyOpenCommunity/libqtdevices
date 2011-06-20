@@ -76,7 +76,7 @@ void BannerPage::setSpacing(int spacing)
 #ifdef LAYOUT_TS_3_5
 BannerContent::BannerContent(QWidget *parent) : ScrollableContent(parent), columns(1)
 #else
-BannerContent::BannerContent(QWidget *parent, int _columns) : ScrollableContent(parent), columns(_columns)
+BannerContent::BannerContent(int _columns, QWidget *parent) : ScrollableContent(parent), columns(_columns)
 #endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
