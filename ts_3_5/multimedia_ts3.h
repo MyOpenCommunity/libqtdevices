@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,26 +19,30 @@
  */
 
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef MULTIMEDIA_TS3_H
+#define MULTIMEDIA_TS3_H
 
 #include "bannerpage.h"
 
-#include <QWidget>
-
 class QDomNode;
-class banner;
 
 
-class Settings : public BannerPage
+class MultimediaContainer : public BannerPage
 {
 Q_OBJECT
 public:
-	Settings(const QDomNode &config_node);
+	MultimediaContainer(const QDomNode &config_node);
 
-	static banner *getBanner(const QDomNode &item_node);
+public slots:
+	virtual void showPage();
+
+private slots:
+	void handleClose();
+
 private:
 	void loadItems(const QDomNode &config_node);
+	Page *radio_page, *upnp_page;
 };
 
-#endif
+#endif // MULTIMEDIA_TS3_H
+

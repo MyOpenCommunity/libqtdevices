@@ -19,7 +19,7 @@
  */
 
 
-#include "iconsettings.h"
+#include "settings_ts10.h"
 #include "navigation_bar.h"
 #include "xml_functions.h"
 #include "skinmanager.h"

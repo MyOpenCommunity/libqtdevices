@@ -56,15 +56,15 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 HEADERS +=  aux.h \
 	brightnesspage.h \
 	displaypage.h \
-	multimedia_container.h \
+	multimedia_ts3.h \
 	scenevomanager.h \
-	settings.h
+	settings_ts3.h
 
 SOURCES += aux.cpp \
 	brightnesspage.cpp \
 	displaypage.cpp \
-	multimedia_container.cpp \
+	multimedia_ts3.cpp \
 	scenevomanager.cpp \
-	settings.cpp
+	settings_ts3.cpp
 
 OTHER_FILES = skin.xml

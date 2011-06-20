@@ -36,7 +36,7 @@
 #include "devices_cache.h"
 #include "audiostatemachine.h"
 #ifdef LAYOUT_TS_10
-#include "multimedia_sectionpage.h" // MultimediaSectionPage
+#include "multimedia_ts10.h" // MultimediaSectionPage
 #endif
 #include "labels.h" // ScrollingLabel
 #include "xmldevice.h"

@@ -19,7 +19,7 @@
  */
 
 
-#include "settings.h"
+#include "settings_ts3.h"
 #include "bann_settings.h"
 #include "btmain.h" // bt_global::btmain
 #include "lansettings.h"

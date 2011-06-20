@@ -33,7 +33,7 @@
 #include "bann_settings.h" // ScreensaverTiming
 #include "imageselectionhandler.h"
 #ifdef LAYOUT_TS_10
-#include "multimedia_sectionpage.h" // FilesystemBrowseButton
+#include "multimedia_ts10.h" // FilesystemBrowseButton
 #endif
 #include "main.h" // getPageNode(), MULTIMEDIA
 

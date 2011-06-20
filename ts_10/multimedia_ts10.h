@@ -19,8 +19,8 @@
  */
 
 
-#ifndef MULTIMEDIA_H
-#define MULTIMEDIA_H
+#ifndef MULTIMEDIA_TS10_H
+#define MULTIMEDIA_TS10_H
 
 #include "iconpage.h"
 #include "mount_watcher.h" // MountType, bt_global::mount_watcher
@@ -195,5 +195,5 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(MultimediaSectionPage::Items);
 
 
-#endif // MULTIMEDIA_H
+#endif // MULTIMEDIA_TS10_H
 

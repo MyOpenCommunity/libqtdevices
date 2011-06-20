@@ -33,7 +33,7 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #ifdef LAYOUT_TS_10
-#include "multimedia_sectionpage.h" // MultimediaSectionPage
+#include "multimedia_ts10.h" // MultimediaSectionPage
 #endif
 #include "navigation_bar.h"
 #include "audiostatemachine.h"

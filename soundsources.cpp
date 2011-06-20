@@ -32,9 +32,9 @@
 #include "devices_cache.h"
 #include "multimedia_filelist.h"
 #ifdef LAYOUT_TS_10
-#include "multimedia_sectionpage.h"
+#include "multimedia_ts10.h"
 #else
-#include "multimedia_container.h"
+#include "multimedia_ts3.h"
 #endif
 #include "radio.h" // RadioPage
 #ifdef LAYOUT_TS_3_5

@@ -19,7 +19,7 @@
  */
 
 
-#include "multimedia_container.h"
+#include "multimedia_ts3.h"
 #include "xml_functions.h"
 #include "bann2_buttons.h"
 #include "skinmanager.h"

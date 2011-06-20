@@ -19,8 +19,8 @@
  */
 
 
-#ifndef ICON_SETTINGS_H
-#define ICON_SETTINGS_H
+#ifndef SETTINGS_TS10_H
+#define SETTINGS_TS10_H
 
 #include "bannerpage.h"
 #include "iconpage.h"
@@ -198,4 +198,4 @@ private slots:
 	void decBrightness();
 };
 
-#endif // ICON_SETTINGS_H
+#endif // SETTINGS_TS10_H

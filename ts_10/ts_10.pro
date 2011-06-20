@@ -48,11 +48,11 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 
 HEADERS += favoriteswidget.h \
 	headerwidget.h \
-	iconsettings.h \
 	messages.h \
 	mount_watcher.h \
-	multimedia_sectionpage.h \
+	multimedia_ts10.h \
 	scenevomanager.h \
+	settings_ts10.h \
 	slideshow.h \
 	vctcall.h \
 	videoplayer.h \
@@ -61,11 +61,11 @@ HEADERS += favoriteswidget.h \
 
 SOURCES += favoriteswidget.cpp \
 	headerwidget.cpp \
-	iconsettings.cpp \
 	messages.cpp \
 	mount_watcher.cpp \
-	multimedia_sectionpage.cpp \
+	multimedia_ts10.cpp \
 	scenevomanager.cpp \
+	settings_ts10.cpp \
 	slideshow.cpp \
 	vctcall.cpp \
 	videoplayer.cpp \

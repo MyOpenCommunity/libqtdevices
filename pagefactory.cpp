@@ -26,11 +26,11 @@
 #include "videodoorentry.h"
 
 #ifdef LAYOUT_TS_10
-#include "multimedia_sectionpage.h"
+#include "multimedia_ts10.h"
 #include "multimedia_filelist.h"
 #include "messages.h"
 #else
-#include "settings.h"
+#include "settings_ts3.h"
 #endif
 
 #include "sounddiffusionpage.h"

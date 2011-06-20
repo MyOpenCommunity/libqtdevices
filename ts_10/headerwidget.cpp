@@ -25,7 +25,7 @@
 #include "main.h" // bt_global::config
 #include "xml_functions.h"
 #include "btbutton.h"
-#include "iconsettings.h"
+#include "settings_ts10.h"
 #include "generic_functions.h" // getBostikName
 #include "probe_device.h" // NonControlledProbeDevice
 #include "scaleconversion.h"

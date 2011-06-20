@@ -25,9 +25,9 @@
 #include "automation.h"
 #include "scenario.h"
 #ifdef LAYOUT_TS_10
-#include "iconsettings.h"
+#include "settings_ts10.h"
 #else
-#include "settings.h"
+#include "settings_ts3.h"
 #endif
 
 
