@@ -23,9 +23,11 @@
 #define VIDEOPLAYER_H
 
 #include "mediaplayerpage.h"
+#include "generic_functions.h" // EntryInfoList
 #include "window.h"
 
 #include <QTimer>
+
 
 class QLabel;
 class VideoPlayerWindow;

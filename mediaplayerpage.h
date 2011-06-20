@@ -23,60 +23,12 @@
 #define MEDIAPLAYERPAGE_H
 
 #include "page.h"
-#include "generic_functions.h" // EntryInfoList
 
 #include <QTimer>
 
 class MediaPlayer;
 class MultimediaPlayerButtons;
-
-
-// The interface for the manager of a list of 'files'.
-class ListManager : public QObject
-{
-Q_OBJECT
-public:
-	virtual QString currentFilePath() = 0;
-
-	virtual void nextFile() = 0;
-	virtual void previousFile() = 0;
-
-	virtual int currentIndex() = 0;
-	virtual int totalFiles() = 0;
-
-	virtual EntryInfo::Metadata currentMeta() = 0;
-
-signals:
-	void currentFileChanged();
-};
-
-
-// Implements the ListManager interface for files or virtual radio ip item.
-// All the items in a directory/album are loaded at the beginning, without regarding
-// the number of item displayed.
-class FileListManager : public ListManager
-{
-public:
-	FileListManager();
-	virtual QString currentFilePath();
-
-	virtual void nextFile();
-	virtual void previousFile();
-
-	virtual int currentIndex();
-	virtual int totalFiles();
-
-	virtual EntryInfo::Metadata currentMeta();
-
-	// FileListManager specific methods
-	void setCurrentIndex(int i);
-	void setList(const EntryInfoList &files);
-
-private:
-	int index, total_files;
-	EntryInfoList files_list;
-};
-
+class ListManager;
 
 
 /*!

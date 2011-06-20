@@ -23,77 +23,18 @@
 #include "mediaplayer.h"
 #include "multimedia_buttons.h"
 #include "audiostatemachine.h"
+#include "list_manager.h"
 
 #ifdef LAYOUT_TS_10
 #include "mount_watcher.h" // bt_global::mount_watcher
 #endif
-
-FileListManager::FileListManager()
-{
-	index = -1;
-	total_files = -1;
-}
-
-void FileListManager::setList(const EntryInfoList &files)
-{
-	files_list = files;
-	total_files = files.size();
-	index = 0;
-}
-
-QString FileListManager::currentFilePath()
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	return files_list[index].path;
-}
-
-void FileListManager::nextFile()
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	++index;
-	if (index >= total_files)
-		index = 0;
-	emit currentFileChanged();
-}
-
-void FileListManager::previousFile()
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	--index;
-	if (index < 0)
-		index = total_files - 1;
-	emit currentFileChanged();
-}
-
-int FileListManager::currentIndex()
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	return index;
-}
-
-void FileListManager::setCurrentIndex(int i)
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	Q_ASSERT_X(index >= 0 && index < total_files, "FileListManager::setCurrentIndex", "index out of range");
-	index = i;
-}
-
-int FileListManager::totalFiles()
-{
-	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
-	return total_files;
-}
-
-EntryInfo::Metadata FileListManager::currentMeta()
-{
-	return EntryInfo::Metadata();
-}
 
 
 MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
 {
 	player = new MediaPlayer(this);
 	temporary_pause = false;
+	list_manager = 0;
 
 #ifdef LAYOUT_TS_10
 	// terminate player when unmounted
@@ -163,12 +104,14 @@ void MediaPlayerPage::resume()
 void MediaPlayerPage::previous()
 {
 	player->quit();
+	Q_ASSERT_X(list_manager != 0, "MediaPlayerPage::previous", "List manager not set!");
 	list_manager->previousFile();
 }
 
 void MediaPlayerPage::next()
 {
 	player->quit();
+	Q_ASSERT_X(list_manager != 0, "MediaPlayerPage::next", "List manager not set!");
 	list_manager->nextFile();
 }
 
@@ -189,6 +132,7 @@ void MediaPlayerPage::videoPlaybackTerminated()
 
 void MediaPlayerPage::unmounted(const QString &dir)
 {
+	Q_ASSERT_X(list_manager != 0, "MediaPlayerPage::unmounted", "List manager not set!");
 	if (player->isInstanceRunning() && list_manager->currentFilePath().startsWith(dir))
 		stop();
 }

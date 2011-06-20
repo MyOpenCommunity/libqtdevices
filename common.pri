@@ -80,6 +80,7 @@ HEADERS += actuators.h \
 	labels.h \
 	lansettings.h \
 	lighting.h \
+	list_manager.h \
 	loads.h \
 	load_management.h \
 	main.h \
@@ -191,6 +192,7 @@ SOURCES += actuators.cpp \
 	labels.cpp \
 	lansettings.cpp \
 	lighting.cpp \
+	list_manager.cpp \
 	loads.cpp \
 	load_management.cpp \
 	main.cpp \

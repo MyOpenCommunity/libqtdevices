@@ -35,13 +35,12 @@
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
+#include "labels.h" // ScrollingLabel
+#include "list_manager.h"
+#include "pagestack.h" // bt_global::page_stack
 #ifdef LAYOUT_TS_10
 #include "multimedia_ts10.h" // MultimediaSectionPage
 #endif
-#include "labels.h" // ScrollingLabel
-#include "xmldevice.h"
-#include "displaycontrol.h" // bt_global::display
-#include "pagestack.h" // bt_global::page_stack
 
 #include <QFontMetrics>
 #include <QGridLayout>
@@ -79,86 +78,6 @@ namespace
 
 		return res;
 	}
-}
-
-
-UPnpListManager::UPnpListManager(XmlDevice *d)
-{
-	dev = d;
-	connect(dev, SIGNAL(responseReceived(XmlResponse)), SLOT(handleResponse(XmlResponse)));
-	connect(dev, SIGNAL(error(int,int)), SLOT(handleError(int,int)));
-}
-
-QString UPnpListManager::currentFilePath()
-{
-	Q_ASSERT_X(!current_file.isNull(), "UPnpListManager::currentFilePath", "Called with current_file not initialized!");
-	return current_file.path;
-}
-
-void UPnpListManager::handleResponse(const XmlResponse &response)
-{
-	if (response.contains(XmlResponses::TRACK_SELECTION))
-	{
-		current_file = response[XmlResponses::TRACK_SELECTION].value<EntryInfo>();
-		emit currentFileChanged();
-	}
-}
-
-void UPnpListManager::handleError(int response, int code)
-{
-	// NOTE: See the comment on managing errors in UPnpClientBrowser::handleError
-	if ((response == XmlResponses::TRACK_SELECTION || response == XmlResponses::INVALID) &&
-			code == XmlError::SERVER_DOWN)
-		emit serverDown();
-
-	// Because the serverDown error can change the current page and hide the screensaver,
-	// we have to restore the normal status of the display.
-	bt_global::display->makeActive();
-}
-
-void UPnpListManager::nextFile()
-{
-	if (++index >= total_files)
-		index = 0;
-	dev->nextFile();
-}
-
-void UPnpListManager::previousFile()
-{
-	if (--index < 0)
-		index = total_files - 1;
-	dev->previousFile();
-}
-
-int UPnpListManager::currentIndex()
-{
-	return index;
-}
-
-int UPnpListManager::totalFiles()
-{
-	return total_files;
-}
-
-void UPnpListManager::setCurrentIndex(int i)
-{
-	index = i;
-}
-
-void UPnpListManager::setTotalFiles(int n)
-{
-	total_files = n;
-}
-
-void UPnpListManager::setStartingFile(EntryInfo starting_file)
-{
-	dev->selectFile(starting_file.name);
-	current_file = starting_file;
-}
-
-EntryInfo::Metadata UPnpListManager::currentMeta()
-{
-	return current_file.metadata;
 }
 
 

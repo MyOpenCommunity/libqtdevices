@@ -29,6 +29,7 @@
 #include "audiostatemachine.h"
 #include "pagestack.h"
 #include "fontmanager.h" // bt_global::font
+#include "list_manager.h" // FileListManager
 
 #include <QLabel>
 #include <QVBoxLayout>
