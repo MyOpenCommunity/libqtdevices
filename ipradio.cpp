@@ -67,8 +67,10 @@ void IPRadioPage::gotoSoundDiffusion()
 
 void IPRadioPage::showPage()
 {
+#ifdef LAYOUT_TS_10
 	player->showPrevButton(page_content->itemCount() > 1);
 	player->showNextButton(page_content->itemCount() > 1);
+#endif
 	ScrollablePage::showPage();
 }
 
