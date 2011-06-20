@@ -55,7 +55,7 @@ class AlarmList : public ItemList
 {
 Q_OBJECT
 public:
-	AlarmList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page) {}
+	AlarmList(int rows_per_page = ITEM_PER_PAGE, QWidget *parent  = 0) : ItemList(rows_per_page, parent) {}
 
 	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
 };

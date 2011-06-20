@@ -42,8 +42,8 @@ enum {
 };
 
 
-MessageList::MessageList(QWidget *parent, int rows_per_page) :
-		ItemList(parent, rows_per_page)
+MessageList::MessageList(int rows_per_page, QWidget *parent) :
+		ItemList(rows_per_page, parent)
 {
 }
 
@@ -309,7 +309,7 @@ MessagesListPage::MessagesListPage(const QDomNode &config_node)
 	Q_UNUSED(config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	skin_cid = bt_global::skin->getCidState();
-	MessageList *item_list = new MessageList(0, 4);
+	MessageList *item_list = new MessageList;
 
 	delete_page = new DeleteMessagesPage;
 	connect(delete_page, SIGNAL(Closed()), SLOT(showPage()));

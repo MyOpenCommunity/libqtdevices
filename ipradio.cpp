@@ -33,7 +33,7 @@ IPRadioPage::IPRadioPage(const QDomNode &config_node)
 {
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 
-	ItemList *item_list = new ItemList(NULL, 4);
+	ItemList *item_list = new ItemList;
 
 	player = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::IP_RADIO);
 

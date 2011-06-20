@@ -79,7 +79,7 @@ class QScrollArea;
 class MessageList : public ItemList
 {
 public:
-	MessageList(QWidget *parent, int rows_per_page);
+	MessageList(int rows_per_page = ITEM_PER_PAGE, QWidget *parent = 0);
 
 protected:
 	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);

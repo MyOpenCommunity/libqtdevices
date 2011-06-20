@@ -104,7 +104,7 @@ void WebcamPage::downloadFinished(int id, bool error)
 WebcamListPage::WebcamListPage(const QDomNode &config_node)
 {
 	current_image = -1;
-	ItemList *item_list = new ItemList(0, 4);
+	ItemList *item_list = new ItemList;
 
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemSelected(int)));
 

@@ -147,7 +147,7 @@ AlarmListPage::AlarmListPage()
 	label_date->setAlignment(Qt::AlignLeft);
 	header_layout->addWidget(label_date, 1);
 
-	AlarmList *item_list = new AlarmList(0, 4);
+	AlarmList *item_list = new AlarmList;
 
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);

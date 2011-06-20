@@ -141,8 +141,8 @@ void ScreenSaverPage::bannerSelected(int id)
 
 #ifdef LAYOUT_TS_10
 
-FileList::FileList(QWidget *parent, int rows_per_page) :
-		ItemList(parent, rows_per_page), sel_buttons(new QButtonGroup(this))
+FileList::FileList(int rows_per_page, QWidget *parent) :
+		ItemList(rows_per_page, parent), sel_buttons(new QButtonGroup(this))
 {
 	sel_buttons->setExclusive(false);
 
@@ -224,7 +224,7 @@ SlideshowSelector::SlideshowSelector() :
 
 	handler->setFileFilter(getFileFilter(EntryInfo::IMAGE));
 
-	FileList *item_list = new FileList(0, 4);
+	FileList *item_list = new FileList;
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 
 	NavigationBar *nav_bar;

@@ -64,7 +64,7 @@ class FileList : public ItemList
 {
 Q_OBJECT
 public:
-	FileList(QWidget *parent, int rows_per_page);
+	FileList(int rows_per_page = ITEM_PER_PAGE, QWidget *parent = 0);
 
 signals:
 	void itemSelectionChanged(const QString &path, bool selected);

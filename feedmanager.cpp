@@ -33,14 +33,12 @@
 #include <QVector>
 #include <QPixmap>
 
-#define ROWS_PER_PAGE 4
-
 
 // FeedManager implementation
 
 FeedManager::FeedManager(const QDomNode &conf_node)
 {
-	ItemList *feeds = new ItemList(this, ROWS_PER_PAGE);
+	ItemList *feeds = new ItemList;
 
 	buildPage(feeds, feeds, new NavigationBar,
 		new PageTitleWidget(getTextChild(conf_node, "descr"), SMALL_TITLE_HEIGHT));
@@ -117,7 +115,7 @@ FeedItemList::FeedItemList()
 	forward_icon = bt_global::skin->getImage("forward_icon");
 	feed_icon = bt_global::skin->getImage("feed_icon");
 
-	ItemList *feed_items = new ItemList(this, ROWS_PER_PAGE);
+	ItemList *feed_items = new ItemList;
 	title_widget = new PageTitleWidget("", SMALL_TITLE_HEIGHT);
 
 	buildPage(feed_items, feed_items, new NavigationBar, title_widget);

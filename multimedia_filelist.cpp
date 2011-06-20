@@ -40,7 +40,7 @@
 #include <QDebug>
 
 
-MultimediaList::MultimediaList(QWidget *parent, int rows_per_page) : ItemList(parent, rows_per_page)
+MultimediaList::MultimediaList(int rows_per_page, QWidget *parent) : ItemList(rows_per_page, parent)
 {
 
 }
@@ -76,7 +76,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(browser, SIGNAL(listReceived(EntryInfoList)), this, SLOT(displayFiles(EntryInfoList)), Qt::QueuedConnection);
 
 	rows_per_page = 4;
-	ItemList *item_list = new MultimediaList(0, rows_per_page);
+	ItemList *item_list = new MultimediaList(rows_per_page);
 	connect(item_list, SIGNAL(itemIsClicked(int)), SLOT(itemIsClicked(int)));
 	connect(this, SIGNAL(fileClicked(int)), SLOT(startPlayback(int)));
 

@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QVariant>
 
+#define ITEM_PER_PAGE 4
 
 class QButtonGroup;
 class QGridLayout;
@@ -83,7 +84,7 @@ public:
 		Construct a new ItemList with the given \a parent and arranging the
 		items in \a rows_per_page rows.
 	*/
-	ItemList(QWidget *parent, int rows_per_page);
+	ItemList(int rows_per_page = ITEM_PER_PAGE, QWidget *parent = 0);
 
 	/*!
 		\brief Sets the list of items.

@@ -45,7 +45,7 @@ ItemList::ItemInfo::ItemInfo(QString n, QString descr, QStringList i, QVariant d
 }
 
 
-ItemList::ItemList(QWidget *parent, int _rows_per_page) :
+ItemList::ItemList(int _rows_per_page, QWidget *parent) :
 	ScrollableContent(parent)
 {
 	// Set the number of elements shown
