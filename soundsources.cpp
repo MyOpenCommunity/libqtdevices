@@ -33,6 +33,8 @@
 #include "multimedia_filelist.h"
 #ifdef LAYOUT_TS_10
 #include "multimedia.h"
+#else
+#include "multimedia_container.h"
 #endif
 #include "radio.h" // RadioPage
 #ifdef LAYOUT_TS_3_5
@@ -296,6 +298,8 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
 #ifdef LAYOUT_TS_10
 					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
+#else
+					s.details = new MultimediaContainer(getPageNode(MULTIMEDIA));
 #endif
 				}
 

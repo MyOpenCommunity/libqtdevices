@@ -92,7 +92,11 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 #endif
 		nav_bar = new NavigationBar;
 
+#ifdef LAYOUT_TS_10
 	title_widget = new PageTitleWidget(tr("Folder"), SMALL_TITLE_HEIGHT);
+#else
+	title_widget = 0;
+#endif
 
 	if (qobject_cast<UPnpClientBrowser*>(browser))
 	{
@@ -300,7 +304,8 @@ void MultimediaFileListPage::displayFiles(const EntryInfoList &list)
 		int current_page = (b->getStartingElement() - 1) / rows_per_page;
 		int total_pages =(b->getNumElements() - 1) / rows_per_page + 1;
 
-		title_widget->setCurrentPage(current_page, total_pages);
+		if (title_widget)
+			title_widget->setCurrentPage(current_page, total_pages);
 	}
 
 	EntryInfoList filtered_list;
