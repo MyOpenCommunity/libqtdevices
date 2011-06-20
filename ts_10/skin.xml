@@ -91,7 +91,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_go_home>home/home.png</img_go_home>
 		<img_left>barranavigazione/sinistra.png</img_left>
 		<img_right>barranavigazione/destra.png</img_right>
-                <img_settings_icon>barranavigazione/setup.png</img_settings_icon>
+		<img_settings_icon>barranavigazione/setup.png</img_settings_icon>
 		<img_clock_background>home/backtime.png</img_clock_background>
 		<img_date_background>home/backdate.png</img_date_background>
 		<img_temperature_background>home/backtemp.png</img_temperature_background>
