@@ -46,8 +46,6 @@ class MediaPlayerPage : public Page
 {
 Q_OBJECT
 public:
-	static const int MPLAYER_POLLING = 500;
-
 	MediaPlayerPage();
 
 	bool isPlayerInstanceRunning() const;
@@ -61,6 +59,8 @@ protected:
 	//
 	// must emit started() and start the refresh_data timer
 	virtual void startPlayback() = 0;
+
+	static const int MPLAYER_POLLING = 500;
 
 public slots:
 	// standard player functionality
