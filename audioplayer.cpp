@@ -208,7 +208,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 		l->addStretch(1);
 
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
-	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+	connect(refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 
 #ifdef LAYOUT_TS_10
 	// create the tray icon and add it to tray
@@ -241,7 +241,7 @@ void AudioPlayerPage::startMPlayer(QString filename, int time)
 	}
 
 	player->play(filename, true);
-	refresh_data.start(MPLAYER_POLLING);
+	refresh_data->start(MPLAYER_POLLING);
 }
 
 void AudioPlayerPage::startPlayback()

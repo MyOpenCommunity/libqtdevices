@@ -96,7 +96,7 @@ VideoPlayerPage::VideoPlayerPage()
 	connect(player, SIGNAL(mplayerStopped()), SLOT(videoPlaybackStopped()));
 
 	connect(player, SIGNAL(playingInfoUpdated(QMap<QString,QString>)), SLOT(refreshPlayInfo(QMap<QString,QString>)));
-	connect(&refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
+	connect(refresh_data, SIGNAL(timeout()), SLOT(refreshPlayInfo()));
 }
 
 VideoPlayerPage::~VideoPlayerPage()
@@ -119,7 +119,7 @@ void VideoPlayerPage::startMPlayer()
 		player->playVideoFullScreen(list_manager->currentFilePath(), current_time);
 	else
 		player->playVideo(list_manager->currentFilePath(), playbackGeometry(), current_time);
-	refresh_data.start(MPLAYER_POLLING);
+	refresh_data->start(MPLAYER_POLLING);
 }
 
 void VideoPlayerPage::startPlayback()

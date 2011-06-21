@@ -24,8 +24,7 @@
 
 #include "page.h"
 
-#include <QTimer>
-
+class QTimer;
 class MediaPlayer;
 class MultimediaPlayerButtons;
 class ListManager;
@@ -85,7 +84,7 @@ protected:
 	MediaPlayer *player;
 
 	// can be connected
-	QTimer refresh_data;
+	QTimer *refresh_data;
 
 	// set to true when the player is paused due to a audio state change (es. vct call)
 	// or (for video player) due to a page change (es. alarm)

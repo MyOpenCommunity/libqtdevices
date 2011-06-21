@@ -29,10 +29,14 @@
 #include "mount_watcher.h" // bt_global::mount_watcher
 #endif
 
+#include <QTimer>
 
-MediaPlayerPage::MediaPlayerPage() : refresh_data(this)
+
+MediaPlayerPage::MediaPlayerPage()
 {
 	player = new MediaPlayer(this);
+	refresh_data = new QTimer(this);
+
 	temporary_pause = false;
 	list_manager = 0;
 
@@ -127,7 +131,7 @@ void MediaPlayerPage::seekBack()
 
 void MediaPlayerPage::videoPlaybackTerminated()
 {
-	refresh_data.stop();
+	refresh_data->stop();
 }
 
 void MediaPlayerPage::unmounted(const QString &dir)
@@ -160,11 +164,11 @@ void MediaPlayerPage::audioStateAboutToChange(int old_state)
 void MediaPlayerPage::playbackStarted()
 {
 	temporary_pause = false;
-	refresh_data.start();
+	refresh_data->start();
 	bt_global::audio_states->setMediaPlayerTemporaryPause(false);
 }
 
 void MediaPlayerPage::playbackStopped()
 {
-	refresh_data.stop();
+	refresh_data->stop();
 }
