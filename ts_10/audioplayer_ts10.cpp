@@ -226,7 +226,7 @@ int AudioPlayerPage::sectionId() const
 	return MULTIMEDIA;
 }
 
-void AudioPlayerPage::startMPlayer(QString filename, int time)
+void AudioPlayerPage::startMPlayer(QString filename)
 {
 	clearLabels();
 
@@ -245,7 +245,7 @@ void AudioPlayerPage::startPlayback()
 	int index = list_manager->currentIndex();
 	int total_files = list_manager->totalFiles();
 	track->setText(tr("Track: %1 / %2").arg(index + 1).arg(total_files));
-	startMPlayer(list_manager->currentFilePath(), 0);
+	startMPlayer(list_manager->currentFilePath());
 }
 
 void AudioPlayerPage::clearLabels()

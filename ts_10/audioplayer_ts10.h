@@ -78,7 +78,7 @@ protected:
 	virtual void startPlayback();
 
 private:
-	void startMPlayer(QString filename, int time);
+	void startMPlayer(QString filename);
 	void clearLabels();
 
 private slots:
