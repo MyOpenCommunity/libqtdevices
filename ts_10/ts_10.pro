@@ -46,10 +46,13 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 		linguist-ts/btouch_pl.ts \
 		linguist-ts/btouch_tr.ts
 
-HEADERS += favoriteswidget.h \
+HEADERS += audioplayer_ts10.h \
+	favoriteswidget.h \
 	headerwidget.h \
+	mediaplayerpage.h \
 	messages.h \
 	mount_watcher.h \
+	multimedia_buttons.h \
 	multimedia_ts10.h \
 	scenevomanager.h \
 	settings_ts10.h \
@@ -59,10 +62,13 @@ HEADERS += favoriteswidget.h \
 	webcam.h
 
 
-SOURCES += favoriteswidget.cpp \
+SOURCES += audioplayer_ts10.cpp \
+	favoriteswidget.cpp \
 	headerwidget.cpp \
+	mediaplayerpage.cpp \
 	messages.cpp \
 	mount_watcher.cpp \
+	multimedia_buttons.cpp \
 	multimedia_ts10.cpp \
 	scenevomanager.cpp \
 	settings_ts10.cpp \

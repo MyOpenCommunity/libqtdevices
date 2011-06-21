@@ -21,7 +21,6 @@ HEADERS += actuators.h \
 	airconditioning.h \
 	alarmclock.h \
 	alarmpage.h \
-	audioplayer.h \
 	bann_amplifiers.h \
 	antintrusion.h \
 	audiostatemachine.h \
@@ -85,8 +84,6 @@ HEADERS += actuators.h \
 	load_management.h \
 	main.h \
 	mediaplayer.h \
-	mediaplayerpage.h \
-	multimedia_buttons.h \
 	multimedia_filelist.h \
 	navigation_bar.h \
 	openclient.h \
@@ -134,7 +131,6 @@ SOURCES += actuators.cpp \
 	airconditioning.cpp \
 	alarmclock.cpp \
 	alarmpage.cpp \
-	audioplayer.cpp \
 	bann_amplifiers.cpp \
 	antintrusion.cpp \
 	automation.cpp \
@@ -197,8 +193,6 @@ SOURCES += actuators.cpp \
 	load_management.cpp \
 	main.cpp \
 	mediaplayer.cpp \
-	mediaplayerpage.cpp \
-	multimedia_buttons.cpp \
 	multimedia_filelist.cpp \
 	navigation_bar.cpp \
 	openclient.cpp \

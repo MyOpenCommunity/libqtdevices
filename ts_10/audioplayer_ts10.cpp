@@ -19,7 +19,7 @@
  */
 
 
-#include "audioplayer.h"
+#include "audioplayer_ts10.h"
 #include "multimedia_buttons.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"

@@ -22,7 +22,6 @@
 #include "multimedia_filelist.h"
 #include "navigation_bar.h"
 #include "skinmanager.h"
-#include "audioplayer.h"
 #include "btbutton.h"
 #include "sounddiffusionpage.h" // SoundDiffusionPage::showCurrentAmbientPage
 
@@ -30,6 +29,9 @@
 #include "slideshow.h"
 #include "mount_watcher.h"
 #include "videoplayer.h"
+#include "audioplayer_ts10.h"
+#else
+#include "audioplayer_ts3.h"
 #endif
 
 #ifdef PDF_EXAMPLE
@@ -114,10 +116,15 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	}
 	else
 	{
+#ifdef LAYOUT_TS_10
 		buildPage(item_list, item_list, nav_bar, title_widget);
 		disconnect(nav_bar, SIGNAL(backClick()), 0, 0); // connected by buildPage()
 
 		audioplayer = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::LOCAL_FILE);
+#else
+		Q_ASSERT_X(false, "MultimediaFileListPage::MultimediaFileListPage",
+			"Cannot create instances to navigate over local files on ts3!");
+#endif
 	}
 
 	connect(nav_bar, SIGNAL(backClick()), SLOT(browseUp()));

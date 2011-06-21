@@ -34,11 +34,14 @@
 #include "devices_cache.h"
 #ifdef LAYOUT_TS_10
 #include "multimedia_ts10.h" // MultimediaSectionPage
+#include "audioplayer_ts10.h"
+#else
+#include "audioplayer_ts3.h"
 #endif
 #include "navigation_bar.h"
 #include "audiostatemachine.h"
 #include "labels.h" // ScrollingLabel
-#include "audioplayer.h"
+
 #include "videodoorentry_device.h"
 
 #include <QDomNode>
@@ -755,7 +758,7 @@ LocalSource::LocalSource(QObject *parent) : QObject(parent)
 
 void LocalSource::startLocalPlayback(bool force)
 {
-	foreach (MediaPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
 	{
 		if (!page)
 			continue;
@@ -779,7 +782,7 @@ void LocalSource::startLocalPlayback(bool force)
 
 void LocalSource::pauseLocalPlayback()
 {
-	foreach (MediaPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
 	{
 		if (!page)
 			continue;

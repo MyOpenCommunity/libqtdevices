@@ -22,7 +22,11 @@
 #include "ipradio.h"
 #include "skinmanager.h"
 #include "xml_functions.h" // getTextChild, getChildren
-#include "audioplayer.h"
+#ifdef LAYOUT_TS_3_5
+#include "audioplayer_ts3.h"
+#else
+#include "audioplayer_ts10.h"
+#endif
 #include "itemlist.h"
 #include "navigation_bar.h"
 #include "sounddiffusionpage.h" // SoundDiffusionPage::showCurrentAmbientPage

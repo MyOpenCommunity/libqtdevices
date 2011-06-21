@@ -32,7 +32,7 @@
 #include "devices_cache.h"
 #include "homewindow.h"
 #include "feedmanager.h"
-#include "audioplayer.h"
+#include "audioplayer_ts10.h"
 #include "webcam.h"
 
 #include <QSignalMapper>

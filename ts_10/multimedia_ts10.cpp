@@ -30,7 +30,7 @@
 #include "feedmanager.h"
 #include "state_button.h"
 #include "generic_functions.h" // getFileFilter
-#include "audioplayer.h"
+#include "audioplayer_ts10.h"
 #include "hardware_functions.h"
 
 #include <QFutureWatcher>
