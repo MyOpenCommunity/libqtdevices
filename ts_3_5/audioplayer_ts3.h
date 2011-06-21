@@ -29,6 +29,7 @@
 
 
 class StateButton;
+class ScrollingLabel;
 class MediaPlayer;
 class ListManager;
 class QTimer;
@@ -53,11 +54,9 @@ public:
 
 signals:
 	void loopDetected();
-	void playerExited();
 	void serverDown();
 
 public slots:
-
 	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);
 
 	void playAudioFiles(QList<QString> files, unsigned element);
@@ -76,14 +75,25 @@ public slots:
 	virtual void previous();
 	virtual void next();
 
+	virtual void showPage();
+
 private slots:
 	void gotoSoundDiffusion();
 
-	// update the play button status
+	// update the play icon, and start/stop the timer to update the info
 	void started();
 	void stopped();
 
 	void playToggled(bool playing);
+
+	void refreshPlayInfo(const QMap<QString, QString> &attrs);
+	void refreshPlayInfo();
+
+	void mplayerDone();
+	void currentFileChanged();
+	void resetLoopCheck();
+
+	void handleServerDown();
 
 private:
 	static QVector<AudioPlayerPage *> audioplayer_pages;
@@ -94,20 +104,20 @@ private:
 	QTimer *refresh_data;
 	StateButton *play_button;
 
-	// set to true when the player is paused due to a audio state change (es. vct call)
-	// or (for video player) due to a page change (es. alarm)
-	bool temporary_pause;
-
 	bool popup_mode; // true if the page must act as a popup using the page_stack
 	int loop_starting_file; // the index of the song used to detect loop
 	int loop_total_time; // the total time used to detect a loop
 	QTime loop_time_counter; // used to count the time elapsed
 	MediaType type;
 
+	// Upnp info labels
+	ScrollingLabel *track, *artist, *album, *length;
+
 	AudioPlayerPage(MediaType type);
 	void buildUi();
 	void startPlayback();
 	void startMPlayer(QString filename, int time);
+	void clearLabels();
 };
 
 #endif // AUDIOPLAYER_TS3_H
