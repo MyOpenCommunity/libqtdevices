@@ -168,7 +168,7 @@ void AudioPlayerPage::buildUi()
 	connect(stop, SIGNAL(clicked()), SLOT(stop()));
 
 	BtButton *prev = new BtButton(bt_global::skin->getImage("prev"));
-	connect(prev, SIGNAL(clicked()), SLOT(prev()));
+	connect(prev, SIGNAL(clicked()), SLOT(previous()));
 	connect(prev, SIGNAL(clicked()), SLOT(resetLoopCheck()));
 
 	BtButton *next = new BtButton(bt_global::skin->getImage("next"));
