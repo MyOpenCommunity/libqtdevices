@@ -77,7 +77,6 @@ private slots:
 
 	void displayFullScreen();
 	void displayNoFullScreen();
-	void videoPlaybackTerminated();
 	void videoPlaybackStarted();
 	void videoPlaybackStopped();
 	void currentFileChanged();

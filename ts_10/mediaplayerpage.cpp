@@ -125,11 +125,6 @@ void MediaPlayerPage::seekBack()
 	player->seek(-10);
 }
 
-void MediaPlayerPage::videoPlaybackTerminated()
-{
-	refresh_data->stop();
-}
-
 void MediaPlayerPage::unmounted(const QString &dir)
 {
 	Q_ASSERT_X(list_manager != 0, "MediaPlayerPage::unmounted", "List manager not set!");

@@ -142,13 +142,6 @@ void VideoPlayerPage::displayVideos(const EntryInfoList &videos, unsigned elemen
 	startPlayback();
 }
 
-void VideoPlayerPage::videoPlaybackTerminated()
-{
-	MediaPlayerPage::videoPlaybackTerminated();
-
-	video->update();
-}
-
 void VideoPlayerPage::videoPlaybackStarted()
 {
 	bt_global::display->forceOperativeMode(true);

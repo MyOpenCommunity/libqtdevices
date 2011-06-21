@@ -75,9 +75,6 @@ public slots:
 	virtual void seekForward();
 	virtual void seekBack();
 
-	// called for abnormal MPlayer termination
-	virtual void videoPlaybackTerminated();
-
 protected:
 	// media objects handled by the page
 
