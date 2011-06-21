@@ -48,7 +48,7 @@ public:
 	ScrollingLabel(const QString &text, QWidget *parent = 0);
 	~ScrollingLabel();
 
-	void setScrollingText(const QString &text);
+	void setScrollingText(const QString &new_text);
 
 	virtual QSize minimumSizeHint() const;
 

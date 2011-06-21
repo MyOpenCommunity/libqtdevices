@@ -83,10 +83,13 @@ QSize ScrollingLabel::minimumSizeHint() const
 	return QSize(30, QLabel::sizeHint().height());
 }
 
-void ScrollingLabel::setScrollingText(const QString &text)
+void ScrollingLabel::setScrollingText(const QString &new_text)
 {
-	setText(text);
-	QTimer::singleShot(0, this, SLOT(checkWidth()));
+	if (new_text != text())
+	{
+		setText(new_text);
+		QTimer::singleShot(0, this, SLOT(checkWidth()));
+	}
 }
 
 void ScrollingLabel::paintEvent(QPaintEvent *e)
