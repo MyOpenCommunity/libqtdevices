@@ -25,9 +25,7 @@
 #include "audiostatemachine.h"
 #include "list_manager.h"
 
-#ifdef LAYOUT_TS_10
 #include "mount_watcher.h" // bt_global::mount_watcher
-#endif
 
 #include <QTimer>
 
@@ -40,10 +38,8 @@ MediaPlayerPage::MediaPlayerPage()
 	temporary_pause = false;
 	list_manager = 0;
 
-#ifdef LAYOUT_TS_10
 	// terminate player when unmounted
 	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), SLOT(unmounted(QString)));
-#endif
 	// pause local playback when receiving a VCT call
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange(int)));
 	connect(bt_global::audio_states, SIGNAL(stateChanged(int,int)), SLOT(audioStateChanged(int,int)));

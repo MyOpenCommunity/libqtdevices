@@ -28,10 +28,7 @@
 #include "generic_functions.h" // checkImageSize, checkImageMemory, startTrackMemory, stopTrackMemory
 #include "hardware_functions.h" // dumpSystemMemory
 #include "fontmanager.h" // bt_global::font
-
-#ifdef LAYOUT_TS_10
 #include "mount_watcher.h"
-#endif
 
 #include <QImageReader>
 #include <QHBoxLayout>
@@ -336,10 +333,7 @@ void SlideshowPage::hideEvent(QHideEvent *)
 		controller->stopSlideshow();
 		paused = true;
 	}
-
-#ifdef LAYOUT_TS_10
 	disconnect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
-#endif
 }
 
 void SlideshowPage::showEvent(QShowEvent *)
@@ -348,9 +342,7 @@ void SlideshowPage::showEvent(QShowEvent *)
 		controller->startSlideshow();
 	paused = false;
 
-#ifdef LAYOUT_TS_10
 	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
-#endif
 }
 
 void SlideshowPage::unmounted(const QString &dir)
@@ -588,9 +580,7 @@ void SlideshowWindow::hideEvent(QHideEvent *)
 		paused = true;
 	}
 
-#ifdef LAYOUT_TS_10
 	disconnect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
-#endif
 }
 
 void SlideshowWindow::showEvent(QShowEvent *)
@@ -599,9 +589,7 @@ void SlideshowWindow::showEvent(QShowEvent *)
 		controller->startSlideshow();
 	paused = false;
 
-#ifdef LAYOUT_TS_10
 	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(QString,MountType)), this, SLOT(unmounted(QString)));
-#endif
 }
 
 void SlideshowWindow::unmounted(const QString &dir)
