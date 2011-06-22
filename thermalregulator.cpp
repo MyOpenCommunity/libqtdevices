@@ -447,6 +447,10 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
+	main_layout->addWidget(mode_icon);
+	main_layout->addWidget(description_label);
+	main_layout->addWidget(season_icon, 0, Qt::AlignCenter);
+
 #ifdef LAYOUT_TS_10
 	main_layout->setContentsMargins(40, 0, 40, 17);
 
@@ -457,14 +461,9 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	hbox->addStretch();
 	hbox->addWidget(settings);
-#endif
-
-	main_layout->addWidget(mode_icon);
-	main_layout->addWidget(description_label);
-	main_layout->addWidget(season_icon, 0, Qt::AlignCenter);
-#ifdef LAYOUT_TS_10
 	main_layout->addLayout(hbox);
 #endif
+
 	main_layout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
 	main_layout->setAlignment(Qt::AlignHCenter);
 
