@@ -108,6 +108,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>5</cid>
 		<img_link_icon>appccar.png</img_link_icon>
 	</item>
+	<item>
+		<!-- Thermal regulation -->
+		<cid>8</cid>
+		<img_link_icon>appterm.png</img_link_icon>
+	</item>
 	<!-- End HomePage buttons -->
 
 	<!-- Start Settings items -->
@@ -679,6 +684,65 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_autocheck_enabled>a_autotest.png</img_autocheck_enabled>
 		<img_autocheck_disabled>d_autotest.png</img_autocheck_disabled>
 	</item>
-
 	<!-- End Supervision items -->
+
+	<!-- Start Thermal regulation items -->
+	<item>
+		<!-- thermal regulation page -->
+		<!-- uses: forward -->
+		<cid>8000</cid>
+	</item>
+	<item>
+		<!-- external probe banner-->
+		<cid>8001</cid>
+		<img_central_icon>sonda_esterna.png</img_central_icon>
+	</item>
+	<item>
+		<!-- non controlled probe banner -->
+		<cid>8002</cid>
+		<img_central_icon>zona.png</img_central_icon>
+	</item>
+	<item>
+		<!-- 4 zones central banner -->
+		<cid>8004</cid>
+		<img_central_icon>impianto.png</img_central_icon>
+	</item>
+	<item>
+		<!-- 4 zones central banner (in page 4 zones) -->
+		<cid>8041</cid>
+		<img_central_icon>centrale.png</img_central_icon>
+	</item>
+	<item>
+		<!-- controlled probe banner (in page 4 zones) -->
+		<cid>8042</cid>
+		<img_central_icon>zona.png</img_central_icon>
+	</item>
+	<item>
+		<!-- controlled probe details page -->
+		<cid>8300</cid>
+		<img_fan_1_on>fancoil1on.png</img_fan_1_on>
+		<img_fan_1_off>fancoil1off.png</img_fan_1_off>
+		<img_fan_2_on>fancoil2on.png</img_fan_2_on>
+		<img_fan_2_off>fancoil2off.png</img_fan_2_off>
+		<img_fan_3_on>fancoil3on.png</img_fan_3_on>
+		<img_fan_3_off>fancoil3off.png</img_fan_3_off>
+		<img_fan_4_on>fancoilAon.png</img_fan_4_on>
+		<img_fan_4_off>fancoilAoff.png</img_fan_4_off>
+	</item>
+	<item>
+		<!-- controlled probe details page -->
+		<cid>8301</cid>
+		<img_summer_flat>estate_s.png</img_summer_flat>
+		<img_winter_flat>inverno_s.png</img_winter_flat>
+		<img_regulator>centrale.png</img_regulator>
+		<img_regulator_manual>manuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>manuale_temporizzato.png</img_regulator_manual_timed>
+		<img_regulator_program>settimanale.png</img_regulator_program>
+		<img_regulator_scenario>scenari.png</img_regulator_scenario>
+		<img_regulator_holiday>feriale.png</img_regulator_holiday>
+		<img_regulator_weekend>festivo.png</img_regulator_weekend>
+		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
+		<img_settings>set.png</img_settings>
+	</item>
+	<!-- End Thermal regulation items -->
 </style>
