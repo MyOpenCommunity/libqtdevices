@@ -51,7 +51,7 @@ public:
 		DISPLAY_SECONDS = 1
 	};
 
-	BtTimeEdit(QWidget *parent, DisplayType type = DISPLAY_MINUTES);
+	BtTimeEdit(QWidget *parent = 0, DisplayType type = DISPLAY_MINUTES);
 
 	/*!
 		\brief Set the \a time on the widget.
@@ -110,7 +110,7 @@ class BtDateEdit : public QWidget
 {
 Q_OBJECT
 public:
-	BtDateEdit(QWidget *parent);
+	BtDateEdit(QWidget *parent = 0);
 
 	void setDate(const QDate& date);
 

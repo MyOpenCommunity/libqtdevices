@@ -87,7 +87,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 	dev = d;
 	setpoint_delta = 5;
 
-	content = new QWidget;
+	QWidget *content = new QWidget;
 	main_layout = new QVBoxLayout(content);
 #ifdef LAYOUT_TS_10
 	main_layout->setSpacing(8);
@@ -251,7 +251,7 @@ void PageManual::valueReceived(const DeviceValues &values_list)
 
 PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale, QString descr) : PageManual(dev, scale, descr)
 {
-	time_edit = new BtTimeEdit(this);
+	time_edit = new BtTimeEdit;
 #ifdef LAYOUT_TS_10
 	main_layout->insertWidget(2, time_edit, 0, Qt::AlignHCenter);
 #else
@@ -291,14 +291,14 @@ void PageManualTimed::setMaxMinutes(int max)
 
 PageSetDate::PageSetDate()
 {
-	content = new QWidget;
-	main_layout = new QVBoxLayout(content);
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
 
-	QLabel *top = new QLabel(this);
+	QLabel *top = new QLabel;
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("date_icon")));
 	main_layout->addWidget(top, 0, Qt::AlignHCenter);
 
-	date_edit = new BtDateEdit(this);
+	date_edit = new BtDateEdit;
 	main_layout->addWidget(date_edit);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 10);
@@ -323,14 +323,14 @@ void PageSetDate::performAction()
 
 PageSetTime::PageSetTime()
 {
-	content = new QWidget;
-	main_layout = new QVBoxLayout(content);
+	QWidget *content = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
 
-	QLabel *top = new QLabel(this);
+	QLabel *top = new QLabel;
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("time_icon")));
 	main_layout->addWidget(top, 0, Qt::AlignHCenter);
 
-	time_edit = new BtTimeEdit(this);
+	time_edit = new BtTimeEdit;
 	main_layout->addWidget(time_edit);
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 10);

@@ -35,6 +35,7 @@
 #include <QRegExp>
 #include <QDebug>
 #include <QLabel>
+#include <QGridLayout>
 
 
 enum
@@ -48,7 +49,6 @@ enum
 
 namespace
 {
-
 	QLabel *getLabel(const QString &text)
 	{
 		QLabel *l = new QLabel(text);

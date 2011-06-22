@@ -33,6 +33,7 @@
 #include "icondispatcher.h"
 #include "state_button.h"
 
+#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QVariant>
 #include <QRegExp>

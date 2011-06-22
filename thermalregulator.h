@@ -23,7 +23,7 @@
 #define THERMAL_REGULATOR_H
 
 #include "plantmenu.h" // NavigationPage
-#include "bttime.h"
+
 
 #include <QList>
 #include <QPair>
@@ -316,7 +316,6 @@ protected slots:
 	virtual void performAction();
 
 protected:
-	QWidget *content;
 	QVBoxLayout *main_layout;
 	// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
@@ -381,8 +380,6 @@ private slots:
 	void performAction();
 
 private:
-	QWidget *content;
-	QVBoxLayout *main_layout;
 	BtDateEdit *date_edit;
 };
 
@@ -407,8 +404,6 @@ private slots:
 	void performAction();
 
 private:
-	QWidget *content;
-	QVBoxLayout *main_layout;
 	BtTimeEdit *time_edit;
 };
 

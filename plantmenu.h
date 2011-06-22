@@ -27,7 +27,6 @@
 #include "main.h" // TemperatureScale
 #include "thermal_device.h" // ThermoType
 
-#include <QVBoxLayout>
 #include <QButtonGroup>
 
 class NavigationPage;

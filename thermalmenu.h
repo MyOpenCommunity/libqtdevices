@@ -23,12 +23,12 @@
 #define BTOUCH_THERMALMENU_H
 
 #include "bannerpage.h"
-#include "bann1_button.h"
-#include "bttime.h"
 
 #include <QDomNode>
 #include <QWidget>
 #include <QString>
+
+class BannSinglePuls;
 
 
 /*!
