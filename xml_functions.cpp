@@ -43,7 +43,7 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, int 
 	return getChildWithId(parent, node_regexp, "id", id);
 }
 
-QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, const QString &idName, int id)
+QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, const QString &id_name, int id)
 {
 	QDomNode n = parent.firstChild();
 	while (!n.isNull())
@@ -51,7 +51,7 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, cons
 		if (n.isElement() && n.nodeName().contains(node_regexp))
 		{
 			QDomNode child = n.firstChild();
-			while (!child.isNull() && child.nodeName() != idName)
+			while (!child.isNull() && child.nodeName() != id_name)
 				child = child.nextSibling();
 
 			if (!child.isNull() && child.toElement().text().toInt() == id)
