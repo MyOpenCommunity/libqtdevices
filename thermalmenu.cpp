@@ -36,6 +36,7 @@
 #include <QDebug>
 #include <QLabel>
 
+
 enum
 {
 	PAGE_PLANT_MENU_4ZONES = 8040,
@@ -44,6 +45,20 @@ enum
 	PAGE_INTERNAL_PROBES = 8030,
 	PAGE_AIRCONDITIONING = 4000,
 };
+
+namespace
+{
+
+	QLabel *getLabel(const QString &text)
+	{
+		QLabel *l = new QLabel(text);
+		l->setAlignment(Qt::AlignCenter);
+		l->setFont(bt_global::font->get(FontManager::TITLE));
+
+		return l;
+	}
+}
+
 
 ThermalMenu::ThermalMenu(const QDomNode &config_node)
 {
@@ -182,15 +197,6 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 }
 
 #else
-
-static QLabel *getLabel(const QString &text)
-{
-	QLabel *l = new QLabel(text);
-	l->setAlignment(Qt::AlignCenter);
-	l->setFont(bt_global::font->get(FontManager::TITLE));
-
-	return l;
-}
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
