@@ -136,7 +136,8 @@ class PageProbe : public NavigationPage
 {
 Q_OBJECT
 public:
-	PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale = CELSIUS);
+	PageProbe(const QDomNode &config_node, const QString &descr, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
+		TemperatureScale scale = CELSIUS);
 
 public slots:
 	virtual void valueReceived(const DeviceValues &values_list);
@@ -228,7 +229,7 @@ class PageFancoil : public PageProbe
 {
 Q_OBJECT
 public:
-	PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
+	PageFancoil(const QDomNode &config_node, const QString &descr, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
 		TemperatureScale scale = CELSIUS);
 	virtual void valueReceived(const DeviceValues &values_list);
 

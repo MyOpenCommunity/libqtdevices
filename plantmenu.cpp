@@ -72,6 +72,7 @@ namespace
 	NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner *bann)
 	{
 		NavigationPage *p = 0;
+		QString descr = getTextChild(n, "descr");
 		QString simple_address = getTextChild(n, "where");
 		QString where_composed;
 		if (id != FS_4Z_THERMAL_REGULATOR && id != FS_99Z_THERMAL_REGULATOR && !simple_address.isEmpty())
@@ -92,7 +93,7 @@ namespace
 			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
-			p = new PageProbe(n, dev, thermal_device, scale);
+			p = new PageProbe(page_node, descr, dev, thermal_device, scale);
 			break;
 		}
 		case FS_99Z_PROBE:
@@ -102,7 +103,7 @@ namespace
 			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::NORMAL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
-			p = new PageProbe(n, dev, thermal_device, scale);
+			p = new PageProbe(page_node, descr, dev, thermal_device, scale);
 			break;
 		}
 		case FS_4Z_FANCOIL:
@@ -111,7 +112,7 @@ namespace
 			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(where_composed,
 				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_4ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice4Zones(thermr_where, openserver_id));
-			p = new PageFancoil(n, dev, thermal_device, scale);
+			p = new PageFancoil(page_node, descr, dev, thermal_device, scale);
 			break;
 		}
 		case FS_99Z_FANCOIL:
@@ -120,7 +121,7 @@ namespace
 			ControlledProbeDevice *dev = bt_global::add_device_to_cache(new ControlledProbeDevice(simple_address,
 				thermr_where, simple_address, ControlledProbeDevice::CENTRAL_99ZONES, ControlledProbeDevice::FANCOIL, openserver_id));
 			thermal_device = bt_global::add_device_to_cache(new ThermalDevice99Zones(thermr_where, openserver_id));
-			p = new PageFancoil(n, dev, thermal_device, scale);
+			p = new PageFancoil(page_node, descr, dev, thermal_device, scale);
 			break;
 		}
 		case FS_4Z_THERMAL_REGULATOR:
@@ -350,8 +351,9 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, 
 }
 
 
-PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale) : setpoint_delta(5)
+PageProbe::PageProbe(const QDomNode &config_node, const QString &descr, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale) : setpoint_delta(5)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	temp_scale = scale;
 	delta_setpoint = false;
 	status = AUTOMATIC;
@@ -363,7 +365,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	main_layout->setAlignment(Qt::AlignHCenter);
 
 #ifdef LAYOUT_TS_3_5
-	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
+	QLabel *descr_label = new QLabel(descr);
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 
@@ -378,7 +380,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
 #else
 	main_layout->setContentsMargins(0, 0, 0, 17);
-	createNavigationBar(QString(), getTextChild(n, "descr"));
+	createNavigationBar(QString(), descr);
 #endif
 
 	temp_label = new QLabel(this);
@@ -433,7 +435,11 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	// avoid moving of fancoil buttons bar
 	main_layout->addStretch();
 
+	// layout for fancoil icons
 	bottom_icons = new QHBoxLayout;
+	bottom_icons->setSpacing(10);
+	bottom_icons->setAlignment(Qt::AlignHCenter);
+	main_layout->addLayout(bottom_icons);
 
 #ifdef LAYOUT_TS_10
 	if (probe_type == THERMO_Z99)
@@ -470,14 +476,9 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 
 		main_layout->addLayout(control_icons);
 	}
-	bottom_icons->setSpacing(10);
 #else
-	bottom_icons->setSpacing(0);
+	main_layout->addSpacing(20);
 #endif
-
-	// layout for fancoil icons
-	bottom_icons->setAlignment(Qt::AlignHCenter);
-	main_layout->addLayout(bottom_icons);
 
 	switch (temp_scale)
 	{
@@ -720,9 +721,10 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 }
 
 
-PageFancoil::PageFancoil(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg,
-	TemperatureScale scale) : PageProbe(n, _dev, thermo_reg, scale), fancoil_buttons(this)
+PageFancoil::PageFancoil(const QDomNode &config_node, const QString &descr, ControlledProbeDevice *_dev, ThermalDevice *thermo_reg, TemperatureScale scale) :
+	PageProbe(config_node, descr, _dev, thermo_reg, scale), fancoil_buttons(this)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 	dev = _dev;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
@@ -757,9 +759,9 @@ void PageFancoil::setFancoilStatus(int status)
 	fancoil_buttons.button(status)->setChecked(true);
 }
 
-void PageFancoil::handleFancoilButtons(int pressedButton)
+void PageFancoil::handleFancoilButtons(int pressed_button)
 {
-	dev->setFancoilSpeed(btn_to_speed_tbl[pressedButton]);
+	dev->setFancoilSpeed(btn_to_speed_tbl[pressed_button]);
 	/*
 	 * Read back the set value to force an update to other devices
 	 * monitoring this dimension.
