@@ -79,11 +79,11 @@ namespace
 		QString where_composed;
 		if (id != FS_4Z_THERMAL_REGULATOR && id != FS_99Z_THERMAL_REGULATOR && !simple_address.isEmpty())
 			where_composed = simple_address + "#" + ind_centrale;
-	#ifdef CONFIG_TS_3_5
+#ifdef CONFIG_TS_3_5
 		QDomNode page_node = n;
-	#else
+#else
 		QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
-	#endif
+#endif
 
 		ThermalDevice *thermal_device = 0;
 		switch (id)
@@ -151,7 +151,7 @@ namespace
 
 
 
-PlantMenu::PlantMenu(const QDomNode &conf) : BannerPage(0)
+PlantMenu::PlantMenu(const QDomNode &conf)
 {
 	SkinContext cxt(getTextChild(conf, "cid").toInt());
 
@@ -266,27 +266,12 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		case TERMO_4Z:
 			pg = addMenuItem(item, icon, FS_4Z_THERMAL_REGULATOR);
 			break;
-#ifdef CONFIG_TS_3_5
-		case TERMO_99Z_PROBE:
-			pg = addMenuItem(item, icon, FS_99Z_PROBE);
-			break;
-		case TERMO_99Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, FS_99Z_FANCOIL);
-			break;
-		case TERMO_4Z_PROBE:
-			pg = addMenuItem(item, icon, FS_4Z_PROBE);
-			break;
-		case TERMO_4Z_PROBE_FANCOIL:
-			pg = addMenuItem(item, icon, FS_4Z_FANCOIL);
-			break;
-#else
 		case TERMO_99Z_PROBE:
 			pg = addMenuItem(item, icon, fancoil ? FS_99Z_FANCOIL : FS_99Z_PROBE);
 			break;
 		case TERMO_4Z_PROBE:
 			pg = addMenuItem(item, icon, fancoil ? FS_4Z_FANCOIL : FS_4Z_PROBE);
 			break;
-#endif
 		}
 
 		if (prev)
