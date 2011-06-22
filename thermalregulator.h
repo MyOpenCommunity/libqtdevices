@@ -316,8 +316,8 @@ protected slots:
 	virtual void performAction();
 
 protected:
-	QWidget content;
-	QVBoxLayout main_layout;
+	QWidget *content;
+	QVBoxLayout *main_layout;
 	// The setpoint temperature set on the interface. The scale is given by temp_scale
 	int temp;
 	TemperatureScale temp_scale;
@@ -381,8 +381,8 @@ private slots:
 	void performAction();
 
 private:
-	QWidget content;
-	QVBoxLayout main_layout;
+	QWidget *content;
+	QVBoxLayout *main_layout;
 	BtDateEdit *date_edit;
 };
 
@@ -407,8 +407,8 @@ private slots:
 	void performAction();
 
 private:
-	QWidget content;
-	QVBoxLayout main_layout;
+	QWidget *content;
+	QVBoxLayout *main_layout;
 	BtTimeEdit *time_edit;
 };
 

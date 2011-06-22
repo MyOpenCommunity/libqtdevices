@@ -87,19 +87,20 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 	dev = d;
 	setpoint_delta = 5;
 
-	content.setLayout(&main_layout);
+	content = new QWidget;
+	main_layout = new QVBoxLayout(content);
 #ifdef LAYOUT_TS_10
-	main_layout.setSpacing(8);
-	main_layout.setContentsMargins(30, 0, 30, 18);
+	main_layout->setSpacing(8);
+	main_layout->setContentsMargins(30, 0, 30, 18);
 #else
-	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 10);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 10);
 
 	QLabel *descr_label = new QLabel(descr);
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 
-	main_layout.addWidget(descr_label);
+	main_layout->addWidget(descr_label);
 #endif
 
 	switch (temp_scale)
@@ -143,25 +144,25 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 	hbox->addWidget(plus_btn);
 	hbox->addStretch(1);
 
-	main_layout.addLayout(hbox);
-	main_layout.addStretch();
+	main_layout->addLayout(hbox);
+	main_layout->addStretch();
 
 #ifdef LAYOUT_TS_3_5
 	ThermalNavigation *nav_bar = new ThermalNavigation;
-	buildPage(&content, nav_bar);
+	buildPage(content, nav_bar);
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 	ok_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 
-	main_layout.addLayout(ok_layout);
+	main_layout->addLayout(ok_layout);
 
 	connect(ok, SIGNAL(clicked()), SLOT(performAction()));
 
 	NavigationBar *nav_bar = new NavigationBar;
 	nav_bar->displayScrollButtons(false);
 
-	buildPage(&content, nav_bar, new PageTitleWidget(descr, TITLE_HEIGHT));
+	buildPage(content, nav_bar, new PageTitleWidget(descr, TITLE_HEIGHT));
 #endif
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(performAction()));
@@ -252,9 +253,9 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scal
 {
 	time_edit = new BtTimeEdit(this);
 #ifdef LAYOUT_TS_10
-	main_layout.insertWidget(2, time_edit, 0, Qt::AlignHCenter);
+	main_layout->insertWidget(2, time_edit, 0, Qt::AlignHCenter);
 #else
-	main_layout.insertWidget(2, time_edit);
+	main_layout->insertWidget(2, time_edit);
 #endif
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
@@ -290,19 +291,20 @@ void PageManualTimed::setMaxMinutes(int max)
 
 PageSetDate::PageSetDate()
 {
-	content.setLayout(&main_layout);
+	content = new QWidget;
+	main_layout = new QVBoxLayout(content);
 
 	QLabel *top = new QLabel(this);
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("date_icon")));
-	main_layout.addWidget(top, 0, Qt::AlignHCenter);
+	main_layout->addWidget(top, 0, Qt::AlignHCenter);
 
 	date_edit = new BtDateEdit(this);
-	main_layout.addWidget(date_edit);
-	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 10);
+	main_layout->addWidget(date_edit);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 10);
 
 	ThermalNavigation *nav = new ThermalNavigation;
-	buildPage(&content, nav);
+	buildPage(content, nav);
 
 	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -321,19 +323,20 @@ void PageSetDate::performAction()
 
 PageSetTime::PageSetTime()
 {
-	content.setLayout(&main_layout);
+	content = new QWidget;
+	main_layout = new QVBoxLayout(content);
 
 	QLabel *top = new QLabel(this);
 	top->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("time_icon")));
-	main_layout.addWidget(top, 0, Qt::AlignHCenter);
+	main_layout->addWidget(top, 0, Qt::AlignHCenter);
 
 	time_edit = new BtTimeEdit(this);
-	main_layout.addWidget(time_edit);
-	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 10);
+	main_layout->addWidget(time_edit);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 10);
 
 	ThermalNavigation *nav = new ThermalNavigation;
-	buildPage(&content, nav);
+	buildPage(content, nav);
 
 	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -445,7 +448,7 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	mode_icon = getLabelWithPixmap(bt_global::skin->getImage("regulator"), this, Qt::AlignHCenter);
 
 #ifdef LAYOUT_TS_10
-	main_layout.setContentsMargins(40, 0, 40, 17);
+	main_layout->setContentsMargins(40, 0, 40, 17);
 
 	BtButton *settings = new BtButton(bt_global::skin->getImage("settings"));
 	connect(settings, SIGNAL(clicked()), SLOT(showSettingsMenu()));
@@ -456,14 +459,14 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	hbox->addWidget(settings);
 #endif
 
-	main_layout.addWidget(mode_icon);
-	main_layout.addWidget(description_label);
-	main_layout.addWidget(season_icon, 0, Qt::AlignCenter);
+	main_layout->addWidget(mode_icon);
+	main_layout->addWidget(description_label);
+	main_layout->addWidget(season_icon, 0, Qt::AlignCenter);
 #ifdef LAYOUT_TS_10
-	main_layout.addLayout(hbox);
+	main_layout->addLayout(hbox);
 #endif
-	main_layout.addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
-	main_layout.setAlignment(Qt::AlignHCenter);
+	main_layout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
+	main_layout->setAlignment(Qt::AlignHCenter);
 
 	date_edit = 0;
 	time_edit = 0;

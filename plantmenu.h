@@ -118,9 +118,9 @@ protected:
 	NavigationBar *createNavigationBar(const QString &forward_icon = QString(), const QString& title = QString(), int title_height = TITLE_HEIGHT);
 
 	/// Content widget
-	QWidget content;
+	QWidget *content;
 	/// Global layout for the content
-	QVBoxLayout main_layout;
+	QVBoxLayout *main_layout;
 	/// Navigation bar
 	NavigationBar *nav_bar;
 };

@@ -242,7 +242,6 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 		}
 	}
 
-
 	NavigationPage *first = 0, *prev = 0;
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
@@ -324,11 +323,12 @@ ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(pa
 
 
 NavigationPage::NavigationPage()
-	: nav_bar(0)
 {
-	content.setLayout(&main_layout);
-	main_layout.setSpacing(0);
-	main_layout.setContentsMargins(0, 0, 0, 0);
+	content = new QWidget;
+	nav_bar = 0;
+	main_layout = new QVBoxLayout(content);
+	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 }
 
 NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, const QString &title, int title_height)
@@ -343,7 +343,7 @@ NavigationBar *NavigationPage::createNavigationBar(const QString &forward_icon, 
 	connect(nav_bar, SIGNAL(upClick()), SIGNAL(upClick()));
 	connect(nav_bar, SIGNAL(downClick()), SIGNAL(downClick()));
 
-	buildPage(&content, nav_bar, title, title_height);
+	buildPage(content, nav_bar, title, title_height);
 
 	return nav_bar;
 }
@@ -359,14 +359,14 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	dev = _dev;
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 
-	main_layout.setAlignment(Qt::AlignHCenter);
+	main_layout->setAlignment(Qt::AlignHCenter);
 
 #ifdef LAYOUT_TS_3_5
 	QLabel *descr_label = new QLabel(getTextChild(n, "descr"));
 	descr_label->setFont(bt_global::font->get(FontManager::TEXT));
 	descr_label->setAlignment(Qt::AlignHCenter);
 
-	main_layout.addWidget(descr_label);
+	main_layout->addWidget(descr_label);
 
 	createNavigationBar(bt_global::skin->getImage("probe_manual"));
 
@@ -376,7 +376,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	toggle_mode = nav_bar->forward_button;
 	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
 #else
-	main_layout.setContentsMargins(0, 0, 0, 17);
+	main_layout->setContentsMargins(0, 0, 0, 17);
 	createNavigationBar(QString(), getTextChild(n, "descr"));
 #endif
 
@@ -385,7 +385,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	temp_label->setAlignment(Qt::AlignHCenter);
 	setTemperature(1235);
 
-	main_layout.addWidget(temp_label);
+	main_layout->addWidget(temp_label);
 
 	QHBoxLayout *hbox = new QHBoxLayout();
 
@@ -421,16 +421,16 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 	hbox->addStretch(1);
 #endif
 
-	main_layout.addLayout(hbox);
+	main_layout->addLayout(hbox);
 
 	local_temp_label = new QLabel(this);
 	local_temp_label->setFont(bt_global::font->get(FontManager::TEXT));
 	local_temp_label->setAlignment(Qt::AlignHCenter);
 
-	main_layout.addWidget(local_temp_label);
+	main_layout->addWidget(local_temp_label);
 
 	// avoid moving of fancoil buttons bar
-	main_layout.addStretch();
+	main_layout->addStretch();
 
 	bottom_icons = new QHBoxLayout;
 
@@ -467,7 +467,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 		control_icons->setContentsMargins(0, 0, 0, 5);
 		control_icons->setAlignment(Qt::AlignHCenter);
 
-		main_layout.addLayout(control_icons);
+		main_layout->addLayout(control_icons);
 	}
 	bottom_icons->setSpacing(10);
 #else
@@ -476,7 +476,7 @@ PageProbe::PageProbe(QDomNode n, ControlledProbeDevice *_dev, ThermalDevice *the
 
 	// layout for fancoil icons
 	bottom_icons->setAlignment(Qt::AlignHCenter);
-	main_layout.addLayout(bottom_icons);
+	main_layout->addLayout(bottom_icons);
 
 	switch (temp_scale)
 	{
