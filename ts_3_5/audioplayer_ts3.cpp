@@ -148,10 +148,15 @@ void AudioPlayerPage::buildUi()
 	}
 	else
 	{
-		QLabel *title_label = new QLabel("Stream from radio");
-		title_label->setFont(bt_global::font->get(FontManager::PLAYER_TITLE));
-		main_layout->addWidget(title_label, 0, Qt::AlignHCenter);
-		main_layout->addSpacing(75);
+		radio_url = new ScrollingLabel;
+		radio_url->setFont(bt_global::font->get(FontManager::PLAYER_RADIO_URL));
+		main_layout->addWidget(radio_url, 0, Qt::AlignHCenter);
+		main_layout->addSpacing(10);
+
+		radio_title = new ScrollingLabel;
+		radio_title->setFont(bt_global::font->get(FontManager::PLAYER_RADIO_TITLE));
+		main_layout->addWidget(radio_title, 0, Qt::AlignHCenter);
+		main_layout->addSpacing(35);
 	}
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;
@@ -323,6 +328,7 @@ void AudioPlayerPage::startPlayback()
 void AudioPlayerPage::startMPlayer(QString filename, int time)
 {
 	clearLabels();
+
 	player->play(filename, true);
 	refresh_data->start(MPLAYER_POLLING);
 }
@@ -331,10 +337,17 @@ void AudioPlayerPage::clearLabels()
 {
 	if (type == UPNP_FILE)
 	{
-		track->setScrollingText(" ");
-		album->setScrollingText(" ");
-		artist->setScrollingText(" ");
-		length->setScrollingText(" ");
+		track->setScrollingText("");
+		album->setScrollingText("");
+		artist->setScrollingText("");
+		length->setScrollingText("");
+	}
+	else
+	{
+		radio_title_info = false;
+		radio_url_info = false;
+		radio_url->setScrollingText(tr("Loading..."));
+		radio_title->setScrollingText(tr("Loading..."));
 	}
 }
 
@@ -379,7 +392,26 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 	}
 	else if (type == IP_RADIO)
 	{
-		// Extract the info from MPlayer or set a fixed description?
+		if (attrs.contains("stream_url"))
+		{
+			radio_url_info = true;
+			radio_url->setScrollingText(attrs["stream_url"]);
+		}
+		else if (attrs.contains("file_name") && !radio_url_info)
+		{
+			radio_url_info = true;
+			radio_url->setScrollingText(attrs["file_name"]);
+		}
+		if (!radio_url_info)
+			radio_url->setScrollingText(tr("Information not available"));
+
+		if (attrs.contains("stream_title"))
+		{
+			radio_title_info = true;
+			radio_title->setScrollingText(attrs["stream_title"]);
+		}
+		if (!radio_title_info)
+			radio_title->setScrollingText(tr("Information not available"));
 	}
 }
 

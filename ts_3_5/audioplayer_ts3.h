@@ -112,6 +112,9 @@ private:
 
 	// Upnp info labels
 	ScrollingLabel *track, *artist, *album, *length;
+	// Radio ip labels
+	ScrollingLabel *radio_url, *radio_title;
+	bool radio_url_info, radio_title_info;
 
 	AudioPlayerPage(MediaType type);
 	void buildUi();
