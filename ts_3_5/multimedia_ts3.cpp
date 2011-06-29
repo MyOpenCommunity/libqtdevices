@@ -20,16 +20,19 @@
 
 
 #include "multimedia_ts3.h"
-#include "xml_functions.h"
-#include "bann2_buttons.h"
+#include "xml_functions.h" // getChildren
 #include "skinmanager.h"
 #include "ipradio.h"
 #include "main.h" // getPageNodeFromChildNode
 #include "multimedia_filelist.h"
 #include "xmldevice.h" // bt_global::xml_device
+#include "navigation_bar.h"
+#include "fontmanager.h"
+#include "btbutton.h"
 
 #include <QDomNode>
 #include <QString>
+#include <QBoxLayout>
 
 enum
 {
@@ -41,8 +44,10 @@ enum
 
 MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
 {
-	buildPage();
-	setSpacing(10);
+	NavigationBar *nav_bar = new NavigationBar;
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	buildPage(new QWidget, nav_bar);
 	radio_page = 0;
 	upnp_page = 0;
 	loadItems(config_node);
@@ -50,6 +55,10 @@ MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
 
 void MultimediaContainer::loadItems(const QDomNode &config_node)
 {
+	QVBoxLayout *main_layout = new QVBoxLayout(page_content);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(10);
+
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext context(getTextChild(item, "cid").toInt());
@@ -76,19 +85,26 @@ void MultimediaContainer::loadItems(const QDomNode &config_node)
 
 		if (p)
 		{
-			Bann2Buttons *b = new Bann2Buttons;
-			b->initBanner(QString(), bt_global::skin->getImage("forward"), descr);
-			b->connectRightButton(p);
-			connect(b, SIGNAL(pageClosed()), SLOT(handleClose()));
-			page_content->appendBanner(b);
+			QHBoxLayout *hbox = new QHBoxLayout;
+			hbox->setContentsMargins(0, 0, 0, 0);
+			hbox->setSpacing(10);
+			QLabel *l = new QLabel(descr);
+			l->setFont(bt_global::font->get(FontManager::TEXT));
+			hbox->addWidget(l);
+			BtButton *b = new BtButton(bt_global::skin->getImage("forward"));
+			hbox->addWidget(b);
+			connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
+			connect(p, SIGNAL(Closed()), SLOT(handleClose()));
+			main_layout->addLayout(hbox);
 		}
 	}
+	main_layout->addStretch();
 }
 
 void MultimediaContainer::showPage()
 {
 	if (radio_page && upnp_page)
-		BannerPage::showPage();
+		Page::showPage();
 	else if (radio_page)
 		radio_page->showPage();
 	else

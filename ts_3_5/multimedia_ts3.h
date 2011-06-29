@@ -22,12 +22,12 @@
 #ifndef MULTIMEDIA_TS3_H
 #define MULTIMEDIA_TS3_H
 
-#include "bannerpage.h"
+#include "page.h"
 
 class QDomNode;
 
 
-class MultimediaContainer : public BannerPage
+class MultimediaContainer : public Page
 {
 Q_OBJECT
 public:
