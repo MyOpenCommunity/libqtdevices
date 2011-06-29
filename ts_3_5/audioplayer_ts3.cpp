@@ -166,8 +166,7 @@ void AudioPlayerPage::buildUi()
 	play_button = new StateButton;
 	play_button->setOnImage(bt_global::skin->getImage("pause"));
 	play_button->setOffImage(bt_global::skin->getImage("play"));
-	play_button->setCheckable(true);
-	connect(play_button, SIGNAL(clicked(bool)), SLOT(playToggled(bool)));
+	connect(play_button, SIGNAL(clicked()), SLOT(playToggled()));
 
 	BtButton *stop = new BtButton(bt_global::skin->getImage("stop"));
 	connect(stop, SIGNAL(clicked()), SLOT(stop()));
@@ -196,21 +195,19 @@ void AudioPlayerPage::buildUi()
 
 void AudioPlayerPage::started()
 {
-	play_button->setStatus(true);
-	play_button->setChecked(true);
+	play_button->setStatus(StateButton::ON);
 	refresh_data->start();
 }
 
 void AudioPlayerPage::stopped()
 {
-	play_button->setStatus(false);
-	play_button->setChecked(false);
+	play_button->setStatus(StateButton::OFF);
 	refresh_data->stop();
 }
 
-void AudioPlayerPage::playToggled(bool playing)
+void AudioPlayerPage::playToggled()
 {
-	if (playing)
+	if (play_button->getStatus() == StateButton::OFF)
 		resume();
 	else
 		pause();

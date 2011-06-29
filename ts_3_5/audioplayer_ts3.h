@@ -84,7 +84,7 @@ private slots:
 	void started();
 	void stopped();
 
-	void playToggled(bool playing);
+	void playToggled();
 
 	void refreshPlayInfo(const QMap<QString, QString> &attrs);
 	void refreshPlayInfo();
