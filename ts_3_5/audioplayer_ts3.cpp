@@ -259,6 +259,26 @@ bool AudioPlayerPage::isPlayerPaused() const
 	return player->isPaused();
 }
 
+void AudioPlayerPage::playAudioFilesBackground(QList<QString> files, unsigned element)
+{
+	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFilesBackground",
+		"The function must not be called with type UPNP_FILE!");
+	popup_mode = true;
+	FileListManager *lm = static_cast<FileListManager*>(list_manager);
+
+	EntryInfoList entries;
+	foreach (const QString &filename, files)
+		entries << EntryInfo(filename, EntryInfo::AUDIO, filename);
+
+	lm->setList(entries);
+	lm->setCurrentIndex(element);
+
+	loop_starting_file = -1;
+	qDebug() << "AudioPlayerPage::playAudioFilesBackground";
+
+	startPlayback();
+}
+
 void AudioPlayerPage::playAudioFiles(QList<QString> files, unsigned element)
 {
 	Q_ASSERT_X(type != AudioPlayerPage::UPNP_FILE, "AudioPlayerPage::playAudioFiles",

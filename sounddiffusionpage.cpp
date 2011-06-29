@@ -36,6 +36,7 @@
 #include "multimedia_ts10.h" // MultimediaSectionPage
 #include "audioplayer_ts10.h"
 #else
+#include "multimedia_ts3.h" // MultimediaContainer
 #include "audioplayer_ts3.h"
 #endif
 #include "navigation_bar.h"
@@ -777,6 +778,9 @@ void LocalSource::startLocalPlayback(bool force)
 	// using the multimedia configuration order (es. usb -> sd -> ip radio)
 	if (force)
 		MultimediaSectionPage::playSomethingRandomly();
+#else
+	if (force)
+		MultimediaContainer::playSomethingRandomly();
 #endif
 }
 

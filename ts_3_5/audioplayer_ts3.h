@@ -61,7 +61,7 @@ public slots:
 
 	void playAudioFiles(QList<QString> files, unsigned element);
 	void playAudioFiles(EntryInfoList entries, unsigned element);
-	void playAudioFilesBackground(QList<QString> files, unsigned element) {}
+	void playAudioFilesBackground(QList<QString> files, unsigned element);
 
 public slots:
 	// standard player functionality

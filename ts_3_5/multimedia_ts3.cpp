@@ -29,7 +29,9 @@
 #include "navigation_bar.h"
 #include "fontmanager.h"
 #include "btbutton.h"
+#include "audioplayer_ts3.h"
 
+#include <QDebug>
 #include <QDomNode>
 #include <QString>
 #include <QBoxLayout>
@@ -40,6 +42,8 @@ enum
 	PAGE_UPNP = 16006
 };
 
+IPRadioPage *MultimediaContainer::radio_page = 0;
+FileSelector *MultimediaContainer::upnp_page = 0;
 
 
 MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
@@ -71,14 +75,14 @@ void MultimediaContainer::loadItems(const QDomNode &config_node)
 		switch (item_id)
 		{
 		case PAGE_WEB_RADIO:
-			radio_page = p = new IPRadioPage(page_node);
+			p = radio_page = new IPRadioPage(page_node);
 			descr = tr("IP Radio");
 			break;
 		case PAGE_UPNP:
 			if (!bt_global::xml_device)
 				bt_global::xml_device = new XmlDevice;
 			MultimediaFileListFactory f(TreeBrowser::UPNP, EntryInfo::DIRECTORY | EntryInfo::AUDIO, false);
-			upnp_page = p = f.getFileSelector();
+			p = upnp_page = f.getFileSelector();
 			descr = tr("Servers");
 			break;
 		}
@@ -99,6 +103,16 @@ void MultimediaContainer::loadItems(const QDomNode &config_node)
 		}
 	}
 	main_layout->addStretch();
+}
+
+void MultimediaContainer::playSomethingRandomly()
+{
+	if (radio_page)
+	{
+		qDebug() << "Playing from Web radio";
+		AudioPlayerPage *page = AudioPlayerPage::getAudioPlayerPage(AudioPlayerPage::IP_RADIO);
+		page->playAudioFilesBackground(radio_page->radioUrls(), 0);
+	}
 }
 
 void MultimediaContainer::showPage()

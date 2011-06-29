@@ -24,6 +24,8 @@
 
 #include "page.h"
 
+class IPRadioPage;
+class FileSelector;
 class QDomNode;
 
 
@@ -32,6 +34,7 @@ class MultimediaContainer : public Page
 Q_OBJECT
 public:
 	MultimediaContainer(const QDomNode &config_node);
+	static void playSomethingRandomly();
 
 public slots:
 	virtual void showPage();
@@ -41,7 +44,9 @@ private slots:
 
 private:
 	void loadItems(const QDomNode &config_node);
-	Page *radio_page, *upnp_page;
+
+	static IPRadioPage *radio_page;
+	static FileSelector *upnp_page;
 };
 
 #endif // MULTIMEDIA_TS3_H
