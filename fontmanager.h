@@ -91,9 +91,9 @@ public:
 		RADIO_ENVIRONMENT = TITLE,
 
 		// audio player
-		PLAYER_TITLE = HOMEPAGEWIDGET,                   /*!< song title (first line) */
-		PLAYER_AUTHOR = TITLE,                           /*!< song author/info (second line) */
-		PLAYER_INFO = BANNERDESCRIPTION,                 /*!< current track and elapsed time */
+		PLAYER_RADIO_TITLE = TEXT,          /*!< radio ip title */
+		PLAYER_RADIO_URL = TEXT,            /*!< radio ip url */
+		PLAYER_INFO = TEXT,                 /*!< current track and elapsed time */
 	};
 #else
 	/*!
