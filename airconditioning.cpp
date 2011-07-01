@@ -117,7 +117,7 @@ int AirConditioning::sectionId() const
 	return NO_SECTION;
 }
 
-banner *AirConditioning::getBanner(const QDomNode &item_node)
+Banner *AirConditioning::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
 	SkinContext context(getTextChild(item_node, "cid").toInt());
@@ -130,7 +130,7 @@ banner *AirConditioning::getBanner(const QDomNode &item_node)
 	QDomNode linked_page = getPageNodeFromChildNode(item_node, "lnk_pageID");
 #endif
 
-	banner *b = 0;
+	Banner *b = 0;
 	switch (id)
 	{
 	case AIR_SPLIT:
@@ -201,7 +201,7 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -383,7 +383,7 @@ void AdvancedSplitPage::setSerialNumber(int ser)
 {
 	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
-		banner *b = page_content->getBanner(i);
+		Banner *b = page_content->getBanner(i);
 		b->setSerNum(ser);
 	}
 }

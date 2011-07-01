@@ -153,7 +153,7 @@ private:
 	\ingroup ThermalRegulation
 	\brief Display description and temperature for non-controlled zones and external probes.
  */
-class BannTemperature : public BannerNew
+class BannTemperature : public Banner
 {
 Q_OBJECT
 public:

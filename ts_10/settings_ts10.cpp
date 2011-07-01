@@ -153,7 +153,7 @@ void ListPage::loadItems(const QDomNode &config_node)
 	{
 		int id = getTextChild(item, "id").toInt();
 
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -336,13 +336,13 @@ int IconSettings::sectionId() const
 	return SETTINGS;
 }
 
-banner *IconSettings::getBanner(const QDomNode &item_node)
+Banner *IconSettings::getBanner(const QDomNode &item_node)
 {
 	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	int item_id = getTextChild(item_node, "itemID").toInt();
 
-	banner *b = 0;
+	Banner *b = 0;
 	QString descr = getTextChild(item_node, "descr");
 	switch (id)
 	{

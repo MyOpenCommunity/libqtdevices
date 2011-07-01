@@ -47,13 +47,13 @@ class QLabel;
 	\brief A rectangular widget that can be used to present the status of a \ref device,
 	to interact with it and to navigate to other Page%s.
 */
-class banner : public QWidget
+class Banner : public QWidget
 {
 friend class BannerContent;
 Q_OBJECT
 public:
-	banner(QWidget *parent);
-	virtual ~banner() {}
+	Banner(QWidget *parent = 0);
+	virtual ~Banner() {}
 	/*!
 		\brief Sets the Id of the object controlled by the banner.
 		\warning Do not use in new code, this method will be removed.
@@ -87,13 +87,8 @@ public:
 		\brief Init the banner.
 		\warning The method should not be used, if you use a device, initialize it instead.
 	*/
-	virtual void inizializza(bool forza=false) {}
+	virtual void inizializza(bool forza=false);
 
-	/*!
-		\brief Draw the content of the banner.
-		\warning Do not use in new code, this method will be removed.
-	*/
-	virtual void Draw() {}
 	/*!
 		\brief Set the text of the banner.
 		\warning Do not use in new code, this method will be removed.
@@ -130,24 +125,6 @@ protected:
 
 	void setOpenserverConnection(device *dev);
 
-private:
-	int id;
-	int serNum;
-
-	static ClientWriter *client_request;
-	static ClientWriter *client_command;
-};
-
-
-class BannerNew : public banner
-{
-Q_OBJECT
-public:
-	BannerNew(QWidget *parent) : banner(parent) { }
-	virtual void Draw() { }
-	virtual void inizializza(bool forza=false);
-
-protected:
 	ScrollingLabel *createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font);
 	ScrollingLabel *createTextLabel(Qt::Alignment align, const QFont &font);
 	void connectButtonToPage(BtButton *b, Page *p);
@@ -157,6 +134,12 @@ protected:
 
 private:
 	QVector<Page *> linked_pages;
+
+	int id;
+	int serNum;
+
+	static ClientWriter *client_request;
+	static ClientWriter *client_command;
 };
 
 

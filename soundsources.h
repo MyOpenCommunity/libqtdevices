@@ -38,7 +38,7 @@ class QStackedWidget;
 	\ingroup SoundDiffusion
 	\brief The abstract base class for all the audio sources
  */
-class AudioSource : public BannerNew
+class AudioSource : public Banner
 {
 Q_OBJECT
 

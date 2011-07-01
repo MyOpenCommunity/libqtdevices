@@ -28,7 +28,6 @@
 
 class AirConditioningInterface;
 class AirConditioningDevice;
-class banner;
 class QDomNode;
 class SplitSwing;
 class SplitMode;
@@ -94,7 +93,7 @@ class AirConditioning : public BannerPage
 Q_OBJECT
 public:
 	AirConditioning(const QDomNode &config_node);
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 	virtual int sectionId() const;
 

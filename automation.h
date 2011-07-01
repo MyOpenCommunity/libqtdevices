@@ -27,7 +27,7 @@
 #include <QWidget>
 
 class QDomNode;
-class banner;
+class Banner;
 
 /*!
 	\defgroup Automation Automation
@@ -49,7 +49,7 @@ public:
 
 	virtual int sectionId() const;
 
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);

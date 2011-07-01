@@ -48,8 +48,7 @@
 
 #endif
 
-Bann3Buttons::Bann3Buttons(QWidget *parent) :
-	BannerNew(parent)
+Bann3Buttons::Bann3Buttons(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	center_button = new BtButton;
@@ -84,8 +83,7 @@ void Bann3Buttons::initBanner(const QString &left, const QString &center, const 
 	text->setScrollingText(banner_text);
 }
 
-Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) :
-	BannerNew(parent)
+Bann3ButtonsLabel::Bann3ButtonsLabel(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	center_button = new BtButton;

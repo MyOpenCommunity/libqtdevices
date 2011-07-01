@@ -69,7 +69,7 @@ namespace
 		return tmp;
 	}
 
-	NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, banner *bann)
+	NavigationPage *getThermalPage(ThermalPageID id, QDomNode n, QString ind_centrale, int openserver_id, TemperatureScale scale, Banner *bann)
 	{
 		NavigationPage *p = 0;
 		QString descr = getTextChild(n, "descr");
@@ -288,7 +288,7 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 }
 #endif
 
-banner *PlantMenu::getBanner(const QDomNode &item_node)
+Banner *PlantMenu::getBanner(const QDomNode &item_node)
 {
 	return NULL;
 }

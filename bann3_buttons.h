@@ -32,7 +32,7 @@ class QWidget;
 
 
 // Banner with 3 buttons left, center and right + description below
-class Bann3Buttons : public BannerNew
+class Bann3Buttons : public Banner
 {
 Q_OBJECT
 protected:
@@ -53,7 +53,7 @@ private:
 
 
 // A banner with 2 (optional) buttons on both sides, a button + a label on the center, description below
-class Bann3ButtonsLabel : public BannerNew
+class Bann3ButtonsLabel : public Banner
 {
 Q_OBJECT
 protected:

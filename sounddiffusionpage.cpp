@@ -102,8 +102,7 @@ namespace
 	}
 }
 
-SoundAmbient::SoundAmbient(const QString &descr, const QString &ambient) :
-	BannerNew(0)
+SoundAmbient::SoundAmbient(const QString &descr, const QString &ambient)
 {
 	right_button = new BtButton;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -235,7 +234,7 @@ void SoundAmbientPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		banner *b = getBanner(item);
+		Banner *b = getBanner(item);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -267,7 +266,7 @@ void SoundAmbientPage::clearCurrentAmbient()
 	current_ambient_page = NULL;
 }
 
-banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
+Banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
@@ -275,7 +274,7 @@ banner *SoundAmbientPage::getBanner(const QDomNode &item_node)
 	QString where = getTextChild(item_node, "where");
 	int oid = getTextChild(item_node, "openserver_id").toInt();
 
-	banner *b = 0;
+	Banner *b = 0;
 	switch (id)
 	{
 	case AMPLIFIER:
@@ -348,7 +347,7 @@ void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		banner *b = SoundAmbientPage::getBanner(item);
+		Banner *b = SoundAmbientPage::getBanner(item);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -447,7 +446,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		banner *b = getAmbientBanner(item, sources_list);
+		Banner *b = getAmbientBanner(item, sources_list);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -471,7 +470,7 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
 }
 
-banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
+Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();

@@ -35,7 +35,7 @@ class QWidget;
 /*
  * This is a class that describes a banner with 4 buttons a label and a text under them.
  */
-class Bann4ButtonsIcon : public BannerNew
+class Bann4ButtonsIcon : public Banner
 {
 Q_OBJECT
 protected:
@@ -66,7 +66,7 @@ private:
 
 
 // Banner with 4 buttons and a descriptive label
-class Bann4Buttons : public BannerNew
+class Bann4Buttons : public Banner
 {
 Q_OBJECT
 protected:
@@ -91,7 +91,7 @@ private:
  * A class to control the rate of signals emitted
  */
 // TODO use Bann4Buttons as the base class
-class BannLevel : public BannerNew
+class BannLevel : public Banner
 {
 Q_OBJECT
 protected:

@@ -65,7 +65,7 @@ BannAlarmClock::BannAlarmClock(int item_id, int hour, int minute, QString icon_o
 
 void BannAlarmClock::setSerNum(int num)
 {
-	banner::setSerNum(num);
+	Banner::setSerNum(num);
 	alarm_clock->setSerNum(num);
 }
 
@@ -126,7 +126,7 @@ BannAlarmClockIcon::BannAlarmClockIcon(int item_id, int hour, int minute, QStrin
 
 void BannAlarmClockIcon::setSerNum(int num)
 {
-	banner::setSerNum(num);
+	Banner::setSerNum(num);
 	alarm_clock->setSerNum(num);
 }
 

@@ -36,7 +36,7 @@ class CheckableBanner;
 	\ingroup Core
 	\brief Manages a list of CheckableBanner.
 
-	This class manages a list of \ref banner%s, each of them contains a toggle 
+	This class manages a list of \ref Banner%s, each of them contains a toggle
 	button that can be toggle in exclusive mode, like a group of radio buttons.
 */
 class SingleChoicePage : public BannerPage
@@ -67,7 +67,7 @@ protected:
 
 
 /*!
-	\brief A \ref banner with a single on/off button on the left.
+	\brief A \ref Banner with a single on/off button on the left.
 */
 class CheckableBanner : public Bann2StateButtons
 {

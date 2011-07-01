@@ -87,7 +87,7 @@ AdvancedSingleSplit::AdvancedSingleSplit(QString descr, AdvancedSplitPage *p, Ai
 
 void AdvancedSingleSplit::setSerNum(int ser)
 {
-	banner::setSerNum(ser);
+	Banner::setSerNum(ser);
 	if (page)
 		page->setSerialNumber(ser);
 }

@@ -35,8 +35,7 @@
 #include <QTimer>
 #include <QLCDNumber>
 
-Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) :
-	BannerNew(parent)
+Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) : Banner(parent)
 {
 }
 
@@ -227,8 +226,7 @@ void BannOpenClose::setState(States new_state)
 }
 
 
-BannOnOff2Labels::BannOnOff2Labels(QWidget *parent) :
-	BannerNew(parent)
+BannOnOff2Labels::BannOnOff2Labels(QWidget *parent) : Banner(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;
@@ -298,7 +296,7 @@ void BannOnOff2Labels::setState(States new_state)
 }
 
 
-Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons) : BannerNew(0)
+Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons)
 {
 	center_left = new BtButton;
 	center_right = new BtButton;
@@ -339,7 +337,7 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 
 #define INPUT_INTERVAL 500
 
-BannLCDRange::BannLCDRange(QWidget *parent) : BannerNew(parent)
+BannLCDRange::BannLCDRange(QWidget *parent) : Banner(parent)
 {
 	control_timer = new QTimer(this);
 

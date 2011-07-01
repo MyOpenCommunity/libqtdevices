@@ -57,7 +57,7 @@ class PlantMenu : public BannerPage
 Q_OBJECT
 public:
 	PlantMenu(const QDomNode &conf);
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 	virtual int sectionId() const;
 
@@ -65,8 +65,7 @@ private:
 	void loadItems(const QDomNode &conf);
 
 	/**
-	 * Utility function to create a banner in the plant menu and the corresponding full
-	 * screen banner.
+	 * Utility function to create a banner in the plant menu and the corresponding page.
 	 * \param n             The node in the configuration DOM which is a `item' tag
 	 * \param central_icon  The path of the icon to be shown in plant menu banner
 	 * \param type          The type of full screen banner that is linked to the banner in plant menu

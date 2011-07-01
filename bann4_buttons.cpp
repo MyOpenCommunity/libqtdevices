@@ -32,8 +32,7 @@
 #define TIME_RIP_REGOLAZ 500
 
 
-Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) :
-	BannerNew(parent)
+Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	center_right_button = new BtButton;
@@ -119,8 +118,7 @@ void Bann4ButtonsIcon::setEditingState(EditingStates edit_state)
 }
 
 
-Bann4Buttons::Bann4Buttons(QWidget *parent) :
-	BannerNew(parent)
+Bann4Buttons::Bann4Buttons(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	center_right_button = new BtButton;
@@ -173,8 +171,7 @@ void Bann4Buttons::setCentralSpacing(bool spaced)
 }
 
 
-BannLevel::BannLevel(QWidget *parent) :
-	BannerNew(parent)
+BannLevel::BannLevel(QWidget *parent) : Banner(parent)
 {
 	left_button = new BtButton;
 	center_left_button = new BtButton;

@@ -70,7 +70,7 @@ SettingsPage::SettingsPage(QDomNode n, QWidget *parent)
 	buildPage(getTextChild(n, "descr"));
 }
 
-void SettingsPage::appendBanner(banner *b)
+void SettingsPage::appendBanner(Banner *b)
 {
 	page_content->appendBanner(b);
 }

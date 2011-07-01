@@ -796,7 +796,7 @@ void VctSettings::loadItems(const QDomNode &config_node)
 	{
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		bool status = getTextChild(item, "enable").toInt();
-		banner *b = 0;
+		Banner *b = 0;
 
 		int id = getTextChild(item, "id").toInt();
 		int item_id = getTextChild(item, "itemID").toInt();

@@ -22,7 +22,7 @@
 #ifndef BANNERFACTORY_H
 #define BANNERFACTORY_H
 
-class banner;
+class Banner;
 class QDomNode;
 
 /*!
@@ -31,6 +31,6 @@ class QDomNode;
 
 	Returns 0 if it can't build the banner.
 */
-banner *getBanner(const QDomNode &config_node);
+Banner *getBanner(const QDomNode &config_node);
 
 #endif // BANNERFACTORY_H

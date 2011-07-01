@@ -39,11 +39,11 @@
 
 
 // Inizialization of static member
-ClientWriter *banner::client_command = 0;
-ClientWriter *banner::client_request = 0;
+ClientWriter *Banner::client_command = 0;
+ClientWriter *Banner::client_request = 0;
 
 
-banner::banner(QWidget *parent) : QWidget(parent)
+Banner::Banner(QWidget *parent) : QWidget(parent)
 {
 	banner_width = 240;
 	banner_height = 80;
@@ -51,52 +51,52 @@ banner::banner(QWidget *parent) : QWidget(parent)
 	id = -1;
 }
 
-QSize banner::sizeHint() const
+QSize Banner::sizeHint() const
 {
 	if (QLayout *l = layout())
 		return l->sizeHint();
 	return QSize(banner_width, banner_height);
 }
 
-void banner::sendFrame(QString frame) const
+void Banner::sendFrame(QString frame) const
 {
-	Q_ASSERT_X(client_command, "banner::sendFrame", "Client command not set!");
+	Q_ASSERT_X(client_command, "Banner::sendFrame", "Client command not set!");
 	client_command->sendFrameOpen(frame);
 }
 
-void banner::sendInit(QString frame) const
+void Banner::sendInit(QString frame) const
 {
-	Q_ASSERT_X(client_request, "banner::sendInit", "Client request not set!");
+	Q_ASSERT_X(client_request, "Banner::sendInit", "Client request not set!");
 	client_request->sendFrameOpen(frame);
 }
 
-void banner::setClients(ClientWriter *command, ClientWriter *request)
+void Banner::setClients(ClientWriter *command, ClientWriter *request)
 {
 	client_command = command;
 	client_request = request;
 }
 
-void banner::setSerNum(int s)
+void Banner::setSerNum(int s)
 {
 	serNum = s;
 }
 
-int banner::getSerNum()
+int Banner::getSerNum()
 {
 	return serNum;
 }
 
-void banner::setId(int i)
+void Banner::setId(int i)
 {
 	id = i;
 }
 
-int banner::getId()
+int Banner::getId()
 {
 	return id;
 }
 
-void banner::setOpenserverConnection(device *dev)
+void Banner::setOpenserverConnection(device *dev)
 {
 	connect(dev, SIGNAL(connectionUp()), SLOT(connectionUp()));
 	connect(dev, SIGNAL(connectionDown()), SLOT(connectionDown()));
@@ -106,18 +106,17 @@ void banner::setOpenserverConnection(device *dev)
 		connectionDown();
 }
 
-void banner::connectionUp()
+void Banner::connectionUp()
 {
 	setEnabled(true);
 }
 
-void banner::connectionDown()
+void Banner::connectionDown()
 {
 	setEnabled(false);
 }
 
-
-ScrollingLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
+ScrollingLabel *Banner::createTextLabel(const QRect &size, Qt::Alignment align, const QFont &font)
 {
 	ScrollingLabel *text = new ScrollingLabel(this);
 	text->setGeometry(size);
@@ -126,7 +125,7 @@ ScrollingLabel *BannerNew::createTextLabel(const QRect &size, Qt::Alignment alig
 	return text;
 }
 
-ScrollingLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &font)
+ScrollingLabel *Banner::createTextLabel(Qt::Alignment align, const QFont &font)
 {
 	ScrollingLabel *text = new ScrollingLabel(this);
 	text->setAlignment(align);
@@ -134,7 +133,7 @@ ScrollingLabel *BannerNew::createTextLabel(Qt::Alignment align, const QFont &fon
 	return text;
 }
 
-void BannerNew::connectButtonToPage(BtButton *b, Page *p)
+void Banner::connectButtonToPage(BtButton *b, Page *p)
 {
 	// check both the page and the button, which can be deleted if there's no icon set (see initButton)
 	if (p && b)
@@ -145,24 +144,24 @@ void BannerNew::connectButtonToPage(BtButton *b, Page *p)
 	}
 }
 
-void BannerNew::hideEvent(QHideEvent *event)
+void Banner::hideEvent(QHideEvent *event)
 {
 	foreach (Page *p, linked_pages)
 		if (!p->isHidden())
 			p->hide();
 }
 
-void BannerNew::inizializza(bool forza)
+void Banner::inizializza(bool forza)
 {
 	foreach (Page *p, linked_pages)
 		p->inizializza();
 }
 
-bool BannerNew::initButton(BtButton *btn, const QString &icon)
+bool Banner::initButton(BtButton *btn, const QString &icon)
 {
 	if (icon.isEmpty())
 	{
-		Q_ASSERT_X(linked_pages.isEmpty(), "BannerNew::initButton", "Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
+		Q_ASSERT_X(linked_pages.isEmpty(), "Banner::initButton", "Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
 		btn->hide();
 		btn->disconnect();
 		btn->deleteLater();
@@ -173,7 +172,7 @@ bool BannerNew::initButton(BtButton *btn, const QString &icon)
 	return true;
 }
 
-bool BannerNew::initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font)
+bool Banner::initLabel(ScrollingLabel *lbl, const QString &text, const QFont &font)
 {
 	if (text.isEmpty())
 	{

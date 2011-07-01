@@ -312,7 +312,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 		clients[MAIN_OPENSERVER].supervisor = client_supervisor;
 	}
 
-	banner::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
+	Banner::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
 	Page::setClients(clients[MAIN_OPENSERVER].command, clients[MAIN_OPENSERVER].request);
 	FrameReceiver::setClientsMonitor(monitors);
 	FrameSender::setClients(clients);

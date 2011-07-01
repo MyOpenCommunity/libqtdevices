@@ -88,7 +88,7 @@ int Automation::sectionId() const
 	return AUTOMATION;
 }
 
-banner *Automation::getBanner(const QDomNode &item_node)
+Banner *Automation::getBanner(const QDomNode &item_node)
 {
 	int id = getTextChild(item_node, "id").toInt();
 	SkinContext ctx(getTextChild(item_node, "cid").toInt());
@@ -96,7 +96,7 @@ banner *Automation::getBanner(const QDomNode &item_node)
 	QString descr = getTextChild(item_node, "descr");
 	int oid = getTextChild(item_node, "openserver_id").toInt();
 
-	banner *b = 0;
+	Banner *b = 0;
 	switch (id)
 	{
 	case SECURE_AUTOMATIC_ACTUATOR:
@@ -167,7 +167,7 @@ void Automation::loadItems(const QDomNode &config_node)
 	{
 		// here we use the getBanner from bannerfactory.h because there can be
 		// a light group in the automation section
-		if (banner *b = ::getBanner(item))
+		if (Banner *b = ::getBanner(item))
 			page_content->appendBanner(b);
 		else
 		{

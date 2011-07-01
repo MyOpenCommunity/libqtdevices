@@ -136,7 +136,7 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 
 		LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item, "where")));
 		devices.append(dev);
-		banner *b = new BannLoadDiagnostic(dev, getTextChild(item, "descr"));
+		Banner *b = new BannLoadDiagnostic(dev, getTextChild(item, "descr"));
 		page_content->appendBanner(b);
 	}
 

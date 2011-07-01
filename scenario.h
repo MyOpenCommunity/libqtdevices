@@ -27,7 +27,7 @@
 #include <QWidget>
 
 class QDomNode;
-class banner;
+class Banner;
 
 /*!
 	\defgroup Scenarios Scenarios
@@ -54,7 +54,7 @@ Q_OBJECT
 public:
 	Scenario(const QDomNode &config_node);
 	virtual int sectionId() const;
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);

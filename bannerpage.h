@@ -28,14 +28,14 @@
 
 #include "scrollablepage.h"
 
-class banner;
+class Banner;
 class NavigationBar;
 class BannerContent;
 
 
 /*!
 	\ingroup Core
-	\brief A page containing a list of \ref banner%s.
+	\brief A page containing a list of \ref Banner%s.
 
 	The BannerPage is a ScrollablePage subclass, so if the content is to big
 	to be visualized in a single screen, it is paginated.
@@ -94,7 +94,7 @@ protected:
 
 /*!
 	\ingroup Core
-	\brief Manages a list of banner usually put inside a Page.
+	\brief Manages a list of Banner usually put inside a Page.
 
 	This class extends the ScrollableContent class, inhering all the logic about
 	pagination.
@@ -103,7 +103,7 @@ protected:
 	the content and to optionally draw a separator between columns (depending on
 	the platform).
 
-	If you want to append a banner to the content you can use the appendBanner()
+	If you want to append a Banner to the content you can use the appendBanner()
 	method. You can get it back again using the getBanner() method.
 
 	The number of banners actually contained in content can be retrived using the
@@ -132,38 +132,38 @@ public:
 	/*!
 		\brief Appends \a b to the content.
 	*/
-	void appendBanner(banner *b);
+	void appendBanner(Banner *b);
 
 	/*!
-		\brief Returns the number of banners contained by the content.
+		\brief Returns the number of Banners contained by the content.
 	*/
 	int bannerCount();
 
 	/*!
-		\brief Returns the banner at position \a i;
+		\brief Returns the Banner at position \a i;
 	*/
-	banner *getBanner(int i);
+	Banner *getBanner(int i);
 
 	/*!
-		\brief Initialize all the banners contained in content.
+		\brief Initialize all the Banners contained in content.
 	*/
 	void initBanners();
 
 	/*!
-		\brief Clear the content and destroy the all the banners contained in content.
+		\brief Clear the content and destroy the all the Banners contained in content.
 	*/
 	void clear();
 
 	/*!
-		\brief Layouts the banners into the page.
+		\brief Layouts the Banners into the page.
 
-		On the 3.5" devices, the banners are arranged on one column only.
+		On the 3.5" devices, the Banners are arranged on one column only.
 		On the 10" devices they are arranged on more columns (usually two).
 	*/
 	void drawContent();
 
 private:
-	QList<banner*> banner_list;
+	QList<Banner*> banner_list;
 	int columns;
 };
 

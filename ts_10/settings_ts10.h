@@ -31,7 +31,7 @@
 
 class QDomNode;
 class BtButton;
-class banner;
+class Banner;
 class PlatformDevice;
 class Text2Column;
 class ItemTuning;
@@ -55,7 +55,7 @@ public:
 	IconSettings(const QDomNode &config_node);
 
 	virtual int sectionId() const;
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 private:
 	void loadItems(const QDomNode &config_node);

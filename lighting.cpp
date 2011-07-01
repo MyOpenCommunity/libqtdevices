@@ -156,7 +156,7 @@ int Lighting::sectionId() const
 	return LIGHTING;
 }
 
-banner *Lighting::getBanner(const QDomNode &item_node)
+Banner *Lighting::getBanner(const QDomNode &item_node)
 {
 	SkinContext ctx(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
@@ -164,7 +164,7 @@ banner *Lighting::getBanner(const QDomNode &item_node)
 	QString descr = getTextChild(item_node, "descr");
 	int oid = getTextChild(item_node, "openserver_id").toInt();
 
-	banner *b = 0;
+	Banner *b = 0;
 	switch (id)
 	{
 	case DIMMER10:
@@ -242,7 +242,7 @@ void Lighting::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 			page_content->appendBanner(b);
 		else
 		{

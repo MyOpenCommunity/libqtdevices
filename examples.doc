@@ -71,7 +71,7 @@
 
 	The configuration item is parsed in the \ref Multimedia section page;
 	first we define a new page id:
-	\dontinclude multimedia.cpp
+	\dontinclude multimedia_ts10.cpp
 	\skip #ifdef BUILD_EXAMPLES
 	\until #endif
 
@@ -330,7 +330,7 @@
 	running on the touchscreen itself.  Defining the openserver entry with \c id 0 will
 	change the default openserver used by the BTouch.
 
-	To change the openserved used by a graphic item (ex. a \ref banner), simply add
+	To change the openserved used by a graphic item (ex. a \ref Banner), simply add
 	an \c \<openserver_id> node at the same level of the node defining the device address.
 	All graphic items that do not override the openserver will use the one with \c id 0.
 

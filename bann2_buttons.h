@@ -37,7 +37,7 @@ class QGridLayout;
 
 
 // Small base class for all 2 buttons banners that can have linked pages.
-class Bann2LinkedPages : public BannerNew
+class Bann2LinkedPages : public Banner
 {
 Q_OBJECT
 public:
@@ -74,7 +74,7 @@ protected:
 
 /*!
 	\ingroup Core
-	\brief A \ref banner with two buttons on the sides and a description in the center.
+	\brief A \ref Banner with two buttons on the sides and a description in the center.
 
 	The %Bann2Buttons is the base class to choose for those banners that have
 	a description in the center and a button on the left or a button on the right
@@ -192,7 +192,7 @@ private:
 
 // Banner with 2 buttons (left + right), a text on center-left, an icon on center-right and a text below.
 // Has two states: ON and OFF
-class BannOnOff2Labels : public BannerNew
+class BannOnOff2Labels : public Banner
 {
 Q_OBJECT
 protected:
@@ -302,7 +302,7 @@ private:
  * By default the two buttons are separated by a space, but they can be stuck
  * together and operate as the two halves of a larger button.
  */
-class Bann2CentralButtons : public BannerNew
+class Bann2CentralButtons : public Banner
 {
 Q_OBJECT
 protected:
@@ -327,7 +327,7 @@ private:
  *
  * This banner sends the signal valueChanged() after the user has stopped to use the controls.
  */
-class BannLCDRange : public BannerNew
+class BannLCDRange : public Banner
 {
 Q_OBJECT
 public:

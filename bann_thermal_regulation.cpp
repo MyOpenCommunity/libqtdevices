@@ -118,7 +118,6 @@ void BannWeekly::performAction()
 
 
 BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
-	: BannerNew(0)
 {
 	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 

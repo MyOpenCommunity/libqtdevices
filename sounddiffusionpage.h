@@ -67,7 +67,7 @@ class ScrollingLabel;
 
 // TODO: this should go to its own file if we need more banners
 // TODO: use Bann2Buttons directly
-class SoundAmbient : public BannerNew
+class SoundAmbient : public Banner
 {
 Q_OBJECT
 public:
@@ -94,7 +94,7 @@ Q_OBJECT
 public:
 	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources = QList<SourceDescription>());
 	virtual int sectionId() const;
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 
 	virtual void showPage();
 	virtual void cleanUp();
@@ -154,7 +154,7 @@ public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId() const;
 
-	static banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
+	static Banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
 
 	static void showCurrentAmbientPage();
 	static Page *alarmClockPage();

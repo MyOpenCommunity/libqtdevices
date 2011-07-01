@@ -26,7 +26,6 @@
 
 #include <QTimer>
 
-class banner;
 class QDomNode;
 class EnergyView;
 class EnergyInterface;

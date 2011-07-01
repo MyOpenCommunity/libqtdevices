@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QHBoxLayout>
 
-BannOnOffCombo::BannOnOffCombo(QWidget *parent) : BannerNew(parent)
+BannOnOffCombo::BannOnOffCombo(QWidget *parent) : Banner(parent)
 {
 	left_button = new BtButton;
 	right_button = new BtButton;

@@ -65,7 +65,7 @@ int Scenario::sectionId() const
 	return section_id;
 }
 
-banner *Scenario::getBanner(const QDomNode &item_node)
+Banner *Scenario::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
@@ -73,7 +73,7 @@ banner *Scenario::getBanner(const QDomNode &item_node)
 	QString where = getTextChild(item_node, "where");
 	int oid = getTextChild(item_node, "openserver_id").toInt();
 
-	banner *b = 0;
+	Banner *b = 0;
 	switch (id)
 	{
 	case BANN_SCENARIO:
@@ -172,7 +172,7 @@ void Scenario::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));

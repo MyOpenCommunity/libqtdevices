@@ -40,7 +40,7 @@ class QLabel;
 
 
 // Don't use this class for new developments, use Bann2Buttons
-class BannSinglePuls : public BannerNew
+class BannSinglePuls : public Banner
 {
 Q_OBJECT
 public:
@@ -61,7 +61,7 @@ private:
 };
 
 
-class BannOn2Labels : public BannerNew
+class BannOn2Labels : public Banner
 {
 Q_OBJECT
 protected:
@@ -85,7 +85,7 @@ private:
 
 
 // Single button on the center, without bottom label
-class BannCenteredButton : public BannerNew
+class BannCenteredButton : public Banner
 {
 Q_OBJECT
 public:
@@ -112,7 +112,7 @@ signals:
 
 // Encapsulates a list of states that can be cycled using a button on the left.
 // Every state has an id and a description.
-class BannStates : public BannerNew
+class BannStates : public Banner
 {
 Q_OBJECT
 public:

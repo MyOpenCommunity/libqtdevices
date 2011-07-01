@@ -291,7 +291,7 @@ Q_OBJECT
 public:
 	SettingsPage(QDomNode node, QWidget *parent = 0);
 
-	void appendBanner(banner *b);
+	void appendBanner(Banner *b);
 	void resetIndex();
 };
 

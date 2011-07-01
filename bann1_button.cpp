@@ -43,8 +43,7 @@
 #define BANNBUT2ICON_ICON_DIM_Y 60
 
 
-BannSinglePuls::BannSinglePuls(QWidget *parent) :
-	BannerNew(parent)
+BannSinglePuls::BannSinglePuls(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	connect(right_button, SIGNAL(clicked()), SIGNAL(rightClick()));
@@ -94,8 +93,7 @@ void BannSinglePuls::connectRightButton(Page *p)
 
 
 
-BannCenteredButton::BannCenteredButton(QWidget *parent) :
-	BannerNew(parent)
+BannCenteredButton::BannCenteredButton(QWidget *parent) : Banner(parent)
 {
 	center_button = new BtButton;
 	QVBoxLayout *l = new QVBoxLayout(this);
@@ -124,8 +122,7 @@ BannSimple::BannSimple(const QString &icon)
 }
 
 
-BannOn2Labels::BannOn2Labels(QWidget *parent) :
-	BannerNew(parent)
+BannOn2Labels::BannOn2Labels(QWidget *parent) : Banner(parent)
 {
 	right_button = new BtButton;
 	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
@@ -193,7 +190,7 @@ void BannOn2Labels::setElapsedTime(int time)
 }
 
 
-BannStates::BannStates(QWidget *parent) : BannerNew(parent)
+BannStates::BannStates(QWidget *parent) : Banner(parent)
 {
 	banner_height = BUT_DIM;
 

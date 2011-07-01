@@ -108,12 +108,12 @@ void BannerContent::initBanners()
 		banner_list.at(i)->inizializza();
 }
 
-banner *BannerContent::getBanner(int i)
+Banner *BannerContent::getBanner(int i)
 {
 	return banner_list.at(i);
 }
 
-void BannerContent::appendBanner(banner *b)
+void BannerContent::appendBanner(Banner *b)
 {
 	need_update = true;
 	banner_list.append(b);

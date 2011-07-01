@@ -44,12 +44,12 @@ Settings::Settings(const QDomNode &config_node)
 	loadItems(config_node);
 }
 
-banner *Settings::getBanner(const QDomNode &item_node)
+Banner *Settings::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	int item_id = getTextChild(item_node, "itemID").toInt();
-	banner *b = 0;
+	Banner *b = 0;
 
 	QString descr = getTextChild(item_node, "descr");
 
@@ -126,7 +126,6 @@ banner *Settings::getBanner(const QDomNode &item_node)
 	{
 		b->setText(descr);
 		b->setId(id);
-		b->Draw();
 	}
 
 	return b;
@@ -141,7 +140,7 @@ void Settings::loadItems(const QDomNode &config_node)
 		if (id == CONTRAST)
 			continue;
 #endif
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));

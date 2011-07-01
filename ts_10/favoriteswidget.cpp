@@ -49,7 +49,7 @@ void FavoritesWidget::loadItems(const QDomNode &config_node)
 	int count = 0;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		if (banner *b = getBanner(item))
+		if (Banner *b = getBanner(item))
 			l->addWidget(b, 1, Qt::AlignTop);
 		else
 		{

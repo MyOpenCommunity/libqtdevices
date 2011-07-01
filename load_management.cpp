@@ -187,7 +187,7 @@ void LoadManagement::loadItems(const QDomNode &config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		banner *b = getBanner(item);
+		Banner *b = getBanner(item);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -196,12 +196,12 @@ void LoadManagement::loadItems(const QDomNode &config_node)
 	}
 }
 
-banner *LoadManagement::getBanner(const QDomNode &item_node)
+Banner *LoadManagement::getBanner(const QDomNode &item_node)
 {
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	int id = getTextChild(item_node, "id").toInt();
 	LoadsDevice *dev = bt_global::add_device_to_cache(new LoadsDevice(getTextChild(item_node, "where")));
-	banner *b = 0;
+	Banner *b = 0;
 
 	switch (id)
 	{

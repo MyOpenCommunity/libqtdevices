@@ -27,7 +27,7 @@
 #include <QWidget>
 
 class QDomNode;
-class banner;
+class Banner;
 
 
 class Settings : public BannerPage
@@ -36,7 +36,7 @@ Q_OBJECT
 public:
 	Settings(const QDomNode &config_node);
 
-	static banner *getBanner(const QDomNode &item_node);
+	static Banner *getBanner(const QDomNode &item_node);
 private:
 	void loadItems(const QDomNode &config_node);
 };

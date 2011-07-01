@@ -177,7 +177,7 @@ void PowerAmplifierPage::loadBanners(PowerAmplifierDevice *dev, const QDomNode &
 			preset_list[preset_node.nodeName().mid(3).toInt()] = getTextChild(preset_node, "descr");
 	}
 
-	banner *b = new PowerAmplifierPreset(dev, this, preset_list);
+	Banner *b = new PowerAmplifierPreset(dev, this, preset_list);
 	page_content->appendBanner(b);
 
 	b = new PowerAmplifierTreble(dev, tr("Treble"), this);

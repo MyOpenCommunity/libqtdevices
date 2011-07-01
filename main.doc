@@ -158,7 +158,7 @@
 	Using methods provided by Page, it's easy to write code that runs unchanged in both TS 3.5'' and TS 10'' (see NavigationBar
 	and Page::buildPage()).
 
-	Banners are the building blocks for most sections; in general terms a \ref banner is a rectangular widget that can be
+	Banners are the building blocks for most sections; in general terms a \ref Banner is a rectangular widget that can be
 	used to present the status of a device, to interact with the device and to navigate to other pages.  Banners can be used
 	in isolation or presented in a menu using BannerPage.
 

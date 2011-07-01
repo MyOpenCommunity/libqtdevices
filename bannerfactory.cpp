@@ -31,9 +31,9 @@
 #endif
 
 
-banner *getBanner(const QDomNode &item_node)
+Banner *getBanner(const QDomNode &item_node)
 {
-	typedef banner* (*getBannerFunc)(const QDomNode &);
+	typedef Banner* (*getBannerFunc)(const QDomNode &);
 	QList<getBannerFunc> sections;
 	sections.append(&Automation::getBanner);
 	sections.append(&Lighting::getBanner);
@@ -45,7 +45,7 @@ banner *getBanner(const QDomNode &item_node)
 #endif
 
 	for (int i = 0; i < sections.size(); ++i)
-		if (banner *b = sections[i](item_node))
+		if (Banner *b = sections[i](item_node))
 			return b;
 
 	return 0;

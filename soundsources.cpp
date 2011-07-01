@@ -47,8 +47,7 @@
 #include <QDebug>
 
 
-AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details) :
-	BannerNew(0)
+AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details)
 {
 	details = _details;
 	area = _area;
