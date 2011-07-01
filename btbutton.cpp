@@ -78,11 +78,7 @@ void BtButton::setImage(const QString &icon_path, IconFlag f)
 	setPixmap(*bt_global::icons_cache.getIcon(icon_path));
 
 	if (f == LOAD_PRESSED_ICON)
-	{
-		QString pressed_name = getPressName(icon_path);
-		if (QFile::exists(pressed_name))
-			setPressedImage(pressed_name);
-	}
+		setPressedPixmap(loadPressedImage(icon_path));
 }
 
 void BtButton::setPressedImage(const QString &pressed_icon)
