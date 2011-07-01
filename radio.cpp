@@ -222,7 +222,7 @@ void RadioInfo::setFrequency(const int freq)
 #ifdef LAYOUT_TS_3_5
 	frequency->display(freq_text);
 #else
-	frequency->setText(QString(tr("FM %1").arg(freq_text)));
+	frequency->setText(tr("FM %1").arg(freq_text));
 #endif
 }
 
@@ -234,7 +234,7 @@ void RadioInfo::setChannel(int memory_channel)
 #ifdef LAYOUT_TS_3_5
 		text = "--:";
 #else
-		text = QString(tr("Channel: %1")).arg("-");
+		text = tr("Channel: %1").arg("-");
 #endif
 	}
 	else
@@ -242,7 +242,7 @@ void RadioInfo::setChannel(int memory_channel)
 #ifdef LAYOUT_TS_3_5
 		text = QString("%1:").arg(memory_channel);
 #else
-		text = QString(tr("Channel: %1")).arg(memory_channel);
+		text = tr("Channel: %1").arg(memory_channel);
 #endif
 	}
 

@@ -574,7 +574,7 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 			else if (zone > 0 && zone <= NUM_ZONES && zones[zone - 1])
 				zone_description = zones[zone - 1]->zoneDescription();
 			else
-				zone_description = QString(tr("Z%1")).arg(zone);
+				zone_description = tr("Z%1").arg(zone);
 
 			alarm_manager->newAlarm(it.key(), zone, zone_description);
 
