@@ -390,6 +390,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Sound diffusion page -->
 		<cid>11000</cid>
 		<img_goto_sounddiffusion>appdiffsmall.png</img_goto_sounddiffusion>
+		<img_play_file>set.png</img_play_file>
 		<!-- Audio player page -->
 		<img_prev>btnbackward.png</img_prev>
 		<img_next>btnforward.png</img_next>

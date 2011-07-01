@@ -48,7 +48,10 @@ FileSelector *MultimediaContainer::upnp_page = 0;
 
 MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
 {
-	NavigationBar *nav_bar = new NavigationBar;
+	NavigationBar *nav_bar = new NavigationBar("play_file");
+	play_button = nav_bar->forward_button;
+	connect(play_button, SIGNAL(clicked()), SLOT(gotoPlayerPage()));
+	play_button->hide();
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	buildPage(new QWidget, nav_bar);
@@ -117,12 +120,17 @@ void MultimediaContainer::playSomethingRandomly()
 
 void MultimediaContainer::showPage()
 {
-	if (radio_page && upnp_page)
-		Page::showPage();
-	else if (radio_page)
-		radio_page->showPage();
-	else
-		upnp_page->showPage();
+	play_button->hide();
+	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	{
+		if (page->isPlayerInstanceRunning())
+		{
+			play_button->show();
+			break;
+		}
+	}
+
+	Page::showPage();
 }
 
 void MultimediaContainer::handleClose()
@@ -133,4 +141,12 @@ void MultimediaContainer::handleClose()
 		emit Closed();
 }
 
-
+void MultimediaContainer::gotoPlayerPage()
+{
+	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+		if (page->isPlayerInstanceRunning())
+		{
+			page->showPage();
+			break;
+		}
+}
