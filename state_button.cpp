@@ -47,6 +47,9 @@ void StateButton::setOnImage(const QString &path)
 
 void StateButton::setOffImage(const QString &path)
 {
+#if DEBUG
+	image_path = path;
+#endif
 	off_pixmap = *bt_global::icons_cache.getIcon(path);
 	QPixmap p = loadPressedImage(path);
 	if (!p.isNull())

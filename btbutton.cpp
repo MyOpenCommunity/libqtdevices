@@ -72,6 +72,9 @@ QPixmap BtButton::loadPressedImage(const QString &icon_path)
 
 void BtButton::setImage(const QString &icon_path, IconFlag f)
 {
+#if DEBUG
+	image_path = icon_path;
+#endif
 	setPixmap(*bt_global::icons_cache.getIcon(icon_path));
 
 	if (f == LOAD_PRESSED_ICON)
@@ -115,7 +118,8 @@ void BtButton::setPixmap(const QPixmap &p)
 bool BtButton::event(QEvent *e)
 {
 	// this code is taken from QAbstractButton::event().
-	// Whenever we change Qt version, check the source to see if the check changed (eg. multitouch mouse events)
+	// Whenever we change Qt version, check the source to see if the check changed
+	// (eg. multitouch mouse events)
 	if (!is_enabled)
 	{
 		switch (e->type())
@@ -162,25 +166,18 @@ void BtButton::mouseReleaseEvent(QMouseEvent *event)
 
 void BtButton::paintEvent(QPaintEvent *e)
 {
-#ifdef LAYOUT_TS_3_5
-	// TODO keep default behaviour for TS 3.5''
-	QPushButton::paintEvent(e);
-#else
-	// the default QStyle implementation shifts the pushed button
-	// some pixel to the right/bottom, and for the TS 10'' we do not want
-	// that for buttons that have a separate "pressed" icon, BUT if there
-	// isn't a separate pressed image set, we want the default behaviour
-	if (isDown() && pressed_pixmap.isNull())
-	{
-		QPushButton::paintEvent(e);
-	}
-	else
-	{
-		QPainter p(this);
-
-		icon().paint(&p, 0, 0, width(), height());
-	}
+	// The QPushButton implementation shifts the icon some pixel to the right/bottom.
+	// This is fine when the icon not occupies the entire surface of the button, that
+	// is the case of the BtButton, because it can cause a cut of a part of the image.
+	// So we remove the standard effect overriding the paintEvent method and we
+	// give the feedback for the user using a pressed pixmap (always).
+#if DEBUG
+	Q_ASSERT_X(!pressed_pixmap.isNull(), "BtButton::paintEvent",
+		qPrintable(QString("No pressed image set for %1!").arg(image_path)));
 #endif
+
+	QPainter p(this);
+	icon().paint(&p, 0, 0, width(), height());
 }
 
 void BtButton::enable()

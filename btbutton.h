@@ -131,10 +131,13 @@ protected:
 	/*! The pixmap to show when the button is down */
 	QPixmap pressed_pixmap;
 
+#if DEBUG
+	QString image_path;
+#endif
+
 private:
 	bool is_enabled;
 	bool beep_enabled;
-
 	void initButton();
 };
 
