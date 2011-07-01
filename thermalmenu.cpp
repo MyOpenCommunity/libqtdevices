@@ -127,7 +127,7 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 
 		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
 		int id = getTextChild(page_node, "id").toInt();
-		Page *p;
+		Page *p = 0;
 
 		switch (id)
 		{

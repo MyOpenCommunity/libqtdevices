@@ -951,6 +951,7 @@ double EnergyConversions::convertToRawData(qint64 bt_bus_data, EnergyConversions
 		factor = 1000.;
 		break;
 	case OTHER_ENERGY:
+	default:
 		factor = 1.;
 		break;
 	}
