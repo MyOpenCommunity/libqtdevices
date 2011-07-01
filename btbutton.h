@@ -81,20 +81,6 @@ public:
 	void setPressedImage(const QString &pressed_icon);
 
 	/*!
-		\brief Sets the pixmap \a p for the "pressed" state.
-
-		\sa setPressedImage(), loadPressedImage()
-	*/
-	void setPressedPixmap(const QPixmap &p);
-
-	/*!
-		\brief Sets the pixmap \a p for the "normal" state.
-
-		\sa setImage()
-	*/
-	void setPixmap(const QPixmap &p);
-
-	/*!
 		\brief Sets the button enabled.
 	*/
 	virtual void enable();
@@ -109,7 +95,7 @@ public:
 	*/
 	void enableBeep(bool enable);
 
-	// The sizeHint method is required to obtain a layout management that work fine.
+	// The sizeHint method is required to obtain a layout management that works fine.
 	virtual QSize sizeHint() const;
 
 protected:
@@ -117,6 +103,20 @@ protected:
 	virtual void mouseReleaseEvent(QMouseEvent *event);
 	virtual void paintEvent(QPaintEvent *e);
 	virtual bool event(QEvent *e);
+
+	/*!
+		\brief Sets the pixmap \a p for the "pressed" state.
+
+		\sa setPressedImage(), loadPressedImage()
+	*/
+	void setPressedPixmap(const QPixmap &p);
+
+	/*!
+		\brief Sets the pixmap \a p for the "normal" state.
+
+		\sa setImage()
+	*/
+	void setPixmap(const QPixmap &p);
 
 	/*!
 		\brief Helper function to load the image for the "pressed" state.
