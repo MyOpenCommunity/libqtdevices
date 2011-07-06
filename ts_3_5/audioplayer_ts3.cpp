@@ -20,7 +20,7 @@
 
 
 #include "audioplayer_ts3.h"
-#include "mediaplayer.h"
+#include "mediaplayer.h" // MediaPlayer, formatTime
 #include "list_manager.h"
 #include "btbutton.h"
 #include "state_button.h"
@@ -53,25 +53,6 @@ namespace
 		info_label->setFont(bt_global::font->get(FontManager::PLAYER_INFO));
 		layout->addWidget(info_label, row + 1, 1);
 		return info_label;
-	}
-
-	// strips the decimal dot from the time returned by mplayer; if length is passed,
-	// the result is left-padded with "00:" until length
-	QString formatTime(const QString &mp_time, int length = 0)
-	{
-		QString res = mp_time;
-		int dot = mp_time.indexOf('.');
-
-		// strip decimal point
-		if (dot > 0)
-			res = mp_time.left(dot);
-
-		// left-pad with "00:"
-		if (length > 0)
-			while (res.length() < length)
-				res = "00:" + res;
-
-		return res;
 	}
 }
 
@@ -393,18 +374,18 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 		// mplayer sometimes shows a wrong duration: we give the precedence to
 		// the duration from upnp if present.
 		if (md.contains("total_time") && !md["total_time"].isEmpty())
-			total = formatTime(md["total_time"]);
+			total = md["total_time"];
 		else if (attrs.contains("total_time"))
-			total = formatTime(attrs["total_time"]);
+			total = attrs["total_time"];
 
 		QString current;
 		if (attrs.contains("current_time"))
-			current = formatTime(attrs["current_time"], total.length());
+			current = attrs["current_time"];
 		else if (attrs.contains("current_time_only"))
-			current = formatTime(attrs["current_time_only"], total.length());
+			current = attrs["current_time_only"];
 
 		if (!total.isEmpty() && !current.isEmpty())
-			length->setScrollingText(current + " / " + total);
+			length->setScrollingText(formatTime(current, total));
 
 	}
 	else if (type == IP_RADIO)

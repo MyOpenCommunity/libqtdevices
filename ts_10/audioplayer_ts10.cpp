@@ -26,7 +26,7 @@
 #include "items.h" // ItemTuning
 #include "fontmanager.h"
 #include "btbutton.h"
-#include "mediaplayer.h"
+#include "mediaplayer.h" // MediaPlayer, formatTime
 #include "hardware_functions.h" // setVolum
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
@@ -423,18 +423,18 @@ void AudioPlayerPage::refreshPlayInfo(const QMap<QString, QString> &attrs)
 		// mplayer sometimes shows a wrong duration: we give the precedence to
 		// the duration from upnp if present.
 		if (md.contains("total_time") && !md["total_time"].isEmpty())
-			total = formatTime(md["total_time"]);
+			total = md["total_time"];
 		else if (attrs.contains("total_time"))
-			total = formatTime(attrs["total_time"]);
+			total = attrs["total_time"];
 
 		QString current;
 		if (attrs.contains("current_time"))
-			current = formatTime(attrs["current_time"], total.length());
+			current = attrs["current_time"];
 		else if (attrs.contains("current_time_only"))
-			current = formatTime(attrs["current_time_only"], total.length());
+			current = attrs["current_time_only"];
 
 		if (!total.isEmpty() && !current.isEmpty())
-			elapsed->setText(current + " / " + total);
+			elapsed->setText(formatTime(current, total));
 	}
 	else if (type == IP_RADIO)
 	{

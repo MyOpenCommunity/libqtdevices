@@ -36,6 +36,14 @@ class QRect;
 #define MAX_VIDEO_HEIGHT 240
 
 
+// Given the current time (as a string, in the formats ss, mm:ss or h:mm:ss)
+// and the total time returns an unique string formatted
+// accordingly with the total time:
+// mm:ss / mm:ss if the total hours is less than 1;
+// [hh:]mm:ss / hh:mm:ss if the total hours is more than 1.
+QString formatTime(const QString &current_time, const QString &total_time);
+
+
 /*!
 	\ingroup Multimedia
 	\ingroup SoundDiffusion

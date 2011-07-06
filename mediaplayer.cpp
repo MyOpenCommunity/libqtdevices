@@ -149,6 +149,47 @@ namespace
 		return extractMPlayerInfo(args, data_search, QSet<QString>() << "current_time");
 	}
 
+	QString removeDot(const QString &time)
+	{
+		QString res = time;
+		int dot = res.indexOf('.');
+
+		// strip decimal point
+		if (dot > 0)
+			res = res.left(dot);
+		return res;
+	}
+
+	QTime getTime(const QString &time)
+	{
+		QString s = removeDot(time);
+		QTime res = QTime::fromString(s, "h:mm:ss");
+		if (!res.isValid())
+			res = QTime::fromString(s, "ss");
+		if (!res.isValid())
+			res = QTime::fromString(s, "mm:ss");
+		return res;
+	}
+}
+
+QString formatTime(const QString &current_time, const QString &total_time)
+{
+	QTime current = getTime(current_time);
+	QTime total = getTime(total_time);
+	QString curr, tot;
+
+	if (total.hour() == 0)
+	{
+		curr = current.toString("mm:ss");
+		tot = total.toString("mm:ss");
+	}
+	else
+	{
+		tot = total.toString("hh:mm:ss");
+		if (current.hour() > 0)
+			curr = current.toString(current.hour() > 0 ? "hh:mm:ss" : "mm:ss");
+	}
+	return curr + " / " + tot;
 }
 
 
