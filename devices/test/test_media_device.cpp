@@ -208,6 +208,16 @@ void TestSourceDevice::sendTurnOn()
 	QCOMPARE(server->frameCommand(), QString("*22*35#4#%2#%1*3#%2#0##").arg(source_id).arg(area));
 }
 
+void TestSourceDevice::sendGeneralTurnOn()
+{
+	dev->turnOn(QString());
+	client_command->flush();
+	QStringList l;
+	for (int area = 1; area <= 8; ++area)
+		l << QString("*22*35#4#%2#%1*3#%2#0##").arg(source_id).arg(area);
+	QCOMPARE(server->frameCommand(), l.join(""));
+}
+
 void TestSourceDevice::sendRequestTrack()
 {
 	dev->requestTrack();

@@ -151,6 +151,8 @@ public slots:
 
 		For monochannel sound diffusion, always use \c "0" for the area.  For multichannel sound
 		diffusion use values from \c "1" to \c "8".
+		You can send the command for all the areas (as a general turn on) using a null QString
+		as argument.
 	*/
 	virtual void turnOn(QString area);
 
@@ -201,8 +203,12 @@ protected:
 	// parse general commands coming from an amplifier (required for next)
 	virtual bool parseFrameAmplifiers(OpenMsg &msg, DeviceValues &values_list);
 
+private:
+	void sendTurnOn(QString area);
+
 private slots:
 	void requestActiveAreas() const;
+
 };
 
 

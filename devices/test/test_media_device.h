@@ -78,6 +78,7 @@ private slots:
 	void sendNextTrack();
 	void sendPrevTrack();
 	void sendTurnOn();
+	void sendGeneralTurnOn();
 	void sendRequestTrack();
 	void sendRequestActiveAreas();
 

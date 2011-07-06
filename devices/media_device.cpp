@@ -317,11 +317,22 @@ bool SourceDevice::isActive() const
 	return !active_areas.isEmpty();
 }
 
-void SourceDevice::turnOn(QString area)
+void SourceDevice::sendTurnOn(QString area)
 {
 	QString what = QString("%1#%2#%3#%4").arg(REQ_SOURCE_ON).arg(mmtype).arg(area).arg(source_id);
 	QString where = QString("3#%1#0").arg(area);
 	sendCommand(what, where);
+}
+
+void SourceDevice::turnOn(QString area)
+{
+	if (area.isNull())
+	{
+		for (int i = 1; i <= 8; ++i)
+			sendTurnOn(QString::number(i));
+	}
+	else
+		sendTurnOn(area);
 }
 
 void SourceDevice::requestTrack() const
