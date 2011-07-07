@@ -485,7 +485,7 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
 
 	Bann2Buttons *bann = new Bann2Buttons;
-	bann->initBanner(QString(), bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"),
+	bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
 		getTextChild(item_node, "descr"));
 
 	switch (id)

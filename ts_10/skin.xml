@@ -1023,7 +1023,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imggenerale.png</img_amplifier>
+		<img_ambient>diffusione/imggenerale.png</img_ambient>
 	</item>
 	<!-- ambient 1 (multi) -->
 	<item>
@@ -1031,7 +1031,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb1.png</img_amplifier>
+		<img_ambient>diffusione/imgamb1.png</img_ambient>
 	</item>
 	<!-- ambient 2 (multi) -->
 	<item>
@@ -1039,7 +1039,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb2.png</img_amplifier>
+		<img_ambient>diffusione/imgamb2.png</img_ambient>
 	</item>
 	<!-- ambient 3 (multi) -->
 	<item>
@@ -1047,7 +1047,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb3.png</img_amplifier>
+		<img_ambient>diffusione/imgamb3.png</img_ambient>
 	</item>
 	<!-- ambient 4 (multi) -->
 	<item>
@@ -1055,7 +1055,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb4.png</img_amplifier>
+		<img_ambient>diffusione/imgamb4.png</img_ambient>
 	</item>
 	<!-- ambient 5 (multi) -->
 	<item>
@@ -1063,7 +1063,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb5.png</img_amplifier>
+		<img_ambient>diffusione/imgamb5.png</img_ambient>
 	</item>
 	<!-- ambient 6 (multi) -->
 	<item>
@@ -1071,7 +1071,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb6.png</img_amplifier>
+		<img_ambient>diffusione/imgamb6.png</img_ambient>
 	</item>
 	<!-- ambient 7 (multi) -->
 	<item>
@@ -1079,7 +1079,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb7.png</img_amplifier>
+		<img_ambient>diffusione/imgamb7.png</img_ambient>
 	</item>
 	<!-- ambient 8 (multi) -->
 	<item>
@@ -1087,7 +1087,7 @@ AlarmList > QWidget {  background-image: url(); }
 		<!--
 		Other images: forward
 		-->
-		<img_amplifier>diffusione/imgamb8.png</img_amplifier>
+		<img_ambient>diffusione/imgamb8.png</img_ambient>
 	</item>
 	<!-- mono channel sound diffusion -->
 	<!-- sound diffusion page (mono sound diffusion) -->
