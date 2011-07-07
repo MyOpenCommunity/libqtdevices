@@ -170,6 +170,16 @@ void Bann4Buttons::setCentralSpacing(bool spaced)
 	center_layout->setSpacing(spaced ? 10 : 0);
 }
 
+void Bann4Buttons::connectLeftButton(Page *p)
+{
+	connectButtonToPage(left_button, p);
+}
+
+void Bann4Buttons::connectRightButton(Page *p)
+{
+	connectButtonToPage(right_button, p);
+}
+
 
 BannLevel::BannLevel(QWidget *parent) : Banner(parent)
 {

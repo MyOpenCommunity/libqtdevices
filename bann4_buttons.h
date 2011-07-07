@@ -69,7 +69,7 @@ private:
 class Bann4Buttons : public Banner
 {
 Q_OBJECT
-protected:
+public:
 	Bann4Buttons(QWidget *parent = 0);
 	void initBanner(const QString &right, const QString &center_right, const QString &center_left,
 		const QString &left, const QString &banner_text);
@@ -79,6 +79,13 @@ protected:
 	 */
 	void setCentralSpacing(bool spaced);
 
+	// Connect the left button to the page argument, showed when the button is clicked.
+	void connectLeftButton(Page *p);
+
+	// Connect the right button to the page argument, showed when the button is clicked.
+	void connectRightButton(Page *p);
+
+protected:
 	BtButton *right_button, *center_right_button, *center_left_button, *left_button;
 
 private:
