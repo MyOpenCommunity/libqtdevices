@@ -515,7 +515,8 @@ void SoundDiffusionPage::showCurrentAmbientPage()
 {
 	Page *current_ambient_page = SoundAmbientPage::currentAmbientPage();
 
-	Q_ASSERT_X(current_ambient_page || sound_diffusion_page, "SoundDiffusionPage::showCurrentAmbientPage", "Terrible stuff keeps on happening");
+	Q_ASSERT_X(current_ambient_page || sound_diffusion_page, "SoundDiffusionPage::showCurrentAmbientPage",
+		"Terrible stuff keeps on happening");
 
 	qDebug() << "Sound diffusion" << sound_diffusion_page << "ambient" << current_ambient_page;
 
@@ -532,7 +533,7 @@ bool SoundDiffusionPage::isMultichannel()
 
 
 SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources,
-						 AmplifierDevice *_general)
+	AmplifierDevice *_general)
 {
 	general = _general;
 
