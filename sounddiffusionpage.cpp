@@ -488,31 +488,12 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
 		getTextChild(item_node, "descr"));
 
-	switch (id)
-	{
-	case ITEM_AMBIENT_1:
-	case ITEM_AMBIENT_2:
-	case ITEM_AMBIENT_3:
-	case ITEM_AMBIENT_4:
-	case ITEM_AMBIENT_5:
-	case ITEM_AMBIENT_6:
-	case ITEM_AMBIENT_7:
-	case ITEM_AMBIENT_8:
-	{
-		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources);
-		bann->connectRightButton(p);
-	}
-		break;
-	case ITEM_SPECIAL_AMBIENT:
-	{
-		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, SoundAmbientPage::SPECIAL_AMBIENT);
-		bann->connectRightButton(p);
+	SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
+	if (id == ITEM_SPECIAL_AMBIENT)
+		t = SoundAmbientPage::SPECIAL_AMBIENT;
 
-		break;
-	}
-	default:
-		qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
-	}
+	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, t);
+	bann->connectRightButton(p);
 
 	return bann;
 }
