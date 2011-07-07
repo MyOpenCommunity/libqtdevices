@@ -430,7 +430,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_details>audiosetting.png</img_details>
 		<img_turn_on>btnmmon.png</img_turn_on>
 	</item>
-
 	<item>
 		<!-- amplifier normal ambient -->
 		<!-- uses: on, off
@@ -532,7 +531,359 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>12028</cid>
 		<img_ambient>imgamb8.png</img_ambient>
 	</item>
-
+	<item>
+		<!-- amplifier normal ambient 1 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12150</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 1 -->
+		<!-- uses: on, off -->
+		<cid>12151</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 1 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12152</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 2 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12160</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 2 -->
+		<!-- uses: on, off -->
+		<cid>12161</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 2 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12162</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 3 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12170</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 3 -->
+		<!-- uses: on, off -->
+		<cid>12171</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 3 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12172</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 4 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12180</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 4 -->
+		<!-- uses: on, off -->
+		<cid>12181</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 4 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12182</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 5 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12190</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 5 -->
+		<!-- uses: on, off -->
+		<cid>12191</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 5 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12192</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 6 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12200</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 6 -->
+		<!-- uses: on, off -->
+		<cid>12201</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 6 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12202</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 7 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12210</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 7 -->
+		<!-- uses: on, off -->
+		<cid>12211</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 7 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12212</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier normal ambient 8 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12220</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group normal ambient 8 -->
+		<!-- uses: on, off -->
+		<cid>12221</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier ambient 8 -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12222</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
+	<item>
+		<!-- amplifier special ambient -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12101</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- amplifier group special ambient -->
+		<!-- uses: on, off -->
+		<cid>12102</cid>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- general special ambient -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<cid>12103</cid>
+		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
+		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
+		<img_volume_on_right>onampldxl.png</img_volume_on_right>
+		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+	</item>
+	<item>
+		<!-- power amplifier special ambient -->
+		<!-- uses: on, off, minus, plus -->
+		<cid>12104</cid>
+		<img_preset>preset.png</img_preset>
+		<img_treble>louds.png</img_treble>
+		<img_bass>lows.png</img_bass>
+		<img_balance>balance_0.png</img_balance>
+		<img_balance_sx>balance_sx.png</img_balance_sx>
+		<img_balance_dx>balance_dx.png</img_balance_dx>
+		<img_loud_on>loud.png</img_loud_on>
+		<img_loud_off>loud_off.png</img_loud_off>
+		<img_more>more.png</img_more>
+		<img_less>less.png</img_less>
+		<img_settings>audiosetting.png</img_settings>
+		<img_volume_active>onampl.png</img_volume_active>
+		<img_volume_inactive>offampl.png</img_volume_inactive>
+	</item>
 	<!-- End Multichannel Sound diffusion items -->
 
 	<!-- Start Antintrusion items -->
