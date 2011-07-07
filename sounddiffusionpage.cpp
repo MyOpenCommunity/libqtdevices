@@ -492,13 +492,12 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 
 	QString descr = getTextChild(item_node, "descr");
 
-	Banner *b;
-
 #ifdef LAYOUT_TS_10
-	Bann2Buttons *b = new Bann2Buttons;
-	b->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
+	Bann2Buttons *bann = new Bann2Buttons;
+	bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
 		descr);
-	b->connectRightButton(p);
+	bann->connectRightButton(p);
+	return bann;
 #else
 	if (id == ITEM_SPECIAL_AMBIENT)
 	{
@@ -506,19 +505,17 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 		bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
 			descr);
 		bann->connectRightButton(p);
-		b = bann;
+		return bann;
 	}
-	else
-	{
-		Bann4Buttons *bann = new Bann4Buttons;
-		bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
-			bt_global::skin->getImage("ambient"), QString(), descr);
-		bann->setCentralSpacing(false);
-		bann->connectRightButton(p);
-		b = bann;
-	}
+
+	Bann4Buttons *bann = new Bann4Buttons;
+	bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
+		bt_global::skin->getImage("ambient"), QString(), descr);
+	bann->setCentralSpacing(false);
+	bann->connectRightButton(p);
+	return bann;
+
 #endif
-	return b;
 }
 
 void SoundDiffusionPage::showPage()
