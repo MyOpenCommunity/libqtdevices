@@ -532,6 +532,33 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_ambient>imgamb8.png</img_ambient>
 	</item>
 	<item>
+		<!--radio source banner -->
+		<cid>12001</cid>
+		<img_details>audiosetting.png</img_details>
+		<img_turn_on>btnradioon.png</img_turn_on>
+		<!-- radio source page -->
+		<img_cycle_tracks>btncycle.png</img_cycle_tracks>
+		<img_auto_off>btnautooff.png</img_auto_off>
+		<img_auto_on>btnauto.png</img_auto_on>
+		<img_man_off>btnmanoff.png</img_man_off>
+		<img_man_on>btnman.png</img_man_on>
+		<img_mem>btnmem.png</img_mem>
+	</item>
+	<item>
+		<!--aux source banner -->
+		<cid>12002</cid>
+		<img_details>audiosetting.png</img_details>
+		<img_turn_on>btnauxon.png</img_turn_on>
+		<!-- aux source page -->
+		<img_next_source>btnforward.png</img_next_source>
+	</item>
+	<item>
+		<!--multimedia source banner -->
+		<cid>12003</cid>
+		<img_details>audiosetting.png</img_details>
+		<img_turn_on>btnmmon.png</img_turn_on>
+	</item>
+	<item>
 		<!-- amplifier normal ambient 1 -->
 		<!-- uses: on, off
 			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
