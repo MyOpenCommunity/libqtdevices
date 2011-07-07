@@ -92,7 +92,13 @@ class SoundAmbientPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources = QList<SourceDescription>());
+	enum Type
+	{
+		NORMAL_AMBIENT,
+		SPECIAL_AMBIENT
+	};
+
+	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, Type ambient_type = NORMAL_AMBIENT);
 	virtual int sectionId() const;
 	static Banner *getBanner(const QDomNode &item_node);
 

@@ -147,7 +147,7 @@ void SoundAmbient::connectRightButton(Page *p)
 }
 
 
-SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources)
+SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, Type ambient_type)
 {
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
 	QString area;
@@ -165,7 +165,7 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 
 	SoundSources *top_widget = 0;
 	// this handles the case for special ambient, which must not show sources
-	if (!sources.isEmpty())
+	if (ambient_type != SPECIAL_AMBIENT)
 	{
 		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, sources);
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
@@ -499,7 +499,7 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 		break;
 	case ITEM_SPECIAL_AMBIENT:
 	{
-		SoundAmbientPage *p = new SoundAmbientPage(page_node);
+		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, SoundAmbientPage::SPECIAL_AMBIENT);
 		bann->connectRightButton(p);
 
 		break;
