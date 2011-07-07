@@ -254,14 +254,16 @@ void SoundAmbientPage::showPage()
 
 void SoundAmbientPage::cleanUp()
 {
-	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::cleanUp", "Something terrible happened");
+	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::cleanUp",
+		"Something terrible happened");
 
 	current_ambient_page = NULL;
 }
 
 void SoundAmbientPage::clearCurrentAmbient()
 {
-	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::clearCurrentAmbient", "There is no end to terrible things");
+	Q_ASSERT_X(!current_ambient_page || current_ambient_page == this, "SoundAmbientPage::clearCurrentAmbient",
+		"There is no end to terrible things");
 
 	current_ambient_page = NULL;
 }
@@ -300,7 +302,7 @@ Page *SoundAmbientPage::currentAmbientPage()
 
 
 SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources,
-					     AmplifierDevice *_general)
+	AmplifierDevice *_general)
 {
 	general = _general;
 
