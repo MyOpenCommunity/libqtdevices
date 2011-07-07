@@ -170,7 +170,13 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, sources);
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
-
+#ifdef LAYOUT_TS_3_5
+	else // SPECIAL_AMBIENT for ts3 is a general
+	{
+		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(), sources);
+		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
+	}
+#endif
 	BannerContent *content = new BannerContent;
 
 #ifdef LAYOUT_TS_3_5

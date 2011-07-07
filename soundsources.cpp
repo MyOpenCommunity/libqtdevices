@@ -50,9 +50,12 @@
 AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_details)
 {
 	details = _details;
-	area = _area;
 	dev = _dev;
-	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
+
+	// Area null means that the source must activated in all the areas (as a general)
+	area = _area;
+	if (!area.isNull())
+		connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceivedAudioSource(DeviceValues)));
 
 	left_button = new StateButton;
 	right_button = new BtButton;
@@ -89,7 +92,9 @@ void AudioSource::drawBanner(const QString &description)
 	grid->addWidget(right_button, 0, 2, 2, 1, Qt::AlignBottom);
 	grid->setColumnStretch(1, 1);
 	grid->setColumnMinimumWidth(2, right_button->width());
-	right_button->hide();
+
+	if (!area.isNull())
+		right_button->hide();
 }
 #else
 void AudioSource::drawBanner(QWidget *central_widget)
