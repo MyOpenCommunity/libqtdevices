@@ -123,7 +123,7 @@ void MultimediaContainer::showPage()
 	play_button->hide();
 	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
 	{
-		if (page->isPlayerInstanceRunning())
+		if (page && page->isPlayerInstanceRunning())
 		{
 			play_button->show();
 			break;
