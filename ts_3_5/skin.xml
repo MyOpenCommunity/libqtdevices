@@ -89,6 +89,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_link_icon>appdiff.png</img_link_icon>
 	</item>
 	<item>
+		<!-- Multichannel sound diffusion -->
+		<cid>12</cid>
+		<img_link_icon>appdiff.png</img_link_icon>
+	</item>
+	<item>
 		<!-- Antintrusion -->
 		<cid>13</cid>
 		<img_link_icon>appant.png</img_link_icon>
@@ -465,6 +470,70 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_volume_inactive>offampl.png</img_volume_inactive>
 	</item>
 	<!-- End Monochannel Sound diffusion items -->
+
+	<!-- Start Multichannel Sound diffusion items -->
+	<item>
+		<!-- Sound diffusion page -->
+		<!-- uses: forward -->
+		<cid>12000</cid>
+		<img_sounddiffusion>imgdiffson.png</img_sounddiffusion>
+		<img_goto_sounddiffusion>appdiffsmall.png</img_goto_sounddiffusion>
+	</item>
+	<item>
+		<!-- special ambient -->
+		<cid>12020</cid>
+		<img_ambient>imginsampl.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 1 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12021</cid>
+		<img_ambient>imgamb1.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 2 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12022</cid>
+		<img_ambient>imgamb2.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 3 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12023</cid>
+		<img_ambient>imgamb3.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 4 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12024</cid>
+		<img_ambient>imgamb4.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 5 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12025</cid>
+		<img_ambient>imgamb5.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 6 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12026</cid>
+		<img_ambient>imgamb6.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 7 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12027</cid>
+		<img_ambient>imgamb7.png</img_ambient>
+	</item>
+	<item>
+		<!-- ambient 8 -->
+		<!-- uses: sounddiffusion -->
+		<cid>12028</cid>
+		<img_ambient>imgamb8.png</img_ambient>
+	</item>
+
+	<!-- End Multichannel Sound diffusion items -->
 
 	<!-- Start Antintrusion items -->
 	<item>

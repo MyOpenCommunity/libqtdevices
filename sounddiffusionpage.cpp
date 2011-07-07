@@ -484,18 +484,41 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	int id = getTextChild(item_node, "id").toInt();
 	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
 
-	Bann2Buttons *bann = new Bann2Buttons;
-	bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
-		getTextChild(item_node, "descr"));
-
 	SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
 	if (id == ITEM_SPECIAL_AMBIENT)
 		t = SoundAmbientPage::SPECIAL_AMBIENT;
 
 	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, t);
-	bann->connectRightButton(p);
 
-	return bann;
+	QString descr = getTextChild(item_node, "descr");
+
+	Banner *b;
+
+#ifdef LAYOUT_TS_10
+	Bann2Buttons *b = new Bann2Buttons;
+	b->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
+		descr);
+	b->connectRightButton(p);
+#else
+	if (id == ITEM_SPECIAL_AMBIENT)
+	{
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
+			descr);
+		bann->connectRightButton(p);
+		b = bann;
+	}
+	else
+	{
+		Bann4Buttons *bann = new Bann4Buttons;
+		bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
+			bt_global::skin->getImage("ambient"), QString(), descr);
+		bann->setCentralSpacing(false);
+		bann->connectRightButton(p);
+		b = bann;
+	}
+#endif
+	return b;
 }
 
 void SoundDiffusionPage::showPage()
