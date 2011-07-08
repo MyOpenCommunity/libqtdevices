@@ -41,7 +41,6 @@ public slots:
 	virtual void showPage();
 
 private slots:
-	void handleClose();
 	void gotoPlayerPage();
 
 private:

@@ -101,7 +101,7 @@ void MultimediaContainer::loadItems(const QDomNode &config_node)
 			BtButton *b = new BtButton(bt_global::skin->getImage("forward"));
 			hbox->addWidget(b);
 			connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
-			connect(p, SIGNAL(Closed()), SLOT(handleClose()));
+			connect(p, SIGNAL(Closed()), SLOT(showPage()));
 			main_layout->addLayout(hbox);
 		}
 	}
@@ -131,14 +131,6 @@ void MultimediaContainer::showPage()
 	}
 
 	Page::showPage();
-}
-
-void MultimediaContainer::handleClose()
-{
-	if (radio_page && upnp_page)
-		showPage();
-	else
-		emit Closed();
 }
 
 void MultimediaContainer::gotoPlayerPage()
