@@ -46,9 +46,11 @@ public slots:
 	virtual void cleanUp();
 
 signals:
-	void Next();
-	void Prev();
-	void Delete();
+#ifdef LAYOUT_TS_3_5
+	void nextAlarm();
+	void prevAlarm();
+#endif
+	void deleteAlarm();
 	void showHomePage();
 	void showAlarmList();
 

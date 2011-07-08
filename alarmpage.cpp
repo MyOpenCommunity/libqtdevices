@@ -70,9 +70,9 @@ AlarmPage::AlarmPage(const QString &icon, const QString &d, const QString &zone,
 	l->addStretch();
 
 	connect(nav_bar, SIGNAL(backClick()), this, SIGNAL(Closed()));
-	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(Prev()));
-	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(Next()));
-	connect(nav_bar, SIGNAL(forwardClick()), this, SIGNAL(Delete()));
+	connect(nav_bar, SIGNAL(upClick()), this, SIGNAL(nextAlarm()));
+	connect(nav_bar, SIGNAL(downClick()), this, SIGNAL(prevAlarm()));
+	connect(nav_bar, SIGNAL(forwardClick()), this, SIGNAL(deleteAlarm()));
 	alarm_id = id;
 }
 
@@ -155,7 +155,7 @@ AlarmPage::AlarmPage(const QString &icon, const QString &description, const QStr
 
 	connect(home, SIGNAL(clicked()), SIGNAL(showHomePage()));
 	connect(list, SIGNAL(clicked()), SIGNAL(showAlarmList()));
-	connect(trash, SIGNAL(clicked()), SIGNAL(Delete()));
+	connect(trash, SIGNAL(clicked()), SIGNAL(deleteAlarm()));
 	alarm_id = id;
 }
 
