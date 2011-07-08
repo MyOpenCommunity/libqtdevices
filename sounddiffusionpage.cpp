@@ -147,7 +147,7 @@ void SoundAmbient::connectRightButton(Page *p)
 }
 
 
-SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, Type ambient_type)
+SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, const QString &descr, Type ambient_type)
 {
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
 	QString area;
@@ -167,13 +167,13 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 	// this handles the case for special ambient, which must not show sources
 	if (ambient_type != SPECIAL_AMBIENT)
 	{
-		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, sources);
+		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], descr, area, sources);
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 #ifdef LAYOUT_TS_3_5
 	else // SPECIAL_AMBIENT for ts3 is a general
 	{
-		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(), sources);
+		top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], descr, QString(), sources);
 		connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 	}
 #endif
@@ -325,7 +325,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 		if (s.type == SourceDescription::RADIO || s.type == SourceDescription::AUX)
 			filtered_sources.append(s);
 
-	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], area, filtered_sources);
+	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(), area, filtered_sources);
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
 	QWidget *main_widget = new QWidget;
@@ -488,9 +488,8 @@ Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QL
 	if (id == ITEM_SPECIAL_AMBIENT)
 		t = SoundAmbientPage::SPECIAL_AMBIENT;
 
-	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, t);
-
 	QString descr = getTextChild(item_node, "descr");
+	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, descr, t);
 
 #ifdef LAYOUT_TS_10
 	Bann2Buttons *bann = new Bann2Buttons;

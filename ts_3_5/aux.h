@@ -31,7 +31,7 @@ class AuxPage : public Page
 {
 Q_OBJECT
 public:
-	AuxPage(SourceDevice *dev, const QString &description);
+	AuxPage(SourceDevice *dev, const QString &area_descr, const QString &description);
 };
 
 

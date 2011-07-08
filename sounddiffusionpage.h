@@ -27,6 +27,8 @@
 #include "banner.h"
 #include "soundsources.h"
 
+#include <QString>
+
 class QDomNode;
 class QLabel;
 class BtButton;
@@ -98,7 +100,8 @@ public:
 		SPECIAL_AMBIENT
 	};
 
-	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, Type ambient_type = NORMAL_AMBIENT);
+	SoundAmbientPage(const QDomNode &conf_node, const QList<SourceDescription> &sources, const QString &descr = QString(),
+		Type ambient_type = NORMAL_AMBIENT);
 	virtual int sectionId() const;
 	static Banner *getBanner(const QDomNode &item_node);
 

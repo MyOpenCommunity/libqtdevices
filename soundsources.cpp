@@ -258,7 +258,8 @@ void RadioSource::sourceShowed()
 #endif
 
 
-SoundSources::SoundSources(const QString &source_address, const QString &area, const QList<SourceDescription> &src)
+SoundSources::SoundSources(const QString &source_address, const QString &area_descr, const QString &area,
+	const QList<SourceDescription> &src)
 {
 	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setSpacing(10);
@@ -285,7 +286,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 			if (!s.details)
-				s.details = new RadioPage(dev);
+				s.details = new RadioPage(dev, area_descr);
 
 			w = new RadioSource(area, dev, s.descr, static_cast<RadioPage*>(s.details));
 		}
@@ -298,9 +299,9 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 			{
 				if (!s.details)
 				{
+#ifdef LAYOUT_TS_10
 					MultimediaFileListFactory *factory = new MultimediaFileListFactory(TreeBrowser::DIRECTORY,
 						EntryInfo::DIRECTORY | EntryInfo::AUDIO);
-#ifdef LAYOUT_TS_10
 					s.details = new MultimediaSectionPage(getPageNode(MULTIMEDIA), MultimediaSectionPage::ITEMS_AUDIO, factory);
 #else
 					s.details = new MultimediaContainer(getPageNode(MULTIMEDIA));
@@ -316,7 +317,7 @@ SoundSources::SoundSources(const QString &source_address, const QString &area, c
 				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 #ifdef LAYOUT_TS_3_5
 				if (!s.details)
-					s.details = new AuxPage(dev, s.descr);
+					s.details = new AuxPage(dev, area_descr, s.descr);
 				w = new AuxSource(area, dev, s.descr, s.details);
 #else
 				w = new AuxSource(area, dev, s.descr);
