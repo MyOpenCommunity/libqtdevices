@@ -112,6 +112,9 @@ private slots:
 	void deleteAlarm();
 	void showHomePage();
 	void alarmDestroyed(QObject *);
+#ifdef LAYOUT_TS_3_5
+	void closeAlarms();
+#endif
 
 private:
 	int current_alarm;

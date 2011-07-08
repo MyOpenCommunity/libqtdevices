@@ -271,9 +271,13 @@ void AlarmManager::newAlarm(int alarm_type, int zone, const QString &zone_descri
 	connect(alarm, SIGNAL(Next()), SLOT(nextAlarm()));
 	connect(alarm, SIGNAL(Prev()), SLOT(prevAlarm()));
 	connect(alarm, SIGNAL(Delete()), SLOT(deleteAlarm()));
-	connect(alarm, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(alarm, SIGNAL(destroyed(QObject*)), SLOT(alarmDestroyed(QObject*)));
+	connect(alarm, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(alarm, SIGNAL(showAlarmList()), SLOT(showAlarmList()));
+
+#ifdef LAYOUT_TS_3_5
+	connect(alarm, SIGNAL(Closed()), SLOT(closeAlarms()));
+#endif
 
 	alarm_pages.append(alarm);
 
@@ -299,6 +303,16 @@ void AlarmManager::removeAlarm(int alarm_type, int zone)
 	}
 	alarm_list->removeAlarm(alarm_id);
 }
+
+#ifdef LAYOUT_TS_3_5
+void AlarmManager::closeAlarms()
+{
+	// On ts3, we want to close all the alarm pages when the user clicks the back
+	// button (that emits the Closed signal)
+	foreach (AlarmPage *page, alarm_pages)
+		bt_global::page_stack.closePage(page);
+}
+#endif
 
 void AlarmManager::nextAlarm()
 {
@@ -343,31 +357,30 @@ void AlarmManager::showHomePage()
 	bt_global::btmain->showHomePage();
 }
 
-#ifdef LAYOUT_TS_3_5
-
 void AlarmManager::showAlarmList()
 {
+#ifdef LAYOUT_TS_3_5
 	if (alarm_pages.isEmpty())
 		return;
 
 	current_alarm = alarm_pages.size() - 1;
 	alarm_pages.at(current_alarm)->showPage();
-}
-
 #else
-
-void AlarmManager::showAlarmList()
-{
 	bt_global::page_stack.clear();
 	alarm_list->showPage();
-}
-
 #endif
+}
 
 void AlarmManager::alarmDestroyed(QObject *page)
 {
 	alarm_pages.removeOne(static_cast<AlarmPage*>(page));
-	--current_alarm;
+	if (--current_alarm < 0)
+		current_alarm = 0;
+
+#ifdef LAYOUT_TS_3_5
+	if (alarm_pages.size() > 0)
+		alarm_pages.at(current_alarm)->showPage();
+#endif
 }
 
 
