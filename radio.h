@@ -94,11 +94,14 @@ class  RadioPage : public Page
 {
 Q_OBJECT
 public:
-	RadioPage(RadioSourceDevice *dev, const QString &area_descr, const QString &title = tr("RDS Radio"));
+	RadioPage(RadioSourceDevice *dev, const QString &title = tr("RDS Radio"));
 
 	// The page is shared between different areas, so we need to set the area
-	// every time that it is shown.
+	// and the description every time that it is shown.
 	void setArea(const QString &area);
+#ifdef LAYOUT_TS_3_5
+	void setAreaDescription(const QString &area_descr);
+#endif
 
 protected:
 	virtual void showEvent(QShowEvent *);
@@ -126,6 +129,7 @@ private:
 
 #ifdef LAYOUT_TS_3_5
 	QStackedLayout *buttons_stack;
+	QLabel *ambient_label;
 #endif
 
 private slots:

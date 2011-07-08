@@ -24,6 +24,8 @@
 
 #include "banner.h"
 
+#include <QString>
+
 class SourceDevice;
 class StateButton;
 class TextOnImageLabel;
@@ -31,6 +33,7 @@ class VirtualSourceDevice;
 class RadioSourceDevice;
 class RadioInfo;
 class RadioPage;
+class AuxPage;
 class QStackedWidget;
 
 
@@ -100,14 +103,20 @@ class AuxSource : public AudioSource
 Q_OBJECT
 public:
 #ifdef LAYOUT_TS_3_5
-	AuxSource(const QString &area, SourceDevice *dev, const QString &description,  Page *details);
+	AuxSource(const QString &area, const QString &area_descr, SourceDevice *dev, const QString &description,  AuxPage *details);
 #else
 	AuxSource(const QString &area, SourceDevice *dev, const QString &description);
 #endif
 
 #ifdef LAYOUT_TS_3_5
+protected slots:
+	virtual void showDetails();
+
 private slots:
 	void sourceStateChanged(bool active);
+
+private:
+	QString area_description;
 #endif
 };
 
@@ -135,7 +144,8 @@ class RadioSource : public AudioSource
 {
 Q_OBJECT
 public:
-	RadioSource(const QString &area, RadioSourceDevice *dev, const QString &description, RadioPage *details);
+	RadioSource(const QString &area, const QString &area_descr, RadioSourceDevice *dev, const QString &description,
+		RadioPage *details);
 
 #ifdef LAYOUT_TS_10
 	virtual void sourceHidden();
@@ -148,9 +158,11 @@ protected slots:
 private slots:
 	void sourceStateChanged(bool active);
 
-#ifdef LAYOUT_TS_10
 private:
+#ifdef LAYOUT_TS_10
 	RadioInfo *radio_info;
+#else
+	QString area_description;
 #endif
 };
 

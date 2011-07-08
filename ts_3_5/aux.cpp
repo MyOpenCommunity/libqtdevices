@@ -30,7 +30,7 @@
 #include <QGridLayout>
 
 
-AuxPage::AuxPage(SourceDevice *dev, const QString &area_descr, const QString &description)
+AuxPage::AuxPage(SourceDevice *dev, const QString &description)
 {
 	QWidget *content = new QWidget;
 	QGridLayout *main_layout = new QGridLayout(content);
@@ -41,7 +41,7 @@ AuxPage::AuxPage(SourceDevice *dev, const QString &area_descr, const QString &de
 	title_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	main_layout->addWidget(title_label, 0, 0, 1, 1, Qt::AlignHCenter);
 
-	QLabel *ambient_label = new QLabel(area_descr);
+	ambient_label = new QLabel;
 	ambient_label->setFont(bt_global::font->get(FontManager::SUBTITLE));
 	main_layout->addWidget(ambient_label, 1, 0, 1, 1, Qt::AlignHCenter);
 	// The label for the ambient has a text only in the sounddiffusion
@@ -62,6 +62,11 @@ AuxPage::AuxPage(SourceDevice *dev, const QString &area_descr, const QString &de
 	nav_bar->displayScrollButtons(false);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
 	buildPage(content, nav_bar);
+}
+
+void AuxPage::setAreaDescription(const QString &area_descr)
+{
+	ambient_label->setText(area_descr);
 }
 
 

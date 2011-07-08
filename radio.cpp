@@ -265,7 +265,7 @@ void RadioInfo::setRadioName(const QString &rds)
 }
 
 
-RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &area_descr, const QString &title)
+RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 {
 	dev = _dev;
 	NavigationBar *nav_bar = new NavigationBar;
@@ -283,7 +283,7 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &area_descr, const Q
 	QLabel *title_label = new QLabel(title);
 	title_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 
-	QLabel *ambient_label = new QLabel(area_descr);
+	ambient_label = new QLabel;
 	ambient_label->setFont(bt_global::font->get(FontManager::SMALLTEXT));
 	// The label for the ambient has a text only in the sounddiffusion
 	// multichannel. Because we want a fixed layout for both cases, we set
@@ -356,7 +356,6 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &area_descr, const Q
 }
 
 #ifdef LAYOUT_TS_3_5
-
 void RadioPage::showMemoryButtons()
 {
 	radio_info->showCycleButton(false);
@@ -374,6 +373,10 @@ void RadioPage::backClick()
 	}
 }
 
+void RadioPage::setAreaDescription(const QString &area_descr)
+{
+	ambient_label->setText(area_descr);
+}
 #endif
 
 void RadioPage::setArea(const QString &area)

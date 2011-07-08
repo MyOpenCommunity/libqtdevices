@@ -152,9 +152,10 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 }
 
 #ifdef LAYOUT_TS_3_5
-AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description, Page *details) :
+AuxSource::AuxSource(const QString &area, const QString &area_descr, SourceDevice *dev, const QString &description, AuxPage *details) :
 	AudioSource(area, dev, details)
 {
+	area_description = area_descr;
 	drawBanner(description);
 	connect(this, SIGNAL(sourceStateChanged(bool)), SLOT(sourceStateChanged(bool)));
 }
@@ -163,6 +164,13 @@ void AuxSource::sourceStateChanged(bool active)
 {
 	right_button->setVisible(active);
 }
+
+void AuxSource::showDetails()
+{
+	static_cast<AuxPage*>(details)->setAreaDescription(area_description);
+	AudioSource::showDetails();
+}
+
 #else
 AuxSource::AuxSource(const QString &area, SourceDevice *dev, const QString &description) :
 	AudioSource(area, dev)
@@ -197,10 +205,11 @@ void MediaSource::sourceStateChanged(bool active)
 }
 
 
-RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, const QString &description, RadioPage *details) :
+RadioSource::RadioSource(const QString &area, const QString &area_descr, RadioSourceDevice *dev, const QString &description, RadioPage *details) :
 	AudioSource(area, dev, details)
 {
 #ifdef LAYOUT_TS_3_5
+	area_description = area_descr;
 	drawBanner(description);
 #else
 	Q_UNUSED(description);
@@ -222,6 +231,9 @@ RadioSource::RadioSource(const QString &area, RadioSourceDevice *dev, const QStr
 void RadioSource::showDetails()
 {
 	static_cast<RadioPage*>(details)->setArea(area);
+#ifdef LAYOUT_TS_3_5
+	static_cast<RadioPage*>(details)->setAreaDescription(area_description);
+#endif
 	AudioSource::showDetails();
 }
 
@@ -287,9 +299,9 @@ SoundSources::SoundSources(const QString &source_address, const QString &area_de
 		{
 			RadioSourceDevice *dev = bt_global::add_device_to_cache(new RadioSourceDevice(s.where));
 			if (!s.details)
-				s.details = new RadioPage(dev, area_descr);
+				s.details = new RadioPage(dev);
 
-			w = new RadioSource(area, dev, s.descr, static_cast<RadioPage*>(s.details));
+			w = new RadioSource(area, area_descr, dev, s.descr, static_cast<RadioPage*>(s.details));
 		}
 		else
 		{
@@ -318,8 +330,8 @@ SoundSources::SoundSources(const QString &source_address, const QString &area_de
 				SourceDevice *dev = bt_global::add_device_to_cache(new SourceDevice(s.where));
 #ifdef LAYOUT_TS_3_5
 				if (!s.details)
-					s.details = new AuxPage(dev, area_descr, s.descr);
-				w = new AuxSource(area, dev, s.descr, s.details);
+					s.details = new AuxPage(dev, s.descr);
+				w = new AuxSource(area, area_descr, dev, s.descr, static_cast<AuxPage*>(s.details));
 #else
 				w = new AuxSource(area, dev, s.descr);
 #endif

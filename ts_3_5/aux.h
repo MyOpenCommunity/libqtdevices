@@ -25,13 +25,19 @@
 #include "page.h"
 
 class SourceDevice;
+class QLabel;
 
 
 class AuxPage : public Page
 {
 Q_OBJECT
 public:
-	AuxPage(SourceDevice *dev, const QString &area_descr, const QString &description);
+	AuxPage(SourceDevice *dev, const QString &description);
+
+	void setAreaDescription(const QString &area_descr);
+
+private:
+	QLabel *ambient_label;
 };
 
 
