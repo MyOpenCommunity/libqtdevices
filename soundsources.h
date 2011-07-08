@@ -78,6 +78,8 @@ protected:
 	StateButton *left_button;
 	BtButton *right_button;
 
+	bool source_status; // true if the source is on
+
 #ifdef LAYOUT_TS_3_5
 	BtButton *cycle_button;
 #else

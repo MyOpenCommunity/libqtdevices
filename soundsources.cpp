@@ -51,6 +51,7 @@ AudioSource::AudioSource(const QString &_area, SourceDevice *_dev, Page *_detail
 {
 	details = _details;
 	dev = _dev;
+	source_status = false;
 
 	// Area null means that the source must activated in all the areas (as a general)
 	area = _area;
@@ -139,12 +140,12 @@ void AudioSource::valueReceivedAudioSource(const DeviceValues &values_list)
 {
 	if (values_list.contains(SourceDevice::DIM_AREAS_UPDATED))
 	{
-		bool status = left_button->getStatus();
 		bool active = dev->isActive(area);
 
-		if (status == active)
+		if (source_status == active)
 			return;
 
+		source_status = active;
 		left_button->setStatus(active);
 		emit sourceStateChanged(active);
 	}
