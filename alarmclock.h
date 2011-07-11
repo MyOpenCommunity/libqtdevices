@@ -129,8 +129,8 @@ private:
 	uchar conta2min,sorgente,stazione;
 	bool update_eeprom;
 	int serial_number;
-	bool buzAbilOld;
-	unsigned int contaBuzzer;
+	bool buzzer_enabled;
+	unsigned int buzzer_counter;
 
 	// The variables which represent an alarm.
 	QList<bool> alarm_days;
@@ -140,7 +140,7 @@ private:
 
 	int alarm_volumes[AMPLI_NUM];
 	bool active;
-	QTimer *ring_alarm_timer, *aumVolTimer;
+	QTimer *ring_alarm_timer, *timer_increase_volume;
 #ifdef LAYOUT_TS_3_5
 	AlarmClockTime *alarm_time_page;
 	AlarmClockFreq *alarm_type_page;

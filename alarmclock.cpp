@@ -73,7 +73,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 {
 	id = config_id;
 	item_id = _item_id;
-	aumVolTimer = NULL;
+	timer_increase_volume = NULL;
 	alarm_time = QTime(hour, minute);
 	ring_alarm_timer = NULL;
 	alarm_freq = freq;
@@ -311,20 +311,20 @@ void AlarmClock::checkAlarm()
 				aumVolTimer->start(5000);
 				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));
 #else
-				aumVolTimer = new QTimer(this);
-				aumVolTimer->start(100);
-				connect(aumVolTimer, SIGNAL(timeout()), SLOT(buzzerAlarm()));
+				timer_increase_volume = new QTimer(this);
+				timer_increase_volume->start(100);
+				connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
 #endif
-				contaBuzzer = 0;
+				buzzer_counter = 0;
 				conta2min = 0;
 			}
 			else if (alarm_type == SOUND_DIFF)
 			{
 				if (dev->isValid(sorgente, stazione, alarm_volumes))
 				{
-					aumVolTimer = new QTimer(this);
-					aumVolTimer->start(3000);
-					connect(aumVolTimer,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
+					timer_increase_volume = new QTimer(this);
+					timer_increase_volume->start(3000);
+					connect(timer_increase_volume,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
 					conta2min = 0;
 				}
 				else
@@ -390,26 +390,26 @@ void AlarmClock::sounddiffusionAlarm()
 
 void AlarmClock::buzzerAlarm()
 {
-	if (contaBuzzer == 0)
+	if (buzzer_counter == 0)
 	{
-		buzAbilOld = getBeep();
+		buzzer_enabled = getBeep();
 		setBeep(true);
 	}
-	if  (contaBuzzer % 2 == 0)
+	if  (buzzer_counter % 2 == 0)
 	{
-		if (((contaBuzzer + 2) % 12) && (contaBuzzer % 12))
+		if (((buzzer_counter + 2) % 12) && (buzzer_counter % 12))
 			beep(10);
 	}
 
-	if (contaBuzzer % 8 == 0)
+	if (buzzer_counter % 8 == 0)
 		bt_global::display->changeBrightness(DISPLAY_OPERATIVE);
 	else
 		bt_global::display->changeBrightness(DISPLAY_FREEZED);
 
-	contaBuzzer++;
-	if (contaBuzzer >= 10*60*2)
+	buzzer_counter++;
+	if (buzzer_counter >= 10*60*2)
 	{
-		setBeep(buzAbilOld);
+		setBeep(buzzer_enabled);
 
 		alarmTimeout();
 	}
@@ -419,8 +419,8 @@ void AlarmClock::wavAlarm()
 {
 	bt_global::sound->play(SOUND_PATH "alarm.wav");
 
-	contaBuzzer++;
-	if (contaBuzzer >= 24)
+	buzzer_counter++;
+	if (buzzer_counter >= 24)
 		alarmTimeout();
 }
 
@@ -429,9 +429,9 @@ void AlarmClock::alarmTimeout()
 	qDebug("Alarm clock timeout");
 
 	// stop alarm timer
-	aumVolTimer->stop();
-	delete aumVolTimer;
-	aumVolTimer = NULL;
+	timer_increase_volume->stop();
+	delete timer_increase_volume;
+	timer_increase_volume = NULL;
 
 	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
@@ -447,20 +447,20 @@ void AlarmClock::alarmTimeout()
 void AlarmClock::stopAlarm()
 {
 	// should never happen
-	if (!aumVolTimer || !aumVolTimer->isActive())
+	if (!timer_increase_volume || !timer_increase_volume->isActive())
 		return;
 
 	qDebug("Stopping alarm clock");
-	aumVolTimer->stop();
+	timer_increase_volume->stop();
 #ifdef BT_HARDWARE_TS_3_5
 	if (alarm_type == BUZZER)
-		setBeep(buzAbilOld);
+		setBeep(buzzer_enabled);
 #endif
 	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
 
-	delete aumVolTimer;
-	aumVolTimer = NULL;
+	delete timer_increase_volume;
+	timer_increase_volume = NULL;
 	bt_global::status.alarm_clock_on = false;
 
 	emit alarmClockFired();
