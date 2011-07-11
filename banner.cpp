@@ -159,9 +159,13 @@ void Banner::inizializza(bool forza)
 
 bool Banner::initButton(BtButton *btn, const QString &icon)
 {
-	if (icon.isEmpty())
+	// We use a null icon path to mark that we want to delete a button usually
+	// in the banner. Instead, the empty icon path is used when the requested
+	// path is not found (see the return value of the method SkinManager::getImage)
+	if (icon.isNull())
 	{
-		Q_ASSERT_X(linked_pages.isEmpty(), "Banner::initButton", "Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
+		Q_ASSERT_X(linked_pages.isEmpty(), "Banner::initButton",
+			"Deleting a button with (possibly) linked pages. Maybe you called connectButton() before initBanner()? Aborting.");
 		btn->hide();
 		btn->disconnect();
 		btn->deleteLater();
