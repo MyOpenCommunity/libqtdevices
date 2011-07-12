@@ -51,7 +51,12 @@ BannOnOffCombo::BannOnOffCombo(QWidget *parent) : Banner(parent)
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TS_3_5
+	l->setHorizontalSpacing(10);
+	l->setVerticalSpacing(0);
+#else
 	l->setSpacing(0);
+#endif
 	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->addLayout(hbox, 0, 1);
 	l->setColumnStretch(1, 2);
