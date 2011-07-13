@@ -227,6 +227,6 @@ void ListPage::loadItems(const QDomNode &config_node)
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		}
 		else
-			qFatal("Type of item %d not handled on settings page!", id);
+			Q_ASSERT_X(false, "ListPage::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
 	}
 }
