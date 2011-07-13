@@ -36,8 +36,8 @@ class QLabel;
 class QTimer;
 class AmplifierDevice;
 class AlarmClockTime;
-class AlarmClockFreq;
-class AlarmClockTimeFreq;
+class AlarmClockDays;
+class AlarmClockTimeDays;
 class AlarmClockSoundDiff;
 class AlarmSoundDiffDevice;
 class SingleChoiceContent;
@@ -143,10 +143,10 @@ private:
 	QTimer *ring_alarm_timer, *timer_increase_volume;
 #ifdef LAYOUT_TS_3_5
 	AlarmClockTime *alarm_time_page;
-	AlarmClockFreq *alarm_type_page;
+	AlarmClockDays *alarm_days_page;
 #else
-	AlarmClockTimeFreq *alarm_time_page;
-	AlarmClockTimeFreq *alarm_type_page;
+	AlarmClockTimeDays *alarm_time_page;
+	AlarmClockTimeDays *alarm_days_page;
 #endif
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;
@@ -173,11 +173,11 @@ private:
 
 
 // Used to set the alarm frequency.
-class AlarmClockFreq : public Page
+class AlarmClockDays : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq);
+	AlarmClockDays(AlarmClock::Type type, AlarmClock::Freq freq);
 
 	AlarmClock::Freq getAlarmFreq() const;
 	QList<bool> getAlarmDays() const;
@@ -205,11 +205,11 @@ signals:
 };
 
 
-class AlarmClockTimeFreq : public Page
+class AlarmClockTimeDays : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, QList<bool> days);
+	AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, QList<bool> days);
 
 	QTime getAlarmTime() const;
 	AlarmClock::Freq getAlarmFreq() const;

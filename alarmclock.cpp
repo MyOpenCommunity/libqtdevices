@@ -91,15 +91,15 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 
 #ifdef LAYOUT_TS_3_5
 	alarm_time_page = new AlarmClockTime(alarm_time);
-	alarm_type_page = new AlarmClockFreq(alarm_type, alarm_freq);
+	alarm_days_page = new AlarmClockDays(alarm_type, alarm_freq);
 
-	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_type_page, SLOT(showPage()));
+	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_days_page, SLOT(showPage()));
 	connect(alarm_time_page, SIGNAL(okClicked()), this, SLOT(saveAndActivate()));
 
-	connect(alarm_type_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
-	connect(alarm_type_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
+	connect(alarm_days_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
+	connect(alarm_days_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 #else
-	alarm_time_page = alarm_type_page = new AlarmClockTimeFreq(alarm_time, alarm_type, alarm_days);
+	alarm_time_page = alarm_days_page = new AlarmClockTimeDays(alarm_time, alarm_type, alarm_days);
 	connect(alarm_time_page, SIGNAL(Closed()), SIGNAL(Closed()));
 	connect(alarm_time_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
 	connect(alarm_time_page, SIGNAL(showSoundDiffusion()), SLOT(showSoundDiffPage()));
@@ -131,8 +131,8 @@ void AlarmClock::saveAndActivate()
 {
 	setActive(true);
 	alarm_time = alarm_time_page->getAlarmTime();
-	alarm_freq = alarm_type_page->getAlarmFreq();
-	alarm_days = alarm_type_page->getAlarmDays();
+	alarm_freq = alarm_days_page->getAlarmFreq();
+	alarm_days = alarm_days_page->getAlarmDays();
 
 	QMap<QString, QString> data;
 	data["hour"] = alarm_time.toString("hh");
@@ -519,7 +519,7 @@ QTime AlarmClockTime::getAlarmTime() const
 }
 
 
-AlarmClockFreq::AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq)
+AlarmClockDays::AlarmClockDays(AlarmClock::Type type, AlarmClock::Freq freq)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(type == AlarmClock::SOUND_DIFF);
 
@@ -539,17 +539,17 @@ AlarmClockFreq::AlarmClockFreq(AlarmClock::Type type, AlarmClock::Freq freq)
 	buildPage(content, navigation);
 }
 
-void AlarmClockFreq::setSelection(int freq)
+void AlarmClockDays::setSelection(int freq)
 {
 	frequency = AlarmClock::Freq(freq);
 }
 
-AlarmClock::Freq AlarmClockFreq::getAlarmFreq() const
+AlarmClock::Freq AlarmClockDays::getAlarmFreq() const
 {
 	return frequency;
 }
 
-QList<bool> AlarmClockFreq::getAlarmDays() const
+QList<bool> AlarmClockDays::getAlarmDays() const
 {
 	return QList<bool>();
 }
@@ -571,7 +571,7 @@ void AlarmClockSoundDiff::showPage()
 }
 
 
-AlarmClockTimeFreq::AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, QList<bool> active)
+AlarmClockTimeDays::AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, QList<bool> active)
 {
 	static const char *day_labels[] = {QT_TR_NOOP("Mon"),
 					   QT_TR_NOOP("Tue"),
@@ -651,19 +651,19 @@ AlarmClockTimeFreq::AlarmClockTimeFreq(QTime alarm_time, AlarmClock::Type type, 
 	main->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 }
 
-QTime AlarmClockTimeFreq::getAlarmTime() const
+QTime AlarmClockTimeDays::getAlarmTime() const
 {
 	BtTime t = edit->time();
 
 	return QTime(t.hour(), t.minute());
 }
 
-AlarmClock::Freq AlarmClockTimeFreq::getAlarmFreq() const
+AlarmClock::Freq AlarmClockTimeDays::getAlarmFreq() const
 {
 	return AlarmClock::NEVER;
 }
 
-QList<bool> AlarmClockTimeFreq::getAlarmDays() const
+QList<bool> AlarmClockTimeDays::getAlarmDays() const
 {
 	QList<bool> active;
 
@@ -673,7 +673,7 @@ QList<bool> AlarmClockTimeFreq::getAlarmDays() const
 	return active;
 }
 
-void AlarmClockTimeFreq::setActive(bool active)
+void AlarmClockTimeDays::setActive(bool active)
 {
 	alarm_label->setPixmap(getBostikName(alarm_icon, active ? "on" : "off"));
 }
