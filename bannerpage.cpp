@@ -44,12 +44,12 @@ void BannerPage::inizializza()
 		page_content->initBanners();
 }
 
-void BannerPage::buildPage(BannerContent *content, NavigationBar *nav_bar, const QString &title)
+void BannerPage::buildPage(BannerContent *content, AbstractNavigationBar *nav_bar, const QString &title)
 {
 	buildPage(content, content, nav_bar, title, TITLE_HEIGHT);
 }
 
-void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, NavigationBar *nav_bar,
+void BannerPage::buildPage(QWidget *main_widget, BannerContent *content, AbstractNavigationBar *nav_bar,
 	const QString &title, int title_height)
 {
 	PageTitleWidget *title_widget = 0;
