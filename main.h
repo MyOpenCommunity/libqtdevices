@@ -191,8 +191,6 @@ enum Section
  */
 enum ItemType
 {
-	SET_ALARMCLOCK=20,                               /*!<  AlarmClock setting */
-	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */

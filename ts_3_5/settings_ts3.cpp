@@ -44,6 +44,7 @@ enum
 	CONTRAST=28,                                  /*!<  Contrast */
 	DISPLAY=21,                                   /*!<  Display */
 	LANSETTINGS=72,                               /*!< LAN settings and information */
+	SET_ALARMCLOCK=20,                            /*!<  AlarmClock setting */
 #else
 	SET_BEEP=14001,                               /*!<  Beep */
 	SET_DATETIME=14002,                           /*!<  Time setting */
@@ -51,6 +52,8 @@ enum
 	VERSION=14006,                                /*!<  Version */
 	DISPLAY=14007,                                /*!<  Display */
 	LANSETTINGS=14008,                            /*!< LAN settings and information */
+	PAGE_ALARMCLOCK = 14009,                      /*!< The alarm clock page */
+	SET_ALARMCLOCK=14201,                         /*!<  AlarmClock setting */
 #endif
 };
 
@@ -90,16 +93,28 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 	}
 	case SET_ALARMCLOCK:
 	{
+
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();
 		int hour = getTextChild(item_node, "hour").toInt();
 		int minute = getTextChild(item_node, "minute").toInt();
-		int alarmset = getTextChild(item_node, "alarmset").toInt();
+		int days = getTextChild(item_node, "days").toInt();
 
 		b = new BannAlarmClock(item_id, hour, minute, bt_global::skin->getImage("state_on"),
 			bt_global::skin->getImage("state_off"), bt_global::skin->getImage("edit"),
-			getTextChild(item_node, "descr"), enabled, type, alarmset);
+			getTextChild(item_node, "descr"), enabled, type, days);
 
+		break;
+	}
+	case PAGE_ALARMCLOCK:
+	{
+		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
+		ListPage *list_page = new ListPage(page_node);
+		list_page->setSpacing(10);
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("alarmclock"), descr);
+		bann->connectRightButton(list_page);
+		b = bann;
 		break;
 	}
 	case SET_DATETIME:

@@ -43,7 +43,7 @@ class BannAlarmClock : public Bann2StateButtons
 Q_OBJECT
 public:
 	BannAlarmClock(int item_id, int hour, int minute, QString icon_on,
-		QString icon_off, QString icon_label, QString text, int enabled, int freq, int tipo);
+		QString icon_off, QString icon_label, QString text, int enabled, int alarm_type, int days);
 	void setAbil(bool);
 	void inizializza(bool forza = false);
 
@@ -69,7 +69,7 @@ Q_OBJECT
 public:
 	BannAlarmClockIcon(int item_id, int hour, int minute, QString icon_on,
 		QString icon_off, QString icon_state_on, QString icon_state_off, QString icon_edit, QString text,
-		int enabled, int tipo, int days);
+		int enabled, int alarm_type, int days);
 
 	void setAbil(bool);
 	void inizializza(bool forza = false);

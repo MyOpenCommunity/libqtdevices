@@ -162,6 +162,13 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_logo>my_home.png</img_logo>
 		<img_bticino>bticino.png</img_bticino>
 	</item>
+	<item>
+		<!-- alarm clock -->
+		<cid>14009</cid>
+		<img_state_on>svegliaon.png</img_state_on>
+		<img_state_off>svegliaoff.png</img_state_off>
+		<img_edit>btninfo.png</img_edit>
+	</item>
 	<!-- End Settings items -->
 
 	<!-- Start Lighting items -->

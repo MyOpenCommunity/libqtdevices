@@ -74,6 +74,7 @@ enum
 	RINGTONE_MESSAGE = 14110,
 	PAGE_LANSETTINGS = 14008,
 	PAGE_VCTSETTINGS = 14010,
+	SET_ALARMCLOCK = 14201,
 	// TODO ids?
 	PAGE_CALIBRATION_TEST = 1777777,
 };
@@ -322,7 +323,7 @@ Banner *IconSettings::getBanner(const QDomNode &item_node)
 	QString descr = getTextChild(item_node, "descr");
 	switch (id)
 	{
-	case SET_SVEGLIA_SINGLEPAGE:
+	case SET_ALARMCLOCK:
 	{
 		int type = getTextChild(item_node, "type").toInt();
 		int enabled = getTextChild(item_node, "enabled").toInt();

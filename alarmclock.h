@@ -23,6 +23,7 @@
 #define ALARMCLOCK_H
 
 #include "hardware_functions.h" // AMPLI_NUM
+#include "bannerpage.h"
 #include "page.h"
 #include "navigation_bar.h" // AbstractNavigationBar
 
@@ -48,16 +49,6 @@ class AlarmClock : public Page
 {
 Q_OBJECT
 public:
-	// The alarm set frequencies of operation
-	enum Freq
-	{
-		// values used by TS 3.5''
-		ALWAYS = 1,    // Every day
-		ONCE = 0,      // Only at the first occurrence of the time selected after the alarm set was setted
-		WEEKDAYS = 2,  // From monday to friday
-		HOLIDAYS = 3,  // On Sunday and Saturday
-		NEVER = 50     // Never
-	};
 
 	// The alarm set type
 	enum Type
@@ -66,7 +57,7 @@ public:
 		SOUND_DIFF = 1  // The sound diffusion system is used
 	};
 
-	AlarmClock(int id, int item_id, Type type, Freq freq, int days, int hour, int minute);
+	AlarmClock(int item_id, Type type, int days, int hour, int minute);
 
 	// Reads from the eeprom the alarm set state.
 	void inizializza();
@@ -135,7 +126,6 @@ private:
 	// The variables which represent an alarm.
 	QList<bool> alarm_days;
 	Type alarm_type;
-	Freq alarm_freq;
 	QTime alarm_time;
 
 	int alarm_volumes[AMPLI_NUM];
@@ -172,25 +162,18 @@ private:
 };
 
 
-// Used to set the alarm frequency.
-class AlarmClockDays : public Page
+// Used to set the alarm days.
+class AlarmClockDays : public BannerPage
 {
 Q_OBJECT
 public:
-	AlarmClockDays(AlarmClock::Type type, AlarmClock::Freq freq);
+	AlarmClockDays(AlarmClock::Type type, QList<bool> days);
 
-	AlarmClock::Freq getAlarmFreq() const;
 	QList<bool> getAlarmDays() const;
 
 signals:
 	void okClicked();
 
-private slots:
-	void setSelection(int freq);
-
-private:
-	SingleChoiceContent *content;
-	AlarmClock::Freq frequency;
 };
 
 
@@ -212,7 +195,6 @@ public:
 	AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, QList<bool> days);
 
 	QTime getAlarmTime() const;
-	AlarmClock::Freq getAlarmFreq() const;
 	QList<bool> getAlarmDays() const;
 
 	void setActive(bool active);

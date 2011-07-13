@@ -35,10 +35,7 @@
 #include "audiostatemachine.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "mediaplayer.h" // bt_global::sound
-
-#ifdef LAYOUT_TS_10
 #include "sounddiffusionpage.h" // alarmClockPage
-#endif
 
 #include <openmsg.h>
 
@@ -69,14 +66,12 @@ AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
 }
 
 
-AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int days_active, int hour, int minute)
+AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int minute)
 {
-	id = config_id;
 	item_id = _item_id;
 	timer_increase_volume = NULL;
 	alarm_time = QTime(hour, minute);
 	ring_alarm_timer = NULL;
-	alarm_freq = freq;
 	alarm_type = type;
 	active = false;
 
@@ -91,7 +86,7 @@ AlarmClock::AlarmClock(int config_id, int _item_id, Type type, Freq freq, int da
 
 #ifdef LAYOUT_TS_3_5
 	alarm_time_page = new AlarmClockTime(alarm_time);
-	alarm_days_page = new AlarmClockDays(alarm_type, alarm_freq);
+	alarm_days_page = new AlarmClockDays(alarm_type, alarm_days);
 
 	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_days_page, SLOT(showPage()));
 	connect(alarm_time_page, SIGNAL(okClicked()), this, SLOT(saveAndActivate()));
@@ -131,26 +126,21 @@ void AlarmClock::saveAndActivate()
 {
 	setActive(true);
 	alarm_time = alarm_time_page->getAlarmTime();
-	alarm_freq = alarm_days_page->getAlarmFreq();
 	alarm_days = alarm_days_page->getAlarmDays();
 
 	QMap<QString, QString> data;
 	data["hour"] = alarm_time.toString("hh");
 	data["minute"] = alarm_time.toString("mm");
-	if (id == SET_SVEGLIA_SINGLEPAGE)
-	{
-		int active = 0;
-		for (int i = 0; i < 7; ++i)
-			if (alarm_days[i])
-				active |= 1 << (6 - i);
-		data["days"] = QString::number(active);
-	}
-	else
-		data["alarmset"] = QString::number(alarm_freq);
 
-#ifdef CONFIG_TS_3_5
-	setCfgValue(data, id, serial_number);
-#else
+	int active = 0;
+	for (int i = 0; i < 7; ++i)
+		if (alarm_days[i])
+			active |= 1 << (6 - i);
+	data["days"] = QString::number(active);
+
+	// Because the old ts3 config file doesn't have the 'days' node, we cannot save
+	// the configuration
+#ifdef CONFIG_TS_10
 	setCfgValue(data, item_id);
 #endif
 
@@ -214,7 +204,7 @@ void AlarmClock::setActive(bool a)
 	}
 
 #ifdef CONFIG_TS_3_5
-	setCfgValue("enabled", active, id, serial_number);
+	setCfgValue("enabled", active, SET_ALARMCLOCK, serial_number);
 #else
 	setCfgValue("enabled", active, item_id);
 #endif
@@ -274,12 +264,6 @@ void AlarmClock::checkAlarm()
 	bool ring_alarm = false;
 	bool ring_once = false;
 
-#ifdef LAYOUT_TS_3_5
-	if (alarm_freq == ALWAYS || alarm_freq == ONCE ||
-		(alarm_freq == WEEKDAYS && current.date().dayOfWeek() < 6) ||
-		(alarm_freq == HOLIDAYS && current.date().dayOfWeek() > 5))
-		ring_alarm = true;
-#else
 	if (alarm_days[current.date().dayOfWeek() - 1])
 		ring_alarm = true;
 	else
@@ -297,7 +281,6 @@ void AlarmClock::checkAlarm()
 				break;
 			}
 	}
-#endif
 
 	if (ring_alarm)
 	{
@@ -343,7 +326,7 @@ void AlarmClock::checkAlarm()
 
 			qDebug("Starting alarm clock");
 
-			if (alarm_freq == ONCE || ring_once)
+			if (ring_once)
 				setActive(false);
 		}
 	}
@@ -519,34 +502,24 @@ QTime AlarmClockTime::getAlarmTime() const
 }
 
 
-AlarmClockDays::AlarmClockDays(AlarmClock::Type type, AlarmClock::Freq freq)
+AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 {
 	AlarmNavigation *navigation = new AlarmNavigation(type == AlarmClock::SOUND_DIFF);
+	buildPage(new BannerContent, navigation);
 
-	content = new SingleChoiceContent;
-	content->layout()->setSpacing(10);
-	content->addBanner(SingleChoice::createBanner(tr("once")), AlarmClock::ONCE);
-	content->addBanner(SingleChoice::createBanner(tr("always")), AlarmClock::ALWAYS);
-	content->addBanner(SingleChoice::createBanner(tr("mon-fri")), AlarmClock::WEEKDAYS);
-	content->addBanner(SingleChoice::createBanner(tr("sat-sun")), AlarmClock::HOLIDAYS);
+	QStringList days_description;
+	days_description << tr("Mon") << tr("Tue") << tr("Wed") << tr("Thu")
+					 << tr("Fri") << tr("Sat") << tr("Sun");
 
-	connect(content, SIGNAL(bannerSelected(int)), SLOT(setSelection(int)));
+	foreach (const QString &desc, days_description)
+	{
+		Bann2StateButtons *b = new Bann2StateButtons;
+		b->initBanner(bt_global::skin->getImage("ok"), QString(), desc);
+		page_content->appendBanner(b);
+	}
+
 	connect(navigation, SIGNAL(forwardClicked()), SIGNAL(forwardClick()));
 	connect(navigation, SIGNAL(okClicked()), SIGNAL(okClicked()));
-
-	content->setCheckedId(freq);
-
-	buildPage(content, navigation);
-}
-
-void AlarmClockDays::setSelection(int freq)
-{
-	frequency = AlarmClock::Freq(freq);
-}
-
-AlarmClock::Freq AlarmClockDays::getAlarmFreq() const
-{
-	return frequency;
 }
 
 QList<bool> AlarmClockDays::getAlarmDays() const
@@ -557,7 +530,6 @@ QList<bool> AlarmClockDays::getAlarmDays() const
 
 void AlarmClockSoundDiff::showPage()
 {
-#ifdef LAYOUT_TS_10
 	Page *difson = SoundDiffusionPage::alarmClockPage();
 	disconnect(difson, SIGNAL(Closed()), 0, 0);
 	disconnect(difson, SIGNAL(saveVolumes()), 0, 0);
@@ -565,9 +537,6 @@ void AlarmClockSoundDiff::showPage()
 	connect(difson, SIGNAL(saveVolumes()), SIGNAL(saveVolumes()));
 
 	difson->showPage();
-#else
-	Q_ASSERT_X(false, "AlarmClockSoundDiff::showPage", "No sound diffusion alarm clock for TS 3.5'' yet");
-#endif
 }
 
 
@@ -656,11 +625,6 @@ QTime AlarmClockTimeDays::getAlarmTime() const
 	BtTime t = edit->time();
 
 	return QTime(t.hour(), t.minute());
-}
-
-AlarmClock::Freq AlarmClockTimeDays::getAlarmFreq() const
-{
-	return AlarmClock::NEVER;
 }
 
 QList<bool> AlarmClockTimeDays::getAlarmDays() const
