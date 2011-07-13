@@ -193,7 +193,6 @@ enum ItemType
 {
 	SET_ALARMCLOCK=20,                               /*!<  AlarmClock setting */
 	SET_SVEGLIA_SINGLEPAGE=14201,                 /*!<  AlarmClock setting with state icon */
-	CONTRAST=28,                                 /*!<  Contrast */
 	DATA=30,                                      /*!<  Date */
 	TEMPERATURA=31,                               /*!<  Temperature */
 	OROLOGIO=32,                                  /*!<  Clock */
@@ -201,21 +200,9 @@ enum ItemType
 #ifdef CONFIG_TS_3_5
 	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
-	SET_BEEP=25,                                  /*!<  Beep */
-	SET_DATETIME=14,                              /*!<  Time setting */
-	PASSWORD=26,                                  /*!<  Password's settings */
-	VERSION=27,                                   /*!<  Version */
-	DISPLAY=21,                                   /*!<  Display */
-	LANSETTINGS=72,                               /*!< LAN settings and information */
 #else
 	TERMO_HOME_NC_EXTPROBE=208,                   /*!< Home page external not-controlled probe */
 	TERMO_HOME_NC_PROBE=207,                      /*!< Home page not-controlled probe */
-	SET_BEEP=14001,                               /*!<  Beep */
-	SET_DATETIME=14002,                           /*!<  Time setting */
-	PASSWORD=14003,                               /*!<  Password's settings */
-	VERSION=14006,                                /*!<  Version */
-	DISPLAY=14007,                                /*!<  Display */
-	LANSETTINGS=14008,                            /*!< LAN settings and information */
 #endif
 };
 

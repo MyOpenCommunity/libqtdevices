@@ -34,6 +34,25 @@
 
 #include <QDebug>
 
+enum
+{
+#ifdef CONFIG_TS_3_5
+	SET_BEEP=25,                                  /*!<  Beep */
+	SET_DATETIME=14,                              /*!<  Time setting */
+	PASSWORD=26,                                  /*!<  Password's settings */
+	VERSION=27,                                   /*!<  Version */
+	CONTRAST=28,                                  /*!<  Contrast */
+	DISPLAY=21,                                   /*!<  Display */
+	LANSETTINGS=72,                               /*!< LAN settings and information */
+#else
+	SET_BEEP=14001,                               /*!<  Beep */
+	SET_DATETIME=14002,                           /*!<  Time setting */
+	PASSWORD=14003,                               /*!<  Password's settings */
+	VERSION=14006,                                /*!<  Version */
+	DISPLAY=14007,                                /*!<  Display */
+	LANSETTINGS=14008,                            /*!< LAN settings and information */
+#endif
+};
 
 Settings::Settings(const QDomNode &config_node)
 {
@@ -91,11 +110,13 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 		b = bann;
 		break;
 	}
+#ifdef CONFIG_TS_3_5 // To be or not to be? Remove the Contrast or port in the new version of the ts3?
 	case CONTRAST:
 		// TODO CONTRAST below needs to be changed when removing CONFIG_TS_3_5
 		b = new BannContrast(CONTRAST, getTextChild(item_node, "value").toInt(),
 					 bt_global::skin->getImage("edit"), descr);
 		break;
+#endif
 	case DISPLAY:
 	{
 		Bann2Buttons *bann = new Bann2Buttons;
@@ -137,8 +158,10 @@ void Settings::loadItems(const QDomNode &config_node)
 	{
 		int id = getTextChild(item, "id").toInt();
 #ifdef BT_HARDWARE_X11
+#ifdef CONFIG_TS_3_5
 		if (id == CONTRAST)
 			continue;
+#endif
 #endif
 		if (Banner *b = getBanner(item))
 		{
