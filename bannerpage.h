@@ -175,6 +175,7 @@ class ListPage : public BannerPage
 Q_OBJECT
 public:
 	ListPage(const QDomNode &config_node);
+	using BannerPage::setSpacing;
 
 private:
 	void loadItems(const QDomNode &config_node);
