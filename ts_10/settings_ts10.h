@@ -61,17 +61,6 @@ private:
 	void loadItems(const QDomNode &config_node);
 };
 
-// this can be a generic class
-class ListPage : public BannerPage
-{
-Q_OBJECT
-public:
-	ListPage(const QDomNode &config_node);
-
-private:
-	void loadItems(const QDomNode &config_node);
-};
-
 
 /*!
 	\ingroup Settings

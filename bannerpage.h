@@ -31,6 +31,7 @@
 class Banner;
 class NavigationBar;
 class BannerContent;
+class QDomNode;
 
 
 /*!
@@ -165,6 +166,18 @@ public:
 private:
 	QList<Banner*> banner_list;
 	int columns;
+};
+
+
+// A banner page that loads the items as banners using the global getBanner function.
+class ListPage : public BannerPage
+{
+Q_OBJECT
+public:
+	ListPage(const QDomNode &config_node);
+
+private:
+	void loadItems(const QDomNode &config_node);
 };
 
 #endif

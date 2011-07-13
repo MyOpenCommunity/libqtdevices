@@ -28,7 +28,6 @@
 #include "cleanscreen.h"
 #include "btbutton.h"
 #include "hardware_functions.h" // setBeep/getBeep/beep
-#include "bannerfactory.h"
 #include "lansettings.h" // LanSettings, Text2Column
 #include "banner.h"
 #include "bann_settings.h" // impPassword
@@ -138,29 +137,6 @@ void ToggleBeep::toggleBeep()
 
 	if (beep_on)
 		beep();
-}
-
-
-ListPage::ListPage(const QDomNode &config_node)
-{
-	buildPage(getTextChild(config_node, "descr"));
-	loadItems(config_node);
-}
-
-void ListPage::loadItems(const QDomNode &config_node)
-{
-	foreach (const QDomNode& item, getChildren(config_node, "item"))
-	{
-		int id = getTextChild(item, "id").toInt();
-
-		if (Banner *b = getBanner(item))
-		{
-			page_content->appendBanner(b);
-			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-		}
-		else
-			qFatal("Type of item %d not handled on settings page!", id);
-	}
 }
 
 

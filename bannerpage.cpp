@@ -22,6 +22,8 @@
 #include "navigation_bar.h"
 #include "banner.h"
 #include "fontmanager.h"
+#include "bannerfactory.h" // getBanner
+#include "xml_functions.h"
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -203,5 +205,28 @@ void BannerContent::drawContent()
 
 		l->setColumnMinimumWidth(0, total_width / 2);
 		l->setColumnMinimumWidth(2, total_width / 2);
+	}
+}
+
+
+ListPage::ListPage(const QDomNode &config_node)
+{
+	buildPage(getTextChild(config_node, "descr"));
+	loadItems(config_node);
+}
+
+void ListPage::loadItems(const QDomNode &config_node)
+{
+	foreach (const QDomNode& item, getChildren(config_node, "item"))
+	{
+		int id = getTextChild(item, "id").toInt();
+
+		if (Banner *b = getBanner(item))
+		{
+			page_content->appendBanner(b);
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		}
+		else
+			qFatal("Type of item %d not handled on settings page!", id);
 	}
 }
