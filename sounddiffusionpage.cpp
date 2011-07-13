@@ -329,23 +329,24 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
 	QWidget *main_widget = new QWidget;
-	QVBoxLayout *l = new QVBoxLayout(main_widget);
-	QHBoxLayout *b = new QHBoxLayout;
-	l->setContentsMargins(0, 0, 0, 0);
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+
+	QHBoxLayout *button_layout = new QHBoxLayout;
 #ifdef LAYOUT_TS_10
-	b->setContentsMargins(18, 0, 17, 18);
+	button_layout->setContentsMargins(18, 0, 17, 18);
 #endif
+
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
+	button_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
+
 	BannerContent *content = new BannerContent;
 	NavigationBar *nav_bar = new NavigationBar;
-	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 
-	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
-
-	b->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
-
-	l->addWidget(top_widget);
-	l->addWidget(content, 1);
-	l->addLayout(b);
+	main_layout->addWidget(top_widget);
+	main_layout->addWidget(content, 1);
+	main_layout->addLayout(button_layout);
 
 	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);
 	loadItems(conf_node);
