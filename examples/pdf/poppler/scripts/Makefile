@@ -13,6 +13,8 @@ POPPLER=0.14.4
 SOURCES=$(PWD)/../sources
 SCRIPTS=$(PWD)
 
+MAKEFLAGS = -j1
+
 help:
 	@echo
 	@echo "Usage: make [clean|rebuild|rebuild-x86]"
