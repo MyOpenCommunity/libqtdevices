@@ -307,9 +307,9 @@ void AlarmClock::checkAlarm()
 			{
 				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #ifdef BT_HARDWARE_TS_10
-				aumVolTimer = new QTimer(this);
-				aumVolTimer->start(5000);
-				connect(aumVolTimer, SIGNAL(timeout()), SLOT(wavAlarm()));
+				timer_increase_volume = new QTimer(this);
+				timer_increase_volume->start(5000);
+				connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
 #else
 				timer_increase_volume = new QTimer(this);
 				timer_increase_volume->start(100);
