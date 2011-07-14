@@ -53,19 +53,6 @@
 #include <unistd.h>
 
 
-
-AlarmNavigation::AlarmNavigation(bool forwardButton, QWidget *parent)
-	: AbstractNavigationBar(parent)
-{
-	// For now, it used only in TS 3.5'' code.
-#ifdef LAYOUT_TS_3_5
-	createButton(bt_global::skin->getImage("ok"), SIGNAL(okClicked()), 0);
-	if (forwardButton)
-		createButton(bt_global::skin->getImage("forward"), SIGNAL(forwardClicked()), 3);
-#endif
-}
-
-
 AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int minute)
 {
 	item_id = _item_id;
@@ -89,10 +76,13 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 	alarm_days_page = new AlarmClockDays(alarm_type, alarm_days);
 
 	connect(alarm_time_page, SIGNAL(forwardClick()), alarm_days_page, SLOT(showPage()));
-	connect(alarm_time_page, SIGNAL(okClicked()), this, SLOT(saveAndActivate()));
+	connect(alarm_time_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	connect(alarm_days_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
-	connect(alarm_days_page, SIGNAL(okClicked()), SLOT(saveAndActivate()));
+	connect(alarm_days_page, SIGNAL(Closed()), alarm_time_page, SLOT(showPage()));
+	if (alarm_type == SOUND_DIFF)
+		connect(alarm_days_page, SIGNAL(forwardClick()), SLOT(showSoundDiffPage()));
+	else
+		connect(alarm_days_page, SIGNAL(forwardClick()), SLOT(saveAndActivate()));
 #else
 	alarm_time_page = alarm_days_page = new AlarmClockTimeDays(alarm_time, alarm_type, alarm_days);
 	connect(alarm_time_page, SIGNAL(Closed()), SIGNAL(Closed()));
@@ -104,6 +94,12 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 	{
 		alarm_sound_diff = new AlarmClockSoundDiff;
 		connect(alarm_sound_diff, SIGNAL(Closed()), SLOT(resetVolumes()));
+
+#ifdef LAYOUT_TS_3_5
+		connect(alarm_sound_diff, SIGNAL(Closed()), alarm_days_page, SLOT(showPage()));
+#else
+		connect(alarm_sound_diff, SIGNAL(Closed()), SLOT(showPage()));
+#endif
 		// when confirming the sound diffusion status, also save and activate the alarm
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveVolumes()));
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveAndActivate()));
@@ -175,7 +171,6 @@ void AlarmClock::resetVolumes()
 	dev->setReceiveFrames(false);
 	general->turnOff();
 	update_eeprom = false;
-	showPage();
 }
 
 void AlarmClock::setActive(bool a)
@@ -462,7 +457,10 @@ void AlarmClock::inizializza()
 
 AlarmClockTime::AlarmClockTime(QTime alarm_time)
 {
-	AlarmNavigation *navigation = new AlarmNavigation(true);
+	NavigationBar *nav_bar = new NavigationBar("forward");
+	nav_bar->displayScrollButtons(false);
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(forwardClick()));
 
 	QLabel *icon = new QLabel;
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
@@ -471,11 +469,12 @@ AlarmClockTime::AlarmClockTime(QTime alarm_time)
 	edit->setTime(alarm_time);
 
 	QWidget *content = new QWidget;
-	QVBoxLayout *l = new QVBoxLayout(content);
-	QHBoxLayout *r = new QHBoxLayout;
+	QVBoxLayout *main_layout = new QVBoxLayout(content);
 
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
+	main_layout->setContentsMargins(0, 5, 0, 5);
+	main_layout->setSpacing(5);
+
+	QHBoxLayout *r = new QHBoxLayout;
 	r->setContentsMargins(0, 0, 0, 0);
 	r->setSpacing(0);
 
@@ -484,14 +483,11 @@ AlarmClockTime::AlarmClockTime(QTime alarm_time)
 	r->addSpacing(40);
 
 	// top level layout
-	l->addWidget(icon, 0, Qt::AlignHCenter);
-	l->addSpacing(10);
-	l->addLayout(r);
+	main_layout->addWidget(icon, 0, Qt::AlignHCenter);
+	main_layout->addSpacing(10);
+	main_layout->addLayout(r);
 
-	connect(navigation, SIGNAL(okClicked()), SIGNAL(okClicked()));
-	connect(navigation, SIGNAL(forwardClicked()), SIGNAL(forwardClick()));
-
-	buildPage(content, navigation);
+	buildPage(content, nav_bar);
 }
 
 QTime AlarmClockTime::getAlarmTime() const
@@ -502,29 +498,61 @@ QTime AlarmClockTime::getAlarmTime() const
 }
 
 
+BannAlarmDay::BannAlarmDay(QString img_off, QString img_on, QString descr)
+{
+	initBanner(img_off, QString(), descr);
+	left_button->setOffImage(img_off);
+	left_button->setOnImage(img_on);
+	connect(left_button, SIGNAL(clicked()), SLOT(toggleStatus()));
+	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+}
+
+void BannAlarmDay::toggleStatus()
+{
+	left_button->setStatus(left_button->getStatus() == StateButton::OFF);
+}
+
+void BannAlarmDay::setStatus(bool st)
+{
+	left_button->setStatus(st);
+}
+
+bool BannAlarmDay::getStatus() const
+{
+	return left_button->getStatus() == StateButton::ON;
+}
+
+
 AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 {
-	AlarmNavigation *navigation = new AlarmNavigation(type == AlarmClock::SOUND_DIFF);
-	buildPage(new BannerContent, navigation);
+	NavigationBar *nav_bar =  new NavigationBar(type == AlarmClock::SOUND_DIFF ? "forward" : "ok");
+	nav_bar->displayScrollButtons(true);
+
+	buildPage(new BannerContent, nav_bar);
+	setSpacing(10);
 
 	QStringList days_description;
-	days_description << tr("Mon") << tr("Tue") << tr("Wed") << tr("Thu")
-					 << tr("Fri") << tr("Sat") << tr("Sun");
+	days_description << tr("Monday") << tr("Tuesday") << tr("Wednesday") << tr("Thursday")
+		<< tr("Friday") << tr("Saturday") << tr("Sunday");
 
-	foreach (const QString &desc, days_description)
+	for (int i = 0; i < 7; ++i)
 	{
-		Bann2StateButtons *b = new Bann2StateButtons;
-		b->initBanner(bt_global::skin->getImage("ok"), QString(), desc);
+		BannAlarmDay *b = new BannAlarmDay(bt_global::skin->getImage("day_off"),
+			bt_global::skin->getImage("day_on"), days_description[i]);
+
+		b->setStatus(days[i]);
 		page_content->appendBanner(b);
 	}
-
-	connect(navigation, SIGNAL(forwardClicked()), SIGNAL(forwardClick()));
-	connect(navigation, SIGNAL(okClicked()), SIGNAL(okClicked()));
 }
 
 QList<bool> AlarmClockDays::getAlarmDays() const
 {
-	return QList<bool>();
+	QList<bool> active;
+
+	for (int i = 0; i < 7; ++i)
+		active.append(static_cast<BannAlarmDay*>(page_content->getBanner(i))->getStatus());
+
+	return active;
 }
 
 

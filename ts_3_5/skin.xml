@@ -168,6 +168,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_state_on>svegliaon.png</img_state_on>
 		<img_state_off>svegliaoff.png</img_state_off>
 		<img_edit>btninfo.png</img_edit>
+		<img_alarm_icon>svegliaon.png</img_alarm_icon>
+		<img_day_off>beepoff.png</img_day_off>
+		<img_day_on>beepon.png</img_day_on>
 	</item>
 	<!-- End Settings items -->
 
@@ -409,6 +412,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_stop>btnsdstop.png</img_stop>
 		<img_play>btnplay.png</img_play>
 		<img_pause>btnpause.png</img_pause>
+		<!-- Alarm sound diffusion page -->
+		<img_alarm_icon>svegliaon.png</img_alarm_icon>
 	</item>
 	<item>
 		<!--radio source banner -->

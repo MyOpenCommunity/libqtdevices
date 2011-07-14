@@ -112,7 +112,7 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 		ListPage *list_page = new ListPage(page_node);
 		list_page->setSpacing(10);
 		Bann2Buttons *bann = new Bann2Buttons;
-		bann->initBanner(QString(), bt_global::skin->getImage("alarmclock"), descr);
+		bann->initBanner(QString(), bt_global::skin->getImage("alarm_icon"), descr);
 		bann->connectRightButton(list_page);
 		b = bann;
 		break;

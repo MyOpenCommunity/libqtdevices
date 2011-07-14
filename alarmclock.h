@@ -26,6 +26,7 @@
 #include "bannerpage.h"
 #include "page.h"
 #include "navigation_bar.h" // AbstractNavigationBar
+#include "bann2_buttons.h" // Bann2StateButtons
 
 #include <QTime>
 
@@ -144,7 +145,7 @@ private:
 };
 
 
-// Used to set the alarm time.
+// The page used to set the alarm time for ts3
 class AlarmClockTime : public Page
 {
 Q_OBJECT
@@ -162,7 +163,22 @@ private:
 };
 
 
-// Used to set the alarm days.
+// A banner that represents a day
+class BannAlarmDay : public Bann2StateButtons
+{
+Q_OBJECT
+public:
+	BannAlarmDay(QString img_off, QString img_on, QString descr);
+
+	void setStatus(bool st);
+	bool getStatus() const;
+
+private slots:
+	void toggleStatus();
+};
+
+
+// The page used to set the alarm days for ts3
 class AlarmClockDays : public BannerPage
 {
 Q_OBJECT
@@ -177,6 +193,7 @@ signals:
 };
 
 
+// The page for the sound diffusion settings for the alarm clock.
 class AlarmClockSoundDiff : public Page
 {
 Q_OBJECT
@@ -188,6 +205,7 @@ signals:
 };
 
 
+// The page of the alarm clock for ts10, which contains both time and days settings.
 class AlarmClockTimeDays : public Page
 {
 Q_OBJECT
@@ -208,19 +226,6 @@ private:
 	QString alarm_icon;
 	QLabel *alarm_label;
 	BtButton *buttons[7];
-};
-
-
-// Helper class for the bottom navigation bar.
-class AlarmNavigation : public AbstractNavigationBar
-{
-Q_OBJECT
-public:
-	AlarmNavigation(bool forwardButton, QWidget *parent = 0);
-
-signals:
-	void forwardClicked();
-	void okClicked();
 };
 
 

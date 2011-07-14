@@ -330,25 +330,48 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 
 	QWidget *main_widget = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+
+#ifdef LAYOUT_TS_3_5
+	main_layout->setContentsMargins(0, 5, 0, 5);
+
+	QLabel *icon = new QLabel;
+	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
+	main_layout->addWidget(icon, 0, Qt::AlignHCenter);
+	main_layout->addSpacing(5);
+	main_layout->addWidget(top_widget);
+	main_layout->addSpacing(5);
+	QLabel *line = new QLabel;
+	line->setFixedHeight(3);
+	line->setProperty("noStyle", true);
+	main_layout->addWidget(line);
+	main_layout->addSpacing(5);
+
+	NavigationBar *nav_bar = new NavigationBar("ok");
+	BtButton *ok = nav_bar->forward_button;
+#else
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
+	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
+
 	QHBoxLayout *button_layout = new QHBoxLayout;
-#ifdef LAYOUT_TS_10
 	button_layout->setContentsMargins(18, 0, 17, 18);
+	button_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
+	main_layout->addWidget(top_widget);
+
+	NavigationBar *nav_bar = new NavigationBar;
 #endif
 
-	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok, SIGNAL(clicked()), SIGNAL(saveVolumes()));
-	button_layout->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 
 	BannerContent *content = new BannerContent;
-	NavigationBar *nav_bar = new NavigationBar;
-
-	main_layout->addWidget(top_widget);
 	main_layout->addWidget(content, 1);
-	main_layout->addLayout(button_layout);
 
+#ifdef LAYOUT_TS_3_5
+	buildPage(main_widget, content, nav_bar);
+#else
+	main_layout->addLayout(button_layout);
 	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);
+#endif
 	loadItems(conf_node);
 }
 
