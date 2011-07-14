@@ -146,8 +146,8 @@ void AlarmClock::saveAndActivate()
 void AlarmClock::showSoundDiffPage()
 {
 	update_eeprom = true;
-	sorgente = 1;
-	stazione = 0;
+	source = 1;
+	station = 0;
 	dev->setReceiveFrames(true);
 	for (unsigned idx = 0; idx < AMPLI_NUM; idx++)
 		alarm_volumes[idx] = -1;
@@ -161,7 +161,7 @@ void AlarmClock::saveVolumes()
 	general->turnOff();
 
 	if (update_eeprom)
-		setAlarmVolumes(serial_number-1, alarm_volumes, sorgente, stazione);
+		setAlarmVolumes(serial_number-1, alarm_volumes, source, station);
 	update_eeprom = false;
 	showPage();
 }
@@ -224,11 +224,11 @@ void AlarmClock::valueReceived(const DeviceValues &values_list)
 
 	if (values_list.contains(AlarmSoundDiffDevice::DIM_SOURCE))
 	{
-		sorgente = values_list[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
-		dev->requestStation(sorgente);
+		source = values_list[AlarmSoundDiffDevice::DIM_SOURCE].toInt();
+		dev->requestStation(source);
 	}
 	if (values_list.contains(AlarmSoundDiffDevice::DIM_RADIO_STATION))
-		stazione = values_list[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
+		station = values_list[AlarmSoundDiffDevice::DIM_RADIO_STATION].toInt();
 }
 
 bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
@@ -298,7 +298,7 @@ void AlarmClock::checkAlarm()
 			}
 			else if (alarm_type == SOUND_DIFF)
 			{
-				if (dev->isValid(sorgente, stazione, alarm_volumes))
+				if (dev->isValid(source, station, alarm_volumes))
 				{
 					timer_increase_volume = new QTimer(this);
 					timer_increase_volume->start(3000);
@@ -341,7 +341,7 @@ void AlarmClock::sounddiffusionAlarm()
 	{
 #ifdef LAYOUT_TS_10
 		// TODO fix sound diffusion for TS 3.5''
-		dev->startAlarm(SoundDiffusionPage::isMultichannel(), sorgente, stazione, alarm_volumes);
+		dev->startAlarm(SoundDiffusionPage::isMultichannel(), source, station, alarm_volumes);
 #endif
 		conta2min = 9;
 	}
@@ -357,7 +357,7 @@ void AlarmClock::sounddiffusionAlarm()
 	}
 	else if (conta2min > 49)
 	{
-		dev->stopAlarm(sorgente, alarm_volumes);
+		dev->stopAlarm(source, alarm_volumes);
 
 		// must reset forceOperativeMode before stopAlarm(), otherwise video playback
 		// will not restart correctly
@@ -451,7 +451,7 @@ void AlarmClock::setSerNum(int s)
 
 void AlarmClock::inizializza()
 {
-	getAlarmVolumes(serial_number-1, alarm_volumes, &sorgente, &stazione);
+	getAlarmVolumes(serial_number-1, alarm_volumes, &source, &station);
 }
 
 

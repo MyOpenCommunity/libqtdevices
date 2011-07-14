@@ -40,6 +40,27 @@ static bool backlight = false;
 static unsigned char contrast = 0;
 static QDateTime last_press = QDateTime::currentDateTime();
 
+namespace
+{
+	struct VolumeData
+	{
+		int alarm_volumes[AMPLI_NUM];
+		uchar source, station;
+
+		VolumeData()
+		{
+			memset(&alarm_volumes, 0, sizeof(alarm_volumes));
+			source = source = 0;
+		}
+	};
+
+	QString toString(const VolumeData &d)
+	{
+		return QString("station=%1, source=%2").arg(d.station).arg(d.source);
+	}
+}
+
+
 int maxWidth()
 {
 	static int width = 0;
@@ -143,45 +164,28 @@ void getName(char *name)
 	name[0] = 0;
 }
 
-namespace {
-	struct VolumeData
-	{
-		int volSveglia[AMPLI_NUM];
-		uchar sorgente, stazione;
 
-		VolumeData()
-		{
-			memset(&volSveglia, 0, sizeof(volSveglia));
-			sorgente = stazione = 0;
-		}
-	};
-
-	QString toString(const VolumeData &d)
-	{
-		return QString("station=%1, source=%2").arg(d.stazione).arg(d.sorgente);
-	}
-}
 
 QHash<int, VolumeData> volumes;
 
-void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
+void getAlarmVolumes(int index, int *alarm_volumes, uchar *source, uchar *station)
 {
 	VolumeData data = volumes[index];
 
-	memcpy(volSveglia, data.volSveglia, AMPLI_NUM * sizeof(int));
-	*sorgente = data.sorgente;
-	*stazione = data.stazione;
+	memcpy(alarm_volumes, data.alarm_volumes, AMPLI_NUM * sizeof(int));
+	*source = data.source;
+	*station = data.station;
 
 	qDebug() << "Reading volume data" << toString(data);
 }
 
-void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
+void setAlarmVolumes(int index, int *alarm_volumes, uchar source, uchar station)
 {
 	VolumeData data;
 
-	memcpy(data.volSveglia, volSveglia, AMPLI_NUM * sizeof(int));
-	data.sorgente = sorgente;
-	data.stazione = stazione;
+	memcpy(data.alarm_volumes, alarm_volumes, AMPLI_NUM * sizeof(int));
+	data.source = source;
+	data.station = station;
 
 	qDebug() << "Saving volume data" << toString(data);
 

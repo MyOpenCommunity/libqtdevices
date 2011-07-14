@@ -118,7 +118,8 @@ private slots:
 
 private:
 	int id, item_id;
-	uchar conta2min,sorgente,stazione;
+	uchar conta2min;
+	uchar source, station;
 	bool update_eeprom;
 	int serial_number;
 	bool buzzer_enabled;

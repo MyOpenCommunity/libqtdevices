@@ -432,12 +432,12 @@ static inline int alarmOffset(int index)
 	return E2_BASE + index * (AMPLI_NUM + KEY_LENGTH + SORG_PAR);
 }
 
-void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazione)
+void getAlarmVolumes(int index, int *alarm_volumes, uchar *source, uchar *station)
 {
 	qDebug() << "Reading alarm volume from e2 for index" << index;
 
-	memset(volSveglia, 0, sizeof(int) * AMPLI_NUM);
-	*sorgente = *stazione = 0;
+	memset(alarm_volumes, 0, sizeof(int) * AMPLI_NUM);
+	*source = *station = 0;
 
 	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 	if (eeprom == -1)
@@ -457,7 +457,7 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
 			write(eeprom, "\000", 1);
-			volSveglia[idx] = -1;
+			alarm_volumes[idx] = -1;
 		}
 	}
 	else
@@ -467,22 +467,22 @@ void getAlarmVolumes(int index, int *volSveglia, uchar *sorgente, uchar *stazion
 
 		for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
 		{
-			read(eeprom, &volSveglia[idx], 1);
+			read(eeprom, &alarm_volumes[idx], 1);
 
-			if (volSveglia[idx] == 0xff)
-				volSveglia[idx] = -1;
+			if (alarm_volumes[idx] == 0xff)
+				alarm_volumes[idx] = -1;
 			else
-				volSveglia[idx] &= 0x1F;
+				alarm_volumes[idx] &= 0x1F;
 		}
 
-		read(eeprom, sorgente, 1);
-		read(eeprom, stazione, 1);
+		read(eeprom, source, 1);
+		read(eeprom, station, 1);
 	}
 
 	close(eeprom);
 }
 
-void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
+void setAlarmVolumes(int index, int *alarm_volumes, uchar source, uchar station)
 {
 	int eeprom = open(DEV_E2, O_RDWR | O_SYNC, 0666);
 
@@ -494,10 +494,10 @@ void setAlarmVolumes(int index, int *volSveglia, uchar sorgente, uchar stazione)
 	lseek(eeprom, alarmOffset(index) + KEY_LENGTH, SEEK_SET);
 
 	for (unsigned int idx = 0; idx < AMPLI_NUM; idx++)
-		write(eeprom, &volSveglia[idx], 1);
+		write(eeprom, &alarm_volumes[idx], 1);
 
-	write(eeprom, &sorgente, 1);
-	write(eeprom, &stazione, 1);
+	write(eeprom, &source, 1);
+	write(eeprom, &station, 1);
 	close(eeprom);
 }
 
