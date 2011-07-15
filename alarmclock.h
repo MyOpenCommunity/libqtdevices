@@ -30,7 +30,7 @@
 
 #include <QTime>
 
-class BtButton;
+class StateButton;
 class BtTimeEdit;
 
 class QWidget;
@@ -153,16 +153,20 @@ class AlarmClockTime : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockTime(QTime alarm_time);
+	AlarmClockTime(QTime time);
 
 	QTime getAlarmTime() const;
 	void setActive(bool active) {}
+
+	void saveAlarmTime();
+	void resetAlarmTime();
 
 signals:
 	void okClicked();
 
 private:
 	BtTimeEdit *edit;
+	QTime alarm_time;
 };
 
 
@@ -190,9 +194,14 @@ public:
 
 	QList<bool> getAlarmDays() const;
 
+	void saveAlarmDays();
+	void resetAlarmDays();
+
 signals:
 	void okClicked();
 
+private:
+	QList<bool> alarm_days;
 };
 
 
@@ -213,12 +222,17 @@ class AlarmClockTimeDays : public Page
 {
 Q_OBJECT
 public:
-	AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, QList<bool> days);
+	AlarmClockTimeDays(QTime time, AlarmClock::Type type, QList<bool> days);
 
 	QTime getAlarmTime() const;
 	QList<bool> getAlarmDays() const;
 
 	void setActive(bool active);
+
+	void saveAlarmTime();
+	void resetAlarmTime();
+	void saveAlarmDays();
+	void resetAlarmDays();
 
 signals:
 	void okClicked();
@@ -228,7 +242,9 @@ private:
 	BtTimeEdit *edit;
 	QString alarm_icon;
 	QLabel *alarm_label;
-	BtButton *buttons[7];
+	StateButton *buttons[7];
+	QTime alarm_time;
+	QList<bool> alarm_days;
 };
 
 

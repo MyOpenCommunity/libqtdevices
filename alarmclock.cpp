@@ -96,12 +96,7 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 	{
 		alarm_sound_diff = new AlarmClockSoundDiff;
 		connect(alarm_sound_diff, SIGNAL(Closed()), SLOT(resetVolumes()));
-
-#ifdef LAYOUT_TS_3_5
 		connect(alarm_sound_diff, SIGNAL(Closed()), alarm_days_page, SLOT(showPage()));
-#else
-		connect(alarm_sound_diff, SIGNAL(Closed()), SLOT(showPage()));
-#endif
 		// when confirming the sound diffusion status, also save and activate the alarm
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveVolumes()));
 		connect(alarm_sound_diff, SIGNAL(saveVolumes()), SLOT(saveAndActivate()));
@@ -117,6 +112,8 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 
 void AlarmClock::showPage()
 {
+	alarm_time_page->resetAlarmTime();
+	alarm_days_page->resetAlarmDays();
 	alarm_time_page->showPage();
 }
 
@@ -125,6 +122,9 @@ void AlarmClock::saveAndActivate()
 	setActive(true);
 	alarm_time = alarm_time_page->getAlarmTime();
 	alarm_days = alarm_days_page->getAlarmDays();
+
+	alarm_time_page->saveAlarmTime();
+	alarm_days_page->saveAlarmDays();
 
 	QMap<QString, QString> data;
 	data["hour"] = alarm_time.toString("hh");
@@ -165,7 +165,6 @@ void AlarmClock::saveVolumes()
 	if (update_eeprom)
 		setAlarmVolumes(serial_number-1, alarm_volumes, source, station);
 	update_eeprom = false;
-	showPage();
 }
 
 void AlarmClock::resetVolumes()
@@ -465,7 +464,7 @@ void AlarmClock::inizializza()
 }
 
 
-AlarmClockTime::AlarmClockTime(QTime alarm_time)
+AlarmClockTime::AlarmClockTime(QTime time)
 {
 	NavigationBar *nav_bar = new NavigationBar("forward");
 	nav_bar->displayScrollButtons(false);
@@ -475,6 +474,7 @@ AlarmClockTime::AlarmClockTime(QTime alarm_time)
 	QLabel *icon = new QLabel;
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 
+	alarm_time = time;
 	edit = new BtTimeEdit(this);
 	edit->setTime(alarm_time);
 
@@ -505,6 +505,16 @@ QTime AlarmClockTime::getAlarmTime() const
 	BtTime t = edit->time();
 
 	return QTime(t.hour(), t.minute());
+}
+
+void AlarmClockTime::saveAlarmTime()
+{
+	alarm_time = getAlarmTime();
+}
+
+void AlarmClockTime::resetAlarmTime()
+{
+	edit->setTime(alarm_time);
 }
 
 
@@ -545,6 +555,7 @@ AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 	days_description << tr("Monday") << tr("Tuesday") << tr("Wednesday") << tr("Thursday")
 		<< tr("Friday") << tr("Saturday") << tr("Sunday");
 
+	alarm_days = days;
 	for (int i = 0; i < 7; ++i)
 	{
 		BannAlarmDay *b = new BannAlarmDay(bt_global::skin->getImage("day_off"),
@@ -557,12 +568,23 @@ AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 
 QList<bool> AlarmClockDays::getAlarmDays() const
 {
-	QList<bool> active;
+	QList<bool> days;
 
 	for (int i = 0; i < 7; ++i)
-		active.append(static_cast<BannAlarmDay*>(page_content->getBanner(i))->getStatus());
+		days.append(static_cast<BannAlarmDay*>(page_content->getBanner(i))->getStatus());
 
-	return active;
+	return days;
+}
+
+void AlarmClockDays::saveAlarmDays()
+{
+	alarm_days = getAlarmDays();
+}
+
+void AlarmClockDays::resetAlarmDays()
+{
+	for (int i = 0; i < 7; ++i)
+		static_cast<BannAlarmDay*>(page_content->getBanner(i))->setStatus(alarm_days[i]);
 }
 
 
@@ -578,7 +600,7 @@ void AlarmClockSoundDiff::showPage()
 }
 
 
-AlarmClockTimeDays::AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, QList<bool> active)
+AlarmClockTimeDays::AlarmClockTimeDays(QTime time, AlarmClock::Type type, QList<bool> days)
 {
 	static const char *day_labels[] = {QT_TR_NOOP("Mon"),
 					   QT_TR_NOOP("Tue"),
@@ -605,56 +627,58 @@ AlarmClockTimeDays::AlarmClockTimeDays(QTime alarm_time, AlarmClock::Type type, 
 	descr->setAlignment(Qt::AlignHCenter);
 	descr->setFont(bt_global::font->get(FontManager::TEXT));
 
+	alarm_time = time;
 	edit = new BtTimeEdit(this);
 	edit->setTime(alarm_time);
 
-	QHBoxLayout *top = new QHBoxLayout;
-	QGridLayout *days = new QGridLayout;
+	QHBoxLayout *top_layout = new QHBoxLayout;
+	QGridLayout *days_layout = new QGridLayout;
 	QVBoxLayout *icon_label = new QVBoxLayout;
 
 	main->setContentsMargins(25, 0, 25, 18);
 	main->setSpacing(12);
-	top->setSpacing(5);
-	days->setSpacing(5);
+	top_layout->setSpacing(5);
+	days_layout->setSpacing(5);
 
 	icon_label->addWidget(alarm_label, 0, Qt::AlignTop|Qt::AlignHCenter);
 	icon_label->addWidget(descr, 0, Qt::AlignHCenter);
 
-	top->addLayout(icon_label, 1);
-	top->addWidget(edit, 1);
+	top_layout->addLayout(icon_label, 1);
+	top_layout->addWidget(edit, 1);
 	if (type == AlarmClock::SOUND_DIFF)
 	{
 		BtButton *go_difson = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
 		connect(go_difson, SIGNAL(clicked()), SIGNAL(showSoundDiffusion()));
 
-		top->addWidget(go_difson, 1, Qt::AlignCenter);
+		top_layout->addWidget(go_difson, 1, Qt::AlignCenter);
 	}
 	else
-		top->addStretch(1);
+		top_layout->addStretch(1);
 
+	alarm_days = days;
 	for (int i = 0; i < 7; ++i)
 	{
 		StateButton *toggle = new StateButton;
 		toggle->setCheckable(true);
 		toggle->setOffImage(bt_global::skin->getImage("day_off"));
 		toggle->setOnImage(bt_global::skin->getImage("day_on"));
-		toggle->setStatus(active[i]);
-		toggle->setChecked(active[i]);
+		toggle->setStatus(days[i]);
+		toggle->setChecked(days[i]);
 
 		buttons[i] = toggle;
 
 		QLabel *day = new QLabel(tr(day_labels[i]));
 		day->setAlignment(Qt::AlignHCenter);
 
-		days->addWidget(toggle, 0, i);
-		days->addWidget(day, 1, i);
+		days_layout->addWidget(toggle, 0, i);
+		days_layout->addWidget(day, 1, i);
 	}
 
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
 	connect(ok, SIGNAL(clicked()), SIGNAL(okClicked()));
 
-	main->addLayout(top);
-	main->addLayout(days);
+	main->addLayout(top_layout);
+	main->addLayout(days_layout);
 	main->addWidget(ok, 0, Qt::AlignRight | Qt::AlignBottom);
 }
 
@@ -665,14 +689,38 @@ QTime AlarmClockTimeDays::getAlarmTime() const
 	return QTime(t.hour(), t.minute());
 }
 
+void AlarmClockTimeDays::saveAlarmTime()
+{
+	alarm_time = getAlarmTime();
+}
+
+void AlarmClockTimeDays::resetAlarmTime()
+{
+	edit->setTime(alarm_time);
+}
+
 QList<bool> AlarmClockTimeDays::getAlarmDays() const
 {
-	QList<bool> active;
+	QList<bool> days;
 
 	for (int i = 0; i < 7; ++i)
-		active.append(buttons[i]->isChecked());
+		days.append(buttons[i]->isChecked());
 
-	return active;
+	return days;
+}
+
+void AlarmClockTimeDays::saveAlarmDays()
+{
+	alarm_days = getAlarmDays();
+}
+
+void AlarmClockTimeDays::resetAlarmDays()
+{
+	for (int i = 0; i < 7; ++i)
+	{
+		buttons[i]->setStatus(alarm_days[i]);
+		buttons[i]->setChecked(alarm_days[i]);
+	}
 }
 
 void AlarmClockTimeDays::setActive(bool active)
