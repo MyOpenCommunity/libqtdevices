@@ -325,15 +325,17 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 		if (s.type == SourceDescription::RADIO || s.type == SourceDescription::AUX)
 			filtered_sources.append(s);
 
-	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(), area, filtered_sources);
+	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(),
+		area, filtered_sources);
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
-	QWidget *main_widget = new QWidget;
-	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
-
 #ifdef LAYOUT_TS_3_5
+	// See the comment on the SoundAmbientPage to an explaination of the structure of this page
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
 	main_layout->setContentsMargins(0, 5, 0, 5);
+	main_layout->setSpacing(0);
 
+	top_widget->setContentsMargins(5, 0, 5, 0);
 	QLabel *icon = new QLabel;
 	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
 	main_layout->addWidget(icon, 0, Qt::AlignHCenter);
@@ -349,6 +351,9 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	NavigationBar *nav_bar = new NavigationBar("ok");
 	BtButton *ok = nav_bar->forward_button;
 #else
+	QWidget *main_widget = new QWidget;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
 	BtButton *ok = new BtButton(bt_global::skin->getImage("ok"));
@@ -367,7 +372,20 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	main_layout->addWidget(content, 1);
 
 #ifdef LAYOUT_TS_3_5
-	buildPage(main_widget, content, nav_bar);
+	content->setContentsMargins(5, 0, 5, 0);
+	QVBoxLayout *nav_layout = new QVBoxLayout;
+	nav_layout->setContentsMargins(5, 0, 5, 0);
+	nav_layout->addWidget(nav_bar);
+
+	main_layout->addLayout(nav_layout);
+
+	connect(this, SIGNAL(Closed()), content, SLOT(resetIndex()));
+	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(nav_bar, SIGNAL(upClick()), content, SLOT(pgUp()));
+	connect(nav_bar, SIGNAL(downClick()), content, SLOT(pgDown()));
+	connect(content, SIGNAL(displayScrollButtons(bool)), nav_bar, SLOT(displayScrollButtons(bool)));
+
+	__content = content;
 #else
 	main_layout->addLayout(button_layout);
 	buildPage(main_widget, content, nav_bar, getTextChild(conf_node, "descr"), Page::SMALL_TITLE_HEIGHT);

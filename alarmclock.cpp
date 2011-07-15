@@ -471,7 +471,7 @@ AlarmClockTime::AlarmClockTime(QTime alarm_time)
 	QWidget *content = new QWidget;
 	QVBoxLayout *main_layout = new QVBoxLayout(content);
 
-	main_layout->setContentsMargins(0, 5, 0, 5);
+	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(5);
 
 	QHBoxLayout *r = new QHBoxLayout;
