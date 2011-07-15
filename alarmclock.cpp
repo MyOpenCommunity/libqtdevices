@@ -352,7 +352,7 @@ void AlarmClock::sounddiffusionAlarm()
 	}
 
 	sound_diff_counter++;
-	if (sound_diff_counter < 32)
+	if (sound_diff_counter < 32) // increase the amplifiers volume from 9 to 31 (the maximum)
 	{
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
@@ -360,7 +360,7 @@ void AlarmClock::sounddiffusionAlarm()
 				dev->setVolume(idx, sound_diff_counter);
 		}
 	}
-	else if (sound_diff_counter > 49)
+	else if (sound_diff_counter > 49) // the timeout, equal to (49 - 9) * 3 secs = 120 secs
 	{
 		dev->stopAlarm(source, alarm_volumes);
 
@@ -435,8 +435,12 @@ void AlarmClock::stopAlarm()
 	if (!timer_increase_volume || !timer_increase_volume->isActive())
 		return;
 
+	// Called with alarm_type == BUZZER stops the alarm; if called with
+	// SOUND_DIFF it only stops increasing the amplifiers volume.
+
 	qDebug("Stopping alarm clock");
 	timer_increase_volume->stop();
+
 #ifdef BT_HARDWARE_TS_3_5
 	if (alarm_type == BUZZER)
 		setBeep(buzzer_enabled);
