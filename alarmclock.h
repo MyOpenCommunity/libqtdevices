@@ -101,7 +101,7 @@ private slots:
 	// Executed every minute when alarm set is active to detect if it's time to make the alarm ser start.
 	void checkAlarm();
 
-	// Executed every three seconds to increase the soud volume during sound diffusion alarm set starting up.
+	// Executed every three seconds to increase the sound volume during sound diffusion alarm set starting up.
 	void sounddiffusionAlarm();
 
 	// Executed every 100 ms to manage the buzzer alarm set.
@@ -132,7 +132,7 @@ private:
 
 	int alarm_volumes[AMPLI_NUM];
 	bool active;
-	QTimer *ring_alarm_timer, *timer_increase_volume;
+	QTimer *check_alarm_timer, *timer_increase_volume;
 #ifdef LAYOUT_TS_3_5
 	AlarmClockTime *alarm_time_page;
 	AlarmClockDays *alarm_days_page;
@@ -143,6 +143,8 @@ private:
 	AlarmClockSoundDiff *alarm_sound_diff;
 	AlarmSoundDiffDevice *dev;
 	AmplifierDevice *general;
+
+	void ringAlarm();
 };
 
 

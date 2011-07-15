@@ -60,7 +60,7 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 	item_id = _item_id;
 	timer_increase_volume = NULL;
 	alarm_time = QTime(hour, minute);
-	ring_alarm_timer = NULL;
+	check_alarm_timer = NULL;
 	alarm_type = type;
 	active = false;
 
@@ -182,21 +182,21 @@ void AlarmClock::setActive(bool a)
 	active = a;
 	if (active)
 	{
-		if (!ring_alarm_timer)
+		if (!check_alarm_timer)
 		{
-			ring_alarm_timer = new QTimer(this);
-			ring_alarm_timer->start(200);
-			connect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
+			check_alarm_timer = new QTimer(this);
+			check_alarm_timer->start(200);
+			connect(check_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
 		}
 	}
 	else
 	{
-		if (ring_alarm_timer)
+		if (check_alarm_timer)
 		{
-			ring_alarm_timer->stop();
-			disconnect(ring_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
-			delete ring_alarm_timer;
-			ring_alarm_timer = NULL;
+			check_alarm_timer->stop();
+			disconnect(check_alarm_timer, SIGNAL(timeout()), this, SLOT(checkAlarm()));
+			delete check_alarm_timer;
+			check_alarm_timer = NULL;
 		}
 	}
 
@@ -283,56 +283,60 @@ void AlarmClock::checkAlarm()
 	{
 		if ((current.time() >= alarm_time) && (alarm_time.secsTo(current.time()) < 60))
 		{
-			if (alarm_type == BUZZER)
-			{
-#ifdef LAYOUT_TS_10
-				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
-#endif
-
-#ifdef BT_HARDWARE_TS_10
-				timer_increase_volume = new QTimer(this);
-				timer_increase_volume->start(5000);
-				connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
-#else
-				timer_increase_volume = new QTimer(this);
-				timer_increase_volume->start(100);
-				connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
-#endif
-				buzzer_counter = 0;
-				conta2min = 0;
-			}
-			else if (alarm_type == SOUND_DIFF)
-			{
-				if (dev->isValid(source, station, alarm_volumes))
-				{
-					timer_increase_volume = new QTimer(this);
-					timer_increase_volume->start(3000);
-					connect(timer_increase_volume,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
-					conta2min = 0;
-				}
-				else
-					qWarning() << "Invalid source data for alarm, failed to start";
-			}
-			else
-				qFatal("Unknown alarm clock type!");
-
-			// When the alarm ring we have to put the light on (like in the
-			// operative mode) but with a screen "locked" (like in the freezed
-			// mode). We do that using an event filter.
-			bt_global::display->freeze(false); // To stop a screensaver, if running
-			bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
-			qApp->installEventFilter(this);
-			bt_global::status.alarm_clock_on = true;
-
-			qDebug("Starting alarm clock");
-
+			ringAlarm();
 			if (ring_once)
 				setActive(false);
 		}
 	}
 
 	if (active)
-		ring_alarm_timer->start((60 - current.time().second()) * 1000);
+		check_alarm_timer->start((60 - current.time().second()) * 1000);
+}
+
+void AlarmClock::ringAlarm()
+{
+	if (alarm_type == BUZZER)
+	{
+#ifdef LAYOUT_TS_10
+		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
+#endif
+
+#ifdef BT_HARDWARE_TS_10
+		timer_increase_volume = new QTimer(this);
+		timer_increase_volume->start(5000);
+		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
+#else
+		timer_increase_volume = new QTimer(this);
+		timer_increase_volume->start(100);
+		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
+#endif
+		buzzer_counter = 0;
+		conta2min = 0;
+	}
+	else if (alarm_type == SOUND_DIFF)
+	{
+		if (dev->isValid(source, station, alarm_volumes))
+		{
+			timer_increase_volume = new QTimer(this);
+			timer_increase_volume->start(3000);
+			connect(timer_increase_volume,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
+			conta2min = 0;
+		}
+		else
+			qWarning() << "Invalid source data for alarm, failed to start";
+	}
+	else
+		qFatal("Unknown alarm clock type!");
+
+	// When the alarm ring we have to put the light on (like in the
+	// operative mode) but with a screen "locked" (like in the freezed
+	// mode). We do that using an event filter.
+	bt_global::display->freeze(false); // To stop a screensaver, if running
+	bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
+	qApp->installEventFilter(this);
+	bt_global::status.alarm_clock_on = true;
+
+	qDebug("Starting alarm clock");
 }
 
 bool AlarmClock::isActive()
