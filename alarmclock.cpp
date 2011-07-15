@@ -32,10 +32,12 @@
 #include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
 #include "generic_functions.h" // getBostikName
-#include "audiostatemachine.h"
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #include "mediaplayer.h" // bt_global::sound
 #include "sounddiffusionpage.h" // alarmClockPage
+#ifdef LAYOUT_TS_10
+#include "audiostatemachine.h"
+#endif
 
 #include <openmsg.h>
 
@@ -283,7 +285,10 @@ void AlarmClock::checkAlarm()
 		{
 			if (alarm_type == BUZZER)
 			{
+#ifdef LAYOUT_TS_10
 				bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
+#endif
+
 #ifdef BT_HARDWARE_TS_10
 				timer_increase_volume = new QTimer(this);
 				timer_increase_volume->start(5000);
@@ -411,8 +416,10 @@ void AlarmClock::alarmTimeout()
 	delete timer_increase_volume;
 	timer_increase_volume = NULL;
 
+#ifdef LAYOUT_TS_10
 	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
+#endif
 
 	// restore display state
 	bt_global::display->freeze(false);
@@ -434,8 +441,10 @@ void AlarmClock::stopAlarm()
 	if (alarm_type == BUZZER)
 		setBeep(buzzer_enabled);
 #endif
+#ifdef LAYOUT_TS_10
 	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
+#endif
 
 	delete timer_increase_volume;
 	timer_increase_volume = NULL;
