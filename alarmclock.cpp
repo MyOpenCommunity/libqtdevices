@@ -112,6 +112,9 @@ AlarmClock::AlarmClock(int _item_id, Type type, int days_active, int hour, int m
 
 void AlarmClock::showPage()
 {
+	// Reset the previously saved settings. We don't reset the settings for the
+	// sound diffusion because the real settings are stored in the eeprom memory
+	// and because there is nothing to show.
 	alarm_time_page->resetAlarmTime();
 	alarm_days_page->resetAlarmDays();
 	alarm_time_page->showPage();
