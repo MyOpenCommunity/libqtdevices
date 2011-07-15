@@ -319,7 +319,7 @@ void AlarmClock::ringAlarm()
 		{
 			timer_increase_volume = new QTimer(this);
 			timer_increase_volume->start(3000);
-			connect(timer_increase_volume,SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
+			connect(timer_increase_volume, SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
 			conta2min = 0;
 		}
 		else
@@ -348,10 +348,7 @@ void AlarmClock::sounddiffusionAlarm()
 {
 	if (conta2min == 0)
 	{
-#ifdef LAYOUT_TS_10
-		// TODO fix sound diffusion for TS 3.5''
 		dev->startAlarm(SoundDiffusionPage::isMultichannel(), source, station, alarm_volumes);
-#endif
 		conta2min = 9;
 	}
 
