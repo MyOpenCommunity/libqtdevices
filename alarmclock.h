@@ -118,12 +118,12 @@ private slots:
 
 private:
 	int id, item_id;
-	uchar conta2min;
 	uchar source, station;
 	bool update_eeprom;
 	int serial_number;
 	bool buzzer_enabled;
 	unsigned int buzzer_counter;
+	int sound_diff_counter;
 
 	// The variables which represent an alarm.
 	QList<bool> alarm_days;

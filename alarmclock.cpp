@@ -310,7 +310,7 @@ void AlarmClock::ringAlarm()
 		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
 #endif
 		buzzer_counter = 0;
-		conta2min = 0;
+		sound_diff_counter = 0;
 	}
 	else if (alarm_type == SOUND_DIFF)
 	{
@@ -319,7 +319,7 @@ void AlarmClock::ringAlarm()
 			timer_increase_volume = new QTimer(this);
 			timer_increase_volume->start(3000);
 			connect(timer_increase_volume, SIGNAL(timeout()), SLOT(sounddiffusionAlarm()));
-			conta2min = 0;
+			sound_diff_counter = 0;
 		}
 		else
 			qWarning() << "Invalid source data for alarm, failed to start";
@@ -345,22 +345,22 @@ bool AlarmClock::isActive()
 
 void AlarmClock::sounddiffusionAlarm()
 {
-	if (conta2min == 0)
+	if (sound_diff_counter == 0)
 	{
 		dev->startAlarm(SoundDiffusionPage::isMultichannel(), source, station, alarm_volumes);
-		conta2min = 9;
+		sound_diff_counter = 9;
 	}
 
-	conta2min++;
-	if (conta2min < 32)
+	sound_diff_counter++;
+	if (sound_diff_counter < 32)
 	{
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
-			if (alarm_volumes[idx] >= conta2min)
-				dev->setVolume(idx, conta2min);
+			if (alarm_volumes[idx] >= sound_diff_counter)
+				dev->setVolume(idx, sound_diff_counter);
 		}
 	}
-	else if (conta2min > 49)
+	else if (sound_diff_counter > 49)
 	{
 		dev->stopAlarm(source, alarm_volumes);
 
