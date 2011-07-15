@@ -113,9 +113,6 @@ private slots:
 	// Stops the alarm set.
 	void stopAlarm();
 
-	// called if the alarm times out
-	void alarmTimeout();
-
 private:
 	int id, item_id;
 	uchar source, station;

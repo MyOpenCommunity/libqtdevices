@@ -246,9 +246,6 @@ bool AlarmClock::eventFilter(QObject *obj, QEvent *ev)
 
 	// We stop the alarm and restore the normal behaviour
 	qApp->removeEventFilter(this);
-	// must reset forceOperativeMode before stopAlarm(), otherwise video playback
-	// will not restart correctly
-	bt_global::display->forceOperativeMode(false);
 	stopAlarm();
 	return true;
 }
@@ -333,7 +330,7 @@ void AlarmClock::ringAlarm()
 	// When the alarm ring we have to put the light on (like in the
 	// operative mode) but with a screen "locked" (like in the freezed
 	// mode). We do that using an event filter.
-	bt_global::display->freeze(false); // To stop a screensaver, if running
+	bt_global::display->makeActive(); // To stop a screensaver, if running
 	bt_global::display->forceOperativeMode(true); // Prevent the screeensaver start
 	qApp->installEventFilter(this);
 	bt_global::status.alarm_clock_on = true;
@@ -366,11 +363,7 @@ void AlarmClock::sounddiffusionAlarm()
 	else if (sound_diff_counter > 49) // the timeout, equal to (49 - 9) * 3 secs = 120 secs
 	{
 		dev->stopAlarm(source, alarm_volumes);
-
-		// must reset forceOperativeMode before stopAlarm(), otherwise video playback
-		// will not restart correctly
-		bt_global::display->forceOperativeMode(false);
-		alarmTimeout();
+		stopAlarm();
 	}
 }
 
@@ -387,17 +380,17 @@ void AlarmClock::buzzerAlarm()
 			beep(10);
 	}
 
+	// We cannot use the setState method because we are in forced operative mode
 	if (buzzer_counter % 8 == 0)
 		bt_global::display->changeBrightness(DISPLAY_OPERATIVE);
 	else
 		bt_global::display->changeBrightness(DISPLAY_FREEZED);
 
 	buzzer_counter++;
-	if (buzzer_counter >= 10*60*2)
+	if (buzzer_counter >= 1200) // the timeout, equal to 120 secs (100 * 1200)
 	{
 		setBeep(buzzer_enabled);
-
-		alarmTimeout();
+		stopAlarm();
 	}
 }
 
@@ -406,30 +399,8 @@ void AlarmClock::wavAlarm()
 	bt_global::sound->play(SOUND_PATH "alarm.wav");
 
 	buzzer_counter++;
-	if (buzzer_counter >= 24)
-		alarmTimeout();
-}
-
-void AlarmClock::alarmTimeout()
-{
-	qDebug("Alarm clock timeout");
-
-	// stop alarm timer
-	timer_increase_volume->stop();
-	delete timer_increase_volume;
-	timer_increase_volume = NULL;
-
-#ifdef LAYOUT_TS_10
-	if (alarm_type == BUZZER)
-		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
-#endif
-
-	// restore display state
-	bt_global::display->freeze(false);
-	bt_global::status.alarm_clock_on = false;
-	bt_global::display->forceOperativeMode(false);
-
-	emit alarmClockFired();
+	if (buzzer_counter >= 24) // the timeout, equal to 120 secs (24 * 5000)
+		stopAlarm();
 }
 
 void AlarmClock::stopAlarm()
@@ -443,19 +414,23 @@ void AlarmClock::stopAlarm()
 
 	qDebug("Stopping alarm clock");
 	timer_increase_volume->stop();
+	delete timer_increase_volume;
+	timer_increase_volume = NULL;
+	bt_global::status.alarm_clock_on = false;
+	bt_global::display->forceOperativeMode(false);
 
-#ifdef BT_HARDWARE_TS_3_5
 	if (alarm_type == BUZZER)
+	{
+		bt_global::display->setState(DISPLAY_OPERATIVE); // restore the normal lighting
+#ifdef BT_HARDWARE_TS_3_5
 		setBeep(buzzer_enabled);
 #endif
+	}
+
 #ifdef LAYOUT_TS_10
 	if (alarm_type == BUZZER)
 		bt_global::audio_states->removeState(AudioStates::ALARM_TO_SPEAKER);
 #endif
-
-	delete timer_increase_volume;
-	timer_increase_volume = NULL;
-	bt_global::status.alarm_clock_on = false;
 
 	emit alarmClockFired();
 }
