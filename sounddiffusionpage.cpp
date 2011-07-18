@@ -291,7 +291,7 @@ Page *SoundAmbientPage::currentAmbientPage()
 
 
 SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources,
-	AmplifierDevice *_general)
+	const QString &descr, AmplifierDevice *_general)
 {
 	general = _general;
 
@@ -308,7 +308,7 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 		if (s.type == SourceDescription::RADIO || s.type == SourceDescription::AUX)
 			filtered_sources.append(s);
 
-	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], QString(),
+	SoundSources *top_widget = new SoundSources((*bt_global::config)[SOURCE_ADDRESS], descr,
 		area, filtered_sources);
 	connect(top_widget, SIGNAL(pageClosed()), SLOT(showPage()));
 
@@ -511,7 +511,7 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	next_page = new SoundAmbientPage(config_node, sources_list);
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
-	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
+	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, QString(), AmplifierDevice::createDevice("0"));
 }
 
 void SoundDiffusionPage::showPage()
@@ -591,7 +591,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 #endif
 
 		QString descr = getTextChild(item_node, "descr");
-		SoundAmbientAlarmPage *p = new SoundAmbientAlarmPage(page_node, sources);
+		SoundAmbientAlarmPage *p = new SoundAmbientAlarmPage(page_node, sources, descr);
 		Banner *b = getAmbientBanner(descr, t, p);
 
 		page_content->appendBanner(b);

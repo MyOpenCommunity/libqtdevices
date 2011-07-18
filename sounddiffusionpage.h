@@ -115,7 +115,7 @@ class SoundAmbientAlarmPage : public BannerPage
 Q_OBJECT
 public:
 	SoundAmbientAlarmPage(const QDomNode &conf_node, const QList<SourceDescription> &sources,
-			      AmplifierDevice *general = NULL);
+		const QString &descr = QString(), AmplifierDevice *general = NULL);
 
 	virtual void showPage();
 
