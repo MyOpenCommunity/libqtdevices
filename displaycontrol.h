@@ -176,6 +176,9 @@ public:
 
 	void startTime();
 
+	/// Set the state of the display
+	void setState(DisplayStatus status);
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -203,9 +206,6 @@ protected:
 private:
 	void updateBrightnessData();
 	bool canScreensaverStart();
-
-	// Set the state of the display
-	void setState(DisplayStatus status);
 
 	// take into account selected screensaver when computing freeze/blank screen times
 	//
