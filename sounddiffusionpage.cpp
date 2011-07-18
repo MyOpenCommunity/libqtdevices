@@ -100,50 +100,33 @@ namespace
 		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "Addresses node must have at least one 'where' tag.");
 		return l;
 	}
-}
 
-SoundAmbient::SoundAmbient(const QString &descr, const QString &ambient)
-{
-	right_button = new BtButton;
-	text = createTextLabel(Qt::AlignHCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
-	center_icon = new QLabel;
-	ambient_icon = new QLabel;
+	Banner *getAmbientBanner(const QString &descr, SoundAmbientPage::Type type, Page *details)
+	{
+#ifdef LAYOUT_TS_10
+		Bann2Buttons *bann = new Bann2Buttons;
+		bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
+			descr);
+		bann->connectRightButton(details);
+		return bann;
+#else
+		if (type == SoundAmbientPage::SPECIAL_AMBIENT)
+		{
+			Bann2Buttons *bann = new Bann2Buttons;
+			bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
+				descr);
+			bann->connectRightButton(details);
+			return bann;
+		}
 
-	QGridLayout *center = new QGridLayout;
-	center->addWidget(ambient_icon, 0, 0);
-	center->addWidget(center_icon, 0, 1);
-
-	QGridLayout *grid = new QGridLayout;
-	grid->setContentsMargins(0, 0, 0, 0);
-	grid->setSpacing(0);
-	grid->setColumnStretch(0, 1);
-	grid->setColumnStretch(2, 1);
-	grid->addLayout(center, 0, 1);
-	grid->addWidget(right_button, 0, 2);
-
-	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 0, 0, 0);
-	l->setSpacing(0);
-	l->addLayout(grid);
-	l->addWidget(text);
-
-	QString amb_icon = bt_global::skin->getImage("ambient");
-	amb_icon = getBostikName(amb_icon, ambient);
-	initBanner(amb_icon, bt_global::skin->getImage("amplifier"), bt_global::skin->getImage("forward"), descr);
-}
-
-void SoundAmbient::initBanner(const QString &_ambient_icon, const QString &_center_icon,
-	const QString &right, const QString &banner_text)
-{
-	right_button->setImage(right);
-	ambient_icon->setPixmap(*bt_global::icons_cache.getIcon(_ambient_icon));
-	center_icon->setPixmap(*bt_global::icons_cache.getIcon(_center_icon));
-	text->setScrollingText(banner_text);
-}
-
-void SoundAmbient::connectRightButton(Page *p)
-{
-	connectButtonToPage(right_button, p);
+		Bann4Buttons *bann = new Bann4Buttons;
+		bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
+			bt_global::skin->getImage("ambient"), QString(), descr);
+		bann->setCentralSpacing(false);
+		bann->connectRightButton(details);
+		return bann;
+#endif
+	}
 }
 
 
@@ -496,7 +479,18 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 	QList<SourceDescription> sources_list = loadSources(config_node);
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-		Banner *b = getAmbientBanner(item, sources_list);
+		SkinContext context(getTextChild(item, "cid").toInt());
+		int id = getTextChild(item, "id").toInt();
+		QDomNode page_node = getPageNodeFromChildNode(item, "lnk_pageID");
+
+		SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
+		if (id == ITEM_SPECIAL_AMBIENT)
+			t = SoundAmbientPage::SPECIAL_AMBIENT;
+
+		QString descr = getTextChild(item, "descr");
+		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources_list, descr, t);
+
+		Banner *b = getAmbientBanner(descr, t, p);
 		if (b)
 		{
 			page_content->appendBanner(b);
@@ -518,45 +512,6 @@ void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
 	connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
 	alarm_clock_page = new SoundAmbientAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
-}
-
-Banner *SoundDiffusionPage::getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources)
-{
-	SkinContext context(getTextChild(item_node, "cid").toInt());
-	int id = getTextChild(item_node, "id").toInt();
-	QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
-
-	SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
-	if (id == ITEM_SPECIAL_AMBIENT)
-		t = SoundAmbientPage::SPECIAL_AMBIENT;
-
-	QString descr = getTextChild(item_node, "descr");
-	SoundAmbientPage *p = new SoundAmbientPage(page_node, sources, descr, t);
-
-#ifdef LAYOUT_TS_10
-	Bann2Buttons *bann = new Bann2Buttons;
-	bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
-		descr);
-	bann->connectRightButton(p);
-	return bann;
-#else
-	if (id == ITEM_SPECIAL_AMBIENT)
-	{
-		Bann2Buttons *bann = new Bann2Buttons;
-		bann->initBanner(QString(), bt_global::skin->getImage("ambient"), bt_global::skin->getImage("forward"),
-			descr);
-		bann->connectRightButton(p);
-		return bann;
-	}
-
-	Bann4Buttons *bann = new Bann4Buttons;
-	bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
-		bt_global::skin->getImage("ambient"), QString(), descr);
-	bann->setCentralSpacing(false);
-	bann->connectRightButton(p);
-	return bann;
-
-#endif
 }
 
 void SoundDiffusionPage::showPage()
@@ -600,7 +555,21 @@ SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, co
 
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
+#ifdef LAYOUT_TS_3_5
+	QWidget *main_widget = new QWidget;
+	BannerContent *content = new BannerContent;
+	QVBoxLayout *main_layout = new QVBoxLayout(main_widget);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(5);
+
+	QLabel *icon = new QLabel;
+	icon->setPixmap(bt_global::skin->getImage("alarm_icon"));
+	main_layout->addWidget(icon, 0, Qt::AlignHCenter);
+	main_layout->addWidget(content, 1);
+	buildPage(main_widget, content, new NavigationBar);
+#else
 	buildPage(getTextChild(config_node, "descr"));
+#endif
 	loadItems(config_node, sources);
 }
 
@@ -612,14 +581,18 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 		int id = getTextChild(item_node, "id").toInt();
 		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
 
+		SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
 		if (id == ITEM_SPECIAL_AMBIENT)
-			continue;
-		if (id < ITEM_AMBIENT_1 || id > ITEM_AMBIENT_8)
-			qFatal("ID %s not handled in SoundDiffusionAlarmPage", qPrintable(getTextChild(item_node, "id")));
+			t = SoundAmbientPage::SPECIAL_AMBIENT;
 
-		SoundAmbient *b = new SoundAmbient(getTextChild(item_node, "descr"), getTextChild(item_node, "env"));
+#ifdef LAYOUT_TS_10
+		if (t == SoundAmbientPage::SPECIAL_AMBIENT)
+			continue;
+#endif
+
+		QString descr = getTextChild(item_node, "descr");
 		SoundAmbientAlarmPage *p = new SoundAmbientAlarmPage(page_node, sources);
-		b->connectRightButton(p);
+		Banner *b = getAmbientBanner(descr, t, p);
 
 		page_content->appendBanner(b);
 		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));

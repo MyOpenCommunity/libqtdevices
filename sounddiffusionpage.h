@@ -67,25 +67,6 @@ class ScrollingLabel;
  */
 
 
-// TODO: this should go to its own file if we need more banners
-// TODO: use Bann2Buttons directly
-class SoundAmbient : public Banner
-{
-Q_OBJECT
-public:
-	SoundAmbient(const QString &descr, const QString &ambient);
-	void initBanner(const QString &_ambient_icon, const QString &_center_icon,
-		const QString &right, const QString &banner_text);
-	void connectRightButton(Page *p);
-
-private:
-	QLabel *ambient_icon, *center_icon;
-	ScrollingLabel *text;
-	BtButton *right_button;
-};
-
-
-
 /*!
 	\ingroup SoundDiffusion
 	\brief %Page for a sound diffusion environment; contains SoundSources as top widget and a list of amplifiers below it.
@@ -162,8 +143,6 @@ Q_OBJECT
 public:
 	SoundDiffusionPage(const QDomNode &config_node);
 	virtual int sectionId() const;
-
-	static Banner *getAmbientBanner(const QDomNode &item_node, const QList<SourceDescription> &sources);
 
 	static void showCurrentAmbientPage();
 	static Page *alarmClockPage();
