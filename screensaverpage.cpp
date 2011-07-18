@@ -133,7 +133,7 @@ void ScreenSaverPage::bannerSelected(int id)
 
 	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
 	// TODO review when porting the code to TS 3.5''
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 	if (id == ScreenSaver::NONE)
 		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);
 #endif
@@ -229,7 +229,7 @@ SlideshowSelector::SlideshowSelector() :
 
 	NavigationBar *nav_bar;
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	nav_bar = new NavigationBar("eject");
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(unmount()));
 #endif

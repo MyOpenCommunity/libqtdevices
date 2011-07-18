@@ -24,7 +24,7 @@
 #include "displaycontrol.h" // bt_global::display
 #include "labels.h" // WaitLabel
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 #include "mount_watcher.h" // bt_global::mount_watcher
 #endif
 
@@ -52,7 +52,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	connect(browser, SIGNAL(genericError()), SLOT(handleError()));
 
 	mounted_filesystem = true;
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	// since this checks the root file path, it's OK to use it for all instances
 	connect(bt_global::mount_watcher, SIGNAL(directoryUnmounted(const QString &, MountType)),
 		SLOT(unmounted(const QString &)));
@@ -214,7 +214,7 @@ void FileSelector::operationCompleted()
 	working = NULL;
 }
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 
 // methods for physical file systems
 void FileSelector::unmount()

@@ -53,7 +53,7 @@ DisplayControl::DisplayControl()
 	last_event_time = 0;
 	frozen = false;
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	operative_brightness = 1; // a low brightness for the touch 10''
 	setInactiveBrightness(BRIGHTNESS_LOW);
 #else
@@ -271,7 +271,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 	if (!canScreensaverStart())
 		return;
 
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 	// When the brightness is set to off in the old hardware the display
 	// is not really off, so it is required to use a screensaver to protect
 	// the display, even if the screensaver is not visible.

@@ -300,7 +300,7 @@ void AlarmClock::ringAlarm()
 		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #endif
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 		timer_increase_volume = new QTimer(this);
 		timer_increase_volume->start(5000);
 		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
@@ -422,7 +422,7 @@ void AlarmClock::stopAlarm()
 	if (alarm_type == BUZZER)
 	{
 		bt_global::display->setState(DISPLAY_OPERATIVE); // restore the normal lighting
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 		setBeep(buzzer_enabled);
 #endif
 	}

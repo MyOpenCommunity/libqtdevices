@@ -99,7 +99,7 @@ namespace
 			dest = n.text();
 	}
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270)
 
 	// used to store the time of the last click; used by the screen saver code
 	// on x86
@@ -255,7 +255,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::mount_watcher = new MountWatcher;
 #endif
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270)
 	// save last click time for the screen saver
 	qApp->installEventFilter(new LastClickTime);
 	// avoid calibration starting at every boot
@@ -772,7 +772,7 @@ void BtMain::checkActivities()
 {
 	rearmWDT();
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_TS_10)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270)
 	// detect when the user adjusts date/time
 	// TODO add frame parsing to PlatformDevice to detect when date/time really changes
 	QDateTime curr = QDateTime::currentDateTime();

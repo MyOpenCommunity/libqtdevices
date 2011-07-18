@@ -22,7 +22,7 @@
 #include "hardware_functions.h"
 #include "generic_functions.h" // smartExecute
 #include "main.h"
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 #include "audiostatemachine.h"
 #include "mediaplayer.h"
 #endif
@@ -115,7 +115,7 @@ static void writeValueToFd(int fd, int value)
 	write(fd, str.constData(), str.length());
 }
 
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 void setBrightnessLevel(int level)
 {
 	int hardware_level;
@@ -222,7 +222,7 @@ void setBacklight(bool b)
 		}
 	}
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	if (b)
 	{
 		QStringList args_contrast;
@@ -233,7 +233,7 @@ void setBacklight(bool b)
 }
 
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 
 bool buzzer_enabled = false;
 
@@ -343,7 +343,7 @@ void setOrientation(QString orientation)
 
 void beep(int t)
 {
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
 	{
 		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
@@ -355,7 +355,7 @@ void beep(int t)
 			close(fd);
 		}
 	}
-#else // BT_HARDWARE_TS_10
+#else // BT_HARDWARE_PXA270
 	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
 		bt_global::sound->play(SOUND_PATH "beep.wav");
 #endif
@@ -366,7 +366,7 @@ void beep()
 	beep(50);
 }
 
-#ifdef BT_HARDWARE_TS_3_5
+#ifdef BT_HARDWARE_PXA255
 
 unsigned long getTimePress()
 {
@@ -503,7 +503,7 @@ void setAlarmVolumes(int index, int *alarm_volumes, uchar source, uchar station)
 
 void setVctVideoValue(const QString &command, const QString &value)
 {
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	QProcess::startDetached("/home/bticino/bin/set_videocom",
 		QStringList() << command << value);
 #endif
@@ -511,7 +511,7 @@ void setVctVideoValue(const QString &command, const QString &value)
 
 void initMultimedia()
 {
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	smartExecute("/bin/init_audio_system");
 	smartExecute("/bin/init_video_system");
 #endif
@@ -519,7 +519,7 @@ void initMultimedia()
 
 void usbHotplug()
 {
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	system ("/sbin/hotplug add 3");
 #endif
 }
@@ -532,7 +532,7 @@ QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 
 void dumpSystemMemory()
 {
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	QFile f("/proc/meminfo");
 	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
 		return;
@@ -547,7 +547,7 @@ void dumpSystemMemory()
 
 int getMemFree()
 {
-#ifndef BT_HARDWARE_TS_10
+#ifndef BT_HARDWARE_PXA270
 	return -1;
 #endif
 

@@ -315,7 +315,7 @@ void VideoDoorEntry::callGuardUnit()
 
 EchoCanceller::EchoCanceller(VideoDoorEntryDevice::VctMode mode)
 {
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	if (mode == VideoDoorEntryDevice::SCS_MODE)
 		QtConcurrent::run(EchoCanceller::initScs);
 	else

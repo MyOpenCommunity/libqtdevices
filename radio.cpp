@@ -517,7 +517,7 @@ void RadioPage::storeMemoryStation()
 	qDebug("Storing frequency to memory station %d", memory_number);
 	dev->saveStation(QString::number(memory_number));
 
-#if defined(BT_HARDWARE_TS_10) || defined(BT_HARDWARE_X11)
+#if defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_X11)
 	int state = bt_global::audio_states->currentState();
 
 	if (!QFile::exists(SOUND_PATH "beep.wav"))
@@ -534,7 +534,7 @@ void RadioPage::storeMemoryStation()
 	else if (state == AudioStates::BEEP_ON)
 		QTimer::singleShot(save_sound_delay, this, SLOT(playSaveSound()));
 #endif
-#if defined(BT_HARDWARE_TS_3_5)
+#if defined(BT_HARDWARE_PXA255)
 	beep();
 #endif
 }

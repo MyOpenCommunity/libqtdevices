@@ -87,7 +87,7 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 
 	nav_bar = 0;
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	if (mount_enabled)
 	{
 		nav_bar = new NavigationBar("eject");

@@ -50,7 +50,7 @@ public slots:
 	virtual void showPage();
 	virtual void cleanUp();
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	// only meaningful for physical file systems
 	void unmount();
 #endif
@@ -99,7 +99,7 @@ private slots:
 	void directoryChanged();
 	void screenSaverStarted(Page *curr);
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	void unmounted(const QString &dir);
 #endif
 

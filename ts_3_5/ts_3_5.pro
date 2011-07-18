@@ -13,7 +13,10 @@ CONF_FILE = ts_10
 include(../setup.pri)
 
 contains(HARDWARE, embedded) {
-	DEFINES += BT_HARDWARE_TS_3_5
+	# The hardware platform for ts3 (PXA255 or DM365).
+	DEFINES += BT_HARDWARE_PXA255
+	#DEFINES += BT_HARDWARE_DM365
+
 	INCLUDEPATH += QWSMOUSE
 	HEADERS += QWSMOUSE/qmouse_qws.h \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.h

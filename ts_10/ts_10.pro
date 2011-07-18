@@ -17,7 +17,7 @@ contains(HARDWARE, x11) {
 	DEFINES += BT_HARDWARE_X11
 }
 else {
-	DEFINES += BT_HARDWARE_TS_10
+	DEFINES += BT_HARDWARE_PXA270
 
 	HEADERS += QWSMOUSE/qmouselinuxtp_qws.h QWSMOUSE/qmouse_qws.h
 	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp

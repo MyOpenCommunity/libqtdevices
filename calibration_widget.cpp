@@ -67,7 +67,7 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 
 	QPoint *points = calibration_data.screenPoints;
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	points[QWSPointerCalibrationData::TopLeft] = QPoint(cross_margin, cross_margin);
 	points[QWSPointerCalibrationData::BottomLeft] = QPoint(cross_margin, height - cross_margin);
 	points[QWSPointerCalibrationData::BottomRight] = QPoint(width - cross_margin, height - cross_margin);
@@ -360,7 +360,7 @@ bool CalibrationWidget::sanityCheck()
 		return false;
 	}
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	// The y on the top (in raw device coordinates) must be greater than
 	// the y on the bottom
 	if (tl.y() < bl.y() || tr.y() < br.y())
@@ -374,7 +374,7 @@ bool CalibrationWidget::sanityCheck()
 		return false;
 	}
 
-#ifdef BT_HARDWARE_TS_10
+#ifdef BT_HARDWARE_PXA270
 	if (qMin(qAbs(tl.x() - tr.x()), qAbs(bl.x() - br.x())) < MINUMUM_RAW_X_SIZE)
 	{
 		qDebug() << "Calibration: the points on the left are too close to the points on the right.";
