@@ -45,10 +45,15 @@
 
 #ifdef BT_HARDWARE_PXA255
 static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+static const char *MPLAYER_AUDIO_DEVICE = "oss:/dev/dsp1";
+#elif BT_HARDWARE_DM365
+static const char *MPLAYER_FILENAME = "/usr/bin/mplayer";
+static const char *MPLAYER_AUDIO_DEVICE = "alsa:device=hw=1";
 #elif BT_HARDWARE_X11
 static const char *MPLAYER_FILENAME = "mplayer";
 #else // BT_HARDWARE_PXA270
 static const char *MPLAYER_FILENAME = "/home/bticino/cfg/extra/10/mplayer";
+static const char *MPLAYER_AUDIO_DEVICE = "oss:/dev/dsp1";
 #endif
 
 
@@ -290,7 +295,7 @@ QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 	return QList<QString>();
 #else
 	return QList<QString>() << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-			<< "-ao" << "oss:/dev/dsp1"
+			<< "-ao" << MPLAYER_AUDIO_DEVICE
 			<< "-ss" << QString::number(seek_time);
 #endif
 }
