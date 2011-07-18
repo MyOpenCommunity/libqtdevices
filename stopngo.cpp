@@ -81,7 +81,7 @@ BannStopAndGo::BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QS
 	status_icons[STATUS_GROUND_FAIL] = bt_global::skin->getImage("status_ground_fail");
 	status_icons[STATUS_VMAX] = bt_global::skin->getImage("status_vmax");
 
-	initBanner(bt_global::skin->getImage(left), status_icons[STATUS_CLOSED], bt_global::skin->getImage(right), descr);
+	initBanner(tagToImage(left), status_icons[STATUS_CLOSED], tagToImage(right), descr);
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
@@ -167,7 +167,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 		case STOP_AND_GO:
 			{
 				StopAndGoDevice *dev = bt_global::add_device_to_cache(new StopAndGoDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward", descr);
+				banner = new BannStopAndGo(dev, QString(), "forward", descr);
 				bt_global::skin->removeFromContext();
 				p = new StopAndGoPage(descr, dev);
 			}
@@ -175,7 +175,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 		case STOP_AND_GO_PLUS:
 			{
 				StopAndGoPlusDevice *dev = bt_global::add_device_to_cache(new StopAndGoPlusDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward", descr);
+				banner = new BannStopAndGo(dev, QString(), "forward", descr);
 				bt_global::skin->removeFromContext();
 				p = new StopAndGoPlusPage(descr, dev);
 			}
@@ -183,7 +183,7 @@ void StopAndGoMenu::loadItems(const QDomNode &config_node)
 		case STOP_AND_GO_BTEST:
 			{
 				StopAndGoBTestDevice *dev = bt_global::add_device_to_cache(new StopAndGoBTestDevice(where));
-				banner = new BannStopAndGo(dev, "", "forward", descr);
+				banner = new BannStopAndGo(dev, QString(), "forward", descr);
 				bt_global::skin->removeFromContext();
 				p = new StopAndGoBTestPage(descr, dev);
 			}
@@ -223,7 +223,7 @@ StopAndGoPage::StopAndGoPage(const QString &title, StopAndGoDevice *device)
 	layout->addWidget(l, 0, Qt::AlignHCenter);
 #endif
 
-	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
+	BannStopAndGo *status_banner = new BannStopAndGo(dev);
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 	layout->addSpacing(30);
 
@@ -386,7 +386,7 @@ StopAndGoBTestPage::StopAndGoBTestPage(const QString &title, StopAndGoBTestDevic
 	layout->addSpacing(10);
 #endif
 
-	BannStopAndGo *status_banner = new BannStopAndGo(dev, "", "");
+	BannStopAndGo *status_banner = new BannStopAndGo(dev);
 	layout->addWidget(status_banner, 0, Qt::AlignHCenter);
 
 	QHBoxLayout *buttons_layout = new QHBoxLayout;

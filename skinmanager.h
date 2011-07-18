@@ -26,6 +26,12 @@
 #include <QHash>
 #include <QString>
 
+
+// An utility function that return the image associated with the tagname if
+// the tagname is not null (otherwise, it returns null).
+QString tagToImage(const QString &tagname);
+
+
 /*!
 	\ingroup Core
 	\brief %Loads and get stylesheet and images path defined in a skin xml file.

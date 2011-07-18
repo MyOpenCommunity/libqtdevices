@@ -83,7 +83,7 @@ public:
 
 		\sa Bann2Buttons
 	*/
-	BannStopAndGo(StopAndGoDevice *dev, const QString &left, const QString &right, const QString &descr = QString(), QWidget *parent = 0);
+	BannStopAndGo(StopAndGoDevice *dev, const QString &left = QString(), const QString &right = QString(), const QString &descr = QString(), QWidget *parent = 0);
 
 	/*!
 		\brief Show/hide left / right buttons.

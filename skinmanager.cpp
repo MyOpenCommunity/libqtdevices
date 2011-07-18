@@ -28,6 +28,15 @@
 #include <QFile>
 
 
+QString tagToImage(const QString &tagname)
+{
+	if (tagname.isNull())
+		return QString();
+
+	return bt_global::skin->getImage(tagname);
+}
+
+
 SkinManager::SkinManager(QString filename)
 {
 	if (QFile::exists(filename))
