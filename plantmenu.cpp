@@ -371,10 +371,10 @@ PageProbe::PageProbe(const QDomNode &config_node, const QString &descr, Controll
 
 	main_layout->addWidget(descr_label);
 
-	createNavigationBar(bt_global::skin->getImage("probe_manual"));
-
 	probe_icon_auto = bt_global::skin->getImage("probe_auto");
 	probe_icon_manual = bt_global::skin->getImage("probe_manual");
+
+	createNavigationBar(probe_icon_manual);
 
 	toggle_mode = nav_bar->forward_button;
 	connect(toggle_mode, SIGNAL(clicked()), SLOT(changeStatus()));
@@ -690,10 +690,16 @@ void PageProbe::valueReceived(const DeviceValues &values_list)
 		switch (values_list[ControlledProbeDevice::DIM_STATUS].toInt())
 		{
 		case ControlledProbeDevice::ST_MANUAL:
+#ifdef LAYOUT_TS_3_5
+			toggle_mode->setImage(probe_icon_auto);
+#endif
 			status = MANUAL;
 			update = true;
 			break;
 		case ControlledProbeDevice::ST_AUTO:
+#ifdef LAYOUT_TS_3_5
+			toggle_mode->setImage(probe_icon_manual);
+#endif
 			status = AUTOMATIC;
 			update = true;
 			break;
