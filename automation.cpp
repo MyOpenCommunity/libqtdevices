@@ -61,7 +61,6 @@ enum BannerType
 #endif
 
 
-// TODO remove after debugging is complete
 namespace
 {
 	inline PullMode getPullMode(const QDomNode &node)
