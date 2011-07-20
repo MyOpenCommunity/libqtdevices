@@ -31,22 +31,7 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_TS_3_5
-// configuration values for old configuration files
-enum BannerType
-{
-	DIMMER10 = 1,
-	SINGLE_LIGHT = 0,
-	DIMMER_GROUP = 6,
-	LIGHT_GROUP = 5,
-	TEMP_LIGHT = 9,
-	STAIR_LIGHT = 12,
-	DIMMER100 = 35,
-	TEMP_LIGHT_VARIABLE = 36,
-	DIMMER100_GROUP = 44,
-	TEMP_LIGHT_FIXED = 37,
-};
-#else
+
 enum BannerType
 {
 	DIMMER10 = 2002,
@@ -60,10 +45,8 @@ enum BannerType
 	DIMMER100_GROUP = 2005,
 	TEMP_LIGHT_FIXED = 2010,
 };
-#endif
 
 
-// TODO remove after debugging is complete
 namespace
 {
 	inline PullMode getPullMode(const QDomNode &node)
@@ -99,24 +82,11 @@ namespace
 	QList<QString> getAddresses(QDomNode item, QList<int> *start_values = 0, QList<int> *stop_values = 0)
 	{
 		QList<QString> l;
-#ifdef CONFIG_TS_3_5
-		foreach (const QDomNode &el, getChildren(item, "element"))
-		{
-			l.append(getTextChild(el, "where"));
-#else
 		foreach (const QDomNode &el, getChildren(getElement(item, "addresses"), "where"))
 		{
 			l.append(el.toElement().text());
-#endif
-
-#ifdef CONFIG_TS_3_5
-			if (start_values)
-				start_values->append(getTextChild(el, "softstart").toInt());
-			if (stop_values)
-				stop_values->append(getTextChild(el, "softstop").toInt());
-#else
-			Q_ASSERT_X(start_values == NULL && stop_values == NULL, "getAddresses", "Use getAddresses100 for dimmer100 group on TS 10''");
-#endif
+			Q_ASSERT_X(start_values == NULL && stop_values == NULL, "getAddresses",
+				"Use getAddresses100 for dimmer100 group on TS 10''");
 		}
 
 		Q_ASSERT_X(!l.isEmpty(), "getAddresses", "No device found!");
@@ -126,11 +96,7 @@ namespace
 
 	QList<BtTime> getTimes(const QDomNode &item)
 	{
-#ifdef CONFIG_TS_3_5
-		QDomNode times_node = item;
-#else
 		QDomNode times_node = getElement(item, "times");
-#endif
 		QList<BtTime> times;
 		foreach (const QDomNode &time, getChildren(times_node, "time"))
 		{
@@ -204,27 +170,13 @@ Banner *Lighting::getBanner(const QDomNode &item_node)
 	case DIMMER100_GROUP:
 	{
 		QList<int> start, stop;
-#ifdef CONFIG_TS_3_5
-		QList<QString> addresses = getAddresses(item_node, &start, &stop);
-#else
 		QList<QString> addresses = getAddresses100(item_node, &start, &stop);
-#endif
 		b = new Dimmer100Group(addresses, start, stop, descr);
 	}
 		break;
 	case TEMP_LIGHT_FIXED:
 	{
-	#ifdef CONFIG_TS_3_5
-		// I think conf.xml will have only one node for time in this banner, however
-		// such node is indicated as "timeX", so I'm using the following overkill code
-		// to be safe
-		QList<QDomNode> children = getChildren(item_node, "time");
-		QStringList sl;
-		foreach (const QDomNode &tmp, children)
-			sl << tmp.toElement().text().split("*");
-	#else
 		QStringList sl = getTextChild(item_node, "time").split("*");
-	#endif
 		Q_ASSERT_X(sl.size() == 3, "Lighting::getBanner", "Fixed time must have exactly 3 fields");
 		int t = sl[0].toInt() * 3600 + sl[1].toInt() * 60 + sl[2].toInt();
 		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());

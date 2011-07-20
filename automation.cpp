@@ -32,20 +32,7 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_TS_3_5
-enum BannerType
-{
-	SECURE_AUTOMATIC_ACTUATOR = 8,
-	INTERBLOCKED_ACTUATOR = 2,
-	SIMPLE_ACTUATOR = 0,
-	DOOR_LOCK_VCT = 13,
-	PPT_STAT_AUTO = 42,
-	ACTUATOR_GROUP = 10,
-	DOOR_LOCK = 11,
-	GATE_LIGHTING_ACT = 40,
-	GATE_VCT_ACT =  41
-};
-#else
+
 enum BannerType
 {
 	SECURE_AUTOMATIC_ACTUATOR = 3002,
@@ -58,7 +45,6 @@ enum BannerType
 	GATE_LIGHTING_ACT = 3005,
 	GATE_VCT_ACT = 3006
 };
-#endif
 
 
 namespace
@@ -117,13 +103,9 @@ Banner *Automation::getBanner(const QDomNode &item_node)
 	case ACTUATOR_GROUP:
 	{
 		QStringList addresses;
-#ifdef CONFIG_TS_3_5
-		foreach (const QDomNode &el, getChildren(item_node, "element"))
-			addresses << getTextChild(el, "where");
-#else
 		foreach (const QDomNode &el, getChildren(getElement(item_node, "addresses"), "where"))
 			addresses << el.toElement().text();
-#endif
+
 		b = new InterblockedActuatorGroup(addresses, descr, oid);
 	}
 		break;
@@ -137,12 +119,8 @@ Banner *Automation::getBanner(const QDomNode &item_node)
 		break;
 	case GATE_VCT_ACT:
 	{
-#ifdef CONFIG_TS_3_5
-		where = getTextChild(item_node, "dev") + getTextChild(item_node, "where");
-#else
 		QDomNode addresses = getElement(item_node, "addresses");
 		where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
-#endif
 		b = new GateEntryphoneActuator(descr, where, oid);
 		break;
 	}
