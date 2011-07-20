@@ -401,6 +401,9 @@ PageProbe::PageProbe(const QDomNode &config_node, const QString &descr, Controll
 #endif
 	hbox->addWidget(btn_minus);
 
+#ifdef LAYOUT_TS_3_5
+	main_layout->addSpacing(20);
+#endif
 	setpoint_label = new QLabel(this);
 	setpoint_label->setFont(bt_global::font->get(FontManager::PROBE_SETPOINT));
 	setpoint_label->setAlignment(Qt::AlignHCenter);
