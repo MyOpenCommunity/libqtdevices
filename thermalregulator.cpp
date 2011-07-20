@@ -61,6 +61,33 @@ namespace
 		tmp->setAlignment((Qt::Alignment)alignment);
 		return tmp;
 	}
+
+	// match the order of enum Status in ThermalDevice
+	static QString status_icons_ids[ThermalDevice::ST_COUNT] =
+	{
+		"regulator_off", "regulator_antifreeze", "regulator_manual", "regulator_manual_timed",
+		"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
+	};
+
+	void parseProgramList(QDomNode page, ProgramEntries &entries)
+	{
+		foreach (const QDomNode &node, getChildren(page, "item"))
+		{
+			int id = getTextChild(node, "id").toInt();
+			QString text = getTextChild(node, "descr");
+
+			QString prefix;
+			if (id == WINTER_PROGRAM || id == WINTER_SCENARIO)
+				prefix = WINTER_PREFIX;
+			else if (id == SUMMER_PROGRAM || id == SUMMER_SCENARIO)
+				prefix = SUMMER_PREFIX;
+
+			if (prefix.isNull())
+				qWarning() << "Unknown id" << id << "for thermal regulator programs/scenarios";
+			else
+				entries.append(qMakePair(prefix + getTextChild(node, "num"), text));
+		}
+	}
 }
 
 
@@ -353,34 +380,6 @@ void PageSetTime::performAction()
 }
 
 
-
-// match the order of enum Status in ThermalDevice
-static QString status_icons_ids[ThermalDevice::ST_COUNT] =
-{
-	"regulator_off", "regulator_antifreeze", "regulator_manual", "regulator_manual_timed",
-	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
-};
-
-void parseTS10ProgramList(QDomNode page, ProgramEntries &entries)
-{
-	foreach (const QDomNode &node, getChildren(page, "item"))
-	{
-		int id = getTextChild(node, "id").toInt();
-		QString text = getTextChild(node, "descr");
-
-		QString prefix;
-		if (id == WINTER_PROGRAM || id == WINTER_SCENARIO)
-			prefix = WINTER_PREFIX;
-		else if (id == SUMMER_PROGRAM || id == SUMMER_SCENARIO)
-			prefix = SUMMER_PREFIX;
-
-		if (prefix.isNull())
-			qWarning() << "Unknown id" << id << "for thermal regulator programs/scenarios";
-		else
-			entries.append(qMakePair(prefix + getTextChild(node, "num"), text));
-	}
-}
-
 PageTermoReg::PageTermoReg(QDomNode n)
 {
 	SkinContext context(getTextChild(n, "cid").toInt());
@@ -397,9 +396,9 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		int id = getTextChild(item, "id").toInt();
 
 		if (id == BANNER_PROGRAMS) // programs
-			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
+			parseProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), programs);
 		else if (id == BANNER_SCENARIOS) // scenarios
-			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
+			parseProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
 	}
 
 	description_label = new QLabel(this);
