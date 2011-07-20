@@ -361,27 +361,6 @@ static QString status_icons_ids[ThermalDevice::ST_COUNT] =
 	"regulator_weekend", "regulator_program", "regulator_scenario", "regulator_holiday"
 };
 
-#ifdef CONFIG_TS_3_5
-
-void parseTS35ProgramList(QDomNode conf_root, QString season, QString what, ProgramEntries &entries)
-{
-	QDomElement program = getElement(conf_root, season + "/" + what);
-	// The leaves we are looking for start with either "p" or "s"
-	QString name = what.left(1);
-
-	int index = 0;
-	foreach (const QDomNode &node, getChildren(program, name))
-	{
-		QString text;
-		if (node.isElement())
-			text = node.toElement().text();
-
-		entries.append(qMakePair(season + QString::number(++index), text));
-	}
-}
-
-#else
-
 void parseTS10ProgramList(QDomNode page, ProgramEntries &entries)
 {
 	foreach (const QDomNode &node, getChildren(page, "item"))
@@ -402,8 +381,6 @@ void parseTS10ProgramList(QDomNode page, ProgramEntries &entries)
 	}
 }
 
-#endif
-
 PageTermoReg::PageTermoReg(QDomNode n)
 {
 	SkinContext context(getTextChild(n, "cid").toInt());
@@ -414,18 +391,6 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	for (int i = 0; i < ThermalDevice::ST_COUNT; ++i)
 		status_icons.append(bt_global::skin->getImage(status_icons_ids[i]));
 
-#ifdef CONFIG_TS_3_5
-	// parse program/scenario list
-	if (n.nodeName().contains(QRegExp("item(\\d\\d?)")) == 0)
-	{
-		qFatal("[TERMO] WeeklyMenu:wrong node in config file");
-	}
-
-	parseTS35ProgramList(n, SUMMER_PREFIX, "prog", programs);
-	parseTS35ProgramList(n, WINTER_PREFIX, "prog", programs);
-	parseTS35ProgramList(n, SUMMER_PREFIX, "scen", scenarios);
-	parseTS35ProgramList(n, WINTER_PREFIX, "scen", scenarios);
-#else
 	// parse program/scenario list
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(n, "h_lnk_pageID"), "item"))
 	{
@@ -436,7 +401,6 @@ PageTermoReg::PageTermoReg(QDomNode n)
 		else if (id == BANNER_SCENARIOS) // scenarios
 			parseTS10ProgramList(getPageNodeFromChildNode(item, "lnk_pageID"), scenarios);
 	}
-#endif
 
 	description_label = new QLabel(this);
 	description_label->setFont(bt_global::font->get(FontManager::REGULATOR_DESCRIPTION));
@@ -887,30 +851,6 @@ void PageTermoReg4z::createSettingsItem(QDomNode item, SettingsPage *settings, T
 	}
 }
 
-#ifdef CONFIG_TS_3_5
-
-void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = regulator_node;
-	QDomNode dummy;
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	weekSettings(dummy, settings, programs, _dev);
-	manualSettings(dummy, settings, _dev);
-
-	timedManualSettings(dummy, settings, _dev);
-
-	holidaySettings(dummy, settings, programs, _dev);
-
-	weekendSettings(dummy, settings, programs, _dev);
-
-	createButtonsBanners(settings, _dev);
-}
-
-#else
-
 void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 {
 	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
@@ -925,8 +865,6 @@ void PageTermoReg4z::createSettingsMenu(QDomNode regulator_node)
 	foreach (const QDomNode &item, getChildren(n, "item"))
 		createSettingsItem(item, settings, _dev);
 }
-
-#endif
 
 void PageTermoReg4z::timedManualSettings(QDomNode n, SettingsPage *settings, ThermalDevice4Zones *dev)
 {
@@ -992,30 +930,6 @@ void PageTermoReg99z::createSettingsItem(QDomNode item, SettingsPage *settings, 
 	}
 }
 
-#ifdef CONFIG_TS_3_5
-
-void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
-{
-	QDomNode n = regulator_node;
-	QDomNode dummy;
-
-	settings = new SettingsPage(n);
-	connect(settings, SIGNAL(Closed()), SLOT(showPage()));
-
-	weekSettings(dummy, settings, programs, _dev);
-	manualSettings(dummy, settings, _dev);
-
-	scenarioSettings(dummy, settings, scenarios, _dev);
-
-	holidaySettings(dummy, settings, programs, _dev);
-
-	weekendSettings(dummy, settings, programs, _dev);
-
-	createButtonsBanners(settings, _dev);
-}
-
-#else
-
 void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 {
 	QDomNode n = getPageNodeFromChildNode(regulator_node, "h_lnk_pageID");
@@ -1030,8 +944,6 @@ void PageTermoReg99z::createSettingsMenu(QDomNode regulator_node)
 	foreach (const QDomNode &item, getChildren(n, "item"))
 		createSettingsItem(item, settings, _dev);
 }
-
-#endif
 
 void PageTermoReg99z::scenarioSettings(QDomNode n, SettingsPage *settings, ProgramEntries scenarios, ThermalDevice99Zones *dev)
 {

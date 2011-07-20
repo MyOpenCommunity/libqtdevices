@@ -42,21 +42,10 @@
 
 enum
 {
-#ifdef CONFIG_TS_3_5
-	TERMO_99Z = 66,
-	TERMO_4Z = 68,
-	TERMO_99Z_PROBE = 22,
-	TERMO_99Z_PROBE_FANCOIL = 52,
-	TERMO_4Z_PROBE = 53,
-	TERMO_4Z_PROBE_FANCOIL = 54,
-	TERMO_NC_EXTPROBE = 55,
-	TERMO_NC_PROBE = 56,
-#else
 	TERMO_99Z = 8011,
 	TERMO_4Z = 8041,
 	TERMO_99Z_PROBE = 8012,
 	TERMO_4Z_PROBE = 8042,
-#endif
 };
 
 namespace
@@ -77,12 +66,8 @@ namespace
 		QString where_composed;
 		if (id != FS_4Z_THERMAL_REGULATOR && id != FS_99Z_THERMAL_REGULATOR && !simple_address.isEmpty())
 			where_composed = simple_address + "#" + ind_centrale;
-#ifdef CONFIG_TS_3_5
-		QDomNode page_node = n;
-#else
-		QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
-#endif
 
+		QDomNode page_node = getPageNodeFromChildNode(n, "lnk_pageID");
 		ThermalDevice *thermal_device = 0;
 		switch (id)
 		{
@@ -163,66 +148,6 @@ int PlantMenu::sectionId() const
 	return THERMALREGULATION;
 }
 
-#ifdef CONFIG_TS_3_5
-void PlantMenu::loadItems(const QDomNode &conf)
-{
-	QDomNode thermr_address = conf.namedItem("ind_centrale");
-	if (thermr_address.isNull())
-		ind_centrale = "0";
-	else
-		ind_centrale = thermr_address.toElement().text();
-
-	QDomNode n = conf.firstChild();
-	NavigationPage *first = 0, *prev = 0;
-	while (!n.isNull())
-	{
-		if (n.nodeName().contains(QRegExp("item(\\d\\d?)")))
-		{
-			NavigationPage *pg = 0;
-
-			SkinContext context(getTextChild(n, "cid").toInt());
-
-			int id = n.namedItem("id").toElement().text().toInt();
-			switch (id)
-			{
-				case TERMO_99Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_99Z_THERMAL_REGULATOR);
-					break;
-				case TERMO_4Z:
-					pg = addMenuItem(n, bt_global::skin->getImage("regulator"), FS_4Z_THERMAL_REGULATOR);
-					break;
-				case TERMO_99Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_PROBE);
-					break;
-				case TERMO_99Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_99Z_FANCOIL);
-					break;
-				case TERMO_4Z_PROBE:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_PROBE);
-					break;
-				case TERMO_4Z_PROBE_FANCOIL:
-					pg = addMenuItem(n, bt_global::skin->getImage("zone"), FS_4Z_FANCOIL);
-					break;
-			}
-
-			if (prev)
-			{
-				connect(prev, SIGNAL(downClick()), pg, SLOT(showPage()));
-				connect(pg, SIGNAL(upClick()), prev, SLOT(showPage()));
-			}
-			connect(pg, SIGNAL(backClick()), SLOT(showPage()));
-
-			prev = pg;
-			if (!first)
-				first = pg;
-		}
-		n = n.nextSibling();
-	}
-
-	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
-	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
-}
-#else
 void PlantMenu::loadItems(const QDomNode &config_node)
 {
 	// find thermal regulator address
@@ -286,7 +211,6 @@ void PlantMenu::loadItems(const QDomNode &config_node)
 	connect(prev, SIGNAL(downClick()), first, SLOT(showPage()));
 	connect(first, SIGNAL(upClick()), prev, SLOT(showPage()));
 }
-#endif
 
 Banner *PlantMenu::getBanner(const QDomNode &item_node)
 {
