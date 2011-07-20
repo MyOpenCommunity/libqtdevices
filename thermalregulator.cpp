@@ -536,64 +536,62 @@ void PageTermoReg::valueReceived(const DeviceValues &values_list)
 	case ThermalDevice::ST_HOLIDAY:
 	case ThermalDevice::ST_OFF:
 	case ThermalDevice::ST_PROTECTION:
-		{
-			hideDescription();
-		}
+		hideDescription();
 		break;
 	case ThermalDevice::ST_MANUAL:
 	case ThermalDevice::ST_MANUAL_TIMED:
+	{
+		unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
+		// remember: stat_var::get_val() returns an int
+		QString description;
+		switch (temp_scale)
 		{
-			unsigned temperature = values_list[ThermalDevice::DIM_TEMPERATURE].toInt();
-			// remember: stat_var::get_val() returns an int
-			QString description;
-			switch (temp_scale)
-			{
-			case CELSIUS:
-				description = celsiusString(bt2Celsius(temperature));
-				break;
-			case FAHRENHEIT:
-				description = fahrenheitString(bt2Fahrenheit(temperature));
-				break;
-			default:
-				qWarning("TermoReg valueReceived: unknown scale, defaulting to celsius");
-				description = celsiusString(temperature);
-			}
-			showDescription(description);
+		case CELSIUS:
+			description = celsiusString(bt2Celsius(temperature));
+			break;
+		case FAHRENHEIT:
+			description = fahrenheitString(bt2Fahrenheit(temperature));
+			break;
+		default:
+			qWarning("TermoReg valueReceived: unknown scale, defaulting to celsius");
+			description = celsiusString(temperature);
 		}
+		showDescription(description);
 		break;
+	}
 	case ThermalDevice::ST_SCENARIO:
+	{
+		int scenario = values_list[ThermalDevice::DIM_SCENARIO].toInt();
+		QString description;
+		switch (season)
 		{
-			int scenario = values_list[ThermalDevice::DIM_SCENARIO].toInt();
-			QString description;
-			switch (season)
-			{
-			case ThermalDevice::SE_SUMMER:
-				description = lookupProgramDescription(SUMMER_PREFIX, "scen", scenario);
-				break;
-			case ThermalDevice::SE_WINTER:
-				description = lookupProgramDescription(WINTER_PREFIX, "scen", scenario);
-				break;
-			}
-			showDescription(description);
+		case ThermalDevice::SE_SUMMER:
+			description = lookupProgramDescription(SUMMER_PREFIX, "scen", scenario);
+			break;
+		case ThermalDevice::SE_WINTER:
+			description = lookupProgramDescription(WINTER_PREFIX, "scen", scenario);
+			break;
 		}
+		showDescription(description);
 		break;
+	}
 	case ThermalDevice::ST_PROGRAM:
 	case ThermalDevice::ST_WEEKEND:
+	{
+		int scenario = values_list[ThermalDevice::DIM_PROGRAM].toInt();
+		QString description;
+		switch (season)
 		{
-			int scenario = values_list[ThermalDevice::DIM_PROGRAM].toInt();
-			QString description;
-			switch (season)
-			{
-			case ThermalDevice::SE_SUMMER:
-				description = lookupProgramDescription(SUMMER_PREFIX, "prog", scenario);
-				break;
-			case ThermalDevice::SE_WINTER:
-				description = lookupProgramDescription(WINTER_PREFIX, "prog", scenario);
-				break;
-			}
-			showDescription(description);
+		case ThermalDevice::SE_SUMMER:
+			description = lookupProgramDescription(SUMMER_PREFIX, "prog", scenario);
+			break;
+		case ThermalDevice::SE_WINTER:
+			description = lookupProgramDescription(WINTER_PREFIX, "prog", scenario);
+			break;
 		}
+		showDescription(description);
 		break;
+	}
 	default:
 		break;
 	}
