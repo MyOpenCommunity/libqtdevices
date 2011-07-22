@@ -201,7 +201,7 @@ void TestThermalDevice::receiveSummerManualTimed()
 
 void TestThermalDevice::receiveSummerProgram()
 {
-	QString frame = QString("*#%1*%2*%3##").arg(dev->who).arg(dev->where).arg(2100 + 3);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(2100 + 3);
 
 	checkStatusSeasonProgram(frame, ThermalDevice::ST_PROGRAM, ThermalDevice::SE_SUMMER, 3);
 }
@@ -213,7 +213,7 @@ void TestThermalDevice::receiveSummerScenario()
 	t << makePair(ThermalDevice::DIM_SEASON, (int)ThermalDevice::SE_SUMMER);
 	t << makePair(ThermalDevice::DIM_SCENARIO, 9);
 
-	QString frame = QString("*#%1*%2*%3##").arg(dev->who).arg(dev->where).arg(2200 + 9);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(2200 + 9);
 	t.check(frame);
 }
 
@@ -229,7 +229,7 @@ void TestThermalDevice::receiveWinterManualTimed()
 
 void TestThermalDevice::receiveWinterProgram()
 {
-	QString frame = QString("*#%1*%2*%3##").arg(dev->who).arg(dev->where).arg(1100 + 3);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(1100 + 3);
 
 	checkStatusSeasonProgram(frame, ThermalDevice::ST_PROGRAM, ThermalDevice::SE_WINTER, 3);
 }
@@ -241,7 +241,7 @@ void TestThermalDevice::receiveWinterScenario()
 	t << makePair(ThermalDevice::DIM_SEASON, (int)ThermalDevice::SE_WINTER);
 	t << makePair(ThermalDevice::DIM_SCENARIO, 9);
 
-	QString frame = QString("*#%1*%2*%3##").arg(dev->who).arg(dev->where).arg(1200 + 9);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(1200 + 9);
 	t.check(frame);
 }
 
@@ -250,7 +250,7 @@ void TestThermalDevice::checkStatusSeason(int what, int status, int season)
 	MultiDeviceTester t(dev);
 	t << makePair(ThermalDevice::DIM_STATUS ,status);
 	t << makePair(ThermalDevice::DIM_SEASON, season);
-	QString frame = QString("*#%1*%2*%3##").arg(dev->who).arg(dev->where).arg(what);
+	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(what);
 	t.check(frame);
 }
 
@@ -261,7 +261,7 @@ void TestThermalDevice::checkStatusSeasonTemperature(int what, int status, int s
 	t << makePair(ThermalDevice::DIM_SEASON, season);
 	t << makePair(ThermalDevice::DIM_TEMPERATURE, temperature);
 
-	QString frame = QString("*#%1*%2*%3*%4##").arg(dev->who).arg(dev->where).arg(what).arg(temperature);
+	QString frame = QString("*#4*%1*%2*%3##").arg(dev->where).arg(what).arg(temperature);
 	t.check(frame);
 }
 
