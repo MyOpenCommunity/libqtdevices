@@ -120,7 +120,7 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 	main_layout->setSpacing(8);
 	main_layout->setContentsMargins(30, 0, 30, 18);
 #else
-	main_layout->setSpacing(0);
+	main_layout->setSpacing(20);
 	main_layout->setContentsMargins(0, 0, 0, 10);
 
 	QLabel *descr_label = new QLabel(descr);
@@ -175,7 +175,8 @@ PageManual::PageManual(ThermalDevice *d, TemperatureScale scale, QString descr)
 	main_layout->addStretch();
 
 #ifdef LAYOUT_TS_3_5
-	ThermalNavigation *nav_bar = new ThermalNavigation;
+	NavigationBar *nav_bar = new NavigationBar("ok");
+	nav_bar->displayScrollButtons(false);
 	buildPage(content, nav_bar);
 #else
 	QHBoxLayout *ok_layout = new QHBoxLayout;
@@ -276,6 +277,7 @@ void PageManual::valueReceived(const DeviceValues &values_list)
 	updateTemperature();
 }
 
+
 PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scale, QString descr) : PageManual(dev, scale, descr)
 {
 	time_edit = new BtTimeEdit;
@@ -327,10 +329,15 @@ PageSetDate::PageSetDate()
 
 	date_edit = new BtDateEdit;
 	main_layout->addWidget(date_edit);
+#ifdef LAYOUT_TS_3_5
+	main_layout->setSpacing(10);
+#else
 	main_layout->setSpacing(0);
+#endif
 	main_layout->setContentsMargins(0, 0, 0, 10);
 
-	ThermalNavigation *nav = new ThermalNavigation;
+	NavigationBar *nav = new NavigationBar("ok");
+	nav->displayScrollButtons(false);
 	buildPage(content, nav);
 
 	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));
@@ -359,10 +366,15 @@ PageSetTime::PageSetTime()
 
 	time_edit = new BtTimeEdit;
 	main_layout->addWidget(time_edit);
+#ifdef LAYOUT_TS_3_5
+	main_layout->setSpacing(10);
+#else
 	main_layout->setSpacing(0);
+#endif
 	main_layout->setContentsMargins(0, 0, 0, 10);
 
-	ThermalNavigation *nav = new ThermalNavigation;
+	NavigationBar *nav = new NavigationBar("ok");
+	nav->displayScrollButtons(false);
 	buildPage(content, nav);
 
 	connect(nav, SIGNAL(forwardClick()), SLOT(performAction()));

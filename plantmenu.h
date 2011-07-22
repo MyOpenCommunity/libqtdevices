@@ -83,22 +83,6 @@ private:
 
 /*!
 	\ingroup ThermalRegulation
-	\brief Navigation bar with an OK button on the right and a "back" button on the left (only for TS 3.5'')
- */
-class ThermalNavigation : public AbstractNavigationBar
-{
-Q_OBJECT
-public:
-	ThermalNavigation(QWidget *parent = 0);
-
-signals:
-	void forwardClick();
-	void backClick();
-};
-
-
-/*!
-	\ingroup ThermalRegulation
 	\brief Base class for thermal regulator and zone pages.
  */
 class NavigationPage : public Page

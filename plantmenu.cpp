@@ -238,16 +238,6 @@ NavigationPage *PlantMenu::addMenuItem(QDomNode n, QString central_icon, Thermal
 }
 
 
-ThermalNavigation::ThermalNavigation(QWidget *parent) : AbstractNavigationBar(parent)
-{
-	// For now, it used only in TS 3.5'' code.
-#ifdef LAYOUT_TS_3_5
-	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
-	createButton(bt_global::skin->getImage("ok"), SIGNAL(forwardClick()), 3);
-#endif
-}
-
-
 NavigationPage::NavigationPage()
 {
 	content = new QWidget;
@@ -295,8 +285,17 @@ PageProbe::PageProbe(const QDomNode &config_node, const QString &descr, Controll
 
 	main_layout->addWidget(descr_label);
 
-	probe_icon_auto = bt_global::skin->getImage("probe_auto");
-	probe_icon_manual = bt_global::skin->getImage("probe_manual");
+	if (probe_type == THERMO_Z99) // the if is to silent the SkinManager warnings
+	{
+		probe_icon_auto = bt_global::skin->getImage("probe_auto");
+		probe_icon_manual = bt_global::skin->getImage("probe_manual");
+	}
+	else
+	{
+		// Because we want the toggle_mode button always alive, we use empty icons
+		probe_icon_auto = "";
+		probe_icon_manual = "";
+	}
 
 	createNavigationBar(probe_icon_manual);
 

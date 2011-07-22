@@ -1197,13 +1197,16 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_fan_3_off>fancoil3off.png</img_fan_3_off>
 		<img_fan_4_on>fancoilAon.png</img_fan_4_on>
 		<img_fan_4_off>fancoilAoff.png</img_fan_4_off>
+		<img_probe_antifreeze>sondaantigelo.png</img_probe_antifreeze>
+		<img_probe_off>sondaoff.png</img_probe_off>
 	</item>
 	<item>
-		<!-- controlled probe details page -->
+		<!-- 4 zones central details page -->
 		<cid>8301</cid>
 		<img_summer_flat>estate_s.png</img_summer_flat>
 		<img_winter_flat>inverno_s.png</img_winter_flat>
 		<img_regulator>centrale.png</img_regulator>
+		<img_regulator_off>sondaoff.png</img_regulator_off>
 		<img_regulator_manual>manuale.png</img_regulator_manual>
 		<img_regulator_manual_timed>manuale_temporizzato.png</img_regulator_manual_timed>
 		<img_regulator_program>settimanale.png</img_regulator_program>
@@ -1212,6 +1215,27 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_regulator_weekend>festivo.png</img_regulator_weekend>
 		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
 		<img_settings>set.png</img_settings>
+	</item>
+	<item>
+		<!-- 4 zones central settings page (and related pages) -->
+		<cid>8320</cid>
+		<img_regulator>centrale.png</img_regulator>
+		<img_regulator_off>sondaoff.png</img_regulator_off>
+		<img_regulator_manual>manuale.png</img_regulator_manual>
+		<img_regulator_manual_timed>manuale_temporizzato.png</img_regulator_manual_timed>
+		<img_regulator_program>settimanale.png</img_regulator_program>
+		<img_regulator_scenario>scenari.png</img_regulator_scenario>
+		<img_regulator_holiday>feriale.png</img_regulator_holiday>
+		<img_regulator_weekend>festivo.png</img_regulator_weekend>
+		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
+		<img_settings>set.png</img_settings>
+		<img_off_button>off.png</img_off_button>
+		<img_summer>estate.png</img_summer>
+		<img_winter>inverno.png</img_winter>
+		<img_summer_program>programma_estivo.png</img_summer_program>
+		<img_winter_program>programma_invernale.png</img_winter_program>
+		<img_date_icon>calendario.png</img_date_icon>
+		<img_time_icon>orologio.png</img_time_icon>
 	</item>
 	<!-- End Thermal regulation items -->
 </style>
