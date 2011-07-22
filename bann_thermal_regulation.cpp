@@ -39,6 +39,13 @@ BannOff::BannOff(QWidget *parent, ThermalDevice *_dev) : BannCenteredButton(pare
 	dev = _dev;
 	connect(center_button, SIGNAL(clicked()), SLOT(performAction()));
 	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
+	// For some unknown reason, this banner on ts3 is aligned by the SettingsPage on
+	// the left. Because we want a centered alignment, we force its alignment
+	// adding big margins on the left and right. The margin on the bottom of
+	// the banner is an empirical way to positioning this items inside the SettingsPage,
+	// that contains other banners with some text (so, we have to use a different
+	// spacing for these).
+	layout()->setContentsMargins(60, 0, 60, 20);
 }
 
 void BannOff::performAction()
@@ -53,6 +60,8 @@ BannAntifreeze::BannAntifreeze(QWidget *parent, ThermalDevice *_dev) : BannCente
 	dev = _dev;
 	connect(center_button, SIGNAL(clicked()), SLOT(performAction()));
 	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
+	// See the comment on BannOff::BannOff()
+	layout()->setContentsMargins(60, 0, 60, 20);
 }
 
 void BannAntifreeze::performAction()
