@@ -307,7 +307,7 @@ Bann2CentralButtons::Bann2CentralButtons(bool spaced_buttons)
 #ifdef LAYOUT_TS_10
 	l->setSpacing(spaced_buttons ? 5 : 0);
 #else
-	l->setSpacing(0);
+	l->setSpacing(spaced_buttons ? 10 : 0);
 #endif
 	l->setColumnStretch(0, 1);
 	l->addWidget(center_left, 0, 1, Qt::AlignTop);
