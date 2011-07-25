@@ -437,6 +437,8 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	hbox->addStretch();
 	hbox->addWidget(settings);
 	main_layout->addLayout(hbox);
+#else
+	main_layout->addSpacing(30);
 #endif
 
 	main_layout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
