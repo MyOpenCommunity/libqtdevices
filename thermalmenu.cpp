@@ -85,39 +85,6 @@ void ThermalMenu::createPlantMenu(QDomNode config, BannSinglePuls *bann)
 	single_page = sm;
 }
 
-#ifdef CONFIG_TS_3_5
-
-void ThermalMenu::loadBanners(const QDomNode &config_node)
-{
-	BannSinglePuls *b = NULL;
-	foreach (const QDomNode &node, getChildren(config_node, "plant"))
-	{
-		b = addMenuItem(node.toElement(), bt_global::skin->getImage("plant"));
-		createPlantMenu(node.toElement(), b);
-	}
-	foreach (const QDomNode &node, getChildren(config_node, "extprobe"))
-	{
-		b = addMenuItem(node.toElement(), bt_global::skin->getImage("extprobe"));
-		createProbeMenu(node.toElement(), b, true);
-	}
-	foreach (const QDomNode &node, getChildren(config_node, "tempprobe"))
-	{
-		b = addMenuItem(node.toElement(), bt_global::skin->getImage("probe"));
-		createProbeMenu(node.toElement(), b, false);
-	}
-
-	QDomNode air_node = getChildWithName(config_node, "airconditioning");
-	if (!air_node.isNull())
-	{
-		b = addMenuItem(air_node.toElement(), bt_global::skin->getImage("air_conditioning"));
-		single_page = new AirConditioning(air_node);
-		b->connectRightButton(single_page);
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-	}
-}
-
-#else
-
 void ThermalMenu::loadBanners(const QDomNode &config_node)
 {
 	foreach (const QDomNode &node, getChildren(config_node, "item"))
@@ -154,7 +121,6 @@ void ThermalMenu::loadBanners(const QDomNode &config_node)
 	}
 }
 
-#endif
 
 BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 {
@@ -165,19 +131,6 @@ BannSinglePuls *ThermalMenu::addMenuItem(QDomElement e, QString central_icon)
 	++bann_number;
 	return bp;
 }
-
-#ifdef CONFIG_TS_3_5
-
-void ThermalMenu::createProbeMenu(QDomNode config, BannSinglePuls *bann, bool external)
-{
-	ProbesPage *sm = new ProbesPage(config, external);
-	single_page = sm;
-
-	bann->connectRightButton(sm);
-	connect(bann, SIGNAL(pageClosed()), SLOT(showPage()));
-}
-
-#endif
 
 void ThermalMenu::showPage()
 {
@@ -228,10 +181,6 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 	{
 		QString addr = getTextChild(item, "where");
 		QString text = getTextChild(item, "descr");
-#ifdef CONFIG_TS_3_5
-		if (are_probes_external)
-			addr += "00";
-#endif
 
 		NonControlledProbeDevice *dev = bt_global::add_device_to_cache(new NonControlledProbeDevice(addr,
 			are_probes_external ? NonControlledProbeDevice::EXTERNAL : NonControlledProbeDevice::INTERNAL));
