@@ -1218,7 +1218,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_regulator_scenario>scenari.png</img_regulator_scenario>
 		<img_regulator_holiday>feriale.png</img_regulator_holiday>
 		<img_regulator_weekend>festivo.png</img_regulator_weekend>
-		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
+		<img_regulator_antifreeze>sondaantigelo.png</img_regulator_antifreeze>
 		<img_settings>set.png</img_settings>
 	</item>
 	<item>
@@ -1281,7 +1281,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_regulator_scenario>scenari.png</img_regulator_scenario>
 		<img_regulator_holiday>feriale.png</img_regulator_holiday>
 		<img_regulator_weekend>festivo.png</img_regulator_weekend>
-		<img_regulator_antifreeze>antigelo.png</img_regulator_antifreeze>
+		<img_regulator_antifreeze>sondaantigelo.png</img_regulator_antifreeze>
 		<img_settings>set.png</img_settings>
 	</item>
 	<item>
