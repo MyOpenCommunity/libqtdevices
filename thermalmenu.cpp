@@ -141,18 +141,11 @@ void ThermalMenu::showPage()
 }
 
 
+ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
+{
 #ifdef LAYOUT_TS_3_5
-
-ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
-{
 	buildPage(getTextChild(config_node, "descr"));
-	loadItems(config_node, are_probes_external);
-}
-
 #else
-
-ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
-{
 	QWidget *content = new QWidget;
 	QGridLayout *l = new QGridLayout(content);
 	BannerContent *banners = new BannerContent(1);
@@ -168,12 +161,12 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 	l->setColumnStretch(1, 1);
 	l->setColumnStretch(2, 1);
 
-	buildPage(content, banners, new NavigationBar,
-		  getTextChild(config_node, "descr"), 40);
+	buildPage(content, banners, new NavigationBar, getTextChild(config_node, "descr"), 40);
+#endif
+
 	loadItems(config_node, are_probes_external);
 }
 
-#endif
 
 void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external)
 {
