@@ -437,8 +437,10 @@ PageTermoReg::PageTermoReg(QDomNode n)
 	hbox->addStretch();
 	hbox->addWidget(settings);
 	main_layout->addLayout(hbox);
+	hideDescription();
 #else
 	main_layout->addSpacing(30);
+	showDescription(getTextChild(n, "descr"));
 #endif
 
 	main_layout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::Maximum));
@@ -453,8 +455,6 @@ PageTermoReg::PageTermoReg(QDomNode n)
 
 	createNavigationBar(bt_global::skin->getImage("settings"), getTextChild(n, "descr"), SMALL_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(showSettingsMenu()));
-
-	hideDescription();
 }
 
 void PageTermoReg::showDescription(const QString &desc)
