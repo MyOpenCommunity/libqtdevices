@@ -248,7 +248,7 @@ void TestThermalDevice::receiveWinterScenario()
 void TestThermalDevice::checkStatusSeason(int what, int status, int season)
 {
 	MultiDeviceTester t(dev);
-	t << makePair(ThermalDevice::DIM_STATUS ,status);
+	t << makePair(ThermalDevice::DIM_STATUS, status);
 	t << makePair(ThermalDevice::DIM_SEASON, season);
 	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(what);
 	t.check(frame);
