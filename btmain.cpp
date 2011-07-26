@@ -317,8 +317,8 @@ BtMain::BtMain(int openserver_reconnection_time)
 	FrameReceiver::setClientsMonitor(monitors);
 	FrameSender::setClients(clients);
 
-	// When only the main openserver is defined the homepage is showed only when
-	// the monitor of the openserver is up. Otherwise the homepage is showed as
+	// When only the main openserver is defined the homepage is shown only when
+	// the monitor of the openserver is up. Otherwise the homepage is shown as
 	// soon as the configuration is loaded.
 	if (clients.count() > 1)
 		monitor_ready = true;

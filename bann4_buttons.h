@@ -79,10 +79,10 @@ public:
 	 */
 	void setCentralSpacing(bool spaced);
 
-	// Connect the left button to the page argument, showed when the button is clicked.
+	// Connect the left button to the page argument, shown when the button is clicked.
 	void connectLeftButton(Page *p);
 
-	// Connect the right button to the page argument, showed when the button is clicked.
+	// Connect the right button to the page argument, shown when the button is clicked.
 	void connectRightButton(Page *p);
 
 protected:

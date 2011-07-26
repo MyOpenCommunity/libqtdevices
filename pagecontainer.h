@@ -92,7 +92,7 @@ public:
 	/*!
 		\brief Set the Window \a window as the container of the page.
 
-		The \a window argument is considered as the parent, and it is showed
+		The \a window argument is considered as the parent, and it is shown
 		every time that a Page in the child PageContainer is shown.
 	*/
 	void setContainerWindow(Window *window);

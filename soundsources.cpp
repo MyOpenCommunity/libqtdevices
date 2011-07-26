@@ -264,7 +264,7 @@ void RadioSource::sourceHidden()
 	radio_info->isShown(false);
 }
 
-void RadioSource::sourceShowed()
+void RadioSource::sourceShown()
 {
 	radio_info->isShown(true);
 }
@@ -356,7 +356,7 @@ void SoundSources::hideEvent(QHideEvent *)
 void SoundSources::showEvent(QShowEvent *)
 {
 	for (int i = 0; i < sources->count(); ++i)
-		static_cast<AudioSource*>(sources->widget(i))->sourceShowed();
+		static_cast<AudioSource*>(sources->widget(i))->sourceShown();
 }
 
 void SoundSources::sourceCycle()

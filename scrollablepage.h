@@ -123,7 +123,7 @@ public:
 		the children into the single page.
 
 		\note In order to have a correct transition effect, this method is also
-		called by the Page \b before that the Page is showed.
+		called by the Page \b before that the Page is shown.
 	*/
 	virtual void drawContent() = 0;
 

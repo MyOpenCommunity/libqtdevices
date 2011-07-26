@@ -83,7 +83,7 @@ private:
 	\ingroup VideoDoorEntry
 	\brief Notifies an incoming call.
 
-	This popup page is showed on touchscreen 3.5'' to notifies an incoming call
+	This popup page is shown on touchscreen 3.5'' to notifies an incoming call
 	and to allows the user to switch on/off the stairlight and to open/close
 	the door.
 */

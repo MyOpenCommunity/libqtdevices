@@ -46,10 +46,10 @@ class AudioSource : public Banner
 Q_OBJECT
 
 public:
-	// Method called when the source is hidden or showed. It differs from the
+	// Method called when the source is hidden or shown. It differs from the
 	// standard hideEvent/showEvent because it is called when the container
 	// of the banner is hidden/shown
-	virtual void sourceShowed() {}
+	virtual void sourceShown() {}
 	virtual void sourceHidden() {}
 
 signals:
@@ -149,7 +149,7 @@ public:
 
 #ifdef LAYOUT_TS_10
 	virtual void sourceHidden();
-	virtual void sourceShowed();
+	virtual void sourceShown();
 #endif
 
 protected slots:
