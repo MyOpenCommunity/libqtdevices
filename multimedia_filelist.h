@@ -90,11 +90,13 @@ private slots:
 	void gotoSoundDiffusion();
 
 private:
+#ifdef LAYOUT_TS_10
 	// icons for different file type
 	QHash<int,QString> file_icons;
 
 	// button icons for files/directories
 	QString play_file, browse_directory;
+#endif
 
 	// pages to display video/images
 	SlideshowPage *slideshow;

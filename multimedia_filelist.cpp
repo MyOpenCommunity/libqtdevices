@@ -132,7 +132,6 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	connect(nav_bar, SIGNAL(downClick()), SLOT(pageDown()));
 #ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(13, 5, 25, 10);
-#endif
 
 	// order here must match the order in enum Type
 	file_icons.insert(EntryInfo::DIRECTORY, bt_global::skin->getImage("directory_icon"));
@@ -146,7 +145,6 @@ MultimediaFileListPage::MultimediaFileListPage(TreeBrowser *browser, int filters
 	play_file = bt_global::skin->getImage("play_file");
 	browse_directory = bt_global::skin->getImage("browse_directory");
 
-#ifdef LAYOUT_TS_10
 	slideshow = new SlideshowPage;
 	connect(slideshow, SIGNAL(Closed()), SLOT(showPage()));
 	connect(slideshow, SIGNAL(cleanedUp()), SLOT(cleanUp()));
