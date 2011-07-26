@@ -57,6 +57,7 @@ MultimediaContainer::MultimediaContainer(const QDomNode &config_node)
 	buildPage(new QWidget, nav_bar);
 	radio_page = 0;
 	upnp_page = 0;
+	current_player = 0;
 	loadItems(config_node);
 }
 
@@ -120,17 +121,26 @@ void MultimediaContainer::playSomethingRandomly()
 
 void MultimediaContainer::showPage()
 {
-	play_button->hide();
 	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
 	{
 		if (page && page->isPlayerInstanceRunning())
 		{
-			play_button->show();
+			current_player = page;
 			break;
 		}
 	}
 
+	play_button->setVisible(current_player != 0);
+	if (current_player)
+		connect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
 	Page::showPage();
+}
+
+void MultimediaContainer::currentPlayerExited()
+{
+	play_button->setVisible(false);
+	disconnect(current_player, SIGNAL(playerExited()), this, SLOT(currentPlayerExited()));
+	current_player = 0;
 }
 
 void MultimediaContainer::gotoPlayerPage()

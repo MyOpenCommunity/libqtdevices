@@ -55,6 +55,7 @@ public:
 signals:
 	void loopDetected();
 	void serverDown();
+	void playerExited();
 
 public slots:
 	void playAudioFile(EntryInfo starting_file, int file_index, int num_files);

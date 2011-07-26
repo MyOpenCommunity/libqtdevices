@@ -184,6 +184,7 @@ void AudioPlayerPage::stopped()
 {
 	play_button->setStatus(StateButton::OFF);
 	refresh_data->stop();
+	emit playerExited();
 }
 
 void AudioPlayerPage::playToggled()

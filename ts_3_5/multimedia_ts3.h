@@ -28,6 +28,7 @@ class IPRadioPage;
 class FileSelector;
 class QDomNode;
 class BtButton;
+class AudioPlayerPage;
 
 
 class MultimediaContainer : public Page
@@ -42,6 +43,7 @@ public slots:
 
 private slots:
 	void gotoPlayerPage();
+	void currentPlayerExited();
 
 private:
 	void loadItems(const QDomNode &config_node);
@@ -49,6 +51,7 @@ private:
 	static IPRadioPage *radio_page;
 	static FileSelector *upnp_page;
 	BtButton *play_button;
+	AudioPlayerPage *current_player;
 };
 
 #endif // MULTIMEDIA_TS3_H
