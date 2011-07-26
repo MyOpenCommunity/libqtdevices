@@ -157,11 +157,15 @@ void FileSelector::directoryChanged()
 
 void FileSelector::handleError()
 {
+	// To perform a correct navigation we have to manage the critical errors even
+	// if this page or the AudioPlayer page are not shown.
+	// Instead, the Closed signal must be emitted only if the page is the shown
 	operationCompleted();
 	pages_indexes.clear();
 	files_list.clear();
 	browser->reset();
-	emit Closed();
+	if (isVisible())
+		emit Closed();
 }
 
 void FileSelector::emptyDirectory()
