@@ -441,6 +441,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>11003</cid>
 		<img_details>audiosetting.png</img_details>
 		<img_turn_on>btnmmon.png</img_turn_on>
+		<!-- aux source page (used if the source is another touch) -->
+		<img_next_source>btnforward.png</img_next_source>
 	</item>
 	<item>
 		<!-- amplifier normal ambient -->
@@ -578,6 +580,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>12003</cid>
 		<img_details>audiosetting.png</img_details>
 		<img_turn_on>btnmmon.png</img_turn_on>
+		<!-- aux source page (used if the source is another touch) -->
+		<img_next_source>btnforward.png</img_next_source>
 	</item>
 	<item>
 		<!-- amplifier normal ambient 1 -->
