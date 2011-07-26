@@ -73,6 +73,19 @@ QDomNode getHomepageNode();
 // See getElement
 QDomElement getConfElement(QString path);
 
+#ifdef BT_HARDWARE_DM365
+// The default configuration file for BTouch and other processes
+#define MY_FILE_CFG_DEFAULT "/var/tmp/stack_open.xml"
+
+// The configuration file for BTouch
+#define MY_FILE_USER_CFG_DEFAULT "/var/tmp/conf.xml"
+
+// The log filename if not specified in stack_open.xml
+#define MY_FILE_LOG_DEFAULT "/var/tmp/BTouch.log"
+
+// The file to generate when the configuration is successfully loaded
+#define FILE_CONF_LOADED "/var/tmp/flags/BTouch_checkconfok"
+#else
 // The default configuration file for BTouch and other processes
 #define MY_FILE_CFG_DEFAULT "cfg/stack_open.xml"
 
@@ -84,6 +97,10 @@ QDomElement getConfElement(QString path);
 
 // The log filename if not specified in stack_open.xml
 #define MY_FILE_LOG_DEFAULT "log/BTouch.log"
+
+// The file to generate when the configuration is successfully loaded
+#define FILE_CONF_LOADED "BTouch_checkconfok"
+#endif
 
 // The base path for the images
 #ifndef IMG_PATH
@@ -107,9 +124,6 @@ QDomElement getConfElement(QString path);
 
 // The file to generate when changing the configuration file to avoid being resetted from bt_processi
 #define FILE_CHANGE_CONF "BTOUCH_CHANGE_CONF"
-
-// The file to generate when the configuration is successfully loaded
-#define FILE_CONF_LOADED "BTouch_checkconfok"
 
 // The file name to create for software watchdog
 #define FILE_WDT "/var/tmp/bticino/bt_wd/BTouch_qws"
