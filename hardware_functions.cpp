@@ -528,8 +528,12 @@ void usbHotplug()
 
 QPair <QString, QStringList> getAudioCmdLine(const QString &audio_path)
 {
+#ifdef BT_HARDWARE_DM365
+	return qMakePair(QString("aplay"), QStringList() << audio_path << "-D" << "hw:0");
+#else
 	return qMakePair(QString("/bin/sox"), QStringList() << "-w" << "-c" << "2"
 		<< "-s" << "-t" << "wav" << audio_path << "-t" << "ossdsp" << "/dev/dsp1");
+#endif
 }
 
 void dumpSystemMemory()
