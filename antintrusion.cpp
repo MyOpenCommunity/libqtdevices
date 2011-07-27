@@ -563,7 +563,7 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 #endif
 			antintrusion_system->setState(inserted);
 			for (int i = 0; i < NUM_ZONES; ++i)
-				if (zones[i])
+				if (zones[i] != 0)
 					zones[i]->enablePartialization(!inserted);
 			break;
 		}
@@ -572,7 +572,10 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 		{
 			int zone = it.value().toInt();
 			if (zone > 0 && zone <= NUM_ZONES)
-				zones[zone - 1]->setPartialization(it.key() == AntintrusionDevice::DIM_ZONE_PARTIALIZED);
+			{
+				if (zones[zone - 1] != 0)
+					zones[zone - 1]->setPartialization(it.key() == AntintrusionDevice::DIM_ZONE_PARTIALIZED);
+			}
 			break;
 		}
 		case AntintrusionDevice::DIM_ANTIPANIC_ALARM:
