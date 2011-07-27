@@ -36,16 +36,6 @@
 
 enum
 {
-#ifdef CONFIG_TS_3_5
-	SET_BEEP=25,                                  /*!<  Beep */
-	SET_DATETIME=14,                              /*!<  Time setting */
-	PASSWORD=26,                                  /*!<  Password's settings */
-	VERSION=27,                                   /*!<  Version */
-	CONTRAST=28,                                  /*!<  Contrast */
-	DISPLAY=21,                                   /*!<  Display */
-	LANSETTINGS=72,                               /*!< LAN settings and information */
-	SET_ALARMCLOCK=20,                            /*!<  AlarmClock setting */
-#else
 	SET_BEEP=14001,                               /*!<  Beep */
 	SET_DATETIME=14002,                           /*!<  Time setting */
 	PASSWORD=14003,                               /*!<  Password's settings */
@@ -54,7 +44,6 @@ enum
 	LANSETTINGS=14008,                            /*!< LAN settings and information */
 	PAGE_ALARMCLOCK = 14009,                      /*!< The alarm clock page */
 	SET_ALARMCLOCK=14201,                         /*!<  AlarmClock setting */
-#endif
 };
 
 Settings::Settings(const QDomNode &config_node)
@@ -79,11 +68,7 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 	{
 	case SET_BEEP:
 	{
-#ifdef CONFIG_TS_3_5
-		bool enable = getTextChild(item_node, "value").toInt();
-#else
 		bool enable = getTextChild(item_node, "enabled").toInt();
-#endif
 		b = new BannBeep(getTextChild(item_node, "itemID").toInt(),
 				enable,
 				bt_global::skin->getImage("state_on"),
@@ -125,7 +110,7 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 		b = bann;
 		break;
 	}
-#ifdef CONFIG_TS_3_5 // To be or not to be? Remove the Contrast or port in the new version of the ts3?
+#if 0 // To be or not to be? Remove the Contrast or port in the new version of the ts3?
 	case CONTRAST:
 		// TODO CONTRAST below needs to be changed when removing CONFIG_TS_3_5
 		b = new BannContrast(CONTRAST, getTextChild(item_node, "value").toInt(),
@@ -172,12 +157,6 @@ void Settings::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-#ifdef BT_HARDWARE_X11
-#ifdef CONFIG_TS_3_5
-		if (id == CONTRAST)
-			continue;
-#endif
-#endif
 		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);

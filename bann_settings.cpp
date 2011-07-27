@@ -187,11 +187,7 @@ void BannBeep::toggleBeep()
 	setBeep(beep_on);
 	left_button->setStatus(beep_on);
 
-#ifdef CONFIG_TS_3_5
-	setCfgValue("value", beep_on, SET_BEEP);
-#else
 	setCfgValue("enabled", beep_on, item_id);
-#endif
 
 	if (beep_on)
 		beep();
@@ -269,11 +265,8 @@ void PasswordChanger::requestPasswdOn()
 void PasswordChanger::toggleActivation()
 {
 	active = !active;
-#ifdef CONFIG_TS_3_5
-	setCfgValue("enabled", QString::number(active), item_id);
-#else
 	setCfgValue("actived", active, item_id);
-#endif
+
 	bt_global::status.check_password = active;
 	bt_global::status.password = password;
 	emit passwordActive(active);
@@ -401,11 +394,8 @@ void PasswordChanger::savePassword(const QString &passwd)
 	if (!passwd.isEmpty())
 	{
 		password = passwd;
-#ifdef CONFIG_TS_3_5
-		setCfgValue("value", password, item_id);
-#else
 		setCfgValue("password", password, item_id);
-#endif
+
 		bt_global::status.check_password = active;
 		bt_global::status.password = password;
 		setStatus(CHECK_OLD_PASSWORD);

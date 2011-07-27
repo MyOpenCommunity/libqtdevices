@@ -62,8 +62,6 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	QString img_items = bt_global::skin->getImage("display_items");
 
-#ifdef CONFIG_TS_10
-
 	QDomNode page_node = getPageNodeFromChildNode(config_node, "lnk_pageID");
 	foreach (const QDomNode &item, getChildren(page_node, "item"))
 	{
@@ -82,20 +80,6 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 		else if (link_id == PAGE_SCREENSAVER)
 			loadScreenSaver(img_items, item);
 	}
-
-#else // CONFIG_TS_3_5
-	int wait_time = 45; // Default waiting time in seconds.
-	QDomElement n = getElement(config_node, "cleaning/time");
-	if (!n.isNull())
-		wait_time = n.text().toInt();
-	loadCleanScreen(wait_time);
-
-#ifndef BT_HARDWARE_X11
-	loadCalibration(img_items);
-	loadBrightness(img_items);
-#endif
-	loadScreenSaver(img_items, getChildWithName(config_node, "screensaver"));
-#endif
 }
 
 void DisplayPage::loadCleanScreen(int wait_time)
