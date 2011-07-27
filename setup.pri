@@ -71,9 +71,9 @@ contains(CONF_FILE, ts_10) {
 		LIBS += -L../../stackopen/common_files -lcommon -lexpat
 		INCLUDEPATH += ../../stackopen/common_files
 	}
-	contains(HARDWARE, embedded-pxa277) {
-		LIBS += -L../../stackopen/common_files -lcommon
-		INCLUDEPATH += ../../stackopen/common_files
+	contains(HARDWARE, embedded-pxa270) {
+		LIBS += -L../../common_files -lcommon
+		INCLUDEPATH += ../../common_files
 	}
 
 	OBJECTS_DIR = obj/arm
