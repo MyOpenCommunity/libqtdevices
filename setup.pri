@@ -53,7 +53,7 @@ contains(CONF_FILE, ts_10) {
 	message(x86 architecture detected.)
 
 	LIBS += -L../../common_files/lib/x86 -lcommon
-	INCLUDEPATH += ../../stackopen/common_files
+	INCLUDEPATH += ../../common_files
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 	isEmpty(HARDWARE) {

@@ -47,7 +47,7 @@ contains(HARDWARE, embedded-dm365) {
 	# The hardware platform for ts3 (DM365).
 	DEFINES += BT_HARDWARE_DM365
 }
-contains(HARDWARE, X11) {
+contains(HARDWARE, x11) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_3_5\\\"
 	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_3_5\\\"
