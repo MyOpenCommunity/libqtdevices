@@ -7,7 +7,7 @@ contains(HARDWARE, x11) {
 	SOURCES += hardware_functions_x11.cpp
 	SOURCES += audiostatemachine_x11.cpp
 }
-contains(HARDWARE, embedded) {
+else {
 	SOURCES += hardware_functions.cpp
 	SOURCES += audiostatemachine.cpp
 	HEADERS += calibration.h

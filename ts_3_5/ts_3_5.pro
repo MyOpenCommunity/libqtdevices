@@ -9,13 +9,32 @@ LAYOUT = ts_3_5
 #CONF_FILE = ts_3_5
 CONF_FILE = ts_10
 
-
 include(../setup.pri)
 
-contains(HARDWARE, embedded) {
-	# The hardware platform for ts3 (PXA255 or DM365).
+# check if the hardware (passed using the HARDWARE var to qmake) is one of the supported
+# platform and the qmake used is coherent with that.
+defineTest(isHardwareSupported) {
+	contains(HARDWARE, embedded-pxa255) | contains(HARDWARE, embedded-dm365) {
+		isArm() {
+			return(true)
+		}
+	}
+	contains(HARDWARE, x11) {
+		!isArm() {
+			return (true)
+		}
+	}
+	return (false)
+}
+
+
+!isHardwareSupported() {
+	error(The hardware for ts3 is not supported or the qmake choose is not the right one.)
+}
+
+contains(HARDWARE, embedded-pxa255) {
+	# The hardware platform for ts3 (PXA255).
 	DEFINES += BT_HARDWARE_PXA255
-	#DEFINES += BT_HARDWARE_DM365
 
 	INCLUDEPATH += QWSMOUSE
 	HEADERS += QWSMOUSE/qmouse_qws.h \
@@ -24,7 +43,11 @@ contains(HARDWARE, embedded) {
 	SOURCES += QWSMOUSE/qmouse_qws.cpp \
 		QWSMOUSE/qmouselinuxevent-2-6_qws.cpp
 }
-else {
+contains(HARDWARE, embedded-dm365) {
+	# The hardware platform for ts3 (DM365).
+	DEFINES += BT_HARDWARE_DM365
+}
+contains(HARDWARE, X11) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_3_5\\\"
 	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_3_5\\\"

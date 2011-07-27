@@ -53,18 +53,33 @@ contains(CONF_FILE, ts_10) {
 	message(x86 architecture detected.)
 
 	LIBS += -L../../common_files/lib/x86 -lcommon
+	INCLUDEPATH += ../../stackopen/common_files
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
-	HARDWARE = x11
+	isEmpty(HARDWARE) {
+		HARDWARE = x11
+	}
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.x86
 } else {
 	message(ARM architecture detected.)
-	LIBS += -L../../common_files -lcommon
+
+	contains(HARDWARE, embedded-pxa255) {
+		LIBS += -L../../stackopen/common_files-pxa255 -lcommon
+		INCLUDEPATH += ../../stackopen/common_files-pxa255
+	}
+	contains(HARDWARE, embedded-dm365) {
+		LIBS += -L../../stackopen/common_files -lcommon -lexpat
+		INCLUDEPATH += ../../stackopen/common_files
+	}
+	contains(HARDWARE, embedded-pxa277) {
+		LIBS += -L../../stackopen/common_files -lcommon
+		INCLUDEPATH += ../../stackopen/common_files
+	}
+
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
 
-	HARDWARE = embedded
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
 
@@ -89,7 +104,7 @@ DEFINES += QT_QWS_EBX BTWEB
 
 LIBS += -lssl
 
-INCLUDEPATH += . .. ../devices ../../stackopen/common_files ../../stackopen ../../stackopen/common_develer/lib
+INCLUDEPATH += . .. ../devices
 DEPENDPATH += . .. ../devices
 QT += network xml
 
