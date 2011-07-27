@@ -146,6 +146,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>14007</cid>
 		<img_display_items>set.png</img_display_items>
 		<img_cleanscreen>btnclean.png</img_cleanscreen>
+		<img_logo>my_home.png</img_logo>
 		<img_unchecked>btnempty.png</img_unchecked>
 		<img_checked>btnemptyp.png</img_checked>
 	</item>
