@@ -151,6 +151,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_checked>btnemptyp.png</img_checked>
 	</item>
 	<item>
+		<!-- calibration -->
+		<cid>14153</cid>
+		<img_logo>my_home.png</img_logo>
+	</item>
+	<item>
 		<!-- lan settings -->
 		<!-- uses: info -->
 		<cid>14008</cid>

@@ -26,6 +26,10 @@
 
 class CalibrationWidget;
 
+// The Calibration is shown from the settings or during the boot. In the latter
+// case the configuration file is not yet parsed, so we have to force the
+// skin manager context in order to retrieve the images used in the calibration.
+#define CALIBRATION_CONTEXT 14153
 
 /*!
 	\ingroup Core

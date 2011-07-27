@@ -375,12 +375,15 @@ BtMain::BtMain(int openserver_reconnection_time)
 	{
 		qDebug() << "No pointer calibration file, calibrating";
 
+		// We have to force the skin manager context for the calibration
+		bt_global::skin->addToContext(CALIBRATION_CONTEXT);
 		already_calibrated = true;
 #ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
 #endif
+		bt_global::skin->removeFromContext();
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(waitBeforeInit()));
 
@@ -682,11 +685,14 @@ void BtMain::myMain()
 		qDebug() << "Boot time" << boot_time->elapsed() << "last press" << static_cast<int>(getTimePress()) * 1000;
 
 		already_calibrated = true;
+		// We have to force the skin manager context for the calibration
+		bt_global::skin->addToContext(CALIBRATION_CONTEXT);
 #ifdef LAYOUT_TS_3_5
 		Calibration *cal = new Calibration(true);
 #else
 		Calibration *cal = new Calibration;
 #endif
+		bt_global::skin->removeFromContext();
 		cal->showWindow();
 		connect(cal, SIGNAL(Closed()), SLOT(startGui()));
 		return;
