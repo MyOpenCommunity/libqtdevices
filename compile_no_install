@@ -50,20 +50,16 @@ then
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_LIB1
   $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa255"
-  #make clean
+  if [ "$COMPILING_NOT_CLEAN" != "yes" ]
+  then
+    make clean || exit 1
+  else
+    echo "Compiling COMPILING_NOT_CLEAN activated"
+  fi
   make || exit 1
   mv BTouch.arm BTouch
   cp BTouch BTouch_no_strip
   $STRIP BTouch
-  cp BTouch $BTWEB_APP_BIN_NO_STACKOPEN
-  rm -f BTouch_qws
-  touch BTouch_qws
-  chmod +x BTouch_qws
-  echo "#!/bin/ettclsh" >> BTouch_qws
-  echo "set env(QWS_MOUSE_PROTO) LinuxTP:/dev/ts" >>  BTouch_qws
-  echo "set env(QWS_DISPLAY) Transformed:Rot180" >>  BTouch_qws
-  echo "exec bin/BTouch -qws -noswcursor &" >> BTouch_qws
-  cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   cd ..
   exit 0
 fi
@@ -85,6 +81,7 @@ then
   mv BTouch.arm BTouch
   cp BTouch BTouch_no_strip
   $STRIP BTouch
+  cd ..
   exit 0
 fi
 exit 1

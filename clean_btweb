@@ -28,7 +28,19 @@ then
   export OE_QMAKE_AR=$CROSS_COMPILE"ar"
   export OE_QMAKE_QMAKE=$QTDIR"usr/bin/qmake2"
   export OE_QMAKE_STRIP="echo"
-  $OE_QMAKE_QMAKE CONFIG+=release TEST_ARCH=arm QT_LIBINFIX="E"
+  $OE_QMAKE_QMAKE CONFIG+=release TEST_ARCH=arm QT_LIBINFIX="E" HARDWARE="embedded-dm365"
+  make clean || exit 1
+  cd ..
+  exit 0
+fi
+
+if [ "$MACHINE" = "TS35-PXA255" ]
+then
+  cd ts_3_5
+  export QTDIR=$QTDIR
+  export QMAKESPEC=$QMAKESPEC
+  export PATH=$PATH:$CROSS_LIB1
+  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa255"
   make clean || exit 1
   cd ..
   exit 0
@@ -40,7 +52,7 @@ then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_PATH
-  $QTDIR/bin/qmake CONFIG+=release
+  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa270"
   make clean || exit 1
   cd ..
   exit 0
