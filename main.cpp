@@ -115,11 +115,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 
 QDomNode getPageNode(int id)
 {
-#ifdef CONFIG_TS_3_5
-	QDomElement n = getConfElement("displaypages");
-#else
 	QDomElement n = getConfElement("gui");
-#endif
 
 	if (n.isNull())
 		return QDomNode();
@@ -127,7 +123,6 @@ QDomNode getPageNode(int id)
 	return getChildWithId(n, QRegExp("page(\\d{1,2}|vct|special|menu\\d{1,2}|)"), id);
 }
 
-#ifndef CONFIG_TS_3_5
 QDomNode getPageNodeFromPageId(int pageid)
 {
 	QDomElement gui = getConfElement("gui");
@@ -149,7 +144,6 @@ QDomNode getHomepageNode()
 	// TODO read the id from the <homepage> node
 	return getPageNodeFromPageId(1);
 }
-#endif
 
 static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 {
