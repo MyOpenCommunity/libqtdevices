@@ -46,6 +46,7 @@ enum
 	SET_ALARMCLOCK=14201,                         /*!<  AlarmClock setting */
 };
 
+
 Settings::Settings(const QDomNode &config_node)
 {
 	buildPage();
