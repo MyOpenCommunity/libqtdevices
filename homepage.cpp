@@ -44,10 +44,8 @@ HomePage::HomePage(const QDomNode &config_node) : SectionPage(config_node, false
 	loadItems(config_node);
 }
 
-// Load only the item that is not a section page (which is loaded by SectionPage)
 void HomePage::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_TS_3_5
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
@@ -56,26 +54,24 @@ void HomePage::loadItems(const QDomNode &config_node)
 
 		switch (id)
 		{
-		case DATA:
-		case OROLOGIO:
+		case ITEM_DATE:
+		case ITEM_TIME:
 		{
-			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
+			timeScript *d = new timeScript(this, id == ITEM_DATE ? 25 : 1);
 			d->setGeometry(x + 10, y + 10, 220, 60);
 			d->setLineWidth(3);
 			break;
 		}
-		case TEMPERATURA:
-		case TERMO_HOME_NC_PROBE:
+		case ITEM_TEMPERATURE_PROBE:
 			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
 				x, y, 220, 60, "", "0");
 			break;
-		case TERMO_HOME_NC_EXTPROBE:
+		case ITEM_TEMPERATURE_EXTPROBE:
 			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
 				x, y, 220, 60, "", "1");
 			break;
 		}
 	}
-#endif
 }
 
 void HomePage::showSectionPage(int page_id)

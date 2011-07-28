@@ -64,19 +64,18 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		int itemNum = item.nodeName().mid(QString("item").length()).toInt();
 		switch (id)
 		{
-		case DATA:
-		case OROLOGIO:
+		case ITEM_DATE:
+		case ITEM_TIME:
 		{
-			timeScript *d = new timeScript(this, id == DATA ? 25 : 1);
+			timeScript *d = new timeScript(this, id == ITEM_DATE ? 25 : 1);
 			d->setGeometry(BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT);
 			d->setLineWidth(3);
 			break;
 		}
-		case TEMPERATURA:
-		case TERMO_HOME_NC_PROBE:
-		case TERMO_HOME_NC_EXTPROBE:
+		case ITEM_TEMPERATURE_PROBE:
+		case ITEM_TEMPERATURE_EXTPROBE:
 		{
-			QString ext = (id == TERMO_HOME_NC_EXTPROBE) ? "1" : "0";
+			QString ext = (id == ITEM_TEMPERATURE_EXTPROBE) ? "1" : "0";
 			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
 				BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
 			break;

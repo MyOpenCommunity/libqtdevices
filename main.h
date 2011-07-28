@@ -140,36 +140,6 @@ QDomElement getConfElement(QString path);
 // The delay to use in the starting phase to avoid bottlenecks in the scs bus.
 #define TS_NUMBER_FRAME_DELAY 500
 
-#ifdef CONFIG_TS_3_5
-enum Section
-{
-	NO_SECTION = 0,
-	AUTOMATION = 1,                                 /*!< Automation system */
-	LIGHTING = 2,                                   /*!< Lighting system */
-	ANTIINTRUSION = 3,                              /*!< Anti-intrusion system */
-	LOADS = 4,                                      /*!< Appliances managing system */
-	THERMALREGULATION = 5,                          /*!< Thermoregulation system */
-	SOUNDDIFFUSION = 6,                             /*!< Sound diffusion system (monochannel) */
-	SCENARIOS = 7,                                  /*!< Scenarios managing */
-	SETTINGS = 8,                                   /*!< Settings */
-	SPECIAL = 10,                                   /*!< Special button - placed here for convenience */
-	VIDEODOORENTRY = 11,                            /*!< VideoDoorEntry system */
-	EVOLVED_SCENARIOS = 12,                         /*!< Evolved scenarios management */
-	SOUNDDIFFUSION_MULTI = 13,                      /*!< Multichannel sound diffusion system */
-	SUPERVISION = 14,                               /*!< Supervision system */
-	THERMALREGULATION_MULTI = 15,                   /*!< Thermoregulation system with one or more 4-zones plants */
-	ENERGY_MANAGEMENT = 16,                         /*!< Energy management system */
-	ENERGY_DATA = 17,                               /*!< Energy data system */
-	LOAD_MANAGEMENT = 18,                           /*!< Load management system */
-	/* Added to avoid compile problems... */
-	MULTIMEDIA = 26,
-	MESSAGES = 27,
-
-#ifdef BUILD_EXAMPLES
-	TCP_BANNER_TEST = 55555,
-#endif
-};
-#else
 enum Section
 {
 	NO_SECTION = 0,
@@ -197,25 +167,15 @@ enum Section
 	TCP_BANNER_TEST = 55555,
 #endif
 };
-#endif
 
-
-/*! \enum ItemType
- *  This enum describes the various items implemented
- */
-enum ItemType
+// The items used in various part of the code: homepage, special page (ts3) or headerwidget (ts10)
+enum GlobalItems
 {
-	DATA=30,                                      /*!<  Date */
-	TEMPERATURA=31,                               /*!<  Temperature */
-	OROLOGIO=32,                                  /*!<  Clock */
-	// for SpecialPage, HeaderWidget
-#ifdef CONFIG_TS_3_5
-	TERMO_HOME_NC_EXTPROBE=57,                    /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=58,                       /*!< Home page not-controlled probe */
-#else
-	TERMO_HOME_NC_EXTPROBE=208,                   /*!< Home page external not-controlled probe */
-	TERMO_HOME_NC_PROBE=207,                      /*!< Home page not-controlled probe */
-#endif
+	ITEM_TIME = 205,                  /*!<  Clock */
+	ITEM_DATE = 206,                  /*!<  Date */
+	ITEM_TEMPERATURE_EXTPROBE = 208,  /*!< External not-controlled probe */
+	ITEM_TEMPERATURE_PROBE = 207,     /*!< Not-controlled probe */
+
 };
 
 #endif //MAIN_H
