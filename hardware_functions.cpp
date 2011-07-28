@@ -233,18 +233,20 @@ void setBacklight(bool b)
 }
 
 
-#ifdef BT_HARDWARE_PXA270
+#if defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
 
 bool buzzer_enabled = false;
 
 void setBeep(bool enable)
 {
+#ifdef BT_HARDWARE_PXA270
 	// enter the BEEP_ON state to enable the buzzer
 	if (enable)
 		bt_global::audio_states->toState(AudioStates::BEEP_ON);
 	// exit the BEEP_ON state to disable the buzzer
 	else if (!enable && buzzer_enabled)
 		bt_global::audio_states->removeState(AudioStates::BEEP_ON);
+#endif
 	buzzer_enabled = enable;
 }
 
@@ -253,12 +255,10 @@ bool getBeep()
 	return buzzer_enabled;
 }
 
-#else
+#else // BT_HARDWARE_PXA255
 
 void setBeep(bool enable)
 {
-	// TODO port the audio state machine to touch 3.5
-
 	const char *p = enable ? "1" : "0";
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
@@ -355,9 +355,11 @@ void beep(int t)
 			close(fd);
 		}
 	}
-#else // BT_HARDWARE_PXA270
+#elif BT_HARDWARE_PXA270
 	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
 		bt_global::sound->play(SOUND_PATH "beep.wav");
+#else // BT_HARDWARE_DM365
+	// TODO!!
 #endif
 }
 
@@ -366,7 +368,21 @@ void beep()
 	beep(50);
 }
 
-#ifdef BT_HARDWARE_PXA255
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
+
+static QDateTime last_press = QDateTime::currentDateTime();
+
+void setTimePress(const QDateTime &press)
+{
+	last_press = press;
+}
+
+unsigned long getTimePress()
+{
+	return last_press.secsTo(QDateTime::currentDateTime());
+}
+
+#else // BT_HARDWARE_PXA255
 
 unsigned long getTimePress()
 {
@@ -383,20 +399,6 @@ unsigned long getTimePress()
 		t = atol(time);
 	}
 	return t;
-}
-
-#else
-
-static QDateTime last_press = QDateTime::currentDateTime();
-
-void setTimePress(const QDateTime &press)
-{
-	last_press = press;
-}
-
-unsigned long getTimePress()
-{
-	return last_press.secsTo(QDateTime::currentDateTime());
 }
 
 #endif

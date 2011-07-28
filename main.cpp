@@ -23,7 +23,11 @@
 #include "xml_functions.h"
 #include "generic_functions.h"
 
+#ifdef BT_HARDWARE_DM365
+#include <logger.h>
+#else
 #include <common_functions.h>
+#endif
 
 #include <QApplication>
 #include <QTranslator>
@@ -41,12 +45,17 @@
 #endif
 
 #define TIMESTAMP
+#ifndef BT_HARDWARE_DM365
 #ifdef TIMESTAMP
 #include <QDateTime>
+#endif
 #endif
 
 #include <signal.h>
 
+#ifdef BT_HARDWARE_DM365
+logger *app_logger;
+#endif
 
 // The struct that contains the general configuration values
 struct GeneralConfig
@@ -70,6 +79,9 @@ void myMessageOutput(QtMsgType type, const char *msg)
 	switch (type)
 	{
 	case QtDebugMsg:
+#ifdef BT_HARDWARE_DM365
+		app_logger->debug(LOG_NOTICE, (char *) msg);
+#else
 		if (VERBOSITY_LEVEL > 1)
 #ifndef TIMESTAMP
 			fprintf(StdLog, "<BTo> %s\n", msg);
@@ -80,10 +92,15 @@ void myMessageOutput(QtMsgType type, const char *msg)
 				now.second(), now.msec()/100, msg);
 		}
 #endif
+#endif
 		break;
 	case QtWarningMsg:
+#ifdef BT_HARDWARE_DM365
+		app_logger->debug(LOG_INFO, (char *) msg);
+#else
 		if (VERBOSITY_LEVEL > 0)
 			fprintf(StdLog, "<BTo> WARNING %s\n", msg);
+#endif
 		break;
 	case QtCriticalMsg:
 		fprintf(stderr, "<BTo> Critical: %s\n", msg);
@@ -167,6 +184,13 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 
 static void setupLogger(QString log_file)
 {
+#ifdef BT_HARDWARE_DM365
+#ifdef TIMESTAMP
+	app_logger = new logger(log_file.toAscii().data(), true);
+#else
+	app_logger = new logger(log_file.toAscii().data());
+#endif
+#else
 	if (!log_file.isEmpty())
 		StdLog = fopen(log_file.toAscii().constData(), "a+");
 
@@ -175,6 +199,8 @@ static void setupLogger(QString log_file)
 
 	// Prevent buffering
 	setvbuf(StdLog, (char *)NULL, _IONBF, 0);
+#endif
+
 	setvbuf(stdout, (char *)NULL, _IONBF, 0);
 	setvbuf(stderr, (char *)NULL, _IONBF, 0);
 
@@ -219,7 +245,11 @@ int main(int argc, char **argv)
 	VERBOSITY_LEVEL = general_config.verbosity_level;
 
 	// Fine Lettura configurazione applicativo
+#ifdef BT_HARDWARE_DM365
+	signal(SIGUSR1, app_logger->signal_verbosity_up);
+#else
 	signal(SIGUSR1, MySignal);
+#endif
 	struct sigaction sa;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;

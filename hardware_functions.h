@@ -97,7 +97,7 @@ bool getBeep();
 // Retrieves the time elapsed (in seconds) from last pressure of the touchscreen.
 unsigned long getTimePress();
 
-#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270)
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
 class QDateTime;
 
 // stores the time of the last click for getTimePress()

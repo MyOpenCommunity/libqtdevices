@@ -31,8 +31,12 @@ FILE *StdLog = stdout;
 int VERBOSITY_LEVEL;
 
 // Only for the linking with libcommon
+#ifdef BT_HARDWARE_DM365
+char *Prefix = const_cast<char*>("<BTo>");
+#else
 char *My_Parser = const_cast<char*>(MY_PARSER_DEFAULT);
 char *Suffisso = const_cast<char*>("<BTo>");
+#endif
 int use_ssl = false;
 char *ssl_cert_key_path = NULL;
 char *ssl_certificate_path = NULL;
