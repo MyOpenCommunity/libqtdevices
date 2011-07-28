@@ -42,6 +42,10 @@
 #include <fcntl.h> // open
 #include <stdio.h> // rename
 
+#ifdef BT_HARDWARE_DM365
+#include <status.h> // set_mystatus_conf_status
+#endif
+
 #define DELAYED_WRITE_INTERVAL 3000
 
 // The maximum width & height supported for images (not used for jpeg)
@@ -226,7 +230,12 @@ bool prepareWriteCfgFile(QDomDocument &doc, const QString &filename)
 // writes the configuratio to a temporary file and then renames it to the definitive name
 bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 {
+#ifdef BT_HARDWARE_DM365
+	const QString tmp_filename = "/var/tmp/appoggio.xml";
+#else
 	const QString tmp_filename = "cfg/appoggio.xml";
+#endif
+
 	if (QFile::exists(tmp_filename))
 		QFile::remove(tmp_filename);
 
@@ -249,8 +258,12 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 	// QDir::rename fails if destination file exists so we use rename system call
 	if (!::rename(qPrintable(tmp_file.fileName()), qPrintable(filename)))
 	{
+#ifdef BT_HARDWARE_DM365
+		set_mystatus_conf_status(QString::number(CONF_UPDATED).toAscii().data());
+#else
 		// Write an empty file to warn other process that the configuration file has changed.
 		createFlagFile(FILE_CHANGE_CONF);
+#endif
 		return true;
 	}
 

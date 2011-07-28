@@ -96,6 +96,9 @@ QDomElement getConfElement(QString path);
 // The log filename if not specified in stack_open.xml
 #define MY_FILE_LOG_DEFAULT "log/BTouch.log"
 
+// The file to generate when changing the configuration file to avoid being resetted from bt_processi
+#define FILE_CHANGE_CONF "BTOUCH_CHANGE_CONF"
+
 // The file to generate when the configuration is successfully loaded
 #define FILE_CONF_LOADED "BTouch_checkconfok"
 #endif
@@ -119,9 +122,6 @@ QDomElement getConfElement(QString path);
 
 // The font configuration file
 #define MY_FILE_CFG_FONT "cfg/extra/3/font_%1.xml"
-
-// The file to generate when changing the configuration file to avoid being resetted from bt_processi
-#define FILE_CHANGE_CONF "BTOUCH_CHANGE_CONF"
 
 // The file name to create for software watchdog
 #define FILE_WDT "/var/tmp/bticino/bt_wd/BTouch_qws"
