@@ -27,7 +27,6 @@
 
 #include <QString>
 
-
 class QDomNode;
 
 
@@ -43,7 +42,6 @@ private slots:
 private:
 	QString load_where;
 };
-
 
 
 class Loads : public BannerPage

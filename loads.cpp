@@ -26,17 +26,10 @@
 #include "main.h" // LOADS
 
 
-#ifdef CONFIG_TS_3_5
-enum BannerType
-{
-	LOAD = 7,
-};
-#else
 enum BannerType
 {
 	LOAD = 5001,
 };
-#endif
 
 
 BannLoad::BannLoad(const QString &descr, const QString &where)
