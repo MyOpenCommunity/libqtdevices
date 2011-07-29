@@ -31,7 +31,7 @@ class QString;
 /**
  * The following enum defines the keys of the global configuration.
  */
-enum GlobalFields
+enum GlobalField
 {
 	LANGUAGE,
 	TEMPERATURE_SCALE,
@@ -47,7 +47,7 @@ enum GlobalFields
 	INIT_COMPLETE,
 };
 
-namespace bt_global { extern QHash<GlobalFields, QString> *config; }
+namespace bt_global { extern QHash<GlobalField, QString> *config; }
 
 enum TemperatureScale
 {
@@ -146,7 +146,7 @@ enum Section
 	ANTIINTRUSION = 13000,                          /*!< Anti-intrusion system */
 	LOADS = 5000,                                   /*!< Appliances managing system */
 	THERMALREGULATION = 8000,                       /*!< Thermoregulation system */
-	SPECIAL = 10,                                   /*!< Special button - placed here for convenience */
+	SPECIAL = 66666,                                /*!< Special page */
 	MESSAGES = 17000,                               /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT = 18000,                        /*!< Load management system */
 	SCENARIOS = 1000,                               /*!< Scenarios managing */
@@ -157,7 +157,6 @@ enum Section
 	SOUNDDIFFUSION = 11000,                         /*!< Sound diffusion system (monochannel) */
 	SOUNDDIFFUSION_MULTI = 12000,                   /*!< Sound diffusion system (multichannel) */
 	SUPERVISION = 6000,                             /*!< Supervision system */
-	THERMALREGULATION_MULTI = -3,                   /*!< Thermoregulation system with one or more 4-zones plants */
 	ENERGY_MANAGEMENT = 15000,                      /*!< Energy management system */
 	ENERGY_DATA = 7000,                             /*!< Energy data system */
 
@@ -167,13 +166,12 @@ enum Section
 };
 
 // The items used in various part of the code: homepage, special page (ts3) or headerwidget (ts10)
-enum GlobalItems
+enum GlobalItem
 {
 	ITEM_TIME = 205,                  /*!<  Clock */
 	ITEM_DATE = 206,                  /*!<  Date */
 	ITEM_TEMPERATURE_EXTPROBE = 208,  /*!< External not-controlled probe */
 	ITEM_TEMPERATURE_PROBE = 207,     /*!< Not-controlled probe */
-
 };
 
 #endif //MAIN_H

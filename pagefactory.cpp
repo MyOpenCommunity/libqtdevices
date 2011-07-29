@@ -85,7 +85,6 @@ Page *getPage(int page_id)
 		page = new Loads(page_node);
 		break;
 	case THERMALREGULATION:
-	case THERMALREGULATION_MULTI:
 		page = new ThermalMenu(page_node);
 		break;
 	case ENERGY_MANAGEMENT:

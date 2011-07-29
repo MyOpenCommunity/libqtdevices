@@ -234,7 +234,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	boot_time->start();
 
 	// construct global objects
-	bt_global::config = new QHash<GlobalFields, QString>();
+	bt_global::config = new QHash<GlobalField, QString>();
 
 	loadGlobalConfig();
 	qDebug("BtMain::BtMain");
