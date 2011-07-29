@@ -77,11 +77,16 @@ int maxHeight()
 
 void setContrast(unsigned char c)
 {
+#ifdef BT_HARDWARE_DM365
+	const char *FILE_CONTRAST = "/sys/class/lcd/tm035kbh02/contrast";
+#else
+	const char *FILE_CONTRAST = "/proc/sys/dev/btweb/contrast";
+#endif
 	char contr[4];
 
-	if (QFile::exists("/proc/sys/dev/btweb/contrast"))
+	if (QFile::exists(FILE_CONTRAST))
 	{
-		int fd = open("/proc/sys/dev/btweb/contrast", O_WRONLY);
+		int fd = open(FILE_CONTRAST, O_WRONLY);
 		if (fd >= 0)
 		{
 			sprintf(contr,"%d",c);
@@ -94,10 +99,16 @@ void setContrast(unsigned char c)
 
 unsigned char getContrast()
 {
+#ifdef BT_HARDWARE_DM365
+	const char *FILE_CONTRAST = "/sys/class/lcd/tm035kbh02/contrast";
+#else
+	const char *FILE_CONTRAST = "/proc/sys/dev/btweb/contrast";
+#endif
 	char contr[4];
-	if (QFile::exists("/proc/sys/dev/btweb/contrast"))
+
+	if (QFile::exists(FILE_CONTRAST))
 	{
-		int fd = open("/proc/sys/dev/btweb/contrast",O_RDONLY);
+		int fd = open(FILE_CONTRAST, O_RDONLY);
 		if (fd >= 0)
 		{
 			read(fd, contr, 4);
@@ -165,6 +176,56 @@ void setBrightnessLevel(int level)
 		}
 	}
 }
+#elif defined(BT_HARDWARE_DM365)
+void setBrightnessLevel(int level)
+{
+	int hardware_level;
+	switch (level)
+	{
+	case 1:
+		hardware_level = 0;
+		break;
+	case 2:
+		hardware_level = 10;
+		break;
+	case 3:
+		hardware_level = 50;
+		break;
+	case 4:
+		hardware_level = 100;
+		break;
+	case 5:
+		hardware_level = 140;
+		break;
+	case 6:
+		hardware_level = 140;
+		break;
+	case 7:
+		hardware_level = 210;
+		break;
+	case 8:
+		hardware_level = 225;
+		break;
+	case 9:
+		hardware_level = 240;
+		break;
+	case 10:
+		hardware_level = 255;
+		break;
+	default:
+		return;
+	};
+
+	if (QFile::exists("/sys/class/backlight/dingo_backlight/brightness"))
+	{
+		int fd = open("/sys/class/backlight/dingo_backlight/brightness", O_WRONLY);
+		if (fd >= 0)
+		{
+			writeValueToFd(fd, hardware_level);
+			close(fd);
+		}
+	}
+}
 #else
 void setBrightnessLevel(int level)
 {
@@ -212,13 +273,32 @@ void setBrightnessLevel(int level)
 
 void setBacklight(bool b)
 {
-	if (QFile::exists("/proc/sys/dev/btweb/backlight"))
+	char name[50];
+	int fd;
+
+	getName(name);
+	if (!strncmp(name, "DINGO", strlen("DINGO")))
 	{
-		int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
-		if (fd >= 0)
+		if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
 		{
-			writeValueToFd(fd, b);
-			close(fd);
+			fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_WRONLY);
+			if (fd >= 0)
+			{
+				writeValueToFd(fd, !b);
+				close(fd);
+			}
+		}
+	}
+	else
+	{
+		if (QFile::exists("/proc/sys/dev/btweb/backlight"))
+		{
+			int fd = open("/proc/sys/dev/btweb/backlight", O_WRONLY);
+			if (fd >= 0)
+			{
+				writeValueToFd(fd, b);
+				close(fd);
+			}
 		}
 	}
 
@@ -296,6 +376,20 @@ bool getBacklight()
 	int fd;
 
 	getName(name);
+	if (!strncmp(name, "DINGO", strlen("DINGO")))
+	{
+		if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
+		{
+			fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_RDONLY);
+			if (fd >= 0)
+			{
+				read (fd, c, 1);
+				close(fd);
+				if (c[0] == '0')
+					return true;
+			}
+		}
+	}
 	if (!strncmp(name, "H4684_IP", strlen("H4684_IP")))
 	{
 		if (QFile::exists("/proc/sys/dev/btweb/brightness"))
@@ -417,10 +511,16 @@ void rearmWDT()
 
 void getName(char *name)
 {
+#ifdef BT_HARDWARE_DM365
+	const char *FILE_NAME = "/sys/class/hwmon/hwmon0/device/in2_input";
+#else
+	const char *FILE_NAME = "/proc/sys/dev/btweb/name";
+#endif
+
 	memset(name, '\0', sizeof(name));
-	if (QFile::exists("/proc/sys/dev/btweb/name"))
+	if (QFile::exists(FILE_NAME))
 	{
-		int fd = open("/proc/sys/dev/btweb/name", O_RDONLY);
+		int fd = open(FILE_NAME, O_RDONLY);
 		if (fd >= 0)
 		{
 			read(fd, name, 50);
