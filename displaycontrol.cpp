@@ -32,6 +32,17 @@
 #include <QEvent>
 #include <QApplication>
 
+#ifdef BT_HARDWARE_DM365
+#define DELTA_OFF	8
+#define DELTA_LOW	7
+#define DELTA_NORMAL	6
+#define DELTA_HIGH	0
+#else
+#define DELTA_OFF	8
+#define DELTA_LOW	8
+#define DELTA_NORMAL	5
+#define DELTA_HIGH	1
+#endif
 
 static unsigned long now()
 {
@@ -86,22 +97,22 @@ void DisplayControl::updateBrightnessData()
 	switch (inactive_brightness)
 	{
 	case BRIGHTNESS_OFF:
-		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 8, 1);
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - DELTA_OFF, 1);
 		data[DISPLAY_FREEZED].backlight = false;
 		break;
 
 	case BRIGHTNESS_LOW:
-		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 8, 1);
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - DELTA_LOW, 1);
 		data[DISPLAY_FREEZED].backlight = true;
 		break;
 
 	case BRIGHTNESS_NORMAL:
-		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 5, 1);
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - DELTA_NORMAL, 1);
 		data[DISPLAY_FREEZED].backlight = true;
 		break;
 
 	case BRIGHTNESS_HIGH:
-		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - 1, 1);
+		data[DISPLAY_FREEZED].brightness = qMax(operative_brightness - DELTA_HIGH, 1);
 		data[DISPLAY_FREEZED].backlight = true;
 		break;
 
