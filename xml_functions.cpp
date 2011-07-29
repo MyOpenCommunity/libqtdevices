@@ -48,7 +48,7 @@ QDomNode getChildWithId(const QDomNode &parent, const QRegExp &node_regexp, cons
 	QDomNode n = parent.firstChild();
 	while (!n.isNull())
 	{
-		if (n.isElement() && n.nodeName().contains(node_regexp))
+		if (n.isElement() && node_regexp.exactMatch(n.nodeName()))
 		{
 			QDomNode child = n.firstChild();
 			while (!child.isNull() && child.nodeName() != id_name)
