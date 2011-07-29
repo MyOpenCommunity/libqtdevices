@@ -1192,6 +1192,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_central_icon>impianto.png</img_central_icon>
 	</item>
 	<item>
+		<!-- Air condition banner -->
+		<cid>8005</cid>
+		<img_central_icon>AirConditioning.png</img_central_icon>
+	</item>
+	<item>
 		<!-- 4 zones central banner (in page 4 zones) -->
 		<cid>8041</cid>
 		<img_central_icon>centrale.png</img_central_icon>
@@ -1324,4 +1329,47 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<cid>66666</cid>
 		<img_command>btnspecial.png</img_command>
 	</item>
+
+	<!-- Start Air conditioning items-->
+	<item>
+		<!-- Air conditioning main page -->
+		<!-- uses: off, on -->
+		<cid>4000</cid>
+		<img_split_cmd>btnon.png</img_split_cmd>
+	</item>
+	<item>
+		<!-- Single split basic banner and related page -->
+		<cid>4001</cid>
+		<img_air_single>UnitAirConditioning.png</img_air_single>
+		<img_air_single_temp>empty.png</img_air_single_temp>
+	</item>
+	<item>
+		<!-- General split basic banner and related page -->
+		<cid>4002</cid>
+		<img_air_general>GroupAirConditioning.png</img_air_general>
+	</item>
+	<item>
+		<!-- Single split advanced banner and related page -->
+		<cid>4003</cid>
+		<img_air_single>UnitAirConditioning.png</img_air_single>
+		<img_air_single_temp>empty.png</img_air_single_temp>
+		<img_split_settings>set.png</img_split_settings>
+		<img_custom_button>CustomAirConditioning.png</img_custom_button>
+		<img_cycle_mode>btnCiclaMod.png</img_cycle_mode>
+		<img_plus_disabled>btnPiu.png</img_plus_disabled>
+		<img_minus_disabled>btnMeno.png</img_minus_disabled>
+		<img_cycle_speed>btnCiclaFancoil.png</img_cycle_speed>
+		<img_swing_on>btnon.png</img_swing_on>
+		<img_swing_off>btnoff.png</img_swing_off>
+		<img_swing_on_checked>btnonp.png</img_swing_on_checked>
+		<img_swing_off_checked>btnoffp.png</img_swing_off_checked>
+		<img_setstate_error>airconditioning_error.png</img_setstate_error>
+	</item>
+	<item>
+		<!-- General split advanced banner and related page -->
+		<cid>4004</cid>
+		<img_air_general>GroupAirConditioning.png</img_air_general>
+	</item>
+	<!-- End Air conditioning items-->
+
 </style>

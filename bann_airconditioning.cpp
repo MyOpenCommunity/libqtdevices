@@ -318,7 +318,6 @@ SplitMode::SplitMode(QList<int> modes, int current_mode) : BannStates(0)
 }
 
 
-
 SplitSpeed::SplitSpeed(QList<int> speeds, int current_speed) : BannStates(0)
 {
 	speeds_descr[AdvancedAirConditioningDevice::VEL_AUTO] = tr("AUTOMATIC");

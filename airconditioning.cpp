@@ -401,13 +401,13 @@ void AdvancedSplitPage::showPage()
 }
 
 
-
 SplitSettings::SplitSettings(const QDomNode &values_node, const QDomNode &config_node, QString descr)
 {
 #ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"));
 	nav_bar->displayScrollButtons(false);
 	buildPage(new BannerContent, nav_bar, descr);
+	setSpacing(10);
 
 	connect(nav_bar, SIGNAL(forwardClick()), SLOT(acceptChanges()));
 	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
