@@ -33,12 +33,13 @@
 #include <QDomNode>
 #include <QDebug>
 #include <QLabel>
+#include <QGridLayout>
+#include <QVBoxLayout>
 
-
-#define DIM_BUT_BACK 60
 
 #define BORDER_SIZE 10
 #define ITEM_HEIGHT 60
+
 namespace
 {
 	inline int getPosition(int item_number)
@@ -57,18 +58,17 @@ SpecialPage::SpecialPage(const QDomNode &config_node)
 
 void SpecialPage::loadItems(const QDomNode &config_node)
 {
+	int item_counter = 1;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		int id = getTextChild(item, "id").toInt();
-		// We get the number after "item"
-		int itemNum = item.nodeName().mid(QString("item").length()).toInt();
 		switch (id)
 		{
 		case ITEM_DATE:
 		case ITEM_TIME:
 		{
 			timeScript *d = new timeScript(this, id == ITEM_DATE ? 25 : 1);
-			d->setGeometry(BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT);
+			d->setGeometry(BORDER_SIZE, getPosition(item_counter), width() - BORDER_SIZE, ITEM_HEIGHT);
 			d->setLineWidth(3);
 			break;
 		}
@@ -77,52 +77,60 @@ void SpecialPage::loadItems(const QDomNode &config_node)
 		{
 			QString ext = (id == ITEM_TEMPERATURE_EXTPROBE) ? "1" : "0";
 			temp_viewer->add(getTextChild(item, "where"), getTextChild(item, "openserver_id").toInt(),
-				BORDER_SIZE, getPosition(itemNum), width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
+				BORDER_SIZE, getPosition(item_counter), width() - BORDER_SIZE, ITEM_HEIGHT, getTextChild(item, "descr"), ext);
 			break;
 		}
 		default:
 			qFatal("Unknown item type on SpecialPage!");
 		}
+		item_counter++;
 	}
 }
 
 void SpecialPage::loadSpecial(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
+	QVBoxLayout *main_layout = new QVBoxLayout(this);
+	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
+	// We want to put the items loaded in the loadItems method (which use a fixed
+	// alignment) on the top of the page, so we use a stretch to position the
+	// buttons (which use layouts) on the bottom.
+	main_layout->addStretch();
 
-	// Load the back button
-	BtButton *b = new BtButton(this);
-	b->setImage(bt_global::skin->getImage("back"));
-	b->setGeometry(0, height() - ITEM_HEIGHT, DIM_BUT_BACK, DIM_BUT_BACK);
-	connect(b, SIGNAL(clicked()), SIGNAL(Closed()));
 
-	// Load the special button
-	b = new BtButton(this);
-	b->setImage(bt_global::skin->getImage("command"));
-	const int command_button_y = height() - ITEM_HEIGHT;
-	b->setGeometry(DIM_BUT_BACK, command_button_y, width() - DIM_BUT_BACK, DIM_BUT_BACK);
+	QGridLayout *buttons_layout = new QGridLayout;
+	main_layout->addLayout(buttons_layout);
+	buttons_layout->setContentsMargins(5, 0, 0, 15);
+	buttons_layout->setSpacing(0);
 
 	QDomNode command = getChildWithName(config_node, "command");
-	type = static_cast<specialType>(getTextChild(command, "type").toInt());
+
+	QLabel *description = new QLabel(getTextChild(command, "descr"));
+
+	description->setFont(bt_global::font->get(FontManager::TEXT));
+	description->setAlignment(Qt::AlignCenter);
+	buttons_layout->addWidget(description, 0, 1);
+
+	BtButton *back = new BtButton(bt_global::skin->getImage("back"));
+	connect(back, SIGNAL(clicked()), SIGNAL(Closed()));
+	buttons_layout->addWidget(back, 1, 0);
+
+	BtButton *special = new BtButton(bt_global::skin->getImage("command"));
+	buttons_layout->addWidget(special, 1, 1);
+
+	type = static_cast<SpecialType>(getTextChild(command, "type").toInt());
 	who = getTextChild(command, "who");
 	what = getTextChild(command, "what");
 	where = getTextChild(command, "where");
 
 	if (type == BUTTON)
 	{
-		connect(b, SIGNAL(pressed()), SLOT(pressedButton()));
-		connect(b, SIGNAL(released()), SLOT(releasedButton()));
+		connect(special, SIGNAL(pressed()), SLOT(pressedButton()));
+		connect(special, SIGNAL(released()), SLOT(releasedButton()));
 	}
 	else
-		connect(b, SIGNAL(clicked()), SLOT(clickedButton()));
-
-	// Load the description of special button
-	QLabel *box_text = new QLabel(this);
-	box_text->setFont(bt_global::font->get(FontManager::TEXT));
-	box_text->setAlignment(Qt::AlignCenter);
-	box_text->setText(getTextChild(command, "descr"));
-	const int TEXT_HEIGHT = 20;
-	box_text->setGeometry(DIM_BUT_BACK, command_button_y - TEXT_HEIGHT, width() - DIM_BUT_BACK, TEXT_HEIGHT);
+		connect(special, SIGNAL(clicked()), SLOT(clickedButton()));
 
 	subscribeMonitor(who.toInt());
 }
@@ -130,7 +138,7 @@ void SpecialPage::loadSpecial(const QDomNode &config_node)
 void SpecialPage::clickedButton()
 {
 	if (type == CYCLIC)
-		what = what == "0" ? "1" : "0";
+		what = (what == "0" ? "1" : "0");
 
 	sendFrame(createCommandFrame(who, what, where));
 }

@@ -1318,4 +1318,10 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_winter_scenario>scenario_invernale.png</img_winter_scenario>
 	</item>
 	<!-- End Thermal regulation items -->
+
+	<!-- Special page -->
+	<item>
+		<cid>66666</cid>
+		<img_command>btnspecial.png</img_command>
+	</item>
 </style>

@@ -25,9 +25,7 @@
 #include "frame_classes.h" // FrameReceiver
 #include "page.h"
 
-class timeScript;
 class TemperatureViewer;
-
 class QDomNode;
 
 
@@ -43,14 +41,14 @@ private:
 	void loadSpecial(const QDomNode &config_node);
 
 	// Define the behaviour of special button
-	enum specialType
+	enum SpecialType
 	{
 		NORMAL = 0,  /*!<  Clicking the \a special \a button the device always make the same function.*/
 		CYCLIC = 1,  /*!< Clicking the \a special \a button the device one time make a \a ON command and then an \a OFF command an so on.*/
 		BUTTON = 2   /*!<  Pushing the \a special \a button the device make a \a ON command while Releasing the button a \a OFF command is made.*/
 	};
 
-	specialType type; // The type of special button
+	SpecialType type; // The type of special button
 	QString who, what, where;
 	TemperatureViewer *temp_viewer;
 
