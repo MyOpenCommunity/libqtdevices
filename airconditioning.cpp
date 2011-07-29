@@ -301,9 +301,8 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	else
 		nav_bar = new NavigationBar;
 
-	page_content->appendBanner(custom);
 	buildPage(new BannerContent, nav_bar, descr);
-
+	page_content->appendBanner(custom);
 
 #else
 	BannerContent *banners = new BannerContent;
