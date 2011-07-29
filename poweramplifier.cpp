@@ -20,7 +20,7 @@
 
 
 #include "poweramplifier.h"
-#include "xml_functions.h" // getChildWithId, getChildren
+#include "xml_functions.h" // getChildren
 #include "devices_cache.h" // bt_global::devices_cache
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "generic_functions.h" // scsToGraphicalVolume
