@@ -138,15 +138,21 @@ QDomElement getConfElement(QString path);
 // The delay to use in the starting phase to avoid bottlenecks in the scs bus.
 #define TS_NUMBER_FRAME_DELAY 500
 
+/*!
+	\ingroup Core
+	\brief Contains the id of the section pages
+	\sa getSectionPage, getSectionPageFromId
+*/
 enum Section
 {
-	NO_SECTION = 0,
+	NO_SECTION = -1,
+	HOME_PAGE = 0,                                  /*!< Home page */
+	SPECIAL_PAGE = 66666,                           /*!< Special page */
 	AUTOMATION = 3000,                              /*!< Automation system */
 	LIGHTING = 2000,                                /*!< Lighting system */
 	ANTIINTRUSION = 13000,                          /*!< Anti-intrusion system */
 	LOADS = 5000,                                   /*!< Appliances managing system */
 	THERMALREGULATION = 8000,                       /*!< Thermoregulation system */
-	SPECIAL = 66666,                                /*!< Special page */
 	MESSAGES = 17000,                               /*!< Textual Messages from scs */
 	LOAD_MANAGEMENT = 18000,                        /*!< Load management system */
 	SCENARIOS = 1000,                               /*!< Scenarios managing */

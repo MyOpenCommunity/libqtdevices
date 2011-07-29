@@ -46,6 +46,7 @@
 #include "iconpage.h"
 #include "energy_management.h"
 #include "load_management.h"
+#include "homepage.h"
 
 #ifdef BUILD_EXAMPLES
 #include "examples/tcpbanner/banner/tcpbannerpage.h"
@@ -53,7 +54,35 @@
 
 #include <QObject>
 
-Page *getPage(int page_id)
+
+Page *getSectionPageFromId(int id)
+{
+	Page *page = 0;
+	QDomNode page_node = getPageNode(id);
+
+	Q_ASSERT_X(!page_node.isNull(), "getSectionPageFromId", qPrintable(QString("Page node null for id: %1").arg(id)));
+
+	if (bt_global::btmain->page_list.contains(id))
+		return bt_global::btmain->page_list[id];
+
+	switch (id)
+	{
+	case SPECIAL_PAGE:
+		page = new SpecialPage(page_node);
+		break;
+	case HOME_PAGE:
+		page = new HomePage(page_node);
+		break;
+	default:
+		Q_ASSERT_X(false, "getSectionPageFromId", qPrintable(QString("Page %1 not handled!").arg(id)));
+	}
+
+	bt_global::btmain->page_list[id] = page;
+	return page;
+}
+
+
+Page *getSectionPage(int page_id)
 {
 #ifdef CONFIG_TS_3_5
 	QDomNode page_node = getPageNode(page_id);
@@ -62,10 +91,9 @@ Page *getPage(int page_id)
 	QDomNode page_node = getPageNodeFromPageId(page_id);
 	int id = getTextChild(page_node, "id").toInt();
 #endif
-	if (page_node.isNull())
-		return 0;
+	Q_ASSERT_X(!page_node.isNull(), "getSectionPage", qPrintable(QString("Page node null for page id: %1").arg(page_id)));
 
-	// A section page can be built only once.
+	// A section page (with the same page_id) can be built only once.
 	if (bt_global::btmain->page_list.contains(page_id))
 		return bt_global::btmain->page_list[page_id];
 
@@ -108,9 +136,6 @@ Page *getPage(int page_id)
 	case SUPERVISION:
 		page = new SupervisionMenu(page_node);
 		break;
-	case SPECIAL:
-		page = new SpecialPage(page_node);
-		break;
 	case ENERGY_DATA:
 		page = new EnergyData(page_node);
 		break;
@@ -127,7 +152,6 @@ Page *getPage(int page_id)
 	case SOUNDDIFFUSION_MULTI:
 		page = new SoundDiffusionPage(page_node);
 		break;
-
 	case LOAD_MANAGEMENT:
 		page = new LoadManagement(page_node);
 		break;
@@ -137,7 +161,7 @@ Page *getPage(int page_id)
 		break;
 #endif
 	default:
-		qFatal("Page %d not handled!", id);
+		Q_ASSERT_X(false, "getSectionPage", qPrintable(QString("Page with page id %1 not handled!").arg(page_id)));
 	}
 
 	bt_global::btmain->page_list[page_id] = page;

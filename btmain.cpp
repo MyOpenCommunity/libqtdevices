@@ -582,9 +582,7 @@ void BtMain::loadConfiguration()
 		setOrientation(orientation);
 #else
 	QDomNode gui_node = getConfElement("gui");
-	// TODO read the id from the <homepage> node
-	QDomNode pagemenu_home = getHomepageNode();
-	home_page = new HomePage(pagemenu_home);
+	home_page = static_cast<HomePage*>(getSectionPageFromId(HOME_PAGE));
 
 #ifdef LAYOUT_TS_10
 	QDomNode video_node = getPageNode(VIDEODOORENTRY);
@@ -608,7 +606,7 @@ void BtMain::loadConfiguration()
 	if (getTextChild(home_node, "isdefined").toInt())
 	{
 		int id_default = getTextChild(home_node, "id").toInt();
-		page_default = !id_default ? home_page : getPage(id_default);
+		page_default = id_default == HOME_PAGE ? home_page : getSectionPageFromId(id_default);
 	}
 
 	// Transition effects are for now disabled!

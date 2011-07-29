@@ -113,7 +113,8 @@ struct BtStatus
 class BtMain : public QObject
 {
 Q_OBJECT
-friend Page *getPage(int id);
+friend Page *getSectionPage(int page_id);
+friend Page *getSectionPageFromId(int id);
 friend class HomePage;
 
 public:

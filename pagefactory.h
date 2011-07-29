@@ -26,9 +26,15 @@ class Page;
 
 /*!
 	\ingroup Core
-	\brief A factory method that build the page related to \a id if exists and return
-	it, otherwise return 0
+	\brief A factory method that builds and returns the \ref Section page related to \a id.
+	\note this method can be used only to build the HOME_PAGE and the SPECIAL_PAGE
 */
-Page *getPage(int id);
+Page *getSectionPageFromId(int id);
+
+/*!
+	\ingroup Core
+	\brief A factory method that builds and returns the \ref Section page related to \a page_id.
+*/
+Page *getSectionPage(int page_id);
 
 #endif // PAGEFACTORY_H

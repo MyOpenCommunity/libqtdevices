@@ -685,7 +685,7 @@ void HeaderNavigationWidget::setCurrentSection(int section_id)
 	if (index == -1)
 		return;
 
-	Q_ASSERT_X(prev_index != -1 || selected_section_id == 0, "HeaderNavigationWidget::setCurrentSection",
+	Q_ASSERT_X(prev_index != -1 || selected_section_id == NO_SECTION, "HeaderNavigationWidget::setCurrentSection",
 		   qPrintable(QString("Invalid section value %1").arg(selected_section_id)));
 
 	for (int item_index = 0; item_index < button_layout->count(); ++item_index)

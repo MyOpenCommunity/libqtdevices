@@ -93,7 +93,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		int y = getTextChild(item, "top").toInt();
 
 		// Within the pagemenu element, it can exists items that are not a page.
-		if (Page *p = getPage(id))
+		if (Page *p = getSectionPage(id))
 			addPage(p, QString(), img1, QString(), x, y);
 #else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
@@ -116,7 +116,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 		// TODO some ids are not links
 		int pageid = getTextChild(item, "lnk_pageID").toInt();
-		if (Page *p = getPage(pageid))
+		if (Page *p = getSectionPage(pageid))
 			addPage(p, descr, icon, icon_on, x, y);
 #endif
 
