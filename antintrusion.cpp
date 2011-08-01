@@ -176,8 +176,8 @@ void AlarmListPage::removeAlarmItem(int index)
 
 void AlarmListPage::removeAll()
 {
-	for (int i = 0; i < page_content->itemCount(); ++i)
-		page_content->removeItem(i);
+	while (page_content->itemCount() > 0)
+		page_content->removeItem(0);
 
 	page_content->showList();
 }
@@ -302,6 +302,14 @@ void AlarmManager::removeAlarm(int alarm_type, int zone)
 		}
 	}
 	alarm_list->removeAlarm(alarm_id);
+}
+
+void AlarmManager::removeAll()
+{
+	foreach (AlarmPage *page, alarm_pages)
+		page->deleteLater();
+
+	alarm_list->removeAll();
 }
 
 #ifdef LAYOUT_TS_3_5
@@ -565,6 +573,12 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 			for (int i = 0; i < NUM_ZONES; ++i)
 				if (zones[i] != 0)
 					zones[i]->enablePartialization(!inserted);
+
+			if (inserted) // delete all the old alarms
+			{
+				antintrusion_system->showAlarmsButton(false);
+				alarm_manager->removeAll();
+			}
 			break;
 		}
 		case AntintrusionDevice::DIM_ZONE_INSERTED:

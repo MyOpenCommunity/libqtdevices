@@ -96,8 +96,14 @@ class AlarmManager : public QObject
 Q_OBJECT
 public:
 	AlarmManager(SkinManager::CidState cid, QObject *parent = 0);
+
+	// Manage a new alarm
 	void newAlarm(int alarm_type, int zone, const QString &zone_description);
+	// Remove a single alarm
 	void removeAlarm(int alarm_type, int zone);
+	// Clear all the alarms
+	void removeAll();
+	// The number of alarms
 	int alarmCount();
 
 public slots:
