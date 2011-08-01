@@ -73,6 +73,12 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 	points[QWSPointerCalibrationData::BottomRight] = QPoint(width - cross_margin, height - cross_margin);
 	points[QWSPointerCalibrationData::TopRight] = QPoint(width - cross_margin, cross_margin);
 	points[QWSPointerCalibrationData::Center] = QPoint(width / 2, height / 2);
+#elif BT_HARDWARE_DM365
+	points[QWSPointerCalibrationData::TopLeft] = QPoint(width - cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::BottomLeft] = QPoint(cross_margin, cross_margin);
+	points[QWSPointerCalibrationData::BottomRight] = QPoint(cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::TopRight] = QPoint(width - cross_margin, height - cross_margin);
+	points[QWSPointerCalibrationData::Center] = QPoint(width / 2, height / 2);
 #else
 	points[QWSPointerCalibrationData::TopLeft] = QPoint(width - cross_margin, height - cross_margin);
 	points[QWSPointerCalibrationData::BottomLeft] = QPoint(width - cross_margin, cross_margin);
@@ -360,7 +366,7 @@ bool CalibrationWidget::sanityCheck()
 		return false;
 	}
 
-#ifdef BT_HARDWARE_PXA270
+#if defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
 	// The y on the top (in raw device coordinates) must be greater than
 	// the y on the bottom
 	if (tl.y() < bl.y() || tr.y() < br.y())
