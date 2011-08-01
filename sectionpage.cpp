@@ -35,7 +35,6 @@
 
 SectionPage::SectionPage(const QDomNode &config_node, bool show_nav_bar)
 {
-#ifndef CONFIG_TS_3_5
 	NavigationBar *nav_bar = 0;
 	if (show_nav_bar)
 	{
@@ -45,7 +44,6 @@ SectionPage::SectionPage(const QDomNode &config_node, bool show_nav_bar)
 	}
 
 	buildPage(new IconContent, nav_bar);
-#endif
 	loadItems(config_node);
 }
 
@@ -86,16 +84,6 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
-#ifdef CONFIG_TS_3_5
-		int id = getTextChild(item, "id").toInt();
-		QString img1 = IMG_PATH + getTextChild(item, "cimg1");
-		int x = getTextChild(item, "left").toInt();
-		int y = getTextChild(item, "top").toInt();
-
-		// Within the pagemenu element, it can exists items that are not a page.
-		if (Page *p = getSectionPage(id))
-			addPage(p, QString(), img1, QString(), x, y);
-#else
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
 
@@ -106,7 +94,7 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		// Home page buttons don't have description set
 		QString descr = getTextChild(item, "descr");
 
-#if LAYOUT_TS_3_5
+#ifdef LAYOUT_TS_3_5
 		int x = getTextChild(item, "left").toInt();
 		int y = getTextChild(item, "top").toInt();
 #else
@@ -114,12 +102,15 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		int y = 0;
 #endif
 
-		// TODO some ids are not links
-		int pageid = getTextChild(item, "lnk_pageID").toInt();
-		if (Page *p = getSectionPage(pageid))
-			addPage(p, descr, icon, icon_on, x, y);
-#endif
+		QString link = getTextChild(item, "lnk_pageID"); // discard the items that are not links
+		if (!link.isNull())
+		{
+			int pageid = link.toInt();
+			if (Page *p = getSectionPage(pageid))
+				addPage(p, descr, icon, icon_on, x, y);
+		}
 
+		// update the watchdog
 		if (wdtime.elapsed() > 1000)
 		{
 			wdtime.restart();
