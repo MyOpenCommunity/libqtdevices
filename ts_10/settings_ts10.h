@@ -174,13 +174,13 @@ public:
 
 /*!
 	\ingroup Settings
-	\brief Controls the brightness of the screen.
+	\brief Controls the brightness of the screen during the normal use.
 */
-class BrightnessPage : public Page
+class OperativeBrightnessPage : public Page
 {
 Q_OBJECT
 public:
-	BrightnessPage();
+	OperativeBrightnessPage();
 
 private slots:
 	void incBrightness();

@@ -53,7 +53,7 @@ enum
 {
 	ICON_BEEP = 14001,
 	PAGE_DATE_TIME = 14002,
-	PAGE_BRIGHTNESS = 14151,
+	PAGE_OPERATIVE_BRIGHTNESS = 14151,
 	PAGE_PASSWORD = 14003,
 	PAGE_VOLUME = 14004,
 	PAGE_RINGTONES = 14005,
@@ -444,8 +444,8 @@ void IconSettings::loadItems(const QDomNode &config_node)
 		case PAGE_INFO:
 			p = new InfoPage(item);
 			break;
-		case PAGE_BRIGHTNESS:
-			p = new BrightnessPage;
+		case PAGE_OPERATIVE_BRIGHTNESS:
+			p = new OperativeBrightnessPage;
 			break;
 		case PAGE_VCTSETTINGS:
 			p = new VctSettings(page_node);
@@ -524,7 +524,7 @@ PasswordPage::PasswordPage(const QDomNode &config_node)
 }
 
 
-BrightnessPage::BrightnessPage()
+OperativeBrightnessPage::OperativeBrightnessPage()
 {
 	QWidget *content = new QWidget;
 	NavigationBar *nav_bar = new NavigationBar;
@@ -564,14 +564,14 @@ BrightnessPage::BrightnessPage()
 	l->addLayout(b, Qt::AlignCenter);
 }
 
-void BrightnessPage::incBrightness()
+void OperativeBrightnessPage::incBrightness()
 {
 	int b = bt_global::display->operativeBrightness();
 	if (b < 10)
 		bt_global::display->setOperativeBrightness(b + 1);
 }
 
-void BrightnessPage::decBrightness()
+void OperativeBrightnessPage::decBrightness()
 {
 	int b = bt_global::display->operativeBrightness();
 	if (b > 1)
