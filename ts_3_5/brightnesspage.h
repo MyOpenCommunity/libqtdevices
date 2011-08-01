@@ -28,13 +28,13 @@ class QShowEvent;
 
 
 /*
- * The page used to choose the Brightness value.
+ * The page used to choose the brightness to use when the touchscreen is inactive.
  */
-class BrightnessPage : public SingleChoicePage
+class InactiveBrightnessPage : public SingleChoicePage
 {
 Q_OBJECT
 public:
-	BrightnessPage();
+	InactiveBrightnessPage();
 
 protected:
 	virtual int getCurrentId();

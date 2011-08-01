@@ -26,7 +26,7 @@
 #include <QDebug>
 
 
-BrightnessPage::BrightnessPage()
+InactiveBrightnessPage::InactiveBrightnessPage()
 {
 	addBanner(SingleChoice::createBanner(tr("Off")), BRIGHTNESS_OFF);
 	addBanner(SingleChoice::createBanner(tr("Low brightness")), BRIGHTNESS_LOW);
@@ -34,17 +34,17 @@ BrightnessPage::BrightnessPage()
 	addBanner(SingleChoice::createBanner(tr("High brightness")), BRIGHTNESS_HIGH);
 }
 
-int BrightnessPage::getCurrentId()
+int InactiveBrightnessPage::getCurrentId()
 {
 	return bt_global::display->inactiveBrightness();
 }
 
-void BrightnessPage::bannerSelected(int id)
+void InactiveBrightnessPage::bannerSelected(int id)
 {
 	bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(id));
 }
 
-void BrightnessPage::showEvent(QShowEvent *e)
+void InactiveBrightnessPage::showEvent(QShowEvent *e)
 {
 	bool banners_active = (bt_global::display->inactiveBrightness() != BRIGHTNESS_OFF ||
 		bt_global::display->currentScreenSaver() != ScreenSaver::NONE);

@@ -107,7 +107,7 @@ void DisplayPage::loadBrightness(QString icon)
 {
 	Bann2Buttons *b = new Bann2Buttons;
 	b->initBanner(QString(), icon, tr("Brightness"));
-	b->connectRightButton(new BrightnessPage);
+	b->connectRightButton(new InactiveBrightnessPage);
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 }
