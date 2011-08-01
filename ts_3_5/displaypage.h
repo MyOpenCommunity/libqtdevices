@@ -39,7 +39,7 @@ private:
 	void loadCleanScreen(int wait_time);
 #ifndef BT_HARDWARE_X11
 	void loadCalibration(QString icon);
-	void loadBrightness(QString icon);
+	void loadInactiveBrightness(QString icon, const QDomNode &config_node);
 #endif
 	void loadScreenSaver(QString icon, const QDomNode &config_node);
 

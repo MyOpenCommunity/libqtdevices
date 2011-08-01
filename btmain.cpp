@@ -537,20 +537,6 @@ void BtMain::loadConfiguration()
 		else
 			qWarning("setup node not found on xml config file!");
 	}
-
-#ifdef CONFIG_TS_3_5
-	QDomNode display_node = getChildWithId(getPageNode(SETTINGS), QRegExp("item\\d{1,2}"), DISPLAY);
-#endif
-
-#ifdef CONFIG_TS_3_5
-	if (!display_node.isNull())
-	{
-		QDomElement n = getElement(display_node, "brightness/level");
-		if (!n.isNull())
-			bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(n.text().toInt()));
-	}
-#endif
-
 	home_window->loadConfiguration();
 
 #ifdef CONFIG_TS_3_5

@@ -34,7 +34,7 @@ class InactiveBrightnessPage : public SingleChoicePage
 {
 Q_OBJECT
 public:
-	InactiveBrightnessPage();
+	InactiveBrightnessPage(const QDomNode &config_node);
 
 protected:
 	virtual int getCurrentId();
@@ -42,6 +42,9 @@ protected:
 	// the showEvent method is required because also other objects can change
 	// the brightness value.
 	virtual void showEvent(QShowEvent *e);
+
+private:
+	int item_id;
 };
 
 #endif // BRIGHTNESSPAGE_H

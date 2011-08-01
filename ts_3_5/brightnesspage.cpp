@@ -23,15 +23,24 @@
 #include "displaycontrol.h" // bt_global::display
 #include "banner.h"
 #include "btbutton.h"
+#include "xml_functions.h" // getTextChild
+#include "generic_functions.h" // setCfgValue
+
 #include <QDebug>
 
 
-InactiveBrightnessPage::InactiveBrightnessPage()
+InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node)
 {
 	addBanner(SingleChoice::createBanner(tr("Off")), BRIGHTNESS_OFF);
 	addBanner(SingleChoice::createBanner(tr("Low brightness")), BRIGHTNESS_LOW);
 	addBanner(SingleChoice::createBanner(tr("Normal brightness")), BRIGHTNESS_NORMAL);
 	addBanner(SingleChoice::createBanner(tr("High brightness")), BRIGHTNESS_HIGH);
+
+	// to save parameters
+	item_id = getTextChild(config_node, "itemID").toInt();
+
+	// this load the current inactive brightness into the global display object
+	bannerSelected(getTextChild(config_node, "level").toInt());
 }
 
 int InactiveBrightnessPage::getCurrentId()
@@ -42,6 +51,9 @@ int InactiveBrightnessPage::getCurrentId()
 void InactiveBrightnessPage::bannerSelected(int id)
 {
 	bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(id));
+	QMap<QString, QString> data;
+	data["level"] = QString::number(id);
+	setCfgValue(data, item_id);
 }
 
 void InactiveBrightnessPage::showEvent(QShowEvent *e)

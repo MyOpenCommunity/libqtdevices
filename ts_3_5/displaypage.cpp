@@ -36,7 +36,7 @@
 
 enum
 {
-	PAGE_BRIGHTNESS = 14151,
+	PAGE_INACTIVE_BRIGHTNESS = 14155,
 	PAGE_CLEANSCREEN = 14152,
 	PAGE_CALIBRATION = 14153,
 	PAGE_SCREENSAVER = 14154
@@ -74,8 +74,8 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 #ifndef BT_HARDWARE_X11
 		else if (link_id == PAGE_CALIBRATION)
 			loadCalibration(img_items);
-		else if (link_id == PAGE_BRIGHTNESS)
-			loadBrightness(img_items);
+		else if (link_id == PAGE_INACTIVE_BRIGHTNESS)
+			loadInactiveBrightness(img_items, item);
 #endif
 		else if (link_id == PAGE_SCREENSAVER)
 			loadScreenSaver(img_items, item);
@@ -103,11 +103,11 @@ void DisplayPage::loadCalibration(QString icon)
 	page_content->appendBanner(b);
 }
 
-void DisplayPage::loadBrightness(QString icon)
+void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_node)
 {
 	Bann2Buttons *b = new Bann2Buttons;
 	b->initBanner(QString(), icon, tr("Brightness"));
-	b->connectRightButton(new InactiveBrightnessPage);
+	b->connectRightButton(new InactiveBrightnessPage(config_node));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 }
