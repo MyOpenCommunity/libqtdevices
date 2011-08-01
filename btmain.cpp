@@ -81,12 +81,7 @@
 #define ACTIVITIES_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
 
-#ifdef CONFIG_TS_3_5
-#define TS_NUM_BASE_ADDRESS 0x300
-#else
 #define TS_NUM_BASE_ADDRESS 0x700
-#endif
-
 
 
 namespace
@@ -539,14 +534,6 @@ void BtMain::loadConfiguration()
 	}
 	home_window->loadConfiguration();
 
-#ifdef CONFIG_TS_3_5
-	QDomNode gui_node = getConfElement("displaypages");
-	QDomNode pagemenu_home = getChildWithId(gui_node, QRegExp("pagemenu(\\d{1,2}|)"), 0);
-	// homePage must be built after the loading of the configuration,
-	// to ensure that values displayed (by homePage or its child pages)
-	// is in according with saved values.
-	home_page = new HomePage(pagemenu_home);
-#else
 	QDomNode gui_node = getConfElement("gui");
 	home_page = static_cast<HomePage*>(getSectionPageFromId(HOME_PAGE));
 
@@ -559,8 +546,6 @@ void BtMain::loadConfiguration()
 	if (video_node.isNull() && !(*bt_global::config)[PI_ADDRESS].isEmpty())
 		(void) new VideoDoorEntry;
 #endif // LAYOUT_TS_10
-
-#endif
 
 	bt_global::page_stack.setHomePage(home_page);
 	connect(home_window, SIGNAL(showHomePage()), home_page, SLOT(showPage()));

@@ -76,12 +76,8 @@ void HomePage::loadItems(const QDomNode &config_node)
 
 void HomePage::showSectionPage(int page_id)
 {
-#ifdef CONFIG_TS_3_5
-	qFatal("Can't be implemented with old config, and not necessary on TS 3.5'' anyway");
-#else
 	Q_ASSERT_X(bt_global::btmain->page_list.contains(page_id), "HomePage::showSectionPage", "Page id not found!");
 	bt_global::btmain->page_list[page_id]->showPage();
-#endif
 }
 
 void HomePage::changeIconState(StateButton::Status st)
