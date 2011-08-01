@@ -421,20 +421,6 @@ bool getBacklight()
 	return false;
 }
 
-
-void setOrientation(QString orientation)
-{
-	if (QFile::exists("/proc/sys/dev/btweb/upsidedown"))
-	{
-		int fd = open("/proc/sys/dev/btweb/upsidedown", O_WRONLY);
-		if (fd >= 0)
-		{
-			write(fd, orientation.toAscii().constData(), 1);
-			close(fd);
-		}
-	}
-}
-
 void beep(int t)
 {
 #ifdef BT_HARDWARE_PXA255

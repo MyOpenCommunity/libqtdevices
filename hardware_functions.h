@@ -79,9 +79,6 @@ bool getBacklight();
 // Enables the beep
 void setBeep(bool enable);
 
-// Sets the orientation of the device (used only for TS 3.5)
-void setOrientation(QString orientation);
-
 /*!
 	\ingroup Core
 	\brief Makes a system beep.

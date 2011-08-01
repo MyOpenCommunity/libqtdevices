@@ -23,7 +23,7 @@
 #include "main.h" // (*bt_global::config)
 #include "homepage.h"
 #include "homewindow.h"
-#include "hardware_functions.h" // rearmWDT, getTimePress, setOrientation, getBacklight
+#include "hardware_functions.h" // rearmWDT, getTimePress, getBacklight
 #include "xml_functions.h" // getPageNode, getElement, getChildWithId, getTextChild
 #include "openclient.h"
 #include "version.h"
@@ -576,10 +576,6 @@ void BtMain::loadConfiguration()
 	// to ensure that values displayed (by homePage or its child pages)
 	// is in according with saved values.
 	home_page = new HomePage(pagemenu_home);
-
-	QString orientation = getTextChild(gui_node, "orientation");
-	if (!orientation.isNull())
-		setOrientation(orientation);
 #else
 	QDomNode gui_node = getConfElement("gui");
 	home_page = static_cast<HomePage*>(getSectionPageFromId(HOME_PAGE));
