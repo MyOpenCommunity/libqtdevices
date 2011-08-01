@@ -26,7 +26,6 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "cleanscreen.h"
 #include "changedatetime.h"
-#include "brightnesspage.h"
 #include "displaypage.h"
 #include "version.h"
 #include "main.h"
