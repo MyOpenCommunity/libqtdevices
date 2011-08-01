@@ -97,11 +97,11 @@ Q_OBJECT
 public:
 	AlarmManager(SkinManager::CidState cid, QObject *parent = 0);
 
-	// Manage a new alarm
+	// Create a new alarm page and show it
 	void newAlarm(int alarm_type, int zone, const QString &zone_description);
-	// Remove a single alarm
+	// Remove a single alarm (without showing the remaining alarms)
 	void removeAlarm(int alarm_type, int zone);
-	// Clear all the alarms
+	// Remove all the alarms
 	void removeAll();
 	// The number of alarms
 	int alarmCount();

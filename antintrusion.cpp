@@ -297,6 +297,12 @@ void AlarmManager::removeAlarm(int alarm_type, int zone)
 	{
 		if (page->alarmId() == alarm_id)
 		{
+			// we don't want to show the remaining alarms
+			disconnect(page, SIGNAL(destroyed(QObject*)), this, SLOT(alarmDestroyed(QObject*)));
+			alarm_pages.removeOne(page);
+			if (--current_alarm < 0)
+				current_alarm = 0;
+
 			page->deleteLater();
 			break;
 		}
@@ -615,6 +621,8 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 		}
 		case AntintrusionDevice::DIM_RESET_TECHNICAL_ALARM:
 			alarm_manager->removeAlarm(AntintrusionDevice::DIM_TECHNICAL_ALARM, it.value().toInt());
+			if (alarm_manager->alarmCount() == 0)
+				antintrusion_system->showAlarmsButton(false);
 			break;
 		}
 		++it;
