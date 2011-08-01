@@ -84,6 +84,10 @@ void SectionPage::loadItems(const QDomNode &config_node)
 
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		QString link = getTextChild(item, "lnk_pageID"); // discard the items that are not links
+		if (link.isNull())
+			continue;
+
 		SkinContext cxt(getTextChild(item, "cid").toInt());
 		QString icon = bt_global::skin->getImage("link_icon");
 
@@ -102,13 +106,9 @@ void SectionPage::loadItems(const QDomNode &config_node)
 		int y = 0;
 #endif
 
-		QString link = getTextChild(item, "lnk_pageID"); // discard the items that are not links
-		if (!link.isNull())
-		{
-			int pageid = link.toInt();
-			if (Page *p = getSectionPage(pageid))
-				addPage(p, descr, icon, icon_on, x, y);
-		}
+		int pageid = link.toInt();
+		if (Page *p = getSectionPage(pageid))
+			addPage(p, descr, icon, icon_on, x, y);
 
 		// update the watchdog
 		if (wdtime.elapsed() > 1000)
