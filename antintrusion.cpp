@@ -234,6 +234,7 @@ void AlarmListPage::removeAlarm(int alarm_id)
 		if (item.data.toList().at(1).toInt() == alarm_id)
 		{
 			page_content->removeItem(i);
+			page_content->showList();
 			return;
 		}
 	}
