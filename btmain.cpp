@@ -28,7 +28,6 @@
 #include "openclient.h"
 #include "version.h"
 #include "pagestack.h" // bt_global::page_stack
-#include "screensaver.h" // ScreenSaver::Type
 #include "displaycontrol.h" // bt_global::display
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
@@ -551,21 +550,6 @@ void BtMain::loadConfiguration()
 			bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(n.text().toInt()));
 	}
 #endif
-
-	ScreenSaver::Type type = ScreenSaver::LINES; // default screensaver
-#ifdef CONFIG_TS_3_5
-	if (!display_node.isNull())
-	{
-		QDomElement screensaver_node = getElement(display_node, "screensaver");
-		QDomElement n = getElement(screensaver_node, "type");
-		if (!n.isNull())
-			type = static_cast<ScreenSaver::Type>(n.text().toInt());
-		ScreenSaver::initData(screensaver_node);
-		if (type == ScreenSaver::DEFORM) // deform is for now disabled!
-			type = ScreenSaver::LINES;
-	}
-#endif
-	bt_global::display->current_screensaver = type;
 
 	home_window->loadConfiguration();
 

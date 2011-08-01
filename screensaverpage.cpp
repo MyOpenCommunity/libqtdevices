@@ -66,7 +66,6 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("No screensaver")), ScreenSaver::NONE);
 	addBanner(SingleChoice::createBanner(tr("Time")), ScreenSaver::TIME);
 	addBanner(SingleChoice::createBanner(tr("Text")), ScreenSaver::TEXT);
-	// TODO: these types will be available on TS 3.5'' only
 #ifdef LAYOUT_TS_3_5
 	addBanner(SingleChoice::createBanner(tr("Line")), ScreenSaver::LINES);
 	addBanner(SingleChoice::createBanner(tr("Balls")), ScreenSaver::BALLS);
@@ -88,9 +87,13 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	timing = new ScreensaverTiming(tr("Slideshow timeout"), getTextChild(conf_node, "timeSlideShow").toInt());
 	addBottomWidget(timing);
 	timing->hide();
-#endif
+
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
+#endif
+
 	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
+
+	// this load the current screensaver into the global display object
 	bannerSelected(getTextChild(conf_node, "type").toInt());
 
 	// to save parameters
@@ -124,15 +127,9 @@ void ScreenSaverPage::bannerSelected(int id)
 {
 	// hide timing selection if photo slideshow is not selected
 	if (timing)
-	{
-		if (id == ScreenSaver::SLIDESHOW)
-			timing->show();
-		else
-			timing->hide();
-	}
+		timing->setVisible(id == ScreenSaver::SLIDESHOW);
 
 	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
-	// TODO review when porting the code to TS 3.5''
 #ifdef BT_HARDWARE_PXA255
 	if (id == ScreenSaver::NONE)
 		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);

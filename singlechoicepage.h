@@ -49,8 +49,7 @@ public:
 	// which doesn't have a QDomNode in the ctor
 	SingleChoicePage(const QString &title = QString());
 
-private slots:
-	void okPressed();
+protected slots:
 	void confirmSelection();
 
 protected:
@@ -63,6 +62,9 @@ protected:
 
 protected:
 	void addBanner(CheckableBanner *bann, int id);
+
+private slots:
+	void okPressed();
 };
 
 
