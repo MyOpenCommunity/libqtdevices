@@ -10,6 +10,27 @@ CONF_FILE = ts_10
 
 include(../setup.pri)
 
+# check if the hardware (passed using the HARDWARE var to qmake) is one of the supported
+# platform and the qmake used is coherent with that.
+defineTest(isHardwareSupported) {
+	contains(HARDWARE, embedded-pxa270) {
+		isArm() {
+			return(true)
+		}
+	}
+	contains(HARDWARE, x11) {
+		!isArm() {
+			return (true)
+		}
+	}
+	return (false)
+}
+
+
+!isHardwareSupported() {
+	error(The hardware for ts10 is not supported or the qmake choose is not the right one.)
+}
+
 contains(HARDWARE, x11) {
 	# x86
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_10\\\"
