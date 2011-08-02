@@ -65,6 +65,7 @@ protected:
 /*!
 	\ingroup Antintrusion
 	\brief Shows the list of the alarms triggered.
+	\note On the ts3 the page is never shown but it is used as a container for the alarms.
 */
 class AlarmListPage : public ScrollablePage
 {
