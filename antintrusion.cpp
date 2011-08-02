@@ -268,15 +268,14 @@ void AlarmManager::newAlarm(int alarm_type, int zone, const QString &zone_descri
 
 	int alarm_id = ++alarm_serial_id;
 	AlarmPage *alarm = new AlarmPage(page_icon, getAlarmDescription(alarm_type), zone_description, alarm_id);
-
-	connect(alarm, SIGNAL(nextAlarm()), SLOT(nextAlarm()));
-	connect(alarm, SIGNAL(prevAlarm()), SLOT(prevAlarm()));
 	connect(alarm, SIGNAL(deleteAlarm()), SLOT(deleteAlarm()));
 	connect(alarm, SIGNAL(destroyed(QObject*)), SLOT(alarmDestroyed(QObject*)));
 	connect(alarm, SIGNAL(showHomePage()), SLOT(showHomePage()));
 	connect(alarm, SIGNAL(showAlarmList()), SLOT(showAlarmList()));
 
 #ifdef LAYOUT_TS_3_5
+	connect(alarm, SIGNAL(nextAlarm()), SLOT(nextAlarm()));
+	connect(alarm, SIGNAL(prevAlarm()), SLOT(prevAlarm()));
 	connect(alarm, SIGNAL(Closed()), SLOT(closeAlarms()));
 #endif
 
