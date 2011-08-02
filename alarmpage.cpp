@@ -174,7 +174,12 @@ void AlarmPage::showPage()
 
 void AlarmPage::cleanUp()
 {
+	// On ts10, we want to delete the alarm popup when we exit from the page
+	// (because the alarm itself remains on the AlarmListPage). On ts3, we do not
+	// to want this because the AlarmListPage is never shown.
+#ifdef LAYOUT_TS_10
 	deleteLater();
+#endif
 }
 
 int AlarmPage::sectionId() const
