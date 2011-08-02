@@ -614,10 +614,9 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 				zone_description = tr("Z%1").arg(zone);
 
 			alarm_manager->newAlarm(it.key(), zone, zone_description);
-
+			// because the stateTransition signal is emitted for every state transition we always connect the playRingtone.
 			connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
-			if (bt_global::audio_states->currentState() != AudioStates::PLAY_RINGTONE)
-				bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
 			break;
 		}
 		case AntintrusionDevice::DIM_RESET_TECHNICAL_ALARM:
