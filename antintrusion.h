@@ -173,6 +173,7 @@ private:
 	Action action;
 	AntintrusionZone *zones[NUM_ZONES];
 	AlarmManager *alarm_manager;
+	bool status;
 
 	void loadZones(const QDomNode &config_node);
 	void updateKeypadStates();

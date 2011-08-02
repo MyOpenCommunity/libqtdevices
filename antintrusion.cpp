@@ -423,6 +423,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	layout->addStretch(1);
 
 	action = NONE;
+	status = false;
 
 #ifdef LAYOUT_TS_10
 	layout->setContentsMargins(10, 0, 20, 10);
@@ -469,7 +470,6 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	connect(keypad, SIGNAL(Closed()), SLOT(showPage()));
 	connect(keypad, SIGNAL(accept()), SLOT(doAction()));
 	connect(keypad, SIGNAL(accept()), SLOT(showPage()));
-
 }
 
 void Antintrusion::showPage()
@@ -581,11 +581,12 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 				if (zones[i] != 0)
 					zones[i]->enablePartialization(!inserted);
 
-			if (inserted) // delete all the old alarms
+			if (inserted && !status) // delete all the old alarms
 			{
 				antintrusion_system->showAlarmsButton(false);
 				alarm_manager->removeAll();
 			}
+			status = inserted;
 			break;
 		}
 		case AntintrusionDevice::DIM_ZONE_INSERTED:
