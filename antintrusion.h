@@ -57,7 +57,8 @@ Q_OBJECT
 public:
 	AlarmList(int rows_per_page = ITEM_PER_PAGE, QWidget *parent  = 0) : ItemList(rows_per_page, parent) {}
 
-	virtual void addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn);
+protected:
+	virtual void addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn);
 };
 
 

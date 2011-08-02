@@ -94,7 +94,7 @@ namespace
 	}
 }
 
-void AlarmList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int id_btn)
+void AlarmList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int id_btn)
 {
 	QWidget *box_widget = new QWidget;
 	QHBoxLayout *box = new QHBoxLayout(box_widget);
@@ -126,7 +126,7 @@ void AlarmList::addHorizontalBox(QBoxLayout *layout, const ItemInfo &item, int i
 	box->addWidget(label_date, 1);
 	box->addWidget(trash);
 
-	layout->addWidget(box_widget);
+	layout->addWidget(box_widget, layout->rowCount(), 0);
 }
 
 
