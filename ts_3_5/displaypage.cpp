@@ -30,6 +30,7 @@
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "calibration.h"
 #include "navigation_bar.h"
+#include "screensaver.h" // ScreenSaver
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -115,10 +116,11 @@ void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_no
 
 void DisplayPage::loadScreenSaver(QString icon, const QDomNode &config_node)
 {
+	ScreenSaver::initData(config_node);
+
 	Bann2Buttons *b = new Bann2Buttons;
 	b->initBanner(QString(), icon, tr("Screen Saver"));
 	b->connectRightButton(new ScreenSaverPage(config_node));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
-
 	page_content->appendBanner(b);
 }
