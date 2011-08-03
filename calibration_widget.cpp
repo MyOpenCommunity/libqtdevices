@@ -94,8 +94,14 @@ CalibrationWidget::CalibrationWidget(bool minimal)
 
 	bottomright_button = new BtButton(this);
 	bottomright_button->setImage(bt_global::skin->getImage("ok"));
+
+#ifdef BT_HARDWARE_DM365
+	bottomright_button->move(height - buttons_margin - bottomright_button->height(),
+		width - buttons_margin - bottomright_button->width());
+#else
 	bottomright_button->move(width - buttons_margin - bottomright_button->width(),
 		height - buttons_margin - bottomright_button->height());
+#endif
 
 	connect(topleft_button, SIGNAL(clicked()), topleft_button, SLOT(hide()));
 	connect(topleft_button, SIGNAL(clicked()), SLOT(showButtonLog()));
