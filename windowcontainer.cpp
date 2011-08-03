@@ -31,7 +31,6 @@
 
 WindowContainer::WindowContainer(int width, int height, QWidget *parent) : QStackedWidget(parent)
 {
-	transition_widget = 0;
 	// needs to be done before HomeWindow is constructed
 	Window::window_container = this;
 
@@ -76,19 +75,5 @@ void WindowContainer::showWindow(Window *w)
 Window *WindowContainer::currentWindow()
 {
 	return static_cast<Window*>(currentWidget());
-}
-
-void WindowContainer::installTransitionWidget(TransitionWidget *tr)
-{
-	if (transition_widget)
-	{
-		removeWidget(transition_widget);
-		transition_widget->disconnect();
-		transition_widget->deleteLater();
-	}
-
-	transition_widget = tr;
-	addWidget(transition_widget);
-	transition_widget->setContainer(this);
 }
 

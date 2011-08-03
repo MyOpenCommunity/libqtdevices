@@ -560,10 +560,10 @@ void BtMain::loadConfiguration()
 		page_default = id_default == HOME_PAGE ? home_page : getSectionPageFromId(id_default);
 	}
 
-	// Transition effects are for now disabled!
-//	TransitionWidget *tr = new BlendingTransition;
-//	window_container->installTransitionWidget(tr);
-//	page_container->installTransitionWidget(tr);
+#if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_DM365)
+	TransitionWidget *tr = new BlendingTransition;
+	page_container->installTransitionWidget(tr);
+#endif
 }
 
 void BtMain::init()

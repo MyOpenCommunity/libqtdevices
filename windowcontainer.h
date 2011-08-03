@@ -63,16 +63,6 @@ public:
 		\brief Set the Window \a w as the current window displayed.
 	*/
 	void showWindow(Window *w);
-
-	/*!
-		\brief Install a widget for transitions.
-		\warning This method is unmantained, do not use.
-		\internal WindowContainer take the ownership of the TransitionWidget
-	*/
-	void installTransitionWidget(TransitionWidget *tr);
-
-private:
-	TransitionWidget *transition_widget;
 };
 
 #endif // WINDOWCONTAINER_H

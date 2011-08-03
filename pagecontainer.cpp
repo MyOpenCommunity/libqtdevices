@@ -58,6 +58,7 @@ PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
 void PageContainer::installTransitionWidget(TransitionWidget *tr)
 {
 	transition_widget = tr;
+	addWidget(transition_widget);
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
@@ -102,18 +103,12 @@ void PageContainer::showPage(Page *p)
 
 		if (transition_widget && !block_transitions)
 		{
-			prev_page = currentPage();
+			prepareTransition();
+			setCurrentWidget(transition_widget);
 
-			transition_widget->prepareTransition();
-
-			// Before grab the screenshot of the next page, we have to ensure that its
-			// visualization is correct and that it is shown.
-			setCurrentWidget(p);
-			// fixVisualization must be after setCurrentWidget, because setCurrentWidget
-			// might cause the window header to change size, and fixVisualization must
-			// run with the correct page size
 			fixVisualization(p, size());
 			startTransition(p);
+			return;
 		}
 		else
 			setCurrentPage(p);
@@ -128,15 +123,19 @@ void PageContainer::showPage(Page *p)
 void PageContainer::prepareTransition()
 {
 	if (transition_widget && !block_transitions)
-		transition_widget->prepareTransition();
+	{
+		prev_page = currentPage();
+		transition_widget->prepareTransition(QPixmap::grabWidget(prev_page));
+
+	}
 }
 
 void PageContainer::startTransition(Page *p)
 {
-	if (transition_widget)
+	if (transition_widget && !block_transitions)
 	{
 		dest_page = p;
-		transition_widget->startTransition();
+		transition_widget->startTransition(QPixmap::grabWidget(dest_page));
 	}
 }
 

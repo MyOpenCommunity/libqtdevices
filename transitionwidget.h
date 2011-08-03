@@ -42,16 +42,14 @@ public:
 	// must be called before altering the state of the page
 	// grabs a screenshot of the current state of the HomeWidget and then
 	// shows itself as the top level widget
-	void prepareTransition();
+	void prepareTransition(const QPixmap &image);
 
 	// must be called after altering the state of the page to the final
 	// state; grabs a screenshot of the final state of the HomeWidget and
 	// starts performing the transition
-	void startTransition();
+	void startTransition(const QPixmap &image);
 
 	void cancelTransition();
-
-	void setContainer(WindowContainer *container);
 
 signals:
 	void endTransition();
@@ -62,6 +60,9 @@ protected:
 	QPixmap dest_image;
 
 	virtual void initTransition() {}
+
+private slots:
+	void transitionFinished();
 
 private:
 	WindowContainer *container;

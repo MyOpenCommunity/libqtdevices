@@ -20,7 +20,6 @@
 
 
 #include "transitionwidget.h"
-#include "windowcontainer.h"
 
 #include <QPainter>
 #include <QDebug>
@@ -28,8 +27,13 @@
 
 TransitionWidget::TransitionWidget(int time) : timeline(time, this)
 {
-	connect(&timeline, SIGNAL(finished()), &local_loop, SLOT(quit()));
-	connect(&timeline, SIGNAL(finished()), SIGNAL(endTransition()));
+	connect(&timeline, SIGNAL(finished()), SLOT(transitionFinished()));
+}
+
+void TransitionWidget::transitionFinished()
+{
+	local_loop.quit();
+	emit endTransition();
 }
 
 void TransitionWidget::cancelTransition()
@@ -38,27 +42,19 @@ void TransitionWidget::cancelTransition()
 	timeline.stop();
 }
 
-void TransitionWidget::prepareTransition()
+void TransitionWidget::prepareTransition(const QPixmap &image)
 {
-//	prev_image = container->grabHomeWindow();
-	container->setCurrentWidget(this);
+	prev_image = image;
 }
 
-void TransitionWidget::startTransition()
+void TransitionWidget::startTransition(const QPixmap &image)
 {
-	// Why homeWindow and not currentWindow? For now I don't care because the
-	// transition effects are always disabled
-//	dest_image = container->grabHomeWindow();
+	dest_image = image;
 	initTransition();
 
 	timeline.start();
 	local_loop.exec();
 	prev_image = dest_image = QPixmap();
-}
-
-void TransitionWidget::setContainer(WindowContainer *c)
-{
-	container = c;
 }
 
 
