@@ -24,7 +24,9 @@
 #include "main.h"
 #ifdef BT_HARDWARE_PXA270
 #include "audiostatemachine.h"
-#include "mediaplayer.h"
+#endif
+#if defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
+#include "mediaplayer.h" // bt_global::sound
 #endif
 
 #include <QFile>
@@ -387,7 +389,8 @@ void beep(int t)
 	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
 		bt_global::sound->play(SOUND_PATH "beep.wav");
 #else // BT_HARDWARE_DM365
-	// TODO!!
+	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
+		bt_global::sound->play(SOUND_PATH "beep.wav");
 #endif
 }
 
