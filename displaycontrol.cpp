@@ -20,7 +20,6 @@
 
 
 #include "displaycontrol.h"
-#include "generic_functions.h" // setCfgValue
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
 #include "btmain.h" // bt_global::btmain, bt_global::status
 #include "pagestack.h" // bt_global::page_stack
@@ -35,15 +34,15 @@
 #include <QApplication>
 
 #ifdef BT_HARDWARE_DM365
-#define DELTA_OFF	8
-#define DELTA_LOW	7
-#define DELTA_NORMAL	6
-#define DELTA_HIGH	0
+#define DELTA_OFF 8
+#define DELTA_LOW 7
+#define DELTA_NORMAL 6
+#define DELTA_HIGH 0
 #else
-#define DELTA_OFF	8
-#define DELTA_LOW	8
-#define DELTA_NORMAL	5
-#define DELTA_HIGH	1
+#define DELTA_OFF 8
+#define DELTA_LOW 8
+#define DELTA_NORMAL 5
+#define DELTA_HIGH 1
 #endif
 
 static unsigned long now()
@@ -138,10 +137,6 @@ void DisplayControl::setInactiveBrightness(BrightnessLevel level)
 {
 	inactive_brightness = level;
 	updateBrightnessData();
-
-#ifdef CONFIG_TS_3_5
-	setCfgValue("brightness/level", level, DISPLAY);
-#endif
 }
 
 void DisplayControl::setOperativeBrightness(int brightness)
@@ -211,11 +206,6 @@ void DisplayControl::setState(DisplayStatus status)
 
 void DisplayControl::setScreenSaver(ScreenSaver::Type t)
 {
-	// TODO find the correct place to save the information
-	// in TS 10'' it's saved inside ScreensaverPage, probably it can be done also on TS 3.5''
-#ifdef CONFIG_TS_3_5
-	setCfgValue("screensaver/type", t, DISPLAY);
-#endif
 	current_screensaver = t;
 }
 
