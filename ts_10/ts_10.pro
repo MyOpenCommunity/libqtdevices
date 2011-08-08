@@ -36,12 +36,14 @@ contains(HARDWARE, x11) {
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_10\\\"
 	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_10\\\"
 	DEFINES += BT_HARDWARE_X11
+	SOURCES += audiostatemachine_x11.cpp
 }
 else {
 	DEFINES += BT_HARDWARE_PXA270
 
 	HEADERS += QWSMOUSE/qmouselinuxtp_qws.h QWSMOUSE/qmouse_qws.h
 	SOURCES += QWSMOUSE/qmouselinuxtp_qws.cpp QWSMOUSE/qmouse_qws.cpp
+	SOURCES += audiostatemachine.cpp
 }
 
 VPATH = ../devices ..
@@ -68,6 +70,7 @@ TRANSLATIONS += linguist-ts/btouch_ar.ts \
 		linguist-ts/btouch_tr.ts
 
 HEADERS += audioplayer_ts10.h \
+	audiostatemachine.h \
 	favoriteswidget.h \
 	headerwidget.h \
 	mediaplayerpage.h \
@@ -78,6 +81,7 @@ HEADERS += audioplayer_ts10.h \
 	scenevomanager.h \
 	settings_ts10.h \
 	slideshow.h \
+	statemachine.h \
 	vctcall.h \
 	videoplayer.h \
 	webcam.h
@@ -94,6 +98,7 @@ SOURCES += audioplayer_ts10.cpp \
 	scenevomanager.cpp \
 	settings_ts10.cpp \
 	slideshow.cpp \
+	statemachine.cpp \
 	vctcall.cpp \
 	videoplayer.cpp \
 	webcam.cpp

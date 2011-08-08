@@ -287,7 +287,7 @@ VideoPlayerWindow::VideoPlayerWindow(VideoPlayerPage *_page, MediaPlayer *player
 
 	ItemTuning *volume = 0;
 	// if the touch is a sound diffusion source do not display the volume control
-	if (!bt_global::audio_states->isSource())
+	if ((*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 		volume = new ItemTuning(QString(), bt_global::skin->getImage("volume"));
 
 	QHBoxLayout *control_layout = new QHBoxLayout(controls);

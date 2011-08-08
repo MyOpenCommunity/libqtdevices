@@ -272,8 +272,10 @@ private:
 	// called when the mplayer process really stops playback
 	void actuallyPaused();
 
+#ifdef LAYOUT_TS_10
 	// update the direct video/audio access state
 	void updateDirectAccessState(bool state);
+#endif
 
 	bool runMPlayer(const QList<QString> &args, bool write_output);
 	QList<QString> getStandardArgs();
@@ -289,9 +291,12 @@ private:
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
 	void mplayerError(QProcess::ProcessError error);
-	void playbackStarted();
 	void infoReceived();
 	void readStandardError();
+
+#ifdef LAYOUT_TS_10
+	void playbackStarted();
+#endif
 
 signals:
 	/*!

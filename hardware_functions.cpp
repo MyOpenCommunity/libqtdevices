@@ -675,3 +675,26 @@ void createFlagFile(QString filename)
 		close(fd);
 }
 
+void activateLocalSource()
+{
+#ifdef BT_HARDWARE_DM365
+	system("echo 1 > /sys/class/gpio/gpio35/value");
+#elif defined (BT_HARDWARE_PXA255)
+	system("/bin/audio_on.tcl");
+#else // BT_HARDWARE_PXA270
+	smartExecute("/bin/rca2_on");
+#endif
+}
+
+void deactivateLocalSource()
+{
+#ifdef BT_HARDWARE_DM365
+	system("echo 0 > /sys/class/gpio/gpio35/value");
+#elif defined (BT_HARDWARE_PXA255)
+	system("/bin/audio_off.tcl");
+#else // BT_HARDWARE_PXA270
+	smartExecute("/bin/rca2_off");
+#endif
+}
+
+

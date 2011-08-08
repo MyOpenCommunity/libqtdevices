@@ -32,7 +32,6 @@
 #include "devices_cache.h" // bt_global::devices_cache
 #include "fontmanager.h" // bt_global::font
 #include "skinmanager.h" // bt_global::skin
-#include "audiostatemachine.h" // bt_global::audio_states
 #include "page.h"
 #include "device.h"
 #include "pagefactory.h" // getPage
@@ -42,7 +41,6 @@
 #include "homewindow.h"
 #include "iconwindow.h"
 #include "windowcontainer.h"
-#include "ringtonesmanager.h"
 #include "videodoorentry.h"
 #include "keypad.h" // KeypadWindow
 #if !defined(BT_HARDWARE_X11)
@@ -50,8 +48,10 @@
 #endif
 #include "media_device.h" // AmplifierDevice::setVirtualAmplifierWhere
 #include "mediaplayer.h" // bt_global::sound
+#include "ringtonesmanager.h"
 
 #ifdef LAYOUT_TS_10
+#include "audiostatemachine.h" // bt_global::audio_states
 #include "mount_watcher.h" // bt_global::mount_watcher
 #endif
 
@@ -242,10 +242,10 @@ BtMain::BtMain(int openserver_reconnection_time)
 	bt_global::font = new FontManager(font_file);
 	bt_global::display = new DisplayControl;
 	bt_global::skin = new SkinManager(SKIN_FILE);
-	bt_global::audio_states = new AudioStateMachine;
 	bt_global::sound = new SoundPlayer;
 	bt_global::ringtones = new RingtonesManager(RINGTONE_FILE);
 #ifdef LAYOUT_TS_10
+	bt_global::audio_states = new AudioStateMachine;
 	bt_global::mount_watcher = new MountWatcher;
 #endif
 
@@ -418,10 +418,10 @@ BtMain::~BtMain()
 	delete bt_global::font;
 #ifdef LAYOUT_TS_10
 	delete bt_global::mount_watcher;
+	delete bt_global::audio_states;
 #endif
 	delete bt_global::ringtones;
 	delete bt_global::sound;
-	delete bt_global::audio_states;
 	delete bt_global::display;
 	bt_global::devices_cache.clear();
 	DevicesCachePrivate::devices_cache_no_init.clear();

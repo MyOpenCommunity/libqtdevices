@@ -188,6 +188,7 @@ private:
 };
 
 
+#ifdef LAYOUT_TS_10
 /*!
 	\ingroup SoundDiffusion
 	\brief Handles the device logic for the local sound diffusion amplifier
@@ -215,7 +216,7 @@ private:
 	int freezed_level; // the (scs) amplifier level, used when we have to freeze the current level and restore it later.
 	int level; // the current (scs) level of the amplifier
 };
-
+#endif
 
 /*!
 	\ingroup SoundDiffusion
@@ -238,6 +239,7 @@ private:
 
 private:
 	VirtualSourceDevice *dev;
+	bool source_status;
 };
 
 #endif // SOUNDDIFFUSIONPAGE_H

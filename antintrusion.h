@@ -155,8 +155,11 @@ private slots:
 	void toggleActivation();
 	void doAction();
 	void valueReceived(const DeviceValues &values_list);
+
+#ifdef LAYOUT_TS_10
 	void playRingtone();
 	void ringtoneFinished();
+#endif
 
 private:
 	enum Action

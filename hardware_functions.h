@@ -140,4 +140,10 @@ int getMemFree();
 // Create a file used as a flag to notify something to the other openserver stack processes.
 void createFlagFile(QString filename);
 
+// Activate the local source (automatically called on ts10 from the audio state machine)
+void activateLocalSource();
+
+// Deactivate the local source (automatically called on ts10 from the audio state machine)
+void deactivateLocalSource();
+
 #endif // HARDWARE_FUNCTIONS_H

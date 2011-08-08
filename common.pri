@@ -5,11 +5,9 @@
 
 contains(HARDWARE, x11) {
 	SOURCES += hardware_functions_x11.cpp
-	SOURCES += audiostatemachine_x11.cpp
 }
 else {
 	SOURCES += hardware_functions.cpp
-	SOURCES += audiostatemachine.cpp
 	HEADERS += calibration.h
 	SOURCES += calibration.cpp
 	HEADERS += calibration_widget.h
@@ -23,7 +21,6 @@ HEADERS += actuators.h \
 	alarmpage.h \
 	bann_amplifiers.h \
 	antintrusion.h \
-	audiostatemachine.h \
 	automation.h \
 	bann1_button.h \
 	bann2_buttons.h \
@@ -108,7 +105,6 @@ HEADERS += actuators.h \
 	specialpage.h \
 	sounddiffusionpage.h \
 	soundsources.h \
-	statemachine.h \
 	state_button.h \
 	stopngo.h \
 	styledwidget.h \
@@ -217,7 +213,6 @@ SOURCES += actuators.cpp \
 	sounddiffusionpage.cpp \
 	soundsources.cpp \
 	specialpage.cpp \
-	statemachine.cpp \
 	state_button.cpp \
 	stopngo.cpp \
 	styledwidget.cpp \

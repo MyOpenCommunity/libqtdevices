@@ -44,8 +44,6 @@ AudioStateMachine::AudioStateMachine()
 
 void AudioStateMachine::start(int state)
 {
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	StateMachine::start(state);
 }
 
@@ -62,16 +60,6 @@ void AudioStateMachine::setVolume(int)
 int AudioStateMachine::getVolume()
 {
 	return DEFAULT_VOLUME;
-}
-
-bool AudioStateMachine::isSource()
-{
-	return is_source;
-}
-
-bool AudioStateMachine::isAmplifier()
-{
-	return is_amplifier;
 }
 
 void AudioStateMachine::setLocalAmplifierTemporaryOff(bool off)

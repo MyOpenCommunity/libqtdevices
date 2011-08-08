@@ -227,3 +227,12 @@ void createFlagFile(QString filename)
 	Q_UNUSED(filename);
 }
 
+void activateLocalSource()
+{
+
+}
+
+void deactivateLocalSource()
+{
+
+}

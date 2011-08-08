@@ -180,6 +180,11 @@ enum GlobalItem
 	ITEM_TEMPERATURE_PROBE = 207,     /*!< Not-controlled probe */
 };
 
+
+#define VOLUME_MIN 0
+#define VOLUME_MAX 8
+#define DEFAULT_VOLUME 3
+
 #endif //MAIN_H
 
 

@@ -21,7 +21,7 @@
 
 #include "audiostatemachine.h"
 #include "hardware_functions.h" // DEV_E2
-#include "generic_functions.h" // smartExecute
+#include "generic_functions.h" // smartExecute, activateLocalSource, deactivateLocalSource
 #include "main.h" // bt_global::config
 
 #include <QProcess>
@@ -127,16 +127,6 @@ namespace
 		smartExecute("/bin/in_eth_off");
 	}
 
-	void activateLocalSource()
-	{
-		smartExecute("/bin/rca2_on");
-	}
-
-	void deactivateLocalSource()
-	{
-		smartExecute("/bin/rca2_off");
-	}
-
 	void silenceVCTAudio()
 	{
 		system("/home/bticino/bin/zarlink 044a 7104 WR");
@@ -235,8 +225,6 @@ AudioStateMachine::AudioStateMachine()
 	current_audio_path = -1;
 	direct_audio_access = false;
 	pending_old_state = pending_new_state = -1;
-	is_source = !(*bt_global::config)[SOURCE_ADDRESS].isEmpty();
-	is_amplifier = !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty();
 	local_source_status = local_amplifier_status = local_amplifier_temporary_off = media_player_status = media_player_temporary_pause = false;
 
 	addState(IDLE,
@@ -390,7 +378,7 @@ void AudioStateMachine::saveVolumes()
 
 void AudioStateMachine::manageMediaPlaybackStates()
 {
-	if (!isSource())
+	if ((*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 	{
 		// remove difson/play to speaker states if not needed anymore
 		if (contains(AudioStates::PLAY_MEDIA_TO_SPEAKER) && !media_player_status && !media_player_temporary_pause)
@@ -419,16 +407,6 @@ void AudioStateMachine::manageMediaPlaybackStates()
 		else if (isSoundDiffusionActive() && !contains(AudioStates::PLAY_DIFSON))
 			toState(AudioStates::PLAY_DIFSON);
 	}
-}
-
-bool AudioStateMachine::isSource()
-{
-	return is_source;
-}
-
-bool AudioStateMachine::isAmplifier()
-{
-	return is_amplifier;
 }
 
 void AudioStateMachine::setLocalAmplifierStatus(bool status)

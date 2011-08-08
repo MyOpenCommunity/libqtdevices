@@ -28,10 +28,14 @@
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "displaycontrol.h" //  bt_global::display
 #include "mediaplayer.h" // bt_global::sound
-#include "audiostatemachine.h" // bt_global::audio_states
-#include "main.h" // SOUND_PATH
-#include "hardware_functions.h" // beep
 #include "state_button.h"
+
+#ifdef LAYOUT_TS_10
+#include "main.h" // SOUND_PATH
+#include "audiostatemachine.h" // bt_global::audio_states
+#else // LAYOUT_TS_3_5
+#include "hardware_functions.h" // beep
+#endif
 
 #include <QLabel>
 #include <QDebug>
@@ -517,7 +521,7 @@ void RadioPage::storeMemoryStation()
 	qDebug("Storing frequency to memory station %d", memory_number);
 	dev->saveStation(QString::number(memory_number));
 
-#if defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_X11)
+#ifdef LAYOUT_TS_10
 	int state = bt_global::audio_states->currentState();
 
 	if (!QFile::exists(SOUND_PATH "beep.wav"))
@@ -533,12 +537,12 @@ void RadioPage::storeMemoryStation()
 	}
 	else if (state == AudioStates::BEEP_ON)
 		QTimer::singleShot(save_sound_delay, this, SLOT(playSaveSound()));
-#endif
-#if defined(BT_HARDWARE_PXA255)
+#else // LAYOUT_TS_3_5
 	beep();
 #endif
 }
 
+#ifdef LAYOUT_TS_10
 void RadioPage::enterBeepState(int new_state)
 {
 	// avoid problems in case of state-change races
@@ -560,6 +564,7 @@ void RadioPage::exitBeepState()
 	bt_global::audio_states->removeState(AudioStates::BEEP_ON);
 	disconnect(bt_global::sound, SIGNAL(soundFinished()), this, SLOT(exitBeepState()));
 }
+#endif
 
 void RadioPage::setAuto()
 {

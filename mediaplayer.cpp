@@ -22,7 +22,9 @@
 #include "mediaplayer.h"
 #include "hardware_functions.h" // maxWidth, maxHeight, getAudioCmdLine
 #include "displaycontrol.h"
+#ifdef LAYOUT_TS_10
 #include "audiostatemachine.h"
+#endif
 
 #include <QRegExp>
 #include <QDebug>
@@ -218,8 +220,10 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	connect(mplayer_proc(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(mplayer_proc(), SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(mplayer_proc(), SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
+#ifdef LAYOUT_TS_10
 	connect(this, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
+#endif
 }
 
 void MediaPlayer::readStandardError()
@@ -267,9 +271,7 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_
 {
 	QList<QString> mplayer_args = getStandardArgs();
 	mplayer_args.append(getVideoArgs(start_time));
-
-	mplayer_args << "-fs"
-		     << track;
+	mplayer_args << "-fs" << track;
 	is_video = true;
 
 	return runMPlayer(mplayer_args, write_output);
@@ -369,7 +371,9 @@ void MediaPlayer::actuallyPaused()
 	{
 		really_paused = true;
 		emit mplayerPaused();
+#ifdef LAYOUT_TS_10
 		updateDirectAccessState(false);
+#endif
 	}
 }
 
@@ -508,7 +512,9 @@ void MediaPlayer::mplayerFinished(int exit_code, QProcess::ExitStatus exit_statu
 	if (!active)
 		return;
 	active = false;
+#ifdef LAYOUT_TS_10
 	updateDirectAccessState(false);
+#endif
 
 	if (exit_status == QProcess::CrashExit)
 	{
@@ -538,8 +544,10 @@ void MediaPlayer::mplayerError(QProcess::ProcessError error)
 	qDebug() << "[AUDIO] mplayer_proc raised an error: " << e.key(error);
 }
 
+#ifdef LAYOUT_TS_10
 void MediaPlayer::playbackStarted()
 {
+
 	if (!active)
 		return;
 	updateDirectAccessState(true);
@@ -552,6 +560,7 @@ void MediaPlayer::updateDirectAccessState(bool state)
 	bt_global::audio_states->setMediaPlayerActive(state);
 	bt_global::audio_states->setDirectAudioAccess(state);
 }
+#endif
 
 void MediaPlayer::infoReceived()
 {

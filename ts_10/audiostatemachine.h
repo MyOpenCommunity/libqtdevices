@@ -23,9 +23,6 @@
 
 #include "statemachine.h"
 
-#define VOLUME_MIN 0
-#define VOLUME_MAX 8
-#define DEFAULT_VOLUME 3
 
 /*!
 	\brief States for AudioStateMachine
@@ -114,16 +111,6 @@ public:
 		\brief Read the physical volume for the current audio state.
 	 */
 	int getVolume();
-
-	/*!
-		\brief Whether the BTouch is configured to act as a sound diffusion source.
-	 */
-	bool isSource();
-
-	/*!
-		\brief Whether the BTouch is configured to act as a sound diffusion amplifier.
-	 */
-	bool isAmplifier();
 
 	/*!
 		\brief Set the local source status.
@@ -286,7 +273,6 @@ private:
 #endif
 
 private:
-	bool is_source, is_amplifier;
 	bool local_source_status, local_amplifier_status, local_amplifier_temporary_off;
 	bool media_player_status, media_player_temporary_pause;
 	bool direct_audio_access;

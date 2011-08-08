@@ -24,7 +24,10 @@
 
 #include "banner.h"
 #include "bann2_buttons.h"
-#include "ringtonesmanager.h" // RingtoneType
+
+#ifdef LAYOUT_TS_10
+#include "ringtonesmanager.h" // Ringtones::Type
+#endif
 
 #include <QWidget>
 
@@ -222,7 +225,7 @@ private:
 	PasswordChanger changer;
 };
 
-
+#ifdef LAYOUT_TS_10
 // Set ringtone for a specific function (ringtone 1-4 from external units, alarms etc.).
 class BannRingtone : public Bann2CentralButtons
 {
@@ -243,7 +246,7 @@ private:
 	bool is_playing;
 
 };
-
+#endif
 
 // Set the time between screensaver frames.
 // For example, it can be the timeout between images in the slideshow.

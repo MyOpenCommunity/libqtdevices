@@ -31,7 +31,7 @@
 #include "btmain.h" // bt_global::btmain
 #include "homewindow.h" // TrayBar
 #include "sounddiffusionpage.h" // showCurrentAmbientPage
-#include "main.h" // MULTIMEDIA
+#include "main.h" // MULTIMEDIA, bt_global::config
 #include "media_device.h"
 #include "devices_cache.h"
 #include "audiostatemachine.h"
@@ -166,7 +166,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	QHBoxLayout *l_btn = new QHBoxLayout;
 	l_btn->setContentsMargins(2, 0, 2, 0);
 	BtButton *goto_sounddiff = NULL;
-	if (bt_global::audio_states->isSource())
+	if (!(*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 	{
 		goto_sounddiff = new BtButton(bt_global::skin->getImage("goto_sounddiffusion"));
 		connect(goto_sounddiff, SIGNAL(clicked()), SLOT(gotoSoundDiffusion()));
@@ -190,7 +190,7 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	ItemTuning *volume = NULL;
 
 	// if the touch is a sound diffusion source do not display the volume control
-	if (!bt_global::audio_states->isSource())
+	if ((*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 	{
 		volume = new ItemTuning(tr("Volume"), bt_global::skin->getImage("volume"));
 		connect(volume, SIGNAL(valueChanged(int)), SLOT(changeVolume(int)));

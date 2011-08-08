@@ -24,9 +24,11 @@
 #include "hardware_functions.h" // setBrightnessLevel, setBacklight
 #include "btmain.h" // bt_global::btmain, bt_global::status
 #include "pagestack.h" // bt_global::page_stack
-#include "audiostatemachine.h" // bt_global::audio_states
 #include "pagecontainer.h"
 #include "page.h"
+#ifdef LAYOUT_TS_10
+#include "audiostatemachine.h" // bt_global::audio_states
+#endif
 
 #include <QDebug>
 #include <QEvent>
@@ -308,8 +310,10 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 			// the screen turn off.
 			emit startscreensaver(page_container->currentPage());
 		}
+#ifdef LAYOUT_TS_10
 		if (current_state != DISPLAY_SCREENSAVER)
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
+#endif
 		setState(DISPLAY_OFF);
 	}
 	else if (time >= freezeTime() && getBacklight() && !frozen)
@@ -361,7 +365,9 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 			emit startscreensaver(exit_page);
 
 			setState(DISPLAY_SCREENSAVER);
+#ifdef LAYOUT_TS_10
 			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
+#endif
 		}
 	}
 }
@@ -384,13 +390,17 @@ void DisplayControl::freeze(bool b)
 		// but the state is as if it were
 		if (current_state == DISPLAY_OFF)
 		{
+#ifdef LAYOUT_TS_10
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+#endif
 			emit stopscreensaver();
 		}
 
 		if (screensaver && screensaver->isRunning())
 		{
+#ifdef LAYOUT_TS_10
 			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+#endif
 			emit stopscreensaver();
 			screensaver->stop();
 		}

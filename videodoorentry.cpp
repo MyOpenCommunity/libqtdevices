@@ -31,6 +31,8 @@
 #include "devices_cache.h" // bt_global::add_device_to_cache
 #ifdef LAYOUT_TS_10
 #include "vctcall.h"
+#include "audiostatemachine.h" // bt_global::audio_states
+#include "ringtonesmanager.h" // bt_global::ringtones
 #endif
 #include "generic_functions.h" //getBostikName, silentExecute
 #include "items.h" // ItemTuning
@@ -40,8 +42,6 @@
 #include "homewindow.h" // TrayBar
 #include "pagestack.h" // bt_global::page_stack
 #include "state_button.h"
-#include "audiostatemachine.h" // bt_global::audio_states
-#include "ringtonesmanager.h" // bt_global::ringtones
 
 #include <QGridLayout>
 #include <QSignalMapper>

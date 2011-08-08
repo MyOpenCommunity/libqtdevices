@@ -29,7 +29,9 @@
 #include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
+#ifdef LAYOUT_TS_10
 #include "audiostatemachine.h" // bt_global::audio_states
+#endif
 #include "btmain.h" // bt_global::status
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
@@ -424,7 +426,7 @@ BannPassword::BannPassword(QString icon_on, QString icon_off, QString icon_label
 	connect(&changer, SIGNAL(passwordActive(bool)), left_button, SLOT(setStatus(bool)));
 }
 
-
+#ifdef LAYOUT_TS_10
 BannRingtone::BannRingtone(const QString &descr, int id, Ringtones::Type type, int ring) :
 	Bann2CentralButtons(false)
 {
@@ -490,6 +492,7 @@ void BannRingtone::plusClicked()
 
 	playRingtone();
 }
+#endif
 
 
 ScreensaverTiming::ScreensaverTiming(const QString &descr, int init_timing, int _delta, int min_timing, int max_timing) :

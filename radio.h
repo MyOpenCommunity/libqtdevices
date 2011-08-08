@@ -144,11 +144,13 @@ private slots:
 	void previousStation();
 	void nextStation();
 
+#ifdef LAYOUT_TS_10
 	void enterBeepState(int new_state);
 	void exitBeepState();
 
 	// Play a "beep" to notifies that the radio is saved.
 	void playSaveSound();
+#endif
 
 	/*!
 	 * \brief Changes the state to automatic search

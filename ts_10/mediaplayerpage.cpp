@@ -24,8 +24,8 @@
 #include "multimedia_buttons.h"
 #include "audiostatemachine.h"
 #include "list_manager.h"
-
 #include "mount_watcher.h" // bt_global::mount_watcher
+#include "main.h" // bt_global::config
 
 #include <QTimer>
 
@@ -141,7 +141,7 @@ void MediaPlayerPage::audioStateChanged(int new_state, int old_state)
 void MediaPlayerPage::audioStateAboutToChange(int old_state)
 {
 	// when not a sound diffusion source, do not force the player off when going from sound-diffusion to local playback
-	if (old_state == AudioStates::PLAY_DIFSON && !bt_global::audio_states->isSource())
+	if (old_state == AudioStates::PLAY_DIFSON && (*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 		return;
 
 	if ((old_state == AudioStates::PLAY_MEDIA_TO_SPEAKER || old_state == AudioStates::PLAY_DIFSON) && player->isPlaying())

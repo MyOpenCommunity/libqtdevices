@@ -24,7 +24,7 @@
 #include "btbutton.h"
 #include "generic_functions.h" // getBostikName
 #include "fontmanager.h"
-#include "audiostatemachine.h" // VOLUME_MAX, VOLUME_MIN, DEFAULT_VOLUME
+#include "main.h" // VOLUME_MAX, VOLUME_MIN, DEFAULT_VOLUME
 
 #include <QLabel>
 #include <QBoxLayout>

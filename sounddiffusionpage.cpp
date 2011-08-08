@@ -21,7 +21,7 @@
 
 
 #include "sounddiffusionpage.h"
-#include "main.h" // Section
+#include "main.h" // Section, bt_global::config
 #include "xml_functions.h"
 #include "bann2_buttons.h" // Bann2Buttons
 #include "btbutton.h"
@@ -32,18 +32,19 @@
 #include "poweramplifier.h" // BannPowerAmplifier, PowerAmplifierPage
 #include "media_device.h"
 #include "devices_cache.h"
+#include "navigation_bar.h"
+#include "labels.h" // ScrollingLabel
+#include "videodoorentry_device.h"
+
 #ifdef LAYOUT_TS_10
+#include "audiostatemachine.h"
 #include "multimedia_ts10.h" // MultimediaSectionPage
 #include "audioplayer_ts10.h"
 #else
 #include "multimedia_ts3.h" // MultimediaContainer
 #include "audioplayer_ts3.h"
+#include "hardware_functions.h" // activateLocalSource, deactivateLocalSource
 #endif
-#include "navigation_bar.h"
-#include "audiostatemachine.h"
-#include "labels.h" // ScrollingLabel
-
-#include "videodoorentry_device.h"
 
 #include <QDomNode>
 #include <QGridLayout>
@@ -421,7 +422,7 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 
 	sound_diffusion_page = this;
 
-	if (bt_global::audio_states->isSource() || bt_global::audio_states->isAmplifier())
+	if (!(*bt_global::config)[SOURCE_ADDRESS].isEmpty() || !(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty())
 	{
 		QString init_frame = VirtualSourceDevice::createMediaInitFrame(is_multichannel,
 									       (*bt_global::config)[SOURCE_ADDRESS],
@@ -429,9 +430,11 @@ SoundDiffusionPage::SoundDiffusionPage(const QDomNode &config_node)
 		bt_global::devices_cache.addInitCommandFrame(0, init_frame);
 	}
 
-	if (bt_global::audio_states->isAmplifier())
+#ifdef LAYOUT_TS_10
+	if (!(*bt_global::config)[AMPLIFIER_ADDRESS].isEmpty())
 		new LocalAmplifier(this);
-	if (bt_global::audio_states->isSource())
+#endif
+	if (!(*bt_global::config)[SOURCE_ADDRESS].isEmpty())
 		new LocalSource(this);
 }
 
@@ -608,6 +611,8 @@ void SoundDiffusionAlarmPage::showPage()
 }
 
 
+#ifdef LAYOUT_TS_10
+
 LocalAmplifier::LocalAmplifier(QObject *parent) : QObject(parent)
 {
 	freezed_level = -1;
@@ -772,11 +777,12 @@ void LocalAmplifier::reenableLocalAmplifier()
 	bt_global::audio_states->setLocalAmplifierTemporaryOff(false);
 }
 
+#endif
 
 LocalSource::LocalSource(QObject *parent) : QObject(parent)
 {
+	source_status = false;
 	dev = bt_global::add_device_to_cache(new VirtualSourceDevice((*bt_global::config)[SOURCE_ADDRESS]));
-
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
 }
 
@@ -831,18 +837,25 @@ void LocalSource::valueReceived(const DeviceValues &device_values)
 		case VirtualSourceDevice::REQ_SOURCE_ON:
 		case VirtualSourceDevice::REQ_SOURCE_OFF:
 		{
-			bool new_state = key == VirtualSourceDevice::REQ_SOURCE_ON;
-			bool state = bt_global::audio_states->getLocalSourceStatus();
+			bool new_state = (key == VirtualSourceDevice::REQ_SOURCE_ON);
 
-			if (state != new_state)
+			if (source_status != new_state)
+			{
+				source_status = new_state;
+#ifdef LAYOUT_TS_10
 				bt_global::audio_states->setLocalSourceStatus(new_state);
+#else // LAYOUT_TS_3_5
+				if (new_state)
+					activateLocalSource();
+				else
+					deactivateLocalSource();
+#endif
+			}
 
 			if (new_state)
 				startLocalPlayback(!device_values.contains(VirtualSourceDevice::DIM_SELF_REQUEST));
 			else if (!new_state)
 				pauseLocalPlayback();
-
-			state = new_state;
 			break;
 		}
 		case SourceDevice::DIM_AREAS_UPDATED:

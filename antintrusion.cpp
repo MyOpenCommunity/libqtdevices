@@ -33,9 +33,10 @@
 #include "pagestack.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "navigation_bar.h"
+#ifdef LAYOUT_TS_10
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "ringtonesmanager.h" // bt_global::ringtones
-
+#endif
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -549,6 +550,7 @@ void Antintrusion::doAction()
 	keypad->resetText();
 }
 
+#ifdef LAYOUT_TS_10
 void Antintrusion::playRingtone()
 {
 	disconnect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
@@ -561,6 +563,7 @@ void Antintrusion::ringtoneFinished()
 	bt_global::audio_states->removeState(AudioStates::PLAY_RINGTONE);
 	disconnect(bt_global::ringtones, SIGNAL(ringtoneFinished()), this, SLOT(ringtoneFinished()));
 }
+#endif
 
 void Antintrusion::valueReceived(const DeviceValues &values_list)
 {
@@ -614,9 +617,11 @@ void Antintrusion::valueReceived(const DeviceValues &values_list)
 				zone_description = tr("Z%1").arg(zone);
 
 			alarm_manager->newAlarm(it.key(), zone, zone_description);
+#ifdef LAYOUT_TS_10
 			// because the stateTransition signal is emitted for every state transition we always connect the playRingtone.
 			connect(bt_global::audio_states, SIGNAL(stateTransition(int,int)), this, SLOT(playRingtone()));
 			bt_global::audio_states->toState(AudioStates::PLAY_RINGTONE);
+#endif
 			break;
 		}
 		case AntintrusionDevice::DIM_RESET_TECHNICAL_ALARM:
