@@ -177,6 +177,9 @@ public:
 	void setStatus(bool st);
 	bool getStatus() const;
 
+signals:
+	void statusChanged();
+
 private slots:
 	void toggleStatus();
 };
@@ -196,6 +199,10 @@ public:
 
 signals:
 	void okClicked();
+
+private slots:
+	void dayToggled();
+	void onceToggled();
 
 private:
 	QList<bool> alarm_days;

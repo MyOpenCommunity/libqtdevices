@@ -503,6 +503,7 @@ BannAlarmDay::BannAlarmDay(QString img_off, QString img_on, QString descr)
 void BannAlarmDay::toggleStatus()
 {
 	left_button->setStatus(left_button->getStatus() == StateButton::OFF);
+	emit statusChanged();
 }
 
 void BannAlarmDay::setStatus(bool st)
@@ -529,13 +530,48 @@ AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 		<< tr("Friday") << tr("Saturday") << tr("Sunday");
 
 	alarm_days = days;
+
+	BannAlarmDay *bann_once = new BannAlarmDay(bt_global::skin->getImage("day_off"),
+		bt_global::skin->getImage("day_on"), tr("Once"));
+	connect(bann_once, SIGNAL(statusChanged()), SLOT(onceToggled()));
+	page_content->appendBanner(bann_once);
+
+	// bann_once is selected if any day is selected
+	bool bann_once_selected = true;
+
 	for (int i = 0; i < 7; ++i)
 	{
 		BannAlarmDay *b = new BannAlarmDay(bt_global::skin->getImage("day_off"),
 			bt_global::skin->getImage("day_on"), days_description[i]);
 
 		b->setStatus(days[i]);
+		connect(b, SIGNAL(statusChanged()), SLOT(dayToggled()));
+		if (days[i])
+			bann_once_selected = false;
 		page_content->appendBanner(b);
+	}
+
+	bann_once->setStatus(bann_once_selected);
+}
+
+void AlarmClockDays::dayToggled()
+{
+	bool bann_once_selected = true;
+	for (int i = 0; i < 7; ++i)
+	{
+		if (static_cast<BannAlarmDay*>(page_content->getBanner(i + 1))->getStatus())
+			bann_once_selected = false;
+	}
+	static_cast<BannAlarmDay*>(page_content->getBanner(0))->setStatus(bann_once_selected);
+}
+
+void AlarmClockDays::onceToggled()
+{
+	bool st = static_cast<BannAlarmDay*>(page_content->getBanner(0))->getStatus();
+	if (st)
+	{
+		for (int i = 0; i < 7; ++i)
+			static_cast<BannAlarmDay*>(page_content->getBanner(i + 1))->setStatus(false);
 	}
 }
 
@@ -544,7 +580,7 @@ QList<bool> AlarmClockDays::getAlarmDays() const
 	QList<bool> days;
 
 	for (int i = 0; i < 7; ++i)
-		days.append(static_cast<BannAlarmDay*>(page_content->getBanner(i))->getStatus());
+		days.append(static_cast<BannAlarmDay*>(page_content->getBanner(i + 1))->getStatus());
 
 	return days;
 }
@@ -556,8 +592,14 @@ void AlarmClockDays::saveAlarmDays()
 
 void AlarmClockDays::resetAlarmDays()
 {
+	bool bann_once_selected = true;
 	for (int i = 0; i < 7; ++i)
-		static_cast<BannAlarmDay*>(page_content->getBanner(i))->setStatus(alarm_days[i]);
+	{
+		static_cast<BannAlarmDay*>(page_content->getBanner(i + 1))->setStatus(alarm_days[i]);
+		if (alarm_days[i])
+			bann_once_selected = false;
+	}
+	static_cast<BannAlarmDay*>(page_content->getBanner(0))->setStatus(bann_once_selected);
 }
 
 
