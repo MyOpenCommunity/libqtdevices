@@ -26,7 +26,8 @@
 
 class BtTime;
 
-namespace QTest {
+namespace QTest
+{
 	template<> char *toString(const BtTime &t);
 }
 

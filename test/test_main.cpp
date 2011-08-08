@@ -40,6 +40,27 @@
 
 BtStatus bt_global::status;
 
+// Objects required to replace the real objects and link successfully
+class VCTCallPage  : public QObject
+{
+	Q_OBJECT
+public:
+	void closeCall();
+};
+
+void VCTCallPage::closeCall() { }
+
+class IntercomCallPage  : public QObject
+{
+	Q_OBJECT
+public:
+	void closeCall();
+};
+
+void IntercomCallPage::closeCall() { }
+
+#include "test_main.moc"
+
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +68,7 @@ int main(int argc, char *argv[])
 	QList<QObject *> test_list;
 
 	// Initialize the config object for tests.
-	bt_global::config = new QHash<GlobalFields, QString>();
+	bt_global::config = new QHash<GlobalField, QString>();
 	(*bt_global::config)[TEMPERATURE_SCALE] = CELSIUS;
 	(*bt_global::config)[TS_NUMBER] = "0";
 

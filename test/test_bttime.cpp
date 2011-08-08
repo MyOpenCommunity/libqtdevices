@@ -24,7 +24,8 @@
 
 #include <QDebug>
 
-namespace QTest {
+namespace QTest
+{
 	template<> char *toString(const BtTime &t)
 	{
 		QByteArray ba = "BtTime(";

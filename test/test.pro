@@ -4,8 +4,9 @@ MOC_DIR = moc
 
 DEFINES += QT_QWS_EBX BT_EMBEDDED BTWEB QT_NO_DEBUG_OUTPUT DEBUG
 DEFINES += BT_HARDWARE_X11
+DEFINES += LAYOUT_TS_10 # to check the SCREENSAVER audio state on DisplayControl
 
-INCLUDEPATH+= . .. ../devices ../devices/test ../../stackopen/common_files ../../stackopen
+INCLUDEPATH+= . .. ../ts_10 ../devices ../devices/test ../../stackopen/common_files ../../stackopen
 INCLUDEPATH+= ../../stackopen/common_develer/lib
 DEPENDPATH+= . .. ../devices ../devices/test
 
@@ -35,7 +36,7 @@ HEADERS += xmldevice_tester.h \
 	test_xmldevice.h \
 	test_functions.h \
 	../devices/test/openserver_mock.h \
-	../audiostatemachine.h \
+	../ts_10/audiostatemachine.h \
 	../btbutton.h \
 	../bttime.h \
 	../delayedslotcaller.h \
@@ -52,6 +53,7 @@ HEADERS += xmldevice_tester.h \
 	../pagestack.h \
 	../page.h \
 	../main.h \
+	../mediaplayer.h \
 	../openclient.h \
 	../scaleconversion.h \
 	../scenevodevicescond.h \
@@ -79,7 +81,7 @@ SOURCES += xmldevice_tester.cpp \
 	test_xmldevice.cpp \
 	test_functions.cpp \
 	../devices/test/openserver_mock.cpp \
-	../audiostatemachine_x11.cpp \
+	../ts_10/audiostatemachine_x11.cpp \
 	../btbutton.cpp \
 	../bttime.cpp \
 	../delayedslotcaller.cpp \
@@ -96,6 +98,7 @@ SOURCES += xmldevice_tester.cpp \
 	../pagestack.cpp \
 	../page.cpp \
 	../openclient.cpp \
+	../mediaplayer.cpp \
 	../scaleconversion.cpp \
 	../scenevodevicescond.cpp \
 	../screensaver.cpp \
