@@ -340,12 +340,11 @@ bool getBeep()
 void beep(int t)
 {
 #ifdef BT_HARDWARE_PXA270
-	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
-		bt_global::sound->play(SOUND_PATH "beep.wav");
-#else // BT_HARDWARE_DM365
+	if (bt_global::audio_states->currentState() != AudioStates::BEEP_ON)
+		return;
+#endif
 	if (buzzer_enabled && QFile::exists(SOUND_PATH "beep.wav"))
 		bt_global::sound->play(SOUND_PATH "beep.wav");
-#endif
 }
 
 #else // BT_HARDWARE_PXA255
