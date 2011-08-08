@@ -573,7 +573,9 @@ SoundPlayer::SoundPlayer(QObject *parent) : QObject(parent)
 	connect(sox_process(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
 	connect(sox_process(), SIGNAL(error(QProcess::ProcessError)), SLOT(error()));
 	connect(sox_process(), SIGNAL(finished(int,QProcess::ExitStatus)), SLOT(processFinished()));
+#ifdef LAYOUT_TS_10
 	connect(bt_global::audio_states, SIGNAL(stateAboutToChange(int)), SLOT(audioStateAboutToChange()));
+#endif
 	active = false;
 }
 
@@ -586,9 +588,6 @@ void SoundPlayer::readStandardError()
 
 void SoundPlayer::audioStateAboutToChange()
 {
-	if (!active)
-		return;
-
 	stop();
 }
 
@@ -600,10 +599,12 @@ void SoundPlayer::processFinished()
 	{
 		active = false;
 		emit soundFinished();
+#ifdef LAYOUT_TS_10
 		// The order is important! Releasing the audio resource should be the last
 		// instruction (because on that event the audio state machine performs
 		// its state change).
 		bt_global::audio_states->setDirectAudioAccess(false);
+#endif
 	}
 }
 
@@ -617,7 +618,9 @@ void SoundPlayer::play(const QString &path)
 	}
 	else
 	{
+#ifdef LAYOUT_TS_10
 		bt_global::audio_states->setDirectAudioAccess(true);
+#endif
 		start();
 	}
 }
