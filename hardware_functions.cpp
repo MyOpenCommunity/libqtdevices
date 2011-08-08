@@ -369,6 +369,33 @@ bool getBeep()
 
 #endif
 
+void beep(int t)
+{
+#ifdef BT_HARDWARE_PXA255
+	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
+	{
+		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
+		if (fd >= 0)
+		{
+			char te[10];
+			sprintf(te, "4000 %d", t);
+			write(fd, te, strlen(te));
+			close(fd);
+		}
+	}
+#elif BT_HARDWARE_PXA270
+	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
+		bt_global::sound->play(SOUND_PATH "beep.wav");
+#else // BT_HARDWARE_DM365
+	// TODO!!
+#endif
+}
+
+void beep()
+{
+	beep(50);
+}
+
 bool getBacklight()
 {
 	char c[4];
@@ -419,33 +446,6 @@ bool getBacklight()
 		}
 	}
 	return false;
-}
-
-void beep(int t)
-{
-#ifdef BT_HARDWARE_PXA255
-	if (QFile::exists("/proc/sys/dev/btweb/buzzer"))
-	{
-		int fd = open("/proc/sys/dev/btweb/buzzer", O_WRONLY);
-		if (fd >= 0)
-		{
-			char te[10];
-			sprintf(te, "4000 %d", t);
-			write(fd, te, strlen(te));
-			close(fd);
-		}
-	}
-#elif BT_HARDWARE_PXA270
-	if (buzzer_enabled && bt_global::audio_states->currentState() == AudioStates::BEEP_ON && QFile::exists(SOUND_PATH "beep.wav"))
-		bt_global::sound->play(SOUND_PATH "beep.wav");
-#else // BT_HARDWARE_DM365
-	// TODO!!
-#endif
-}
-
-void beep()
-{
-	beep(50);
 }
 
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_PXA270) || defined(BT_HARDWARE_DM365)
