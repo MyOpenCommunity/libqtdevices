@@ -139,12 +139,7 @@ void AlarmClock::saveAndActivate()
 			active |= 1 << (6 - i);
 	data["days"] = QString::number(active);
 
-	// Because the old ts3 config file doesn't have the 'days' node, we cannot save
-	// the configuration
-#ifdef CONFIG_TS_10
 	setCfgValue(data, item_id);
-#endif
-
 	emit Closed();
 }
 
@@ -202,11 +197,7 @@ void AlarmClock::setActive(bool a)
 		}
 	}
 
-#ifdef CONFIG_TS_3_5
-	setCfgValue("enabled", active, SET_ALARMCLOCK, serial_number);
-#else
 	setCfgValue("enabled", active, item_id);
-#endif
 }
 
 void AlarmClock::valueReceived(const DeviceValues &values_list)
