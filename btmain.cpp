@@ -720,7 +720,11 @@ Page *BtMain::screensaverExitPage()
 
 Window *BtMain::screensaverTargetWindow()
 {
+#ifdef LAYOUT_TS_3_5
+	return home_window;
+#else
 	return window_container->currentWindow();
+#endif
 }
 
 void BtMain::checkActivities()
