@@ -23,6 +23,7 @@
 #define BRIGHTNESSPAGE_H
 
 #include "singlechoicepage.h"
+#include "displaycontrol.h" // BrightnessLevel
 
 class QShowEvent;
 
@@ -43,8 +44,12 @@ protected:
 	// the brightness value.
 	virtual void showEvent(QShowEvent *e);
 
+private slots:
+	void updateStatus(bool force = false);
+
 private:
 	int item_id;
+	BrightnessLevel last_brightness;
 };
 
 #endif // BRIGHTNESSPAGE_H

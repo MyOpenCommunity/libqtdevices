@@ -20,7 +20,6 @@
 
 
 #include "brightnesspage.h"
-#include "displaycontrol.h" // bt_global::display
 #include "banner.h"
 #include "btbutton.h"
 #include "xml_functions.h" // getTextChild
@@ -41,6 +40,17 @@ InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node)
 
 	// this load the current inactive brightness into the global display object
 	bannerSelected(getTextChild(config_node, "level").toInt());
+
+	// Because the transition effects take a 'photo' of the page before showing it
+	// we have to select the banner that represents the current brightness _before_
+	// the showEvent/showPage. So, we do that after the Closed signal (and we use
+	// a queued connection because the transition effects take a photo also when
+	// we close the page).
+	// But because the current inactive brightness can be changed also by the
+	// screensaver page we have to check the status of the page even in the showEvent
+	// method.
+	connect(this, SIGNAL(Closed()), SLOT(updateStatus()), Qt::QueuedConnection);
+	updateStatus(true);
 }
 
 int InactiveBrightnessPage::getCurrentId()
@@ -56,8 +66,11 @@ void InactiveBrightnessPage::bannerSelected(int id)
 	setCfgValue(data, item_id);
 }
 
-void InactiveBrightnessPage::showEvent(QShowEvent *e)
+void InactiveBrightnessPage::updateStatus(bool force)
 {
+	if (force  == false && last_brightness == bt_global::display->inactiveBrightness())
+		return;
+
 	bool banners_active = (bt_global::display->inactiveBrightness() != BRIGHTNESS_OFF ||
 		bt_global::display->currentScreenSaver() != ScreenSaver::NONE);
 
@@ -71,5 +84,10 @@ void InactiveBrightnessPage::showEvent(QShowEvent *e)
 		else
 			b->disable();
 	}
+}
+
+void InactiveBrightnessPage::showEvent(QShowEvent *e)
+{
+	updateStatus();
 	SingleChoicePage::showEvent(e);
 }
