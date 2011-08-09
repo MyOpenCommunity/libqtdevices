@@ -172,6 +172,16 @@ signals:
 protected:
 	virtual void showEvent(QShowEvent *event);
 
+private:
+	enum PasswdStatus
+	{
+		PASSWD_NOT_SET,                     // TODO: maybe not needed?
+		ASK_PASSWORD,                       // check if user remembers password then activate password on freeze
+		CHECK_OLD_PASSWORD,                 // check if user remembers old password
+		INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
+		VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
+	};
+
 private slots:
 	// called on Keypad::accept() (user has confirmed password entry)
 	void checkPassword();
@@ -183,6 +193,8 @@ private slots:
 	 */
 	void restoreBeepState();
 
+	void setStatus(PasswdStatus status);
+
 private:
 	/**
 	 * Enable/disable password checking on freeze
@@ -193,17 +205,6 @@ private:
 	 * Save password to conf.xml
 	 */
 	void savePassword(const QString &passwd);
-
-	enum PasswdStatus
-	{
-	    PASSWD_NOT_SET,                     // TODO: maybe not needed?
-	    ASK_PASSWORD,                       // check if user remembers password then activate password on freeze
-	    CHECK_OLD_PASSWORD,                 // check if user remembers old password
-	    INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
-	    VERIFY_PASSWORD,                    // insert again the new password, to avoid wrong touches
-	};
-
-	void setStatus(PasswdStatus status);
 
 	bool active;
 	PasswdStatus status;

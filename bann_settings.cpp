@@ -29,10 +29,13 @@
 #include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
+#include "delayedslotcaller.h"
+#include "btmain.h" // bt_global::status
+
 #ifdef LAYOUT_TS_10
 #include "audiostatemachine.h" // bt_global::audio_states
 #endif
-#include "btmain.h" // bt_global::status
+
 #if !defined(BT_HARDWARE_X11)
 #include "calibration.h"
 #endif
@@ -357,7 +360,10 @@ void PasswordChanger::checkPassword()
 		if (c == password)
 		{
 			toggleActivation();
-			setStatus(CHECK_OLD_PASSWORD);
+			DelayedSlotCaller *slot_caller = new DelayedSlotCaller;
+			connect(slot_caller, SIGNAL(called()), slot_caller, SLOT(deleteLater()));
+			slot_caller->setSlot(this, SLOT(setStatus(PasswdStatus)), 0);
+			slot_caller->addArgument(static_cast<int>(CHECK_OLD_PASSWORD));
 			emit finished();
 		}
 		else
