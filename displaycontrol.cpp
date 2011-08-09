@@ -265,6 +265,78 @@ bool DisplayControl::canScreensaverStart()
 			 bt_global::status.vde_call_active);
 }
 
+
+void DisplayControl::turnOff()
+{
+	qDebug() << "Turning screen off";
+	// the stopscreensaver() event is emitted when the user clicks on screen
+	if (screensaver && screensaver->isRunning())
+		screensaver->stop();
+	else
+	{
+		// Some pages do things when the screensaver starts. For example the
+		// RDS radio stop the RDS updates. We want the same behaviour when
+		// the screen turn off.
+		emit startscreensaver(page_container->currentPage());
+	}
+#ifdef LAYOUT_TS_10
+	if (current_state != DISPLAY_SCREENSAVER)
+		bt_global::audio_states->toState(AudioStates::SCREENSAVER);
+#endif
+	setState(DISPLAY_OFF);
+}
+
+void DisplayControl::startScreensaver(Page *target_page, Window *target_window, Page *exit_page)
+{
+	if (current_state == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
+	{
+		target_page->showPage();
+	}
+
+	if (current_state == DISPLAY_FREEZED)
+	{
+		if (screensaver && screensaver->type() != current_screensaver)
+		{
+			delete screensaver;
+			screensaver = 0;
+		}
+
+		if (!screensaver)
+			screensaver = getScreenSaver(current_screensaver);
+
+		Page *current_page = page_container->currentPage();
+
+#ifdef LAYOUT_TS_3_5
+		page_container->blockTransitions(true);
+#endif
+		if (exit_page != current_page)
+		{
+			emit unrollPages();
+			target_page->showPage();
+			target_window->showWindow();
+		}
+		else
+		{
+			target_page->showPage();
+			target_window->showWindow();
+			// this makes the screen saver go back to exit_page when exited
+			bt_global::page_stack.currentPageChanged(exit_page);
+		}
+
+#ifdef LAYOUT_TS_3_5
+		page_container->blockTransitions(false);
+#endif
+		qDebug() << "start screensaver:" << current_screensaver << "on:" << target_page << target_window;
+		screensaver->start(target_window);
+		emit startscreensaver(exit_page);
+
+		setState(DISPLAY_SCREENSAVER);
+#ifdef LAYOUT_TS_10
+		bt_global::audio_states->toState(AudioStates::SCREENSAVER);
+#endif
+	}
+}
+
 void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, Page *exit_page)
 {
 	Q_ASSERT_X(page_container, "DisplayControl::checkScreensaver", "Page container not set!");
@@ -289,22 +361,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 		((current_state == DISPLAY_SCREENSAVER && time >= blank_time) ||
 		 (current_state == DISPLAY_FREEZED && current_screensaver == ScreenSaver::NONE && time >= blank_time)))
 	{
-		qDebug() << "Turning screen off";
-		// the stopscreensaver() event is emitted when the user clicks on screen
-		if (screensaver && screensaver->isRunning())
-			screensaver->stop();
-		else
-		{
-			// Some pages do things when the screensaver starts. For example the
-			// RDS radio stop the RDS updates. We want the same behaviour when
-			// the screen turn off.
-			emit startscreensaver(page_container->currentPage());
-		}
-#ifdef LAYOUT_TS_10
-		if (current_state != DISPLAY_SCREENSAVER)
-			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
-#endif
-		setState(DISPLAY_OFF);
+		turnOff();
 	}
 	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{
@@ -312,53 +369,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 	}
 	else if (time >= screensaverTime() && current_screensaver != ScreenSaver::NONE)
 	{
-		if (current_state == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
-		{
-			target_page->showPage();
-		}
-
-		if (current_state == DISPLAY_FREEZED)
-		{
-			if (screensaver && screensaver->type() != current_screensaver)
-			{
-				delete screensaver;
-				screensaver = 0;
-			}
-
-			if (!screensaver)
-				screensaver = getScreenSaver(current_screensaver);
-
-			Page *current_page = page_container->currentPage();
-
-#ifdef LAYOUT_TS_3_5
-			page_container->blockTransitions(true);
-#endif
-			if (exit_page != current_page)
-			{
-				emit unrollPages();
-				target_page->showPage();
-				target_window->showWindow();
-			}
-			else
-			{
-				target_page->showPage();
-				target_window->showWindow();
-				// this makes the screen saver go back to exit_page when exited
-				bt_global::page_stack.currentPageChanged(exit_page);
-			}
-
-#ifdef LAYOUT_TS_3_5
-			page_container->blockTransitions(false);
-#endif
-			qDebug() << "start screensaver:" << current_screensaver << "on:" << target_page << target_window;
-			screensaver->start(target_window);
-			emit startscreensaver(exit_page);
-
-			setState(DISPLAY_SCREENSAVER);
-#ifdef LAYOUT_TS_10
-			bt_global::audio_states->toState(AudioStates::SCREENSAVER);
-#endif
-		}
+		startScreensaver(target_page, target_window, exit_page);
 	}
 }
 

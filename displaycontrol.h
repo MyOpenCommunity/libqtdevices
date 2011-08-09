@@ -216,6 +216,11 @@ private:
 	// if the user is idle for this number of seconds, turn off the screen
 	int blankScreenTime();
 
+	// called when we turn off the screen.
+	void turnOff();
+
+	void startScreensaver(Page *target_page, Window *target_window, Page *exit_page);
+
 	struct DisplayData
 	{
 		int brightness;
