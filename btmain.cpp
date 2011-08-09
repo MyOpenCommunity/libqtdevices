@@ -700,6 +700,12 @@ void BtMain::unrollPages()
 		}
 }
 
+// The logics for the screensaver are the following:
+// on ts10, the screensaver runs in the current page/window with the exception of
+// the slideshow, that runs in a dedicated window;
+// on ts3, the screensaver runs in the homepage and turns back to the current page
+// if the default page is not set, otherwise it runs in the default page where
+// stays also after the exit from the screensaver.
 Page *BtMain::screensaverTargetPage()
 {
 #ifdef LAYOUT_TS_3_5

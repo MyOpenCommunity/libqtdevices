@@ -288,7 +288,8 @@ void DisplayControl::turnOff()
 
 void DisplayControl::startScreensaver(Page *target_page, Window *target_window, Page *exit_page)
 {
-	if (current_state == DISPLAY_OPERATIVE && page_container->currentPage() != target_page)
+	Page *current_page = page_container->currentPage();
+	if (current_state == DISPLAY_OPERATIVE && current_page != target_page)
 	{
 		target_page->showPage();
 	}
@@ -304,28 +305,20 @@ void DisplayControl::startScreensaver(Page *target_page, Window *target_window, 
 		if (!screensaver)
 			screensaver = getScreenSaver(current_screensaver);
 
-		Page *current_page = page_container->currentPage();
-
-#ifdef LAYOUT_TS_3_5
 		page_container->blockTransitions(true);
-#endif
-		if (exit_page != current_page)
-		{
-			emit unrollPages();
-			target_page->showPage();
-			target_window->showWindow();
-		}
-		else
-		{
-			target_page->showPage();
-			target_window->showWindow();
-			// this makes the screen saver go back to exit_page when exited
-			bt_global::page_stack.currentPageChanged(exit_page);
-		}
 
-#ifdef LAYOUT_TS_3_5
+		if (current_page != exit_page)
+			emit unrollPages();
+
+		target_page->showPage();
+		target_window->showWindow();
+
+		// this makes the screen saver go back to exit_page when exited (always required
+		// because the target page is removed from the stack when calling screensaver->stop())
+		bt_global::page_stack.currentPageChanged(exit_page);
+
 		page_container->blockTransitions(false);
-#endif
+
 		qDebug() << "start screensaver:" << current_screensaver << "on:" << target_page << target_window;
 		screensaver->start(target_window);
 		emit startscreensaver(exit_page);

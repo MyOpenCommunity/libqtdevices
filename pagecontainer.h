@@ -82,7 +82,6 @@ public:
 
 	/*!
 		\brief Stop the transition effect implicity called by the showPage method.
-		\warning This method is unmantained, do not use.
 	*/
 	void blockTransitions(bool block);
 

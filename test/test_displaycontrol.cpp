@@ -28,6 +28,7 @@
 #include "windowcontainer.h"
 #include "audiostatemachine.h"
 #include "btmain.h"
+#include "pagestack.h"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -52,6 +53,7 @@ TestDisplayControl::TestDisplayControl()
 	page_container = new PageContainer(w);
 	Page::setPageContainer(page_container);
 	page_container->setContainerWindow(new Window);
+	bt_global::page_stack.setHomePage(new Page);
 
 	qRegisterMetaType<Page*>("Page*");
 	target_page = new Page;
@@ -70,6 +72,8 @@ void TestDisplayControl::init()
 	// Reset the audio state machine states
 	bt_global::audio_states->deleteLater();
 	bt_global::audio_states = new AudioStateMachine;
+	// Reset the page stack
+	bt_global::page_stack.clear();
 }
 
 void TestDisplayControl::testFreeze()
@@ -372,4 +376,41 @@ void TestDisplayControl::testScreenOffPostMakeActive()
 	QCOMPARE(display->screensaver->isRunning(), false);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 	QCOMPARE(spy.count(), 1);
+}
+
+void TestDisplayControl::testScreensaverExitPage()
+{
+	// Without page default
+	Page *target = page_container->currentPage(); // the homepage
+	Page *exit = new Page;
+	page_container->setCurrentPage(exit);
+
+	QSignalSpy spy(display, SIGNAL(unrollPages()));
+	display->startTime();
+	sleepSecs(display->screensaver_time);
+	display->checkScreensaver(target, target_window, exit);
+	display->checkScreensaver(target, target_window, exit);
+	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
+	QCOMPARE(spy.count(), 0);
+	display->makeActive();
+	QCOMPARE(page_container->currentPage(), exit);
+}
+
+void TestDisplayControl::testScreensaverExitPageDefault()
+{
+	// With page default
+	Page *target = new Page;
+	Page *exit = target;
+	Page *other = new Page;
+	page_container->setCurrentPage(other);
+
+	QSignalSpy spy(display, SIGNAL(unrollPages()));
+	display->startTime();
+	sleepSecs(display->screensaver_time);
+	display->checkScreensaver(target, target_window, exit);
+	display->checkScreensaver(target, target_window, exit);
+	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
+	QCOMPARE(spy.count(), 1);
+	display->makeActive();
+	QCOMPARE(page_container->currentPage(), exit);
 }
