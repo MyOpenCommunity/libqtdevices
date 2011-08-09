@@ -174,7 +174,7 @@ protected:
 
 private slots:
 	// called on Keypad::accept() (user has confirmed password entry)
-	void checkPasswd();
+	void checkPassword();
 	//
 	void resetState();
 

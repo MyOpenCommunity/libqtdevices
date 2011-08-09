@@ -246,7 +246,7 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 
 	connect(keypad, SIGNAL(Closed()), SIGNAL(finished()));
 	connect(keypad, SIGNAL(Closed()), SLOT(resetState()));
-	connect(keypad, SIGNAL(accept()), SLOT(checkPasswd()));
+	connect(keypad, SIGNAL(accept()), SLOT(checkPassword()));
 
 	active = check_active;
 	bt_global::status.check_password = active;
@@ -296,7 +296,7 @@ void PasswordChanger::resetState()
 	keypad->showWrongPassword(false);
 }
 
-void PasswordChanger::checkPasswd()
+void PasswordChanger::checkPassword()
 {
 	QString c = keypad->getText();
 	keypad->resetText();
