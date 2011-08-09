@@ -173,9 +173,9 @@ protected:
 	virtual void showEvent(QShowEvent *event);
 
 private:
-	enum PasswdStatus
+	enum PasswordStatus
 	{
-		PASSWD_NOT_SET,                     // TODO: maybe not needed?
+		PASSWORD_NOT_SET,                   // TODO: maybe not needed?
 		ASK_PASSWORD,                       // check if user remembers password then activate password on freeze
 		CHECK_OLD_PASSWORD,                 // check if user remembers old password
 		INSERT_NEW_PASSWORD,                // let the user insert the new password (not showing text)
@@ -193,7 +193,7 @@ private slots:
 	 */
 	void restoreBeepState();
 
-	void setStatus(PasswdStatus status);
+	void setStatus(PasswordStatus status);
 
 private:
 	/**
@@ -207,7 +207,7 @@ private:
 	void savePassword(const QString &passwd);
 
 	bool active;
-	PasswdStatus status;
+	PasswordStatus status;
 	QString password, new_password;
 	Keypad *keypad;
 	bool sb;

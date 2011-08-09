@@ -238,7 +238,7 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 	keypad = new Keypad;
 	if (password.isEmpty())
 	{
-		setStatus(PASSWD_NOT_SET);
+		setStatus(PASSWORD_NOT_SET);
 		keypad->setMode(Keypad::CLEAN);
 	}
 	else
@@ -282,7 +282,7 @@ void PasswordChanger::showEvent(QShowEvent *event)
 	// TODO: all this thing seems useless...
 	if (password.isEmpty())
 	{
-		setStatus(PASSWD_NOT_SET);
+		setStatus(PASSWORD_NOT_SET);
 	}
 	else
 	{
@@ -305,8 +305,7 @@ void PasswordChanger::checkPassword()
 	keypad->resetText();
 	switch (status)
 	{
-	// TODO: understand what must be done when password is not set
-	case PASSWD_NOT_SET:
+	case PASSWORD_NOT_SET:
 		savePassword(c);
 		emit finished();
 		break;
@@ -362,7 +361,7 @@ void PasswordChanger::checkPassword()
 			toggleActivation();
 			DelayedSlotCaller *slot_caller = new DelayedSlotCaller;
 			connect(slot_caller, SIGNAL(called()), slot_caller, SLOT(deleteLater()));
-			slot_caller->setSlot(this, SLOT(setStatus(PasswdStatus)), 0);
+			slot_caller->setSlot(this, SLOT(setStatus(PasswordStatus)), 0);
 			slot_caller->addArgument(static_cast<int>(CHECK_OLD_PASSWORD));
 			emit finished();
 		}
@@ -372,7 +371,7 @@ void PasswordChanger::checkPassword()
 	}
 }
 
-void PasswordChanger::setStatus(PasswdStatus _status)
+void PasswordChanger::setStatus(PasswordStatus _status)
 {
 	status = _status;
 
@@ -383,7 +382,7 @@ void PasswordChanger::setStatus(PasswdStatus _status)
 		break;
 
 	case INSERT_NEW_PASSWORD:
-	case PASSWD_NOT_SET:
+	case PASSWORD_NOT_SET:
 		keypad->setMessage(tr("New password:"));
 		break;
 
