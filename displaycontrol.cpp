@@ -365,9 +365,6 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 void DisplayControl::freeze(bool b)
 {
 	qDebug("DisplayControl::freeze(%d)", b);
-	if (b == frozen)
-		return;
-
 	frozen = b;
 
 	if (!frozen)
@@ -401,9 +398,24 @@ void DisplayControl::freeze(bool b)
 	}
 	else
 	{
-		setState(DISPLAY_FREEZED);
-		qApp->installEventFilter(bt_global::display);
-		emit freezed();
+		if (current_state == DISPLAY_OPERATIVE)
+			qApp->installEventFilter(bt_global::display);
+		else if (current_state == DISPLAY_SCREENSAVER)
+		{
+			if (screensaver && screensaver->isRunning())
+			{
+	#ifdef LAYOUT_TS_10
+				bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
+	#endif
+				emit stopscreensaver();
+				screensaver->stop();
+			}
+		}
+		if (current_state != DISPLAY_FREEZED)
+		{
+			setState(DISPLAY_FREEZED);
+			emit freezed();
+		}
 	}
 }
 

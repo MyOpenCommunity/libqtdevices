@@ -285,6 +285,28 @@ void TestDisplayControl::testMakeActivePostScreensaver()
 	QCOMPARE(spy.count(), 1);
 }
 
+void TestDisplayControl::testMakeActivePostScreensaverPassword()
+{
+	bt_global::status.check_password = true;
+	QSignalSpy spy(display, SIGNAL(stopscreensaver()));
+	display->startTime();
+
+	sleepSecs(display->screensaver_time);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
+	QCOMPARE(display->screensaver->isRunning(), true);
+	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
+	QCOMPARE(spy.count(), 0);
+
+	display->makeActive();
+	QCOMPARE(display->current_state, DISPLAY_FREEZED);
+	QCOMPARE(display->screensaver->isRunning(), false);
+	QVERIFY(bt_global::audio_states->currentState() == AudioStates::IDLE);
+	QCOMPARE(spy.count(), 1);
+	bt_global::status.check_password = false;
+}
+
 void TestDisplayControl::testMakeActivePostScreenOff()
 {
 	display->startTime();

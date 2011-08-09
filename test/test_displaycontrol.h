@@ -51,6 +51,7 @@ private slots:
 	void testMakeActive();
 	void testMakeActivePassword();
 	void testMakeActivePostScreensaver();
+	void testMakeActivePostScreensaverPassword();
 	void testMakeActivePostScreenOff();
 	void testScreensaverPostMakeActive();
 	void testScreenOffPostMakeActive();
