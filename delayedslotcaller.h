@@ -81,7 +81,23 @@ class DelayedSlotCaller : public QObject
 {
 Q_OBJECT
 public:
-	DelayedSlotCaller(bool single_shot = true);
+
+	/*!
+		\brief Controls the check performed on the signature of the slot.
+	*/
+	enum ArgumentsCheck
+	{
+		NO_CHECK,
+		CHECK
+	};
+
+	/*!
+		\brief Build the DelayedSlotCaller instance
+		This method takes as arguments the boolean \a single_shot, true if the
+		slot should be called only once, and \a check_arguments, which should be
+		equal to NO_CHECK if you want to skip the checks about the method signature.
+	*/
+	DelayedSlotCaller(bool single_shot = true, ArgumentsCheck check_arguments = CHECK);
 
 	~DelayedSlotCaller();
 
@@ -119,6 +135,7 @@ private:
 	int timer_id;
 	bool is_single_shot;
 	QMetaMethod method_to_call;
+	ArgumentsCheck check;
 
 	QList<ArgInterface*> arguments;
 

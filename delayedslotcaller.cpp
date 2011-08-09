@@ -26,11 +26,12 @@
 #include <QDebug>
 
 
-DelayedSlotCaller::DelayedSlotCaller(bool single_shot)
+DelayedSlotCaller::DelayedSlotCaller(bool single_shot, ArgumentsCheck check_arguments)
 {
 	timer_id = -1;
 	is_single_shot = single_shot;
 	target = 0;
+	check = check_arguments;
 }
 
 DelayedSlotCaller::~DelayedSlotCaller()
@@ -109,26 +110,29 @@ QGenericArgument DelayedSlotCaller::arg(int index)
 
 void DelayedSlotCaller::callSlot()
 {
-	const QList<QByteArray> &types = method_to_call.parameterTypes();
-
-	if (arguments.size() != types.size())
+	if (check == CHECK)
 	{
-		qWarning() << "DelayedSlotCaller::callSlot -> the arguments number does not"
-				<< "match the signature of the slot" << method_to_call.signature();
-		return;
-	}
+		const QList<QByteArray> &types = method_to_call.parameterTypes();
 
-	for (int i = 0; i < types.size(); ++i)
-	{
-		// QVariant wraps various types in a "strange" way: a QVariant(QVariant(type))
-		// has the same typeName of QVariant(type), so we exclude QVariant from the test.
-		if (arguments[i]->getTypeName() != types[i] && types[i] != "QVariant")
+		if (arguments.size() != types.size())
 		{
-			qWarning() << "DelayedSlotCaller::callSlot -> the argument number"
-				<< i + 1 << "of type" << QString(arguments[i]->getTypeName())
-				<< "does not match the signature of the slot" << method_to_call.signature();
-
+			qWarning() << "DelayedSlotCaller::callSlot -> the arguments number does not"
+					<< "match the signature of the slot" << method_to_call.signature();
 			return;
+		}
+
+		for (int i = 0; i < types.size(); ++i)
+		{
+			// QVariant wraps various types in a "strange" way: a QVariant(QVariant(type))
+			// has the same typeName of QVariant(type), so we exclude QVariant from the test.
+			if (arguments[i]->getTypeName() != types[i] && types[i] != "QVariant")
+			{
+				qWarning() << "DelayedSlotCaller::callSlot -> the argument number"
+					<< i + 1 << "of type" << QString(arguments[i]->getTypeName())
+					<< "does not match the signature of the slot" << method_to_call.signature();
+
+				return;
+			}
 		}
 	}
 

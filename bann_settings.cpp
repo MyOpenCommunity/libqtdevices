@@ -359,7 +359,7 @@ void PasswordChanger::checkPassword()
 		if (c == password)
 		{
 			toggleActivation();
-			DelayedSlotCaller *slot_caller = new DelayedSlotCaller;
+			DelayedSlotCaller *slot_caller = new DelayedSlotCaller(true, DelayedSlotCaller::NO_CHECK);
 			connect(slot_caller, SIGNAL(called()), slot_caller, SLOT(deleteLater()));
 			slot_caller->setSlot(this, SLOT(setStatus(PasswordStatus)), 0);
 			slot_caller->addArgument(static_cast<int>(CHECK_OLD_PASSWORD));
