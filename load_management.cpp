@@ -464,7 +464,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 	QVBoxLayout *vlayout = new QVBoxLayout(container);
 
 	vlayout->setSpacing(0);
-	vlayout->setContentsMargins(0, 0, 0, 0);
+	vlayout->setContentsMargins(0, 0, 0, 5);
 	vlayout->addWidget(top);
 	vlayout->addWidget(content, 1, Qt::AlignHCenter);
 
@@ -478,7 +478,7 @@ LoadDataPage::LoadDataPage(const QDomNode &config_node, LoadsDevice *d)
 		buttons_layout->addWidget(currency_button, 1, Qt::AlignCenter);
 	}
 	vlayout->addLayout(buttons_layout);
-	vlayout->addSpacing(18);
+	vlayout->addSpacing(13);
 #endif
 	buildPage(container, nav_bar, "", 0);
 }
