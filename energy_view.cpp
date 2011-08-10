@@ -86,6 +86,16 @@ namespace
 		l->addWidget(child, l->rowCount(), 1, 1, 1, Qt::AlignTop | Qt::AlignLeft);
 	}
 
+	Bann2Buttons *getBanner(QString primary_text)
+	{
+		Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
+		Bann2Buttons *bann = new BannLargeDisplay(bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
+				 primary_text);
+		bann->setCentralText("---");
+
+		return bann;
+	}
+
 	enum EnergyViewPage
 	{
 		DAILY_PAGE = 0,
@@ -97,7 +107,6 @@ namespace
 
 EnergyViewNavigation::EnergyViewNavigation()
 {
-
 #ifdef LAYOUT_TS_3_5
 	createButton(bt_global::skin->getImage("back"), SIGNAL(backClick()), 0);
 
@@ -294,17 +303,6 @@ void TimePeriodSelection::periodBackward()
 QString TimePeriodSelection::dateDisplayed()
 {
 	return date_period_label->text();
-}
-
-
-Bann2Buttons *getBanner(QString primary_text)
-{
-	Q_ASSERT_X(bt_global::skin->hasContext(), "getBanner", "Skin context not set!");
-	Bann2Buttons *bann = new BannLargeDisplay(bt_global::skin->getImage("bg_banner"), bt_global::skin->getImage("graph"),
-			 primary_text);
-	bann->setCentralText("---");
-
-	return bann;
 }
 
 
