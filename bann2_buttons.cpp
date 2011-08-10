@@ -128,9 +128,7 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 		main_layout->setColumnStretch(2, 0);
 	}
 	center_label->setScrollingText(banner_text);
-	QFont central_font = bt_global::font->get(text_font);
-
-	center_label->setFont(central_font);
+	center_label->setFont(bt_global::font->get(text_font));
 
 	initLabel(description, banner_description, bt_global::font->get(description_font));
 }
