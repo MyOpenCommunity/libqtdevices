@@ -35,6 +35,9 @@
 #include <QTimer>
 #include <QLCDNumber>
 
+#define LCD_INPUT_INTERVAL 500
+
+
 Bann2LinkedPages::Bann2LinkedPages(QWidget *parent) : Banner(parent)
 {
 }
@@ -335,11 +338,11 @@ void Bann2CentralButtons::initBanner(const QString &left, const QString &right, 
 		text->setText(banner_text);
 }
 
-#define INPUT_INTERVAL 500
 
 BannLCDRange::BannLCDRange(QWidget *parent) : Banner(parent)
 {
 	control_timer = new QTimer(this);
+	control_timer->setInterval(LCD_INPUT_INTERVAL);
 
 	minus = new BtButton(bt_global::skin->getImage("minus"));
 	minus->setAutoRepeat(true);
