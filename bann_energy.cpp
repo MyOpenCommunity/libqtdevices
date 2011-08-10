@@ -178,7 +178,7 @@ BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	current_value = rate.rate;
 
-	// TODO CONFIG_TS_3_5 use rate.description with new config
+	// TODO use rate.description with new config (when the descr tag will be no empty anymore)
 	initBanner(left, right, " ", FontManager::TEXT, descr, FontManager::TEXT);
 
 	left_button->setAutoRepeat(true);

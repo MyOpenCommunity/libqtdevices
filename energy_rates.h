@@ -88,7 +88,6 @@ public:
 	// updates the given rate and sends rateChanged() signal
 	void setRate(const EnergyRate &new_rate);
 
-	// CONFIG_TS_3_5 remove with new configuration
 	void setRateDescription(int rate_id, const QString &description);
 
 	// the global object containing energy rates

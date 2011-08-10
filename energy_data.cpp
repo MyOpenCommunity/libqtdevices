@@ -113,11 +113,7 @@ void EnergyData::loadTypes(const QDomNode &config_node, bool edit_rates)
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 
 	EnergyRates::energy_rates.loadRates();
-#ifdef CONFIG_TS_3_5
-	QList<QDomNode> families = getChildren(config_node, "energy_type");
-#else
 	QList<QDomNode> families = getChildren(config_node, "item");
-#endif
 
 	// display the button to edit rates if more than one family
 	if (edit_rates && EnergyRates::energy_rates.hasRates() && families.count() > 1)
@@ -314,7 +310,7 @@ void EditEnergyCost::showPage()
 
 void EditEnergyCost::addRate(int rate_id)
 {
-	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
+//	const EnergyRate &rate = EnergyRates::energy_rates.getRate(rate_id);
 
 	BannEnergyCost *b = new BannEnergyCost(rate_id, bt_global::skin->getImage("minus"),
 					       bt_global::skin->getImage("plus"),
@@ -329,7 +325,6 @@ void EditEnergyCost::saveRates()
 	for (int i = 0; i < page_content->bannerCount(); ++i)
 	{
 		BannEnergyCost *b = static_cast<BannEnergyCost *>(page_content->getBanner(i));
-
 		b->saveRate();
 	}
 
@@ -409,22 +404,13 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 	EnergyTable *table = new EnergyTable;
 	EnergyGraph *graph = new EnergyGraph;
 
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &item, getChildren(config_node, "item"))
-#else
 	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
-#endif
 	{
 		int mode = getTextChild(item, "mode").toInt();
 		QString measure = getTextChild(item, "measure");
 
-#ifdef CONFIG_TS_3_5
-		bool is_currency_enabled = getElement(item, "rate/ab").text().toInt();
-		QString where = getTextChild(item, "address");
-#else
 		bool is_currency_enabled = getElement(item, "rate/enabled").text().toInt();
 		QString where = getTextChild(item, "where");
-#endif
 		int rate_id = is_currency_enabled ? getElement(item, "rate/rate_id").text().toInt() : EnergyRates::INVALID_RATE;
 		int decimals = getDecimals(item);
 
@@ -468,7 +454,7 @@ bool EnergyInterface::checkTypeForCurrency(const QString &type, const QDomNode &
 	QString node_path;
 	switch (type.toInt())
 	{
-	case 0: //consumption
+	case 0: // consumption
 		node_path = "cons/ab";
 		break;
 	case 1: // production
