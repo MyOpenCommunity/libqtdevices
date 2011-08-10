@@ -45,17 +45,10 @@ typedef AdvancedAirConditioningDevice::Velocity Velocity;
 
 enum BannerType
 {
-#ifdef CONFIG_TS_3_5
-	AIR_SPLIT=74,                                 /*!< AIR conditioning single split (basic) */
-	AIR_GENERAL=75,                               /*!< AIR conditioning general split (basic) */
-	AIR_SPLIT_ADV=77,                             /*!< AIR conditioning single split (advanced) */
-	AIR_GENERAL_ADV=78,                           /*!< AIR conditioning general split (advanced) */
-#else
-	AIR_SPLIT=4001,                               /*!< AIR conditioning single split (basic) */
-	AIR_GENERAL=4002,                             /*!< AIR conditioning general split (basic) */
-	AIR_SPLIT_ADV=4003,                           /*!< AIR conditioning single split (advanced) */
-	AIR_GENERAL_ADV=4004,                         /*!< AIR conditioning general split (advanced) */
-#endif
+	AIR_SPLIT = 4001,                               /*!< AIR conditioning single split (basic) */
+	AIR_GENERAL = 4002,                             /*!< AIR conditioning general split (basic) */
+	AIR_SPLIT_ADV = 4003,                           /*!< AIR conditioning single split (advanced) */
+	AIR_GENERAL_ADV = 4004,                         /*!< AIR conditioning general split (advanced) */
 };
 
 AirConditionerStatus AirConditioningAdvanced::parseSettings(const QDomNode &values_node)
@@ -122,13 +115,9 @@ Banner *AirConditioning::getBanner(const QDomNode &item_node)
 	int id = getTextChild(item_node, "id").toInt();
 	SkinContext context(getTextChild(item_node, "cid").toInt());
 	QString descr = getTextChild(item_node, "descr");
-#ifdef CONFIG_TS_3_5
-	bool has_commands = !getChildren(item_node, "cmd").isEmpty();
-	QDomNode linked_page = item_node;
-#else
+
 	bool has_commands = !(getTextChild(item_node, "lnk_pageID").isEmpty());
 	QDomNode linked_page = getPageNodeFromChildNode(item_node, "lnk_pageID");
-#endif
 
 	Banner *b = 0;
 	switch (id)
@@ -218,11 +207,7 @@ void AirConditioning::loadItems(const QDomNode &config_node)
 SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 {
 	dev = d;
-#ifdef CONFIG_TS_3_5
-	int off_button = getElement(config_node, "off/list").text().toInt();
-#else
 	int off_button = getElement(config_node, "off/presence").text().toInt();
-#endif
 
 #ifdef LAYOUT_TS_3_5
 	NavigationBar *nav_bar;
@@ -254,11 +239,7 @@ SplitPage::SplitPage(const QDomNode &config_node, AirConditioningDevice *d)
 
 void SplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
-#else
 	foreach (const QDomNode &scenario, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
-#endif
 	{
 		SplitScenario *b = new SplitScenario(getTextChild(scenario, "descr"),
 			getTextChild(scenario, "command"), dev);
@@ -277,12 +258,7 @@ AdvancedSplitPage::AdvancedSplitPage(const QDomNode &config_node, AdvancedAirCon
 	single_page = 0;
 	dev = d;
 
-#ifdef CONFIG_TS_3_5
-	int off_button = getElement(config_node, "off/list").text().toInt();
-#else
 	int off_button = getElement(config_node, "off/presence").text().toInt();
-#endif
-
 	QString descr = getTextChild(config_node, "descr");
 	CustomScenario *custom = new CustomScenario(dev);
 	QDomNode params = getChildWithName(config_node, "par");
@@ -364,11 +340,7 @@ void AdvancedSplitPage::loadScenarios(const QDomNode &config_node, AdvancedAirCo
 {
 	int id = getTextChild(config_node, "id").toInt();
 
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
-#else
 	foreach (const QDomNode &scenario, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
-#endif
 	{
 		AdvancedSplitScenario *b = new AdvancedSplitScenario(AirConditioningAdvanced::parseSettings(scenario),
 			getTextChild(scenario, "descr"), d);
@@ -481,15 +453,10 @@ AirConditionerStatus SplitSettings::getCurrentStatus()
 void SplitSettings::readModeConfig(const QDomNode &mode_node)
 {
 	QList <int> modes;
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &val, getChildren(mode_node, "val"))
-		modes.append(val.toElement().text().toInt());
-#else
 	static const char *tags[] = { "off", "heating", "cooling", "fan", "dry", "automatic" };
 
 	for (int i = 0; i < 6; ++i)
 		modes.append(getTextChild(mode_node, tags[i]).toInt());
-#endif
 
 	mode = new SplitMode(modes, current_mode);
 }
@@ -506,23 +473,13 @@ void SplitSettings::readTempConfig(const QDomNode &temp_node)
 
 void SplitSettings::readSpeedConfig(const QDomNode &speed_node)
 {
-
-#ifdef CONFIG_TS_3_5
-	if (getTextChild(speed_node, "val1").toInt() != -1)
-#else
 	if (getTextChild(speed_node, "presence").toInt())
-#endif
 	{
 		QList <int> speeds;
-#ifdef CONFIG_TS_3_5
-		foreach (const QDomNode &val, getChildren(speed_node, "val"))
-			speeds.append(val.toElement().text().toInt());
-#else
 		static const char *tags[] = { "automatic", "low", "medium", "high", "silent" };
 
 		for (int i = 0; i < 5; ++i)
 			speeds.append(getTextChild(speed_node, tags[i]).toInt());
-#endif
 
 		speed = new SplitSpeed(speeds, current_fan_speed);
 	}
@@ -532,11 +489,7 @@ void SplitSettings::readSpeedConfig(const QDomNode &speed_node)
 
 void SplitSettings::readSwingConfig(const QDomNode &swing_node)
 {
-#ifdef CONFIG_TS_3_5
-	if (getTextChild(swing_node, "val1").toInt() != -1)
-#else
 	if (getTextChild(swing_node, "presence").toInt())
-#endif
 	{
 		Q_ASSERT_X(current_swing == 0 || current_swing == 1, "SplitSettings::readSwingConfig",
 			"Using a value that is not bool.");
@@ -603,18 +556,10 @@ GeneralSplitPage::GeneralSplitPage(const QDomNode &config_node)
 
 void GeneralSplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
-#else
 	foreach (const QDomNode &scenario, getChildren(config_node, "item"))
-#endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
-#ifdef CONFIG_TS_3_5
-		foreach (const QDomNode &split, getChildren(scenario, "split"))
-#else
 		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))
-#endif
 		{
 			int oid = getTextChild(split, "openserver_id").toInt();
 			AirConditioningDevice *dev = new AirConditioningDevice(getTextChild(split, "where"), oid);
@@ -634,18 +579,10 @@ AdvancedGeneralSplitPage::AdvancedGeneralSplitPage(const QDomNode &config_node)
 
 void AdvancedGeneralSplitPage::loadScenarios(const QDomNode &config_node)
 {
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &scenario, getChildren(config_node, "cmd"))
-#else
 	foreach (const QDomNode &scenario, getChildren(config_node, "item"))
-#endif
 	{
 		GeneralSplitScenario *b = new GeneralSplitScenario(getTextChild(scenario, "descr"));
-#ifdef CONFIG_TS_3_5
-		foreach (const QDomNode &split, getChildren(scenario, "split"))
-#else
 		foreach (const QDomNode &split, getChildren(getElement(scenario, "splits"), "item"))
-#endif
 		{
 			int oid = getTextChild(split, "openserver_id").toInt();
 			AdvancedAirConditioningDevice *dev = new AdvancedAirConditioningDevice(getTextChild(split, "where"), oid);
