@@ -87,6 +87,7 @@ class BannCurrentEnergy : public BannLargeDisplay
 {
 public:
 	BannCurrentEnergy(const QString &text, EnergyDevice *dev);
+	virtual QSize sizeHint() const;
 
 protected:
 	virtual void showEvent(QShowEvent *e);

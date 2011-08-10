@@ -29,6 +29,7 @@
 #include "loads_device.h"
 #include "generic_functions.h" // getBostikName
 #include "labels.h" // TextOnImageLabel
+#include "hardware_functions.h" // maxWidth
 
 #include <QLocale>
 #include <QDebug>
@@ -172,6 +173,14 @@ void BannCurrentEnergy::hideEvent(QHideEvent *e)
 	dev->requestCurrentUpdateStop();
 }
 
+QSize BannCurrentEnergy::sizeHint() const
+{
+#ifdef LAYOUT_TS_3_5
+	return QSize(maxWidth() - 10, center_icon->height() + 10);
+#else
+	return layout()->sizeHint();
+#endif
+}
 
 BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right, const QString &descr)
 {
