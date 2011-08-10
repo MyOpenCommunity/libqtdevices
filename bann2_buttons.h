@@ -140,6 +140,9 @@ protected:
 	ScrollingLabel *description;
 
 	QGridLayout *main_layout;
+	// A flag that avoids the standard behaviour and lets the central_label occupies
+	// all the space available.
+	bool maximize_text;
 
 private:
 	void createBanner();

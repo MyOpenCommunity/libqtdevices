@@ -107,7 +107,9 @@ AdvancedSplitScenario::AdvancedSplitScenario(const AirConditionerStatus &st, con
 	Bann2Buttons(parent)
 {
 	QString icon_cmd = bt_global::skin->getImage("split_cmd");
+	maximize_text = true;
 	initBanner(icon_cmd, QString(), descr);
+	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 	dev = d;
 	status = st;
 

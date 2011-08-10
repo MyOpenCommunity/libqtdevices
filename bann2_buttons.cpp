@@ -87,6 +87,7 @@ void Bann2Buttons::createBanner()
 {
 	center_icon = 0;
 	center_label = 0;
+	maximize_text = false;
 	description = createTextLabel(Qt::AlignCenter, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 
 	main_layout = new QGridLayout(this);
@@ -119,14 +120,19 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
 	center_label = new ScrollingLabel;
-	main_layout->addWidget(center_label, 0, 1, Qt::AlignCenter);
+	main_layout->addWidget(center_label, 0, 1, 1, right.isEmpty() && maximize_text ? 2 : 1, Qt::AlignCenter);
+
+	if (right.isEmpty())
+	{
+		if (maximize_text)
+			main_layout->removeWidget(right_button);
+		else
+			main_layout->setColumnStretch(2, 0);
+	}
 
 	initButton(left_button, left);
 	initButton(right_button, right);
-	if (right.isEmpty())
-	{
-		main_layout->setColumnStretch(2, 0);
-	}
+
 	center_label->setScrollingText(banner_text);
 	center_label->setFont(bt_global::font->get(text_font));
 
