@@ -560,9 +560,11 @@ void BtMain::loadConfiguration()
 		page_default = id_default == HOME_PAGE ? home_page : getSectionPageFromId(id_default);
 	}
 
+#ifdef LAYOUT_TS_3_5
 #if defined(BT_HARDWARE_X11) || defined(BT_HARDWARE_DM365)
 	TransitionWidget *tr = new BlendingTransition;
 	page_container->installTransitionWidget(tr);
+#endif
 #endif
 }
 
