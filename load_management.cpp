@@ -42,15 +42,10 @@
 #include <QDate>
 
 
-enum
+enum LoadType
 {
-#ifdef CONFIG_TS_3_5
-	LOAD_WITH_CU=80,
-	LOAD_WITHOUT_CU=81,
-#else
-	LOAD_WITH_CU=18001,
-	LOAD_WITHOUT_CU=18002,
-#endif
+	LOAD_WITH_CU = 18001,    // Load with central unit
+	LOAD_WITHOUT_CU = 18002, // Load without central unit
 };
 
 
@@ -92,11 +87,7 @@ namespace
 	bool isRateEnabled(const QDomNode &n)
 	{
 		int tmp;
-#ifdef CONFIG_TS_3_5
-		if (tryConvert(n, "rate/ab", &tmp))
-#else
 		if (tryConvert(n, "rate/enabled", &tmp))
-#endif
 			return (tmp == 1);
 		else
 			return false;

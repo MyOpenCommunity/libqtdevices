@@ -33,16 +33,12 @@
 
 #include <QDebug>
 
-enum
+enum SystemType
 {
-#ifdef CONFIG_TS_10
 	CLASS_STOPNGO = 6001,
 	LOAD_DIAGNOSTIC = 6002
-#else
-	CLASS_STOPNGO = 59,
-	LOAD_DIAGNOSTIC = 82
-#endif
 };
+
 
 SupervisionMenu::SupervisionMenu(const QDomNode &config_node)
 {
@@ -63,15 +59,8 @@ int SupervisionMenu::sectionId() const
 
 void SupervisionMenu::loadItems(const QDomNode &config_node)
 {
-#ifdef CONFIG_TS_3_5
-	foreach (const QDomNode &node, getChildren(config_node, ""))
-	{
-		if (!node.nodeName().startsWith("class") && node.nodeName() != "load")
-			continue;
-#else
 	foreach (const QDomNode &node, getChildren(config_node, "item"))
 	{
-#endif
 		SkinContext cxt(getTextChild(node, "cid").toInt());
 		int id = getTextChild(node, "id").toInt();
 
@@ -82,11 +71,7 @@ void SupervisionMenu::loadItems(const QDomNode &config_node)
 
 		page_content->appendBanner(b);
 
-#ifdef CONFIG_TS_3_5
-		QDomNode page_node = node;
-#else
 		QDomNode page_node = getPageNodeFromChildNode(node, "lnk_pageID");
-#endif
 
 		switch (id)
 		{
