@@ -26,17 +26,15 @@
 #include "probe_device.h"
 #include "main.h" // (*bt_global::config)
 #include "scaleconversion.h" // celsiusString, fahrenheitString, toCelsius, toFahrenheit
-#include "generic_functions.h" // setCfgValue()
 #include "airconditioning.h" // AdvancedSplitPage
 #include "state_button.h"
 
-#include <QLabel> // BannerText
 #include <QDebug>
+
 #include <cmath> // round
 
 
-SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe) :
-	Bann2Buttons(0)
+SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningInterface *d, NonControlledProbeDevice *d_probe)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_forward = bt_global::skin->getImage("forward");
@@ -93,7 +91,7 @@ void AdvancedSingleSplit::setSerNum(int ser)
 }
 
 
-GeneralSplit::GeneralSplit(QString descr, bool show_right_button) : Bann2Buttons(0)
+GeneralSplit::GeneralSplit(QString descr, bool show_right_button)
 {
 	QString img_off = bt_global::skin->getImage("off");
 	QString img_air_gen = bt_global::skin->getImage("air_general");
@@ -122,9 +120,7 @@ void AdvancedSplitScenario::onButtonClicked()
 }
 
 
-
-CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d) :
-	Bann2Buttons(0)
+CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d)
 {
 	initBanner(QString(), bt_global::skin->getImage("custom_button"), bt_global::skin->getImage("split_settings"), QString());
 	dev = d;
@@ -136,10 +132,7 @@ void CustomScenario::splitValuesChanged(const AirConditionerStatus &st)
 }
 
 
-
-
-SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode) :
-	Bann2Buttons(0)
+SplitTemperature::SplitTemperature(int init_temp, int level_max, int level_min, int step, int initial_mode)
 {
 	icon_plus = bt_global::skin->getImage("plus");
 	icon_minus = bt_global::skin->getImage("minus");
@@ -371,7 +364,7 @@ bool SplitSwing::swing()
 }
 
 
-SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d) : Bann2Buttons(0)
+SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d)
 {
 	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	command = cmd;
@@ -385,7 +378,7 @@ void SplitScenario::sendScenarioCommand()
 }
 
 
-GeneralSplitScenario::GeneralSplitScenario(QString descr) : Bann2Buttons(0)
+GeneralSplitScenario::GeneralSplitScenario(QString descr)
 {
 	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
