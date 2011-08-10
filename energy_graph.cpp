@@ -311,7 +311,11 @@ void EnergyTable::setData(const QMap<int, double> &data)
 
 EnergyTableContent::EnergyTableContent(int n_dec)
 {
+#ifdef LAYOUT_TS_10
 	setContentsMargins(10, 5, 10, 0);
+#else
+	setContentsMargins(5, 5, 5, 5);
+#endif
 
 	rows_per_page = 8;
 	current_page = 0;
