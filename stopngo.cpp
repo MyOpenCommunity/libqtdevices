@@ -21,7 +21,6 @@
 
 #include "stopngo.h"
 #include "fontmanager.h" // bt_global::font
-#include "icondispatcher.h" // bt_global::icons_cache
 #include "devices_cache.h" // bt_global::devices_cache
 #include "stopandgo_device.h"
 #include "skinmanager.h"
@@ -36,7 +35,7 @@
 
 #include <QDebug>
 
-enum
+enum BannerType
 {
 	STOP_AND_GO = 6101,
 	STOP_AND_GO_PLUS = 6102,

@@ -407,7 +407,6 @@ EnergyView::EnergyView(QString measure, QString energy_type, QString address, in
 	}
 	cumulative_day_banner_timer_id = startTimer(POLLING_CUMULATIVE_DAY * 1000);
 
-	// this must be after creating bannNavigazione, otherwise segfault
 	showBannerWidget();
 
 	// to switch back to the graph view
