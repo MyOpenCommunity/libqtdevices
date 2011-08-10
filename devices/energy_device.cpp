@@ -366,7 +366,6 @@ void EnergyDevice::requestCurrentUpdateStart()
 	current_updates->requestCurrentUpdateStart();
 }
 
-
 void EnergyDevice::requestCurrentUpdateStop()
 {
 	current_updates->requestCurrentUpdateStop();

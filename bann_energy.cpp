@@ -39,6 +39,12 @@
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
 
+// It's important that MAX_HOURS is more than max_time below
+#define MAX_HOURS 43
+// this is 255 values * 10 min = 42h 30min
+// This is limit in the protocol; it supports 254 values, each meaning 10' activation time.
+static BtTime max_time(42, 20, 0);
+
 namespace
 {
 	QString formatNoSeconds(const BtTime &time)
@@ -48,10 +54,9 @@ namespace
 	}
 }
 
-// BannEnergyInterface implementation
 
-BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description, EnergyDevice *d) :
-	Bann2Buttons(0)
+
+BannEnergyInterface::BannEnergyInterface(int rate_id, bool is_ele, const QString &description, EnergyDevice *d)
 {
 	dev = d;
 
@@ -137,7 +142,6 @@ void BannEnergyInterface::rateChanged(int rate_id)
 }
 
 
-
 BannLargeDisplay::BannLargeDisplay(const QString &display_background, const QString &right, const QString &descr)
 {
 	center_icon = new TextOnImageLabel;
@@ -150,8 +154,6 @@ BannLargeDisplay::BannLargeDisplay(const QString &display_background, const QStr
 	initLabel(description, descr, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
 
-
-// BannCurrentEnergy implementation
 
 BannCurrentEnergy::BannCurrentEnergy(const QString &text, EnergyDevice *_dev) :
 	BannLargeDisplay(bt_global::skin->getImage("bg_banner"), QString(), text)
@@ -171,10 +173,7 @@ void BannCurrentEnergy::hideEvent(QHideEvent *e)
 }
 
 
-// BannEnergyCost implementation
-
-BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right,
-			       const QString &descr)
+BannEnergyCost::BannEnergyCost(int rate_id, const QString &left, const QString &right, const QString &descr)
 {
 	rate = EnergyRates::energy_rates.getRate(rate_id);
 	current_value = rate.rate;
@@ -237,10 +236,7 @@ int BannEnergyCost::getRateId()
 }
 
 
-// BannLoadDiagnostic implementation
-
-BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description) :
-	Bann2Buttons(0)
+BannLoadDiagnostic::BannLoadDiagnostic(device *dev, const QString &description)
 {
 	states[LoadsDevice::LOAD_OK] = bt_global::skin->getImage("state_icon_ok");
 	states[LoadsDevice::LOAD_WARNING] = bt_global::skin->getImage("state_icon_warning");
@@ -273,9 +269,7 @@ void BannLoadDiagnostic::setState(int state)
 }
 
 
-// BannLoadNoCU implementation
-
-BannLoadNoCU::BannLoadNoCU(const QString &descr) : Bann3ButtonsLabel(0)
+BannLoadNoCU::BannLoadNoCU(const QString &descr)
 {
 	initBanner(QString(), QString(), QString(), bt_global::skin->getImage("load"), bt_global::skin->getImage("info"),
 		ENABLED, NOT_FORCED, descr);
@@ -287,9 +281,7 @@ void BannLoadNoCU::connectRightButton(Page *p)
 }
 
 
-// BannLoadWithCU implementation
-
-BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t) : Bann3ButtonsLabel(0)
+BannLoadWithCU::BannLoadWithCU(const QString &descr, LoadsDevice *d, Type t)
 {
 	QString right = t == ADVANCED_MODE ? bt_global::skin->getImage("info") : QString();
 	initBanner(bt_global::skin->getImage("forced"), bt_global::skin->getImage("not_forced"), bt_global::skin->getImage("on"),
@@ -341,12 +333,6 @@ void BannLoadWithCU::changeLeftFunction(bool is_forced)
 		connect(left_button, SIGNAL(clicked()), SIGNAL(deactivateDevice()));
 }
 
-
-// It's important that MAX_HOURS is more than max_time below
-#define MAX_HOURS 43
-// this is 255 values * 10 min = 42h 30min
-// This is limit in the protocol; it supports 254 values, each meaning 10' activation time.
-static BtTime max_time(42, 20, 0);
 
 DeactivationTime::DeactivationTime(const BtTime &start_time) :
 	current_time(start_time)
