@@ -369,6 +369,7 @@ bool SplitSwing::swing()
 
 SplitScenario::SplitScenario(QString descr, QString cmd, AirConditioningDevice *d)
 {
+	maximize_text = true;
 	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	command = cmd;
 	dev = d;
@@ -383,6 +384,7 @@ void SplitScenario::sendScenarioCommand()
 
 GeneralSplitScenario::GeneralSplitScenario(QString descr)
 {
+	maximize_text = true;
 	initBanner(bt_global::skin->getImage("split_cmd"), QString(), descr);
 	connect(left_button, SIGNAL(clicked()), SLOT(sendScenarioCommand()));
 }
