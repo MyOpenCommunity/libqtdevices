@@ -88,9 +88,10 @@ private slots:
 	void decMin();
 	void incSec();
 	void decSec();
+
 private:
 	void displayTime();
-private:
+
 	BtTime _time;
 #ifdef LAYOUT_TS_10
 	QLabel *hour, *minute, *second;

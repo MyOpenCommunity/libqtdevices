@@ -31,27 +31,29 @@
 #include <QLCDNumber>
 
 
-BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
+namespace
 {
-	BtButton *btn = new BtButton(parent);
-	btn->setImage(img);
-	if (autorepeat)
-		btn->setAutoRepeat(true);
-	return btn;
-}
+	BtButton *getButton(QString img, QWidget *parent, bool autorepeat)
+	{
+		BtButton *btn = new BtButton(parent);
+		btn->setImage(img);
+		if (autorepeat)
+			btn->setAutoRepeat(true);
+		return btn;
+	}
 
 #ifdef LAYOUT_TS_10
+	QLabel *getLabel(QString text = "")
+	{
+		QLabel *l = new QLabel(text);
+		l->setFont(bt_global::font->get(FontManager::DATE_TIME));
+		l->setAlignment(Qt::AlignCenter);
 
-QLabel *getLabel(QString text = "")
-{
-	QLabel *l = new QLabel(text);
-	l->setFont(bt_global::font->get(FontManager::DATE_TIME));
-	l->setAlignment(Qt::AlignCenter);
-
-	return l;
-}
-
+		return l;
+	}
 #endif
+
+}
 
 BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		: QWidget(parent),
