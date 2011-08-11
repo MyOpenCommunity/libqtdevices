@@ -29,6 +29,7 @@
 #include "airconditioning.h" // AdvancedSplitPage
 #include "state_button.h"
 
+#include <QGridLayout>
 #include <QDebug>
 
 #include <cmath> // round
@@ -123,6 +124,8 @@ void AdvancedSplitScenario::onButtonClicked()
 CustomScenario::CustomScenario(AdvancedAirConditioningDevice *d)
 {
 	initBanner(QString(), bt_global::skin->getImage("custom_button"), bt_global::skin->getImage("split_settings"), QString());
+	// A quick & dirty way to mantain a correct alignment for the center_label and right_button.
+	main_layout->setColumnStretch(0, 2);
 	dev = d;
 }
 
