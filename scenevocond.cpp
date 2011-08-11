@@ -35,8 +35,6 @@ namespace
 	inline PullMode getPullMode(const QDomNode &node)
 	{
 		QDomNode element = getChildWithName(node, "pul");
-		if (element.isNull())
-			return NOT_PULL;
 		Q_ASSERT_X(!element.isNull(), "getPullMode", qPrintable(QString("Pull device node %1 without <pul> child").arg(getTextChild(node, "where"))));
 		bool ok;
 		int value = element.toElement().text().toInt(&ok);
