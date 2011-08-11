@@ -152,38 +152,6 @@ QString getBostikName(const QString &name, const QString &suffix);
 */
 QString getPressName(QString name);
 
-
-#ifdef CONFIG_TS_3_5
-
-/*!
-	\ingroup Core
-	\brief Save one or more values in the configuration file related to a specific object.
-
-	This is an overloaded member function, provided for convenience.
-	\note This function is for compatibility with the old configuration file of touchscreen 3.5''.
-*/
-void setCfgValue(QMap<QString, QString> data, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
-
-/*!
-	\ingroup Core
-	\brief Save one or more values in the configuration file related to a specific object.
-
-	This is an overloaded member function, provided for convenience.
-	\note This function is for compatibility with the old configuration file of touchscreen 3.5''.
-*/
-void setCfgValue(QString field, QString value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
-
-/*!
-	\ingroup Core
-	\brief Save one or more values in the configuration file related to a specific object.
-
-	This is an overloaded member function, provided for convenience.
-	\note This function is for compatibility with the old configuration file of touchscreen 3.5''.
-*/
-void setCfgValue(QString field, int value, int item_id, int num_item=1, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
-
-#else
-
 /*!
 	\ingroup Core
 	\brief Save one or more values in the configuration file related to a specific object.
@@ -217,7 +185,6 @@ void setCfgValue(QString field, QString value, int item_id, const QString &filen
 */
 void setCfgValue(QString field, int value, int item_id, const QString &filename=MY_FILE_USER_CFG_DEFAULT);
 
-#endif
 
 /*!
 	\ingroup Core
@@ -261,13 +228,9 @@ namespace DateConversions
 		\ingroup Core
 		\brief The default separator used in dates
 
-		It corresponds to '.' on the 3.5" touchscreen, '/' on the 10" one.
+		It corresponds to '/'.
 	*/
-#ifdef CONFIG_TS_3_5
-	const char separator = '.';
-#else
 	const char separator = '/';
-#endif
 
 	/*!
 		\ingroup Core

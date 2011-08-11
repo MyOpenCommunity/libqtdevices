@@ -84,13 +84,9 @@ Page *getSectionPageFromId(int id)
 
 Page *getSectionPage(int page_id)
 {
-#ifdef CONFIG_TS_3_5
-	QDomNode page_node = getPageNode(page_id);
-	int id = page_id;
-#else
 	QDomNode page_node = getPageNodeFromPageId(page_id);
 	int id = getTextChild(page_node, "id").toInt();
-#endif
+
 	Q_ASSERT_X(!page_node.isNull(), "getSectionPage", qPrintable(QString("Page node null for page id: %1").arg(page_id)));
 
 	// A section page (with the same page_id) can be built only once.

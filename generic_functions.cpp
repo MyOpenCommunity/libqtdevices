@@ -271,12 +271,8 @@ bool writeCfgFile(const QDomDocument &doc, const QString &filename)
 }
 
 // updates a single configuration item in the given document
-void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id, int serial_number)
+void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id)
 {
-#ifdef CONFIG_TS_3_5
-	QDomNode n = findXmlNode(doc, QRegExp(".*"), item_id, serial_number);
-#else
-	Q_UNUSED(serial_number);
 	QDomElement gui = getElement(doc.documentElement(), "gui");
 	QDomNode n;
 
@@ -286,7 +282,6 @@ void doSetCfgValue(QDomDocument &doc, QMap<QString, QString> data, int item_id, 
 		if (!n.isNull())
 			break;
 	}
-#endif
 	Q_ASSERT_X(!n.isNull(), "setCfgValue", qPrintable(QString("No object found with id %1").arg(item_id)));
 
 	// TODO maybe refactor & move to xml_functions.cpp/h
@@ -331,14 +326,13 @@ Q_OBJECT
 	{
 		QMap<QString, QString> data;
 		int item_id;
-		int serial_number; // CONFIG_TS_3_5 only used with old config file
 
-		ItemValue(QMap<QString, QString> _data, int _item_id, int _serial_number) :
-			data(_data), item_id(_item_id), serial_number(_serial_number) {}
+		ItemValue(QMap<QString, QString> _data, int _item_id) :
+			data(_data), item_id(_item_id) {}
 
 		bool isSameItem(const ItemValue &other)
 		{
-			return item_id == other.item_id && serial_number == other.serial_number;
+			return item_id == other.item_id;
 		}
 	};
 
@@ -370,7 +364,7 @@ public:
 	DelayedConfigWrite();
 
 	// enqueue configuration values update and restart the write timer
-	void queueCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename);
+	void queueCfgValue(QMap<QString, QString> data, int item_id, const QString &filename);
 	void queueGlobalValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename);
 
 private slots:
@@ -411,9 +405,9 @@ void addValue(QList<T> &array, const T &value)
 	array.append(value);
 }
 
-void DelayedConfigWrite::queueCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
+void DelayedConfigWrite::queueCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
 {
-	addValue(queued_actions[filename].item_values, ItemValue(data, item_id, serial_number));
+	addValue(queued_actions[filename].item_values, ItemValue(data, item_id));
 	start();
 }
 
@@ -457,7 +451,7 @@ void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actio
 			doSetGlobalCfgValue(doc, val.root_name, val.data, val.tag_name, val.id_value);
 
 		foreach (ItemValue val, queued_actions[filename].item_values)
-			doSetCfgValue(doc, val.data, val.item_id, val.serial_number);
+			doSetCfgValue(doc, val.data, val.item_id);
 
 		if (!writeCfgFile(doc, filename))
 		{
@@ -471,27 +465,17 @@ void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actio
 #endif
 }
 
-#ifdef CONFIG_TS_3_5
-void setCfgValue(QMap<QString, QString> data, int item_id, int serial_number, const QString &filename)
-#else
 void setCfgValue(QMap<QString, QString> data, int item_id, const QString &filename)
-#endif
 {
 	if (!bt_global::config->contains(INIT_COMPLETE))
 	{
 		qDebug() << "Not writing to configuration during init";
-
 		return;
 	}
-
-#ifdef CONFIG_TS_3_5
-	delayed_config()->queueCfgValue(data, item_id, serial_number, filename);
-#else
-	delayed_config()->queueCfgValue(data, item_id, -1, filename);
-#endif
+	delayed_config()->queueCfgValue(data, item_id, filename);
 }
 
-// TODO rewrite setCfgValue using setGlobalCfgValue when removing CONFIG_TS_3_5
+// TODO rewrite setCfgValue using setGlobalCfgValue
 void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, const QString &tag_name, int id_value, const QString &filename)
 {
 	if (!bt_global::config->contains(INIT_COMPLETE))
@@ -503,24 +487,6 @@ void setGlobalCfgValue(const QString &root_name, QMap<QString, QString> data, co
 
 	delayed_config()->queueGlobalValue(root_name, data, tag_name, id_value, filename);
 }
-
-#ifdef CONFIG_TS_3_5
-
-void setCfgValue(QString field, QString value, int item_id, int num_item, const QString &filename)
-{
-	QMap<QString, QString> m;
-	m[field] = value;
-	setCfgValue(m, item_id, num_item, filename);
-}
-
-void setCfgValue(QString field, int value, int item_id, int num_item, const QString &filename)
-{
-	QMap<QString, QString> m;
-	m[field] = QString::number(value);
-	setCfgValue(m, item_id, num_item, filename);
-}
-
-#else
 
 void setCfgValue(QString field, QString value, int item_id, const QString &filename)
 {
@@ -535,8 +501,6 @@ void setCfgValue(QString field, int value, int item_id, const QString &filename)
 	m[field] = QString::number(value);
 	setCfgValue(m, item_id, filename);
 }
-
-#endif
 
 int localVolumeToAmplifier(int vol)
 {

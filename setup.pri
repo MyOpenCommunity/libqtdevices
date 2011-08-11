@@ -27,7 +27,6 @@ TEMPLATE = app
 
 # You have to define:
 # LAYOUT = ts_3_5|ts_10
-# CONF_FILE = ts_3_5|ts_10
 # before including this file in the project
 
 # Change target name, to something like BTouch.arm or BTouch.x86
@@ -38,16 +37,8 @@ contains(LAYOUT, ts_10) {
 } else {
 	DEFINES += LAYOUT_TS_3_5
 }
+
 TRGT_NAME = BTouch
-
-contains(CONF_FILE, ts_10) {
-	DEFINES += CONFIG_TS_10
-	message(Using TS 10\'\' config file.)
-} else {
-	DEFINES += CONFIG_TS_3_5
-	message(Using TS 3.5\'\' config file.)
-}
-
 
 !isArm() {
 	message(x86 architecture detected.)
