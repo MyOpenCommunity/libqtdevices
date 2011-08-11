@@ -25,6 +25,7 @@
 #include "skinmanager.h" // bt_global::skin
 #include "xml_functions.h" // getTextChild
 #include "scenevodevicescond.h"
+#include "datetime.h" //BtTimeEdit
 
 #include <QLabel>
 
@@ -56,17 +57,17 @@ void ScenEvoCondition::set_serial_number(int n)
 }
 
 
-ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node) :
-	time_edit(this)
+ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node)
 {
+	time_edit = new BtTimeEdit(this);
 	item_id = _item_id;
 
 	QString h = getTextChild(config_node, "hour");
 	QString m = getTextChild(config_node, "minute");
-	time_edit.setMaxHours(24);
-	time_edit.setMaxMinutes(60);
+	time_edit->setMaxHours(24);
+	time_edit->setMaxMinutes(60);
 
-	time_edit.setTime(QTime(h.toInt(), m.toInt(), 0));
+	time_edit->setTime(QTime(h.toInt(), m.toInt(), 0));
 
 	timer.setSingleShot(true);
 	connect(&timer, SIGNAL(timeout()), SLOT(scaduta()));
@@ -84,7 +85,7 @@ ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_
 	main_layout->setSpacing(0);
 	main_layout->setContentsMargins(0, 5, 0, 10);
 #endif
-	main_layout->addWidget(&time_edit, 0, Qt::AlignHCenter);
+	main_layout->addWidget(time_edit, 0, Qt::AlignHCenter);
 
 	cond_time.setHMS(h.toInt(), m.toInt(), 0);
 	setupTimer();
@@ -108,7 +109,7 @@ void ScenEvoTimeCondition::setupTimer()
 
 void ScenEvoTimeCondition::Apply()
 {
-	BtTime tmp = time_edit.time();
+	BtTime tmp = time_edit->time();
 	cond_time.setHMS(tmp.hour(), tmp.minute(), 0);
 	setupTimer();
 }
@@ -131,7 +132,7 @@ void ScenEvoTimeCondition::save()
 
 void ScenEvoTimeCondition::reset()
 {
-	time_edit.setTime(cond_time);
+	time_edit->setTime(cond_time);
 }
 
 

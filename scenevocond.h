@@ -23,11 +23,12 @@
 #define _SCENEVOCOND_H_
 
 #include "main.h"
-#include "datetime.h" //BtTimeEdit
 
 #include <QTimer>
+#include <QWidget>
+#include <QTime>
 
-
+class BtTimeEdit;
 class BtButton;
 class DeviceCondition;
 
@@ -95,7 +96,7 @@ private:
 	QTime cond_time;
 	BtButton *bottom_left, *bottom_center, *bottom_right;
 
-	BtTimeEdit time_edit;
+	BtTimeEdit *time_edit;
 	QTimer timer;
 };
 
