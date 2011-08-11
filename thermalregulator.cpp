@@ -284,7 +284,11 @@ PageManualTimed::PageManualTimed(ThermalDevice4Zones *dev, TemperatureScale scal
 #ifdef LAYOUT_TS_10
 	main_layout->insertWidget(2, time_edit, 0, Qt::AlignHCenter);
 #else
-	main_layout->insertWidget(2, time_edit);
+	QHBoxLayout *time_layout = new QHBoxLayout;
+	time_layout->setSpacing(0);
+	time_layout->setContentsMargins(10, 0, 10, 0);
+	time_layout->addWidget(time_edit);
+	main_layout->insertLayout(2, time_layout);
 #endif
 
 	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
