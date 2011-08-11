@@ -33,16 +33,6 @@
 #include <QDebug>
 #include <QList>
 
-#ifdef CONFIG_TS_3_5
-enum BannerType
-{
-	BANN_SCENARIO = 4,
-	SCENARIO_MODULE = 29,
-	PPT_SCENARIO = 43,
-	SCENARIO_EVOLVED = 38,
-	SCHEDULED_SCENARIO = 39,
-};
-#else
 enum BannerType
 {
 	BANN_SCENARIO = 1001,
@@ -51,7 +41,7 @@ enum BannerType
 	SCENARIO_EVOLVED = 9001,
 	SCHEDULED_SCENARIO = 9002,
 };
-#endif
+
 
 Scenario::Scenario(const QDomNode &config_node)
 {
@@ -89,20 +79,6 @@ Banner *Scenario::getBanner(const QDomNode &item_node)
 		QString action;
 		bool enabled;
 
-#ifdef CONFIG_TS_3_5
-		int item_id = 0;
-		QDomNode time_node = getChildWithName(item_node, "condH");
-
-		if (!time_node.isNull() && getTextChild(time_node, "value").toInt())
-			time_cond = new ScenEvoTimeCondition(item_id, time_node);
-
-		QDomNode device_node = getChildWithName(item_node, "condDevice");
-		if (!device_node.isNull() && getTextChild(device_node, "value").toInt())
-			device_cond = new ScenEvoDeviceCondition(0, device_node);
-
-		action = getElement(item_node, "action/open").text();
-		enabled = getTextChild(item_node, "enable").toInt();
-#else
 		int item_id = getTextChild(item_node, "itemID").toInt();
 		QDomNode time_node = getElement(item_node, "scen/time");
 		if (!time_node.isNull() && getTextChild(time_node, "status").toInt())
@@ -114,7 +90,7 @@ Banner *Scenario::getBanner(const QDomNode &item_node)
 
 		action = getElement(item_node, "scen/action/open").text();
 		enabled = getElement(item_node, "scen/status").text().toInt();
-#endif
+
 		if (time_cond)
 			QObject::connect(bt_global::btmain, SIGNAL(resettimer()), time_cond, SLOT(setupTimer()));
 
@@ -130,16 +106,6 @@ Banner *Scenario::getBanner(const QDomNode &item_node)
 			actions << QString();
 
 		QStringList names;
-#ifdef CONFIG_TS_3_5
-		// these must be in the order: unable, start, stop, disable (the same given by actions above)
-		names << "unable" << "start" << "stop" << "disable";
-		for (int i = 0; i < names.size(); ++i)
-		{
-			QDomNode node = getChildWithName(item_node, names[i]);
-			if (!node.isNull() && getTextChild(node, "value").toInt())
-				actions[i] = getTextChild(node, "open");
-		}
-#else
 		// these must be in the order: enable, start, stop, disable (the same given by actions above)
 		names << "enable" << "start" << "stop" << "disable";
 		for (int i = 0; i < names.size(); ++i)
@@ -148,7 +114,6 @@ Banner *Scenario::getBanner(const QDomNode &item_node)
 				actions[i] = getElement(item_node, QString("schedscen/") + names[i] + "/open").text();
 		}
 
-#endif
 		b = new ScheduledScenario(actions[0], actions[1], actions[2], actions[3], descr);
 		break;
 	}

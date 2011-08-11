@@ -28,10 +28,6 @@
 
 #include <QLabel>
 
-#ifdef CONFIG_TS_3_5
-#define SCENARIO_EVOLUTO 38
-#endif
-
 
 // TODO remove after debugging is complete
 namespace
@@ -130,15 +126,9 @@ void ScenEvoTimeCondition::save()
 	qDebug("ScenEvoTimeCondition::save()");
 
 	QMap<QString, QString> data;
-#ifdef CONFIG_TS_3_5
-	data["condH/hour"] = cond_time.toString("hh");
-	data["condH/minute"] = cond_time.toString("mm");
-	setCfgValue(data, SCENARIO_EVOLUTO, get_serial_number());
-#else
 	data["scen/time/hour"] = cond_time.toString("hh");
 	data["scen/time/minute"] = cond_time.toString("mm");
 	setCfgValue(data, item_id);
-#endif
 }
 
 void ScenEvoTimeCondition::reset()
@@ -156,12 +146,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 	main_layout->setSpacing(0);
 
 	QString trigger = getTextChild(config_node, "trigger");
-
-#ifdef CONFIG_TS_3_5
-	int condition_type = getTextChild(config_node, "value").toInt();
-#else
 	int condition_type = getTextChild(config_node, "objectID").toInt();
-#endif
 
 	description = getTextChild(config_node, "descr");
 	QString w = getTextChild(config_node, "where");
@@ -230,11 +215,7 @@ void ScenEvoDeviceCondition::save()
 {
 	qDebug("ScenEvoDeviceCondition::save()");
 	QString s = device_cond->getConditionAsString();
-#ifdef CONFIG_TS_3_5
-	setCfgValue("condDevice/trigger", s, SCENARIO_EVOLUTO, get_serial_number());
-#else
 	setCfgValue("scen/device/trigger", s, item_id);
-#endif
 	device_cond->reset();
 }
 
