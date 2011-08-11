@@ -378,12 +378,12 @@ void BtDateEdit::decYear()
 }
 
 
-
 PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_past_dates)
-	: title_widget("Change title dynamically", TITLE_HEIGHT)
 {
-	content.setLayout(&main_layout);
+	QWidget *content = new QWidget;
+	content->setLayout(&main_layout);
 
+	title_widget = new PageTitleWidget("Change title dynamically", TITLE_HEIGHT);
 	BtButton *program = new BtButton(extra_button_icon);
 
 	date_edit = new BtDateEdit(this);
@@ -402,7 +402,7 @@ PageSetDateTime::PageSetDateTime(const QString &extra_button_icon, bool allow_pa
 
 	NavigationBar *nav = new NavigationBar;
 	nav->displayScrollButtons(false);
-	buildPage(&content, nav, &title_widget);
+	buildPage(content, nav, title_widget);
 
 	connect(program, SIGNAL(clicked()), SLOT(performAction()));
 	connect(nav, SIGNAL(backClick()), SIGNAL(Closed()));
@@ -420,7 +420,7 @@ BtTime PageSetDateTime::time()
 
 void PageSetDateTime::setTitle(QString title)
 {
-	title_widget.setTitle(title);
+	title_widget->setTitle(title);
 }
 
 void PageSetDateTime::setDateTime(const QDateTime &dt)

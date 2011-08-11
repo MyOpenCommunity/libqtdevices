@@ -164,8 +164,7 @@ private slots:
 	void performAction();
 
 private:
-	PageTitleWidget title_widget;
-	QWidget content;
+	PageTitleWidget *title_widget;
 	QVBoxLayout main_layout;
 	QHBoxLayout top_layout;
 	BtDateEdit *date_edit;
