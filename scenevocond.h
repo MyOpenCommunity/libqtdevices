@@ -39,10 +39,6 @@ class DeviceCondition;
 class ScenEvoCondition : public QWidget
 {
 Q_OBJECT
-public:
-	void set_serial_number(int);
-	int get_serial_number();
-
 public slots:
 	/*!
 		\brief Applies changes to the condition.
@@ -67,9 +63,6 @@ signals:
 
 protected:
 	int item_id;
-
-private:
-	int serial_number;
 };
 
 

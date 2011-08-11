@@ -124,8 +124,6 @@ private slots:
 
 private:
 	QString action, enable_icon, disable_icon;
-	int serial_number;
-	static int next_serial_number;
 	bool enabled;
 	int item_id;
 	ScenEvoTimeCondition *time_cond;

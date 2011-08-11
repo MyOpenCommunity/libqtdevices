@@ -46,17 +46,6 @@ namespace
 }
 
 
-int ScenEvoCondition::get_serial_number()
-{
-	return serial_number;
-}
-
-void ScenEvoCondition::set_serial_number(int n)
-{
-	serial_number = n;
-}
-
-
 ScenEvoTimeCondition::ScenEvoTimeCondition(int _item_id, const QDomNode &config_node)
 {
 	time_edit = new BtTimeEdit(this);

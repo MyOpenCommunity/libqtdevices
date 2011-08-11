@@ -164,8 +164,6 @@ void ScenarioModule::valueReceived(const DeviceValues &values_list)
 }
 
 
-int ScenarioEvolved::next_serial_number = 1;
-
 ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, bool _enabled,
 	ScenEvoTimeCondition *tcond,  ScenEvoDeviceCondition *dcond) : Bann3Buttons(0)
 {
@@ -174,18 +172,11 @@ ScenarioEvolved::ScenarioEvolved(int _item_id, QString descr, QString _action, b
 	item_id = _item_id;
 	action = _action;
 	enabled = _enabled;
-	serial_number = next_serial_number++;
 	if (time_cond)
-	{
-		time_cond->set_serial_number(serial_number);
 		connect(time_cond, SIGNAL(condSatisfied()), SLOT(trig()));
-	}
 
 	if (device_cond)
-	{
-		device_cond->set_serial_number(serial_number);
 		connect(device_cond, SIGNAL(condSatisfied()), SLOT(trigOnStatusChanged()));
-	}
 
 	ScenEvoManager *p = new ScenEvoManager(descr, time_cond, device_cond);
 	connectButtonToPage(right_button, p);
