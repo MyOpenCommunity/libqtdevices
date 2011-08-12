@@ -49,7 +49,7 @@ ChangeTime::ChangeTime()
 	connect(date, SIGNAL(Closed()), SIGNAL(Closed()));
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 5, 0, 5);
+	l->setContentsMargins(10, 5, 10, 5);
 	l->setSpacing(10);
 
 	l->addWidget(img, 0, Qt::AlignCenter);
@@ -116,7 +116,7 @@ ChangeDate::ChangeDate()
 	connect(ok, SIGNAL(clicked()), SLOT(acceptDate()));
 
 	QVBoxLayout *l = new QVBoxLayout(this);
-	l->setContentsMargins(0, 5, 0, 5);
+	l->setContentsMargins(10, 5, 10, 5);
 	l->setSpacing(10);
 
 	l->addWidget(img, 0, Qt::AlignCenter);

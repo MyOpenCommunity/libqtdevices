@@ -61,7 +61,8 @@ BtTimeEdit::BtTimeEdit(QWidget *parent, DisplayType type)
 		_display_type(type)
 {
 	QGridLayout *main_layout = new QGridLayout(this);
-	main_layout->setSpacing(0);
+	main_layout->setHorizontalSpacing(10);
+	main_layout->setVerticalSpacing(0);
 	main_layout->setContentsMargins(0, 0, 0, 0);
 
 	BtButton *btn1, *btn2, *btn3;
@@ -233,7 +234,8 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 
 	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
-	main_layout->setSpacing(0);
+	main_layout->setVerticalSpacing(0);
+	main_layout->setHorizontalSpacing(10);
 
 	// Buttons to increase day, month, year
 	BtButton *btn_top_left, *btn_top_center, *btn_top_right;

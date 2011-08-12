@@ -457,18 +457,10 @@ AlarmClockTime::AlarmClockTime(QTime time)
 	main_layout->setContentsMargins(0, 0, 0, 0);
 	main_layout->setSpacing(5);
 
-	QHBoxLayout *r = new QHBoxLayout;
-	r->setContentsMargins(0, 0, 0, 0);
-	r->setSpacing(0);
-
-	r->addSpacing(40);
-	r->addWidget(edit);
-	r->addSpacing(40);
-
 	// top level layout
 	main_layout->addWidget(icon, 0, Qt::AlignHCenter);
 	main_layout->addSpacing(10);
-	main_layout->addLayout(r);
+	main_layout->addWidget(edit, 0, Qt::AlignHCenter);
 
 	buildPage(content, nav_bar);
 }
