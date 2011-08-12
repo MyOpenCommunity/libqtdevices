@@ -291,14 +291,14 @@ void AlarmClock::ringAlarm()
 		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #endif
 
-#ifdef BT_HARDWARE_PXA270
-		timer_increase_volume = new QTimer(this);
-		timer_increase_volume->start(5000);
-		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
-#else
+#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
 		timer_increase_volume = new QTimer(this);
 		timer_increase_volume->start(100);
 		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
+#else // BT_HARDWARE_PXA270 && BT_HARDWARE_X11
+		timer_increase_volume = new QTimer(this);
+		timer_increase_volume->start(5000);
+		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
 #endif
 		buzzer_counter = 0;
 		sound_diff_counter = 0;
@@ -372,17 +372,11 @@ void AlarmClock::buzzerAlarm()
 	}
 
 	// We cannot use the setState method because we are in forced operative mode
-	if (buzzer_counter % 8 == 0)
-		bt_global::display->changeBrightness(DISPLAY_OPERATIVE);
-	else
-		bt_global::display->changeBrightness(DISPLAY_FREEZED);
+	bt_global::display->changeBrightness((buzzer_counter % 8 == 0) ? DISPLAY_OPERATIVE : DISPLAY_FREEZED);
 
 	buzzer_counter++;
 	if (buzzer_counter >= 1200) // the timeout, equal to 120 secs (100 * 1200)
-	{
-		setBeep(buzzer_enabled);
 		stopAlarm();
-	}
 }
 
 void AlarmClock::wavAlarm()
@@ -413,7 +407,7 @@ void AlarmClock::stopAlarm()
 	if (alarm_type == BUZZER)
 	{
 		bt_global::display->setState(DISPLAY_OPERATIVE); // restore the normal lighting
-#ifdef BT_HARDWARE_PXA255
+#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
 		setBeep(buzzer_enabled);
 #endif
 	}
