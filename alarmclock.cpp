@@ -342,8 +342,10 @@ void AlarmClock::sounddiffusionAlarm()
 		sound_diff_counter = 9;
 	}
 
+	// for each amplifier configured for the alarm clock, we increase the volume from
+	// 10 to min(31, volume_configured)
 	sound_diff_counter++;
-	if (sound_diff_counter < 32) // increase the amplifiers volume from 9 to 31 (the maximum)
+	if (sound_diff_counter < 32)
 	{
 		for (int idx = 0; idx < AMPLI_NUM; idx++)
 		{
