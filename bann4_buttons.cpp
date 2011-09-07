@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -168,6 +168,12 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 void Bann4Buttons::setCentralSpacing(bool spaced)
 {
 	center_layout->setSpacing(spaced ? 10 : 0);
+}
+
+void Bann4Buttons::setCentralBeep(bool enable)
+{
+	center_right_button->enableBeep(enable);
+	center_left_button->enableBeep(enable);
 }
 
 void Bann4Buttons::connectLeftButton(Page *p)

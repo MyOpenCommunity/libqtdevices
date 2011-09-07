@@ -124,6 +124,7 @@ namespace
 		bann->initBanner(bt_global::skin->getImage("forward"), bt_global::skin->getImage("sounddiffusion"),
 			bt_global::skin->getImage("ambient"), QString(), descr);
 		bann->setCentralSpacing(false);
+		bann->setCentralBeep(false);
 		bann->connectRightButton(details);
 		return bann;
 #endif

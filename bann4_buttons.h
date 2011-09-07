@@ -79,6 +79,10 @@ public:
 	 */
 	void setCentralSpacing(bool spaced);
 
+	// Sometimes we want to use the two central buttons as images. In these cases we don't want
+	// the beep
+	void setCentralBeep(bool enable);
+
 	// Connect the left button to the page argument, shown when the button is clicked.
 	void connectLeftButton(Page *p);
 
