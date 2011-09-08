@@ -79,9 +79,15 @@ public:
 	 */
 	void setCentralSpacing(bool spaced);
 
-	// Sometimes we want to use the two central buttons as images. In these cases we don't want
-	// the beep
-	void setCentralBeep(bool enable);
+	/*!
+		\brief Disable the two central buttons.
+
+		Sometimes we use the central buttons as a single image: in these cases we
+		have to disable all the functionalities of a button (click, beep, etc..)
+
+		\sa setCentralSpacing();
+	*/
+	void disableCentralButtons();
 
 	// Connect the left button to the page argument, shown when the button is clicked.
 	void connectLeftButton(Page *p);

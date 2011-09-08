@@ -170,10 +170,10 @@ void Bann4Buttons::setCentralSpacing(bool spaced)
 	center_layout->setSpacing(spaced ? 10 : 0);
 }
 
-void Bann4Buttons::setCentralBeep(bool enable)
+void Bann4Buttons::disableCentralButtons()
 {
-	center_right_button->enableBeep(enable);
-	center_left_button->enableBeep(enable);
+	center_right_button->disable();
+	center_left_button->disable();
 }
 
 void Bann4Buttons::connectLeftButton(Page *p)

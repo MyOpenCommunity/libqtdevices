@@ -46,8 +46,7 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 
 	initBanner(QString(), status_off, bt_global::skin->getImage("zone"), left_off, descr);
 	setCentralSpacing(false);
-	center_right_button->disable();
-	center_left_button->disable();
+	disableCentralButtons();
 #else
 	initBanner(left_off, QString(), descr);
 	disabled_left_off = getPressName(left_off);
