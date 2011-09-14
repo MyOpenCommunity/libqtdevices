@@ -441,7 +441,9 @@ QList<BtButton*> RadioPage::createMemoryButtons()
 		buttons << b;
 	}
 
+#ifdef LAYOUT_TS_10
 	connect(button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
+#endif
 	connect(button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
 	connect(button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
 	return buttons;
