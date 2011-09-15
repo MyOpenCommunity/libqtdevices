@@ -25,7 +25,7 @@
 #include "fontmanager.h"
 #include "skinmanager.h"
 #include "navigation_bar.h" // NavigationBar
-
+#include "generic_functions.h" // DateConversions::formatDateConfig
 #include <QLayout>
 #include <QLabel>
 #include <QLCDNumber>
@@ -220,16 +220,13 @@ void BtTimeEdit::displayTime()
 #endif
 }
 
-QString BtDateEdit::FORMAT_STRING;
 
 
-BtDateEdit::BtDateEdit(QWidget *parent)
-		: QWidget(parent),
-		_date(QDate::currentDate()),
-		_allow_past_dates(false)
+BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentDate())
 {
 	DateFormat fmt = static_cast<DateFormat>((*bt_global::config)[DATE_FORMAT].toInt());
 
+	_allow_past_dates = false;
 	_date = _date.addDays(1);
 
 	QGridLayout *main_layout = new QGridLayout(this);
@@ -290,7 +287,6 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 	switch (fmt)
 	{
 	case USA_DATE:
-		FORMAT_STRING = "MM.dd.yy";
 		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incDay()));
 		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incMonth()));
 		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
@@ -299,15 +295,22 @@ BtDateEdit::BtDateEdit(QWidget *parent)
 		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
 		break;
 	case EUROPEAN_DATE:
-	default:
-		FORMAT_STRING = "dd.MM.yy";
 		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incDay()));
 		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
 		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incYear()));
 		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decDay()));
 		connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decMonth()));
 		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
+	case YEAR_FIRST:
+		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incYear()));
+		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
+		connect(btn_top_right, SIGNAL(clicked()), this, SLOT(incDay()));
+		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decYear()));
+		connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decMonth()));
+		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decDay()));
 		break;
+	default:
+		Q_ASSERT_X(false, "BtDateEdit::BtDateEdit", qPrintable(QString("Format of date %1 not supported!").arg(fmt)));
 	}
 
 	// add stretch for the columns containing buttons
@@ -335,7 +338,7 @@ void BtDateEdit::displayDate()
 	month->setText(QString("%1").arg(_date.month(), 2, 10, QChar('0')));
 	day->setText(QString("%1").arg(_date.day(), 2, 10, QChar('0')));
 #else
-	date_display->display(_date.toString(FORMAT_STRING));
+	date_display->display(DateConversions::formatDateConfig(_date, '.'));
 #endif
 }
 

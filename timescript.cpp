@@ -20,7 +20,7 @@
 
 
 #include "timescript.h"
-#include "main.h" // getConfElement, (*bt_global::config)
+#include "generic_functions.h" // DateConversions::formatDateConfig
 
 #include <QTimerEvent>
 
@@ -92,12 +92,7 @@ void TimeScript::showDate()
 	else
 		date = QDate::currentDate();
 
-	QString s;
-
-	if ((*bt_global::config)[DATE_FORMAT].toInt() == USA_DATE)
-		s = date.toString("MM.dd.yy");
-	else
-		s = date.toString("dd.MM.yy");
+	QString s = DateConversions::formatDateConfig(date, '.');
 
 	setNumDigits(s.length());
 	display(s);

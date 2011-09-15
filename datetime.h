@@ -134,7 +134,6 @@ private:
 #endif
 	QDate _date;
 	bool _allow_past_dates;
-	static QString FORMAT_STRING;
 
 private slots:
 	void incDay();
