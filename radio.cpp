@@ -192,6 +192,11 @@ void RadioInfo::valueReceived(const DeviceValues &values_list)
 			setRadioName(values_list[dim].toString());
 			break;
 		case RadioSourceDevice::DIM_FREQUENCY:
+			// When we change the frequency we want to 'remove' the previus track
+			// displayed. But because there are indipendent frames this works
+			// only if, when we change the current track, the frequency dimension
+			// arrives before the track dimension.
+			setChannel(-1);
 			setFrequency(values_list[dim].toInt());
 			break;
 		case RadioSourceDevice::DIM_TRACK:
@@ -619,7 +624,10 @@ void RadioPage::frequencyUp()
 		request_frequency.start();
 	}
 	else
+	{
+		radio_info->setFrequency(-1);
 		dev->frequenceUp();
+	}
 }
 
 void RadioPage::frequencyDown()
@@ -630,6 +638,9 @@ void RadioPage::frequencyDown()
 		request_frequency.start();
 	}
 	else
+	{
+		radio_info->setFrequency(-1);
 		dev->frequenceDown();
+	}
 }
 

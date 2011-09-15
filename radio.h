@@ -44,7 +44,7 @@ class RadioInfo : public QLabel
 {
 Q_OBJECT
 public:
-	RadioInfo( QString area, RadioSourceDevice *dev);
+	RadioInfo(QString area, RadioSourceDevice *dev);
 	void isShown(bool sh);
 	void setArea(const QString &area);
 #ifdef LAYOUT_TS_10
@@ -52,6 +52,10 @@ public:
 #else
 	void showCycleButton(bool show);
 #endif
+
+	void setFrequency(int frequency);
+	void setChannel(int memory_channel);
+	void setRadioName(const QString &rds);
 
 #ifdef LAYOUT_TS_3_5
 signals:
@@ -79,10 +83,6 @@ private:
 	RadioSourceDevice *dev;
 	bool shown;
 	bool screensaver_running;
-
-	void setFrequency(int frequency);
-	void setChannel(int memory_channel);
-	void setRadioName(const QString &rds);
 };
 
 
