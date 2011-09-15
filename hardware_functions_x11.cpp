@@ -50,7 +50,7 @@ namespace
 		VolumeData()
 		{
 			memset(&alarm_volumes, 0, sizeof(alarm_volumes));
-			source = source = 0;
+                        source = station = 0;
 		}
 	};
 
