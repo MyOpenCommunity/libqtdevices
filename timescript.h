@@ -25,25 +25,25 @@
 #include <QLCDNumber>
 #include <QDateTime>
 
+
 // shows a time and eventually a date with the possibility to modify them using
 // a set of appropriate slots.
-class timeScript : public QLCDNumber
+class TimeScript : public QLCDNumber
 {
     Q_OBJECT
 public:
-	timeScript(QWidget *parent=0, uchar type=0, QDateTime* mioOrol=NULL);
-	~timeScript();
+	TimeScript(QWidget *parent=0, uchar type=0, QDateTime* mioOrol=NULL);
+	~TimeScript();
 
 	void showDate();
-	QDateTime getDataOra();
-	void setDataOra(QDateTime);
 
 protected:
 	void timerEvent(QTimerEvent *);
 	void mousePressEvent(QMouseEvent *);
 
 private slots:
-    void stopDate();
+	void stopDate();
+
 public slots:
 /*!
   \brief Shows the time.
@@ -116,10 +116,10 @@ public slots:
 	void aumYear();
 
 private:
-    int normalTimer;
-    int showDateTimer;
-    uchar type;
-    QDateTime* mioClock;
+	int normalTimer;
+	int showDateTimer;
+	uchar type;
+	QDateTime* mioClock;
 };
 
 

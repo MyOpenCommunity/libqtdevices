@@ -57,7 +57,7 @@ void HomePage::loadItems(const QDomNode &config_node)
 		case ITEM_DATE:
 		case ITEM_TIME:
 		{
-			timeScript *d = new timeScript(this, id == ITEM_DATE ? 25 : 1);
+			TimeScript *d = new TimeScript(this, id == ITEM_DATE ? 25 : 1);
 			d->setGeometry(x + 10, y + 10, 220, 60);
 			d->setLineWidth(3);
 			break;

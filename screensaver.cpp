@@ -347,7 +347,7 @@ QString ScreenSaverLine::styleUpToDown()
 void ScreenSaverTime::customizeLine()
 {
 	setLineHeight(30);
-	timeScript *time = new timeScript(line, 1);
+	TimeScript *time = new TimeScript(line, 1);
 	time->setFont(bt_global::font->get(FontManager::TEXT));
 
 	QVBoxLayout *layout = new QVBoxLayout;

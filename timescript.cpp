@@ -25,7 +25,7 @@
 #include <QTimerEvent>
 
 
-timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
+TimeScript::TimeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
     : QLCDNumber(parent)
 {
 	setFrameStyle(QFrame::Plain);
@@ -49,19 +49,19 @@ timeScript::timeScript(QWidget *parent, uchar tipo, QDateTime* mioOrol)
 		showDate();
 }
 
-void timeScript::timerEvent(QTimerEvent *e)
+void TimeScript::timerEvent(QTimerEvent *e)
 {
 	if (mioClock)
 	{
 		static QDateTime prevDateTime = QDateTime();
 		QDateTime now = QDateTime::currentDateTime();
-		if ((prevDateTime.secsTo(now) > 2) || (prevDateTime.secsTo(now) < -2))
+		if (prevDateTime.secsTo(now) > 2 || prevDateTime.secsTo(now) < -2)
 		{
-			qDebug("timeScript::timerEvent() : Updating mioClock");
+			qDebug("TimeScript::timerEvent() : Updating mioClock");
 			*mioClock = now;
 		}
 		else
-			*mioClock=mioClock->addSecs(1);
+			*mioClock = mioClock->addSecs(1);
 		prevDateTime = now;
 	}
 	if (e->timerId() == showDateTimer)
@@ -76,16 +76,17 @@ void timeScript::timerEvent(QTimerEvent *e)
 	}
 }
 
-void timeScript::mousePressEvent(QMouseEvent *)
+void TimeScript::mousePressEvent(QMouseEvent *)
 {
 }
 
-void timeScript::showDate()
+void TimeScript::showDate()
 {
 	QDate date;
 
-	if ((showDateTimer != -1) && (!type))
+	if (showDateTimer != -1 && !type)
 		return;
+
 	if (mioClock)
 		date = mioClock->date();
 	else
@@ -110,7 +111,7 @@ void timeScript::showDate()
 	}
 }
 
-void timeScript::stopDate()
+void TimeScript::stopDate()
 {
 	killTimer(showDateTimer);
 	showDateTimer = -1;
@@ -127,7 +128,7 @@ void timeScript::stopDate()
 		showDate();
 }
 
-void timeScript::reset()
+void TimeScript::reset()
 {
 	if (mioClock)
 	{
@@ -139,7 +140,7 @@ void timeScript::reset()
 	stopDate();
 }
 
-void timeScript::showTime()
+void TimeScript::showTime()
 {
 	QString s;
 
@@ -160,91 +161,79 @@ void timeScript::showTime()
 	display(s);
 }
 
-void timeScript::diminSec()
+void TimeScript::diminSec()
 {
 	*mioClock = mioClock->addSecs(-1);
 	showTime();
 }
 
-void timeScript::diminMin()
+void TimeScript::diminMin()
 {
 	*mioClock = mioClock->addSecs(-60);
 	showTime();
 }
 
-void timeScript::diminOra()
+void TimeScript::diminOra()
 {
 	*mioClock = mioClock->addSecs(-3600);
 	showTime();
 }
 
-void timeScript::diminDay()
+void TimeScript::diminDay()
 {
 	*mioClock = mioClock->addDays(-1);
 	showDate();
 }
 
-void timeScript::diminMonth()
+void TimeScript::diminMonth()
 {
 	*mioClock = mioClock->addMonths(-1);
 	showDate();
 }
 
-void timeScript::diminYear()
+void TimeScript::diminYear()
 {
 	*mioClock = mioClock->addYears(-1);
 	showDate();
 }
 
-void timeScript::aumSec()
+void TimeScript::aumSec()
 {
 	*mioClock = mioClock->addSecs(1);
 	showTime();
 }
 
-void timeScript::aumMin()
+void TimeScript::aumMin()
 {
 	*mioClock = mioClock->addSecs(60);
 	showTime();
 }
 
-void timeScript::aumOra()
+void TimeScript::aumOra()
 {
 	*mioClock = mioClock->addSecs(3600);
 	showTime();
 }
 
-void timeScript::aumDay()
+void TimeScript::aumDay()
 {
 	*mioClock = mioClock->addDays(1);
 	showDate();
 }
 
-void timeScript::aumMonth()
+void TimeScript::aumMonth()
 {
 	*mioClock = mioClock->addMonths(1);
 	showDate();
 }
 
-void timeScript::aumYear()
+void TimeScript::aumYear()
 {
 	*mioClock = mioClock->addYears(1);
 	showDate();
 }
 
-QDateTime timeScript::getDataOra()
-{
-	if (type)
-		return *mioClock;
-	return QDateTime::currentDateTime();
-}
-
-void timeScript::setDataOra(QDateTime d)
-{
-	*mioClock = d;
-}
-
-timeScript::~timeScript()
+TimeScript::~TimeScript()
 {
 	if (mioClock)
 		delete mioClock;

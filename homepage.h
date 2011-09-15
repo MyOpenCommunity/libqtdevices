@@ -27,7 +27,7 @@
 
 #include <QString>
 
-class timeScript;
+class TimeScript;
 class TemperatureViewer;
 
 class QDomNode;
