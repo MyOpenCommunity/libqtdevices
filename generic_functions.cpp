@@ -60,20 +60,24 @@ namespace
 		QString format;
 		bool ok;
 		int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
-		if (ok)
+
+		// Default in case of error
+		if (!ok)
+			date_format = EUROPEAN_DATE;
+
+		switch (date_format)
 		{
-			switch (date_format)
-			{
-			case EUROPEAN_DATE:
-				format = "dd.MM.yy";
-				break;
-			case USA_DATE:
-				format = "MM.dd.yy";
-				break;
-			case YEAR_FIRST:
-				format = "yy.MM.dd";
-				break;
-			}
+		case EUROPEAN_DATE:
+			format = "dd.MM.yy";
+			break;
+		case USA_DATE:
+			format = "MM.dd.yy";
+			break;
+		case YEAR_FIRST:
+			format = "yy.MM.dd";
+			break;
+		default:
+			Q_ASSERT_X(false, "getDateFormat", qPrintable(QString("Format of date %1 not supported!").arg(date_format)));
 		}
 
 		if (separator != '.')
@@ -551,11 +555,7 @@ int scsToGraphicalVolume(int vol)
 
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
-	QString format = getDateFormat(separator);
-	if (format.isNull())
-		qWarning("DateConversions::formatDateConfig(), DATE_FORMAT conversion failed.");
-
-	return date.toString(format);
+	return date.toString(getDateFormat(separator));
 }
 
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
@@ -566,8 +566,6 @@ QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char se
 QDate DateConversions::getDateConfig(const QString &date, char separator)
 {
 	QString format = getDateFormat(separator);
-	if (format.isNull())
-		qWarning("DateConversions::getDateConfig(), DATE_FORMAT conversion failed.");
 
 	// The format string has a two digit for the year so we lose 100 years in the
 	// conversion. We re-add them now.
@@ -576,10 +574,7 @@ QDate DateConversions::getDateConfig(const QString &date, char separator)
 
 QDateTime DateConversions::getDateTimeConfig(const QString &datetime, char separator)
 {
-	QString format = getDateFormat(separator);
-	if (format.isNull())
-		qWarning("DateConversions::getDateTimeConfig(), DATE_FORMAT conversion failed.");
-	format += " HH:mm";
+	QString format = getDateFormat(separator) + " HH:mm";
 
 	// The format string has a two digit for the year so we lose 100 years in the
 	// conversion. We re-add them now.
