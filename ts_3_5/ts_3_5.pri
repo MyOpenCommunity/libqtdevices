@@ -6,13 +6,11 @@
 # the BTicino touchscreen 10'' code.
 
 LAYOUT = ts_3_5
-#CONF_FILE = ts_3_5
-CONF_FILE = ts_10
 
 include(../setup.pri)
 
-# check if the hardware (passed using the HARDWARE var to qmake) is one of the supported
-# platform and the qmake used is coherent with that.
+# check if the hardware (passed using the HARDWARE var from the .pro file) is one
+# of the supported platform and the qmake used is coherent with that.
 defineTest(isHardwareSupported) {
 	contains(HARDWARE, embedded-pxa255) | contains(HARDWARE, embedded-dm365) {
 		isArm() {
@@ -48,7 +46,7 @@ contains(HARDWARE, embedded-dm365) {
 	DEFINES += BT_HARDWARE_DM365
 }
 contains(HARDWARE, x11) {
-	# x86
+	# x11
 	DEFINES += OPENSERVER_ADDR=\\\"btouch_3_5\\\"
 	DEFINES += XML_SERVER_ADDRESS=\\\"btouch_3_5\\\"
 	DEFINES += BT_HARDWARE_X11

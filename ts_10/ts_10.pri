@@ -6,7 +6,6 @@
 # the BTicino touchscreen 3.5'' code.
 
 LAYOUT = ts_10
-CONF_FILE = ts_10
 
 include(../setup.pri)
 
