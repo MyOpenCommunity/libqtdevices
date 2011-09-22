@@ -36,7 +36,7 @@ class Banner;
 	or the scenario programmer using ScheduledScenario.
 
 	BannSimpleScenario can be used to activate a scenario, while the scenario
-	plus can be controlled using the PPTSce class.
+	plus can be controlled using the ScenarioPlus class.
 
 	Finally, the improved scenario can be configured and controlled using
 	ScenarioEvolved and related classes (ScenEvoCondition,

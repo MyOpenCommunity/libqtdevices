@@ -123,11 +123,11 @@ private:
 	This device can be used to send standard scenario frames that some physical
 	devices can interpret to perform the scenario.
 */
-class PPTSceDevice : public device
+class ScenarioPlusDevice : public device
 {
 Q_OBJECT
 public:
-	PPTSceDevice(QString address, int openserver_id = 0);
+	ScenarioPlusDevice(QString address, int openserver_id = 0);
 
 	/*!
 		\brief Send the increase command.

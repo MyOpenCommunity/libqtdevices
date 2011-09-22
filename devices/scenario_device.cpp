@@ -33,12 +33,12 @@ enum
 	UNLOCK = 44,
 };
 
-// PPTSce commands
-#define CMD_PPT_SCE_ON "11#0"
-#define CMD_PPT_SCE_OFF "12"
-#define CMD_PPT_SCE_INC "13#0#5"
-#define CMD_PPT_SCE_DEC "14#0#5"
-#define CMD_PPT_SCE_STOP "15"
+// ScenarioPlus commands
+#define CMD_SCENARIO_PLUS_ON "11#0"
+#define CMD_SCENARIO_PLUS_OFF "12"
+#define CMD_SCENARIO_PLUS_INC "13#0#5"
+#define CMD_SCENARIO_PLUS_DEC "14#0#5"
+#define CMD_SCENARIO_PLUS_STOP "15"
 
 
 ScenarioDevice::ScenarioDevice(QString where, int openserver_id) :
@@ -156,32 +156,32 @@ bool ScenarioDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 }
 
 
-PPTSceDevice::PPTSceDevice(QString address, int openserver_id) : device(QString("25"), address, openserver_id)
+ScenarioPlusDevice::ScenarioPlusDevice(QString address, int openserver_id) : device(QString("25"), address, openserver_id)
 {
 }
 
-void PPTSceDevice::turnOn() const
+void ScenarioPlusDevice::turnOn() const
 {
-	sendCommand(CMD_PPT_SCE_ON);
+        sendCommand(CMD_SCENARIO_PLUS_ON);
 }
 
-void PPTSceDevice::turnOff() const
+void ScenarioPlusDevice::turnOff() const
 {
-	sendCommand(CMD_PPT_SCE_OFF);
+        sendCommand(CMD_SCENARIO_PLUS_OFF);
 }
 
-void PPTSceDevice::increase() const
+void ScenarioPlusDevice::increase() const
 {
-	sendCommand(CMD_PPT_SCE_INC);
+        sendCommand(CMD_SCENARIO_PLUS_INC);
 }
 
-void PPTSceDevice::decrease() const
+void ScenarioPlusDevice::decrease() const
 {
-	sendCommand(CMD_PPT_SCE_DEC);
+        sendCommand(CMD_SCENARIO_PLUS_DEC);
 }
 
-void PPTSceDevice::stop() const
+void ScenarioPlusDevice::stop() const
 {
-	sendCommand(CMD_PPT_SCE_STOP);
+        sendCommand(CMD_SCENARIO_PLUS_STOP);
 }
 

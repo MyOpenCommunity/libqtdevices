@@ -27,7 +27,7 @@
 #include "bann4_buttons.h" // Bann4ButtonsIcon, Bann4Buttons
 #include "device.h" // DeviceValues
 
-class PPTSceDevice;
+class ScenarioPlusDevice;
 class ScenEvoCondition;
 class ScenEvoTimeCondition;
 class ScenEvoDeviceCondition;
@@ -165,19 +165,19 @@ private:
 	(like the module scenario), instead every single devices have to manage
 	the scenario plus frames in order to perform the scenario.
 
-	\sa PPTSceDevice
+	\sa ScenarioPlusDevice
 */
-class PPTSce : public Bann4Buttons
+class ScenarioPlus : public Bann4Buttons
 {
 Q_OBJECT
 public:
-	PPTSce(const QString &descr, const QString &where, int openserver_id);
+	ScenarioPlus(const QString &descr, const QString &where, int openserver_id);
 
 protected:
 	virtual void timerEvent(QTimerEvent *e);
 
 private:
-	PPTSceDevice *dev;
+	ScenarioPlusDevice *dev;
 	int increase_timer, decrease_timer;
 
 private slots:

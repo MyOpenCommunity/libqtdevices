@@ -324,14 +324,14 @@ void ScheduledScenario::disable()
 }
 
 
-PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : Bann4Buttons(0)
+ScenarioPlus::ScenarioPlus(const QString &descr, const QString &where, int openserver_id) : Bann4Buttons(0)
 {
 	initBanner(bt_global::skin->getImage("pptsce_off"), bt_global::skin->getImage("pptsce_increase"),
 		bt_global::skin->getImage("pptsce_decrease"), bt_global::skin->getImage("pptsce_on"),
 		descr);
 	setCentralSpacing(false);
 
-	dev = bt_global::add_device_to_cache(new PPTSceDevice(where, openserver_id));
+	dev = bt_global::add_device_to_cache(new ScenarioPlusDevice(where, openserver_id));
 	connect(left_button, SIGNAL(clicked()), dev, SLOT(turnOn()));
 	connect(right_button, SIGNAL(clicked()), dev, SLOT(turnOff()));
 
@@ -345,7 +345,7 @@ PPTSce::PPTSce(const QString &descr, const QString &where, int openserver_id) : 
 	connect(center_right_button, SIGNAL(released()), SLOT(stop()));
 }
 
-void PPTSce::startIncrease()
+void ScenarioPlus::startIncrease()
 {
 	if (!increase_timer)
 	{
@@ -354,7 +354,7 @@ void PPTSce::startIncrease()
 	}
 }
 
-void PPTSce::startDecrease()
+void ScenarioPlus::startDecrease()
 {
 	if (!decrease_timer)
 	{
@@ -363,7 +363,7 @@ void PPTSce::startDecrease()
 	}
 }
 
-void PPTSce::timerEvent(QTimerEvent *e)
+void ScenarioPlus::timerEvent(QTimerEvent *e)
 {
 	if (e->timerId() == increase_timer)
 		dev->increase();
@@ -371,7 +371,7 @@ void PPTSce::timerEvent(QTimerEvent *e)
 		dev->decrease();
 }
 
-void PPTSce::stop()
+void ScenarioPlus::stop()
 {
 	if (increase_timer)
 	{

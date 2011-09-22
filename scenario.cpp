@@ -122,7 +122,7 @@ Banner *Scenario::getBanner(const QDomNode &item_node)
 		QString what = getTextChild(item_node, "what");
 		if (!what.isEmpty())
 			where = what + "*" + where;
-		PPTSce *bann = new PPTSce(descr, where, oid);
+		ScenarioPlus *bann = new ScenarioPlus(descr, where, oid);
 		b = bann;
 	}
 		break;
