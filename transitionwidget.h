@@ -41,7 +41,8 @@ public:
 	{
 		NONE = 0,
 		BLENDING,
-		MOSAIC
+		MOSAIC,
+		ENLARGE
 	};
 
 	TransitionWidget(int time);
@@ -116,5 +117,27 @@ private:
 	QPixmap dest_pix;
 	QList<QRect> mosaic_map;
 };
+
+
+// Perform a transition from the old widget to the new one, that appears small
+// on the center of the widget and enlarges itself until occupies the whole
+// widget.
+class EnlargeTransition : public TransitionWidget
+{
+Q_OBJECT
+public:
+	EnlargeTransition();
+
+protected:
+	virtual void paintEvent(QPaintEvent *e);
+	virtual void initTransition();
+
+private slots:
+	void triggerRepaint(int value);
+
+private:
+	int percentage;
+};
+
 
 #endif // TRANSITIONWIDGET_H

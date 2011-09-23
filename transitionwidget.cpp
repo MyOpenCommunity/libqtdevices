@@ -146,3 +146,37 @@ void MosaicTransition::paintEvent(QPaintEvent *e)
 	p.drawPixmap(QPoint(0,0), dest_pix);
 }
 
+
+EnlargeTransition::EnlargeTransition() : TransitionWidget(400)
+{
+	percentage = 1;
+	timeline.setCurveShape(QTimeLine::LinearCurve);
+	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
+}
+
+void EnlargeTransition::initTransition()
+{
+	timeline.setFrameRange(1, 100);
+	timeline.setStartFrame(1);
+}
+
+void EnlargeTransition::triggerRepaint(int value)
+{
+	percentage = value;
+	update();
+}
+
+void EnlargeTransition::paintEvent(QPaintEvent *e)
+{
+	Q_UNUSED(e);
+	QPainter p(this);
+	p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+	p.drawPixmap(QPoint(0,0), prev_image);
+
+	int rect_width = width() / 100.0 * percentage;
+	int rect_height = height() / 100.0 * percentage;
+	// We put the rectangle of the new image aligned on the center of the widget
+	QRect target_rect(width() / 2 - rect_width / 2, height() / 2 - rect_height / 2, rect_width, rect_height);
+
+	p.drawPixmap(target_rect, dest_image);
+}

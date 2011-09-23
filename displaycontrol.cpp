@@ -286,6 +286,9 @@ void DisplayControl::installTransitionEffects(TransitionWidget::Type t)
 		case TransitionWidget::MOSAIC:
 			w = new MosaicTransition;
 			break;
+		case TransitionWidget::ENLARGE:
+			w = new EnlargeTransition;
+			break;
 		case TransitionWidget::NONE:
 			break;
 		default:
