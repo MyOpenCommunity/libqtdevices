@@ -120,15 +120,27 @@ void Bann2Buttons::initBanner(const QString &left, const QString &right, const Q
 	FontManager::Type text_font, const QString &banner_description, FontManager::Type description_font)
 {
 	center_label = new ScrollingLabel;
-	main_layout->addWidget(center_label, 0, 1, 1, right.isEmpty() && maximize_text ? 2 : 1, Qt::AlignCenter);
 
-	if (right.isEmpty())
+	if (maximize_text)
 	{
-		if (maximize_text)
+		int start_column = left.isEmpty() ? 0 : 1;
+		int row_span = 1 + (right.isEmpty() ? 1 : 0) + (left.isEmpty() ? 1 : 0);
+
+		if (left.isEmpty())
+			main_layout->removeWidget(left_button);
+
+		if (right.isEmpty())
 			main_layout->removeWidget(right_button);
-		else
+		main_layout->addWidget(center_label, 0, start_column, 1, row_span, Qt::AlignCenter);
+	}
+	else
+	{
+		main_layout->addWidget(center_label, 0, 1, 1, 1, Qt::AlignCenter);
+
+		if (right.isEmpty())
 			main_layout->setColumnStretch(2, 0);
 	}
+
 
 	initButton(left_button, left);
 	initButton(right_button, right);
