@@ -28,7 +28,7 @@ then
   export OE_QMAKE_AR=$CROSS_COMPILE"ar"
   export OE_QMAKE_QMAKE=$QTDIR"usr/bin/qmake2"
   export OE_QMAKE_STRIP="echo"
-  $OE_QMAKE_QMAKE CONFIG+=release TEST_ARCH=arm QT_LIBINFIX="E" HARDWARE="embedded-dm365"
+  $OE_QMAKE_QMAKE CONFIG+=release TEST_ARCH=arm QT_LIBINFIX="E" HARDWARE="embedded-dm365" ts_3_5.dm365.pro
   if [ "$COMPILING_NOT_CLEAN" != "yes" ]
   then
     make clean || exit 1
@@ -49,7 +49,7 @@ then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_LIB1
-  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa255"
+  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa255" ts_3_5.pxa255.pro
   if [ "$COMPILING_NOT_CLEAN" != "yes" ]
   then
     make clean || exit 1
@@ -70,7 +70,7 @@ then
   export QTDIR=$QTDIR
   export QMAKESPEC=$QMAKESPEC
   export PATH=$PATH:$CROSS_PATH
-  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa270"
+  $QTDIR/bin/qmake CONFIG+=release HARDWARE="embedded-pxa270" ts_10.pxa270.pro
   if [ "$COMPILING_NOT_CLEAN" != "yes" ]
   then
     make clean || exit 1
