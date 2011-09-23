@@ -37,6 +37,13 @@ class TransitionWidget : public QWidget
 {
 Q_OBJECT
 public:
+	enum Type
+	{
+		NONE = 0,
+		BLENDING,
+		MOSAIC
+	};
+
 	TransitionWidget(int time);
 
 	// must be called before altering the state of the page

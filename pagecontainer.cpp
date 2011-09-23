@@ -57,7 +57,16 @@ PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
 
 void PageContainer::installTransitionWidget(TransitionWidget *tr)
 {
+	if (transition_widget)
+	{
+		transition_widget->disconnect();
+		transition_widget->deleteLater();
+	}
+
 	transition_widget = tr;
+	if (!transition_widget)
+		return;
+
 	addWidget(transition_widget);
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }

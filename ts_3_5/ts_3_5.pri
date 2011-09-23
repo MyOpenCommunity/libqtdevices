@@ -83,7 +83,8 @@ HEADERS +=  audioplayer_ts3.h \
 	displaypage.h \
 	multimedia_ts3.h \
 	scenevomanager.h \
-	settings_ts3.h
+	settings_ts3.h \
+	transitioneffects.h
 
 SOURCES += audioplayer_ts3.cpp \
 	aux.cpp \
@@ -91,6 +92,9 @@ SOURCES += audioplayer_ts3.cpp \
 	displaypage.cpp \
 	multimedia_ts3.cpp \
 	scenevomanager.cpp \
-	settings_ts3.cpp
+	settings_ts3.cpp \
+	transitioneffects.cpp
 
 OTHER_FILES = skin.xml
+
+

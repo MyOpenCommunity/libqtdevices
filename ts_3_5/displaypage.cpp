@@ -21,7 +21,6 @@
 
 #include "displaypage.h"
 #include "bann1_button.h" // BannSimple
-#include "bann2_buttons.h" // Bann2Buttons
 #include "bann_settings.h"
 #include "cleanscreen.h"
 #include "brightnesspage.h"
@@ -30,18 +29,26 @@
 #include "skinmanager.h" // SkinContext, bt_global::skin
 #include "calibration.h"
 #include "navigation_bar.h"
-#include "screensaver.h" // ScreenSaver
+#include "screensaver.h" // ScreenSaver::initData
+#include "transitioneffects.h"
 
 #include <QVBoxLayout>
 #include <QWidget>
 
 enum
 {
-	PAGE_INACTIVE_BRIGHTNESS = 14155,
-	PAGE_CLEANSCREEN = 14152,
-	PAGE_CALIBRATION = 14153,
-	PAGE_SCREENSAVER = 14154
+	INACTIVE_BRIGHTNESS = 14155,
+	CLEANSCREEN = 14152,
+	CALIBRATION = 14153,
+	SCREENSAVER = 14154,
+	TRANSITIONEFFECTS = 14156
 };
+
+BannDisplay::BannDisplay(QString icon, QString descr)
+{
+	maximize_text = true;
+	initBanner(QString(), icon, descr);
+}
 
 
 DisplayPage::DisplayPage(const QDomNode &config_node)
@@ -67,19 +74,21 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(page_node, "item"))
 	{
 		int link_id = getTextChild(item, "id").toInt();
-		if (link_id == PAGE_CLEANSCREEN)
+		if (link_id == CLEANSCREEN)
 		{
 			int wait_time = getTextChild(item, "countdown").toInt() / 1000;
 			loadCleanScreen(wait_time);
 		}
 #ifndef BT_HARDWARE_X11
-		else if (link_id == PAGE_CALIBRATION)
+		else if (link_id == CALIBRATION)
 			loadCalibration(img_items);
-		else if (link_id == PAGE_INACTIVE_BRIGHTNESS)
+		else if (link_id == INACTIVE_BRIGHTNESS)
 			loadInactiveBrightness(img_items, item);
 #endif
-		else if (link_id == PAGE_SCREENSAVER)
+		else if (link_id == SCREENSAVER)
 			loadScreenSaver(img_items, item);
+		else if (link_id == TRANSITIONEFFECTS)
+			loadTransitionEffects(img_items, item);
 	}
 }
 
@@ -97,8 +106,7 @@ void DisplayPage::loadCleanScreen(int wait_time)
 void DisplayPage::loadCalibration(QString icon)
 {
 	Calibration *calibration_window = new Calibration;
-	Bann2Buttons *b = new Bann2Buttons;
-	b->initBanner(QString(), icon, tr("Calibration"));
+	Bann2Buttons *b = new BannDisplay(icon, tr("Calibration"));
 	connect(b, SIGNAL(rightClicked()), calibration_window, SLOT(showWindow()));
 	connect(calibration_window, SIGNAL(Closed()), this, SLOT(showPage()));
 	page_content->appendBanner(b);
@@ -106,8 +114,7 @@ void DisplayPage::loadCalibration(QString icon)
 
 void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_node)
 {
-	Bann2Buttons *b = new Bann2Buttons;
-	b->initBanner(QString(), icon, tr("Brightness"));
+	Bann2Buttons *b = new BannDisplay(icon, tr("Brightness"));
 	b->connectRightButton(new InactiveBrightnessPage(config_node));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
@@ -118,9 +125,16 @@ void DisplayPage::loadScreenSaver(QString icon, const QDomNode &config_node)
 {
 	ScreenSaver::initData(config_node);
 
-	Bann2Buttons *b = new Bann2Buttons;
-	b->initBanner(QString(), icon, tr("Screen Saver"));
+	Bann2Buttons *b = new BannDisplay(icon, tr("Screen Saver"));
 	b->connectRightButton(new ScreenSaverPage(config_node));
+	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+	page_content->appendBanner(b);
+}
+
+void DisplayPage::loadTransitionEffects(QString icon, const QDomNode &config_node)
+{
+	Bann2Buttons *b = new BannDisplay(icon, tr("Transition effects"));
+	b->connectRightButton(new TransitionEffects(config_node));
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 }

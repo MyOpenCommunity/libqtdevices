@@ -53,8 +53,8 @@ public:
 	PageContainer(QWidget *parent);
 
 	/*!
-		\brief Install a widget for transitions.
-		\warning This method is unmantained, do not use.
+		\brief Install a widget for transitions, replacing the old one if exists.
+		\note The ownership of the widget argument is taken from the PageContainer.
 	*/
 	void installTransitionWidget(TransitionWidget *tr);
 

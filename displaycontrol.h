@@ -23,12 +23,14 @@
 #define DISPLAYCONTROL_H
 
 #include "screensaver.h" // ScreenSaver::Type
+#include "transitionwidget.h" // TransitionWidget::Type
 
 #include <QMap>
 
 class PageContainer;
 class KeypadWindow;
 class QEvent;
+class TransitionWidget;
 
 
 /*!
@@ -179,6 +181,14 @@ public:
 	/// Set the state of the display
 	void setState(DisplayStatus status);
 
+	/*!
+		\brief Install the widget argument as the one which manages the transition effects.
+	*/
+	void installTransitionEffects(TransitionWidget::Type t);
+
+	/// Return the current transition effects installed
+	TransitionWidget::Type currentTransitionEffects();
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -230,6 +240,7 @@ private:
 	QMap<DisplayStatus, DisplayData> data;
 	BrightnessLevel inactive_brightness;
 	ScreenSaver::Type current_screensaver;
+	TransitionWidget::Type current_transition_effects;
 	DisplayStatus current_state;
 	bool forced_operative_mode;
 	int operative_brightness, direct_screen_access;

@@ -23,9 +23,20 @@
 #define DISPLAYPAGE_H
 
 #include "bannerpage.h"
+#include "bann2_buttons.h"
 
 class QDomNode;
 class QVBoxLayout;
+
+// A specialized version of the Bann2Buttons that occupies all the space on the
+// left
+class BannDisplay : public Bann2Buttons
+{
+Q_OBJECT
+public:
+	BannDisplay(QString icon, QString descr);
+};
+
 
 
 class DisplayPage : public BannerPage
@@ -42,6 +53,8 @@ private:
 	void loadInactiveBrightness(QString icon, const QDomNode &config_node);
 #endif
 	void loadScreenSaver(QString icon, const QDomNode &config_node);
+
+	void loadTransitionEffects(QString icon, const QDomNode &config_node);
 
 	QVBoxLayout *main_layout;
 };

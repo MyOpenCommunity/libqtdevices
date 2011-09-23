@@ -75,6 +75,7 @@ DisplayControl::DisplayControl()
 
 	setState(DISPLAY_OPERATIVE);
 	current_screensaver = ScreenSaver::LINES;
+	current_transition_effects = TransitionWidget::NONE;
 }
 
 DisplayControl::~DisplayControl()
@@ -265,6 +266,37 @@ bool DisplayControl::canScreensaverStart()
 			 bt_global::status.vde_call_active);
 }
 
+TransitionWidget::Type DisplayControl::currentTransitionEffects()
+{
+	return current_transition_effects;
+}
+
+void DisplayControl::installTransitionEffects(TransitionWidget::Type t)
+{
+	Q_ASSERT_X(page_container, "DisplayControl::installTransitionEffects", "Page container not set!");
+
+	if (t != current_transition_effects)
+	{
+		TransitionWidget *w = 0;
+		switch (t)
+		{
+		case TransitionWidget::BLENDING:
+			w = new BlendingTransition;
+			break;
+		case TransitionWidget::MOSAIC:
+			w = new MosaicTransition;
+			break;
+		case TransitionWidget::NONE:
+			break;
+		default:
+			Q_ASSERT_X(false, "DisplayControl::installTransitionEffects",
+				qPrintable(QString("Unknown transition effects type: %1").arg(t)));
+		}
+
+		page_container->installTransitionWidget(w);
+		current_transition_effects = t;
+	}
+}
 
 void DisplayControl::turnOff()
 {
