@@ -185,6 +185,15 @@ private slots:
 };
 
 
+// The alert to notify the user that it must select at least one day or once.
+class AlarmClockDaysAlert : public Page
+{
+Q_OBJECT
+public:
+	AlarmClockDaysAlert(const QString &text);
+};
+
+
 // The page used to set the alarm days for ts3
 class AlarmClockDays : public BannerPage
 {
@@ -203,6 +212,7 @@ signals:
 private slots:
 	void dayToggled();
 	void onceToggled();
+	void checkDays();
 
 private:
 	QList<bool> alarm_days;

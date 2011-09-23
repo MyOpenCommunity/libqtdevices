@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -505,12 +505,34 @@ bool BannAlarmDay::getStatus() const
 }
 
 
+AlarmClockDaysAlert::AlarmClockDaysAlert(const QString &text)
+{
+	QWidget *content = NULL;
+	QLabel *label = new QLabel(text);
+
+	label->setAlignment(Qt::AlignCenter);
+	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("ok"), QString(), QString(), QString());
+	connect(nav_bar, SIGNAL(forwardClick()), SIGNAL(Closed()));
+
+	content = label;
+
+	label->setFont(bt_global::font->get(FontManager::SUBTITLE));
+	label->setWordWrap(true);
+	label->setIndent(5);
+	buildPage(content, nav_bar, QString());
+}
+
+
 AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 {
 	NavigationBar *nav_bar =  new NavigationBar(type == AlarmClock::SOUND_DIFF ? "forward" : "ok");
 	nav_bar->displayScrollButtons(true);
 
 	buildPage(new BannerContent, nav_bar);
+	// we have to performs some checks before emitting the forwardClick signal
+	disconnect(nav_bar, SIGNAL(forwardClick()), this, SIGNAL(forwardClick()));
+	connect(nav_bar, SIGNAL(forwardClick()), SLOT(checkDays()));
+
 	setSpacing(10);
 
 	QStringList days_description;
@@ -542,19 +564,37 @@ AlarmClockDays::AlarmClockDays(AlarmClock::Type type, QList<bool> days)
 	bann_once->setStatus(bann_once_selected);
 }
 
+void AlarmClockDays::checkDays()
+{
+	for (int i = 0; i <= 7; ++i)
+		if (static_cast<BannAlarmDay*>(page_content->getBanner(i))->getStatus()) {
+			emit forwardClick();
+			return;
+		}
+
+	// No banner selected, we show an alert.
+	AlarmClockDaysAlert *alert = new AlarmClockDaysAlert(tr("You have to select a day or once!"));
+	connect(alert, SIGNAL(Closed()), SLOT(showPage()));
+	connect(alert, SIGNAL(Closed()), alert, SLOT(deleteLater()));
+	alert->showPage();
+}
+
 void AlarmClockDays::dayToggled()
 {
-	bool bann_once_selected = true;
+	// deselect the "once" banner if at least a day is selected
+	if (!static_cast<BannAlarmDay*>(page_content->getBanner(0))->getStatus())
+		return;
+
 	for (int i = 0; i < 7; ++i)
 	{
 		if (static_cast<BannAlarmDay*>(page_content->getBanner(i + 1))->getStatus())
-			bann_once_selected = false;
+			static_cast<BannAlarmDay*>(page_content->getBanner(0))->setStatus(false);
 	}
-	static_cast<BannAlarmDay*>(page_content->getBanner(0))->setStatus(bann_once_selected);
 }
 
 void AlarmClockDays::onceToggled()
 {
+	// deselect all the days selected
 	bool st = static_cast<BannAlarmDay*>(page_content->getBanner(0))->getStatus();
 	if (st)
 	{
