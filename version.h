@@ -50,6 +50,12 @@ public:
 
 	virtual void manageFrame(OpenMsg &msg);
 
+signals:
+	void exitRequested();
+
+protected:
+	virtual void mouseReleaseEvent(QMouseEvent *);
+
 private:
 	unsigned char vers;
 	unsigned char release;

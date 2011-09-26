@@ -69,6 +69,11 @@ Version::Version()
 	hw_build = 0;
 }
 
+void Version::mouseReleaseEvent(QMouseEvent *)
+{
+	emit exitRequested();
+}
+
 void Version::manageFrame(OpenMsg &msg)
 {
 	bool reload = false;

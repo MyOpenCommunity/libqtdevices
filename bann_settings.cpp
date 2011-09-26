@@ -222,12 +222,13 @@ BannVersion::BannVersion(QString icon, QString text, Version *v)
 	initBanner(QString(), icon, text);
 	connect(this, SIGNAL(rightClicked()), SLOT(showVersionPage()));
 	version_page = v;
+	connect(version_page, SIGNAL(exitRequested()), this, SIGNAL(pageClosed()));
 }
 
 void BannVersion::showVersionPage()
 {
-	version_page->showPage();
 	QTimer::singleShot(10000, this, SIGNAL(pageClosed()));
+	version_page->showPage();
 }
 
 
