@@ -123,6 +123,10 @@ void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_no
 
 void DisplayPage::loadScreenSaver(QString icon, const QDomNode &config_node)
 {
+	int timeout = getTextChild(config_node, "timeout").toInt() / 1000;
+	int blank = getTextChild(config_node, "blankscreen").toInt() / 1000;
+	bt_global::display->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
+
 	ScreenSaver::initData(config_node);
 
 	Bann2Buttons *b = new BannDisplay(icon, tr("Screen Saver"));

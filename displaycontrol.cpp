@@ -57,8 +57,8 @@ DisplayControl::DisplayControl()
 	direct_screen_access = 0;
 
 	freeze_time = 30;
-	screensaver_time = 60;
-	screenoff_time = 120;
+	screensaver_time = 33;
+	screenoff_time = 0;
 
 	page_container = 0;
 	screensaver = 0;
@@ -229,12 +229,11 @@ bool DisplayControl::eventFilter(QObject *obj, QEvent *ev)
 	return true;
 }
 
-void DisplayControl::setScreenSaverTimeouts(int screensaver_start, int blank_screen)
+void DisplayControl::setScreenSaverTimeouts(int freeze, int blank_screen)
 {
-	qDebug() << "Screensaver time" << screensaver_start << "blank screen" << blank_screen;
-
+	freeze_time = freeze;
+	screensaver_time = freeze_time + 3;
 	screenoff_time = blank_screen;
-	screensaver_time = screensaver_start;
 }
 
 int DisplayControl::freezeTime()

@@ -159,8 +159,8 @@ public:
 	*/
 	bool isDirectScreenAccess();
 
-	// set the screensaver and blank screen timeouts in seconds
-	void setScreenSaverTimeouts(int screensaver_start, int blank_screen);
+	// set the freezze and blank screen timeouts in seconds (the screensaver starts 3 seconds after the freeze)
+	void setScreenSaverTimeouts(int freeze, int blank_screen);
 
 	/*!
 		\brief Restore the 'operative' status
