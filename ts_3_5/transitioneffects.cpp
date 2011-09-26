@@ -22,23 +22,12 @@
 #include "transitioneffects.h"
 #include "displaycontrol.h" // bt_global::display
 #include "transitionwidget.h"
-#include "navigation_bar.h" // NavigationBar
-#include "skinmanager.h" // bt_global::skin
-#include "btbutton.h" // BtButton
-#include "generic_functions.h" // setCfgValue, getFileFilter, IMAGE
+#include "generic_functions.h" // setCfgValue
 #include "xml_functions.h" // getTextChild
-#include "itemlist.h"
-#include "state_button.h"
-#include "bann_settings.h" // ScreensaverTiming
-#include "imageselectionhandler.h"
-#ifdef LAYOUT_TS_10
-#include "multimedia_ts10.h" // FilesystemBrowseButton
-#endif
-#include "main.h" // getPageNode(), MULTIMEDIA
 
-#include <QAbstractButton>
-#include <QGridLayout>
-#include <QLabel>
+#include <QMap>
+#include <QDomNode>
+#include <QString>
 #include <QDebug>
 
 
@@ -52,7 +41,7 @@ TransitionEffects::TransitionEffects(const QDomNode &conf_node) :
 
 	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
 
-	// this load the current screensaver into the global display object
+	// this load the current transition effect into the global display object
 	bannerSelected(getTextChild(conf_node, "type").toInt());
 
 	// to save parameters

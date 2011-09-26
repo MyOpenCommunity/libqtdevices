@@ -29,7 +29,7 @@ class QDomNode;
 
 /*!
 	\ingroup Settings
-	\brief Allows the user to choose the ScreenSaver.
+	\brief Allows the user to choose the transition effects.
 */
 class TransitionEffects : public SingleChoicePage
 {
