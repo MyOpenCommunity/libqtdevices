@@ -301,6 +301,7 @@ BtDateEdit::BtDateEdit(QWidget *parent) : QWidget(parent), _date(QDate::currentD
 		connect(btn_bottom_left, SIGNAL(clicked()), this, SLOT(decDay()));
 		connect(btn_bottom_center, SIGNAL(clicked()), this, SLOT(decMonth()));
 		connect(btn_bottom_right, SIGNAL(clicked()), this, SLOT(decYear()));
+		break;
 	case YEAR_FIRST:
 		connect(btn_top_left, SIGNAL(clicked()), this, SLOT(incYear()));
 		connect(btn_top_center, SIGNAL(clicked()), this, SLOT(incMonth()));
