@@ -24,6 +24,10 @@
 #include <QPainter>
 #include <QDebug>
 
+#define BLENDING_DURATION 200
+#define MOSAIC_DURATION 200
+#define ENLARGE_DURATION 200
+
 
 TransitionWidget::TransitionWidget(int time) : timeline(time, this)
 {
@@ -58,7 +62,7 @@ void TransitionWidget::startTransition(const QPixmap &image)
 }
 
 
-BlendingTransition::BlendingTransition() : TransitionWidget(400)
+BlendingTransition::BlendingTransition() : TransitionWidget(BLENDING_DURATION)
 {
 	connect(&timeline, SIGNAL(valueChanged(qreal)), SLOT(triggerRepaint(qreal)));
 	blending_factor = 0.0;
@@ -86,7 +90,7 @@ void BlendingTransition::paintEvent(QPaintEvent *e)
 }
 
 
-MosaicTransition::MosaicTransition() : TransitionWidget(500)
+MosaicTransition::MosaicTransition() : TransitionWidget(MOSAIC_DURATION)
 {
 	// be careful: changing the parameters of the timeline has severe impacts on performance and
 	// smoothness of transition
@@ -147,7 +151,7 @@ void MosaicTransition::paintEvent(QPaintEvent *e)
 }
 
 
-EnlargeTransition::EnlargeTransition() : TransitionWidget(400)
+EnlargeTransition::EnlargeTransition() : TransitionWidget(ENLARGE_DURATION)
 {
 	percentage = 1;
 	timeline.setCurveShape(QTimeLine::LinearCurve);
