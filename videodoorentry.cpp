@@ -73,7 +73,7 @@
 
 enum Items
 {
-	ENTRANCE_PANEL = 49, // to be changed
+	ENTRANCE_PANEL = 10053
 };
 
 enum Pages

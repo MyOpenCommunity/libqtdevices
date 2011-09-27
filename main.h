@@ -157,7 +157,11 @@ enum Section
 	LOAD_MANAGEMENT = 18000,                        /*!< Load management system */
 	SCENARIOS = 1000,                               /*!< Scenarios managing */
 	EVOLVED_SCENARIOS = 9000,                       /*!< Evolved scenarios management */
+#ifdef LAYOUT_TS_3_5
+	VIDEODOORENTRY = 10050,                         /*!< VideoDoorEntry system */
+#else
 	VIDEODOORENTRY = 10000,                         /*!< VideoDoorEntry system */
+#endif
 	SETTINGS = 14000,                               /*!< Settings */
 	MULTIMEDIA = 16000,                             /*!< Multimedia system */
 	SOUNDDIFFUSION = 11000,                         /*!< Sound diffusion system (monochannel) */
