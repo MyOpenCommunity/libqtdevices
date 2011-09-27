@@ -121,9 +121,10 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		}
 
 		QString descr = getTextChild(item_node, "descr");
-		bool light = getTextChild(item_node, "light").toInt() == 1;
-		bool key = getTextChild(item_node, "key").toInt() == 1;
-		QString where = getTextChild(item_node, "where");
+		bool light = getTextChild(item_node, "staircase").toInt() == 1;
+		bool key = getTextChild(item_node, "lock").toInt() == 1;
+		QDomNode addresses = getElement(item_node, "addresses");
+		QString where = getTextChild(addresses, "dev") + getTextChild(addresses, "where");
 
 		EntrancePanel *b = new EntrancePanel(descr, where, light, key);
 		CallNotifierPage *p = new CallNotifierPage(descr, where, light, key);
