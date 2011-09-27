@@ -183,7 +183,7 @@ QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
 		return DateConversions::formatDateConfig(date);
 	case MONTH:
 		// no need to modify the format to american
-		return date.toString(QString("MM%1yy").arg(DateConversions::separator));
+		return DateConversions::formatDateConfigShort(date);
 
 	case YEAR:
 	default:

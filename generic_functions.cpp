@@ -86,6 +86,37 @@ namespace
 		return format;
 	}
 
+	QString getDateFormatShort(char separator = '.')
+	{
+		QString format;
+		bool ok;
+		int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
+
+		// Default in case of error
+		if (!ok)
+			date_format = EUROPEAN_DATE;
+
+		switch (date_format)
+		{
+		case EUROPEAN_DATE:
+			format = "dd.MM";
+			break;
+		case USA_DATE:
+			format = "MM.dd";
+			break;
+		case YEAR_FIRST:
+			format = "MM.dd";
+			break;
+		default:
+			Q_ASSERT_X(false, "getDateFormatShort", qPrintable(QString("Format of date %1 not supported!").arg(date_format)));
+		}
+
+		if (separator != '.')
+			format.replace('.', separator);
+
+		return format;
+	}
+
 
 	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 	const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma", 0};
@@ -556,6 +587,11 @@ int scsToGraphicalVolume(int vol)
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
 	return date.toString(getDateFormat(separator));
+}
+
+QString DateConversions::formatDateConfigShort(const QDate &date, char separator)
+{
+	return date.toString(getDateFormatShort(separator));
 }
 
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)

@@ -28,6 +28,7 @@
 #include "pagestack.h"
 #include "main.h" // ANTIINTRUSION
 #include "labels.h" // ImageLabel
+#include "generic_functions.h" // DateConversions::formatDateConfigShort
 
 #include <QPixmap>
 #include <QWidget>
@@ -47,9 +48,9 @@ AlarmPage::AlarmPage(const QString &icon, const QString &d, const QString &zone,
 	buildPage(content, nav_bar);
 
 	QString descr = d;
-	QDateTime time = QDateTime::currentDateTime();
-	QString hhmm = time.toString("hh:mm");
-	QString ddMM = time.toString("dd.MM");
+
+	QString hhmm = QTime::currentTime().toString("hh:mm");
+	QString ddMM = DateConversions::formatDateConfigShort(QDate::currentDate(), '.');
 
 	descr += QString("\n%1   %2    %3").arg(hhmm).arg(ddMM).arg(zone);
 
@@ -136,7 +137,8 @@ AlarmPage::AlarmPage(const QString &icon, const QString &description, const QStr
 
 	QDateTime time = QDateTime::currentDateTime();
 	QWidget *d = new AlarmPageData(QStringList() << tr("Hour") << tr("Date") << tr("Zone"),
-			QStringList() << time.toString("hh:mm") << time.toString("dd/MM") << zone);
+			QStringList() << time.toString("hh:mm") << DateConversions::formatDateConfigShort(QDate::currentDate())
+			<< zone);
 
 	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));
 	BtButton *list = new BtButton(bt_global::skin->getImage("info"));

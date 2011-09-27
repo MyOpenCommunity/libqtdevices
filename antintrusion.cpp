@@ -33,6 +33,7 @@
 #include "pagestack.h"
 #include "icondispatcher.h" // bt_global::icons_cache
 #include "navigation_bar.h"
+#include "generic_functions.h" // DateConversions::formatDateConfig
 #ifdef LAYOUT_TS_10
 #include "audiostatemachine.h" // bt_global::audio_states
 #include "ringtonesmanager.h" // bt_global::ringtones
@@ -113,7 +114,8 @@ void AlarmList::addHorizontalBox(QGridLayout *layout, const ItemInfo &item, int 
 	label_zone->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	label_zone->setFont(bt_global::font->get(FontManager::TEXT));
 
-	QLabel *label_date = new QLabel(date.toString("dd/MM/yyyy\nhh:mm:ss"));
+
+	QLabel *label_date = new QLabel(DateConversions::formatDateConfig(date.date()) + date.time().toString("\nhh:mm:ss"));
 	label_date->setAlignment(Qt::AlignTop|Qt::AlignHCenter);
 	label_date->setFont(bt_global::font->get(FontManager::TEXT));
 

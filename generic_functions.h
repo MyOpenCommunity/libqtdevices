@@ -234,10 +234,20 @@ namespace DateConversions
 
 	/*!
 		\ingroup Core
-		\brief Converts \a date to a QString object according to the date format read
-		from configuration.
+		\brief Converts \a date to a QString according to the date format read from configuration.
+
+		This function return the day, the month and the year (in 2 digit format) extracted
+		from the date argument.
 	*/
 	QString formatDateConfig(const QDate &date, char s = separator);
+
+	/*!
+		\ingroup Core
+		\brief Converts \a date to a QString according to the date format read from configuration.
+
+		This function return the day and the month extracted from the date argument.
+	*/
+	QString formatDateConfigShort(const QDate &date, char s = separator);
 
 	/*!
 		\ingroup Core
