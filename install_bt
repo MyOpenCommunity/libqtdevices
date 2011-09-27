@@ -24,6 +24,10 @@ then
   chmod +x BTouch_qws
   echo "#!/bin/sh
 
+trap \"killall BTouch; trap SIGTERM; trap SIGUSR1; trap SIGUSR2; exit 0\" SIGTERM
+trap \"killall -SIGUSR1 BTouch; wait\" SIGUSR1
+trap \"killall -SIGUSR2 BTouch; wait\" SIGUSR2
+
 export LD_LIBRARY_PATH=/home/bticino/lib
 
 export TSLIB_CONSOLEDEVICE=none
@@ -38,9 +42,7 @@ export POINTERCAL_FILE=/home/bticino/cfg/extra/pointercal
 
 ./bin/BTouch -qws -noswcursor &
 
-trap \"killall BTouch; exit 0\" SIGTERM
-wait
-trap SIGTERM" >> BTouch_qws
+wait" >> BTouch_qws
   cp BTouch_qws $BTWEB_APP_BIN_NO_STACKOPEN
   cd ..
   exit 0
