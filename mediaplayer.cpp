@@ -207,7 +207,7 @@ QString formatTime(const QString &current_time, const QString &total_time)
 // When an instance is not active, calling one of the play*() methods will stop
 // the current playback, if any, and start the requested file.
 // All other methods are no-ops.
-Q_GLOBAL_STATIC(QProcess, mplayer_proc);
+Q_GLOBAL_STATIC(QProcess, mplayer_proc)
 
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
@@ -575,7 +575,7 @@ void MediaPlayer::infoReceived()
 }
 
 
-Q_GLOBAL_STATIC(QProcess, sox_process);
+Q_GLOBAL_STATIC(QProcess, sox_process)
 
 SoundPlayer::SoundPlayer(QObject *parent) : QObject(parent)
 {

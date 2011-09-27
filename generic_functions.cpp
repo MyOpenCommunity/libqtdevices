@@ -381,7 +381,7 @@ private:
 	QHash<QString, FileQueue> queued_actions;
 };
 
-Q_GLOBAL_STATIC(DelayedConfigWrite, delayed_config);
+Q_GLOBAL_STATIC(DelayedConfigWrite, delayed_config)
 
 
 DelayedConfigWrite::DelayedConfigWrite()
@@ -427,7 +427,7 @@ void DelayedConfigWrite::writeConfig()
 	queued_actions.clear();
 }
 
-Q_GLOBAL_STATIC(QMutex, avoid_mayhem); // just to avoid multiple executions of asyncWriteConfig
+Q_GLOBAL_STATIC(QMutex, avoid_mayhem) // just to avoid multiple executions of asyncWriteConfig
 
 void DelayedConfigWrite::asyncWriteConfig(QHash<QString, FileQueue> queued_actions)
 {
