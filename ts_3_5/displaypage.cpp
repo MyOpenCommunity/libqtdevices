@@ -99,7 +99,7 @@ void DisplayPage::loadCleanScreen(int wait_time)
 
 	BannSimple *simple = new BannSimple(img_clean);
 	connect(simple, SIGNAL(clicked()), w, SLOT(showWindow()));
-	main_layout->insertWidget(0, simple, 0, Qt::AlignCenter);
+	page_content->appendBanner(simple);
 }
 
 #ifndef BT_HARDWARE_X11

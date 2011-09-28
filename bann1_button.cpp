@@ -96,7 +96,7 @@ void BannSinglePuls::connectRightButton(Page *p)
 BannCenteredButton::BannCenteredButton(QWidget *parent) : Banner(parent)
 {
 	center_button = new BtButton;
-	QVBoxLayout *l = new QVBoxLayout(this);
+	QHBoxLayout *l = new QHBoxLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
 	l->setSpacing(0);
 	l->addWidget(center_button, 0, Qt::AlignTop);
@@ -119,6 +119,8 @@ BannSimple::BannSimple(const QString &icon)
 	banner_height = BUT_DIM;
 	initBanner(icon);
 	connect(center_button, SIGNAL(clicked()), SIGNAL(clicked()));
+	static_cast<QHBoxLayout*>(layout())->insertStretch(0, 1);
+	static_cast<QHBoxLayout*>(layout())->insertStretch(2, 1);
 }
 
 
