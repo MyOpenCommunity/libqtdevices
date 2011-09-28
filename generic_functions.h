@@ -29,6 +29,8 @@
 #include <QMap>
 #include <QHash>
 #include <QMetaType>
+#include <QFlags>
+
 
 class QDate;
 class QDateTime;
@@ -217,6 +219,7 @@ int scsToLocalVolume(int vol);
 */
 int scsToGraphicalVolume(int vol);
 
+
 /*!
 	Contains the functions to convert a QDate/QDateTime in a string (and viceversa)
 	formatted as specified in the configuration file.
@@ -243,11 +246,27 @@ namespace DateConversions
 
 	/*!
 		\ingroup Core
+		\brief The components of a date.
+	*/
+	enum DateComponent
+	{
+		DAYS = 0x1,
+		MONTHS = 0x2,
+		YEARS = 0x4,
+		TIME = 0x08,
+		ALL = DAYS | MONTHS | YEARS
+	};
+
+	Q_DECLARE_FLAGS(DateComponents, DateComponent)
+	Q_DECLARE_OPERATORS_FOR_FLAGS(DateComponents)
+
+	/*!
+		\ingroup Core
 		\brief Converts \a date to a QString according to the date format read from configuration.
 
-		This function return the day and the month extracted from the date argument.
+		This function return one or more components from the DateComponent enum extracted from the date argument.
 	*/
-	QString formatDateConfigShort(const QDate &date, char s = separator);
+	QString formatDateConfig(const QDate &date, DateComponents components, char s = separator);
 
 	/*!
 		\ingroup Core

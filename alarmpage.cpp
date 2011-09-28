@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -28,7 +28,7 @@
 #include "pagestack.h"
 #include "main.h" // ANTIINTRUSION
 #include "labels.h" // ImageLabel
-#include "generic_functions.h" // DateConversions::formatDateConfigShort
+#include "generic_functions.h" // DateConversions::formatDateConfig
 
 #include <QPixmap>
 #include <QWidget>
@@ -50,7 +50,7 @@ AlarmPage::AlarmPage(const QString &icon, const QString &d, const QString &zone,
 	QString descr = d;
 
 	QString hhmm = QTime::currentTime().toString("hh:mm");
-	QString ddMM = DateConversions::formatDateConfigShort(QDate::currentDate(), '.');
+	QString ddMM = DateConversions::formatDateConfig(QDate::currentDate(), DateConversions::DAYS | DateConversions::MONTHS, '.');
 
 	descr += QString("\n%1   %2    %3").arg(hhmm).arg(ddMM).arg(zone);
 
@@ -137,7 +137,7 @@ AlarmPage::AlarmPage(const QString &icon, const QString &description, const QStr
 
 	QDateTime time = QDateTime::currentDateTime();
 	QWidget *d = new AlarmPageData(QStringList() << tr("Hour") << tr("Date") << tr("Zone"),
-			QStringList() << time.toString("hh:mm") << DateConversions::formatDateConfigShort(QDate::currentDate())
+			QStringList() << time.toString("hh:mm") << DateConversions::formatDateConfig(QDate::currentDate(), DateConversions::DAYS | DateConversions::MONTHS)
 			<< zone);
 
 	BtButton *home = new BtButton(bt_global::skin->getImage("go_home"));

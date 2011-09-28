@@ -86,36 +86,7 @@ namespace
 		return format;
 	}
 
-	QString getDateFormatShort(char separator = '.')
-	{
-		QString format;
-		bool ok;
-		int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
 
-		// Default in case of error
-		if (!ok)
-			date_format = EUROPEAN_DATE;
-
-		switch (date_format)
-		{
-		case EUROPEAN_DATE:
-			format = "dd.MM";
-			break;
-		case USA_DATE:
-			format = "MM.dd";
-			break;
-		case YEAR_FIRST:
-			format = "MM.dd";
-			break;
-		default:
-			Q_ASSERT_X(false, "getDateFormatShort", qPrintable(QString("Format of date %1 not supported!").arg(date_format)));
-		}
-
-		if (separator != '.')
-			format.replace('.', separator);
-
-		return format;
-	}
 
 
 	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
@@ -586,17 +557,46 @@ int scsToGraphicalVolume(int vol)
 
 QString DateConversions::formatDateConfig(const QDate &date, char separator)
 {
-	return date.toString(getDateFormat(separator));
+	return formatDateConfig(date, ALL, separator);
 }
 
-QString DateConversions::formatDateConfigShort(const QDate &date, char separator)
+QString DateConversions::formatDateConfig(const QDate &date, DateComponents components, char separator)
 {
-	return date.toString(getDateFormatShort(separator));
+	QStringList components_list;
+	bool ok;
+	int date_format = (*bt_global::config)[DATE_FORMAT].toInt(&ok);
+
+	// Default in case of error
+	if (!ok)
+		date_format = EUROPEAN_DATE;
+
+	switch (date_format)
+	{
+	case EUROPEAN_DATE:
+		if (components.testFlag(DAYS)) components_list << "dd";
+		if (components.testFlag(MONTHS)) components_list << "MM";
+		if (components.testFlag(YEARS)) components_list << "yy";
+		break;
+	case USA_DATE:
+		if (components.testFlag(MONTHS)) components_list << "MM";
+		if (components.testFlag(DAYS)) components_list << "dd";
+		if (components.testFlag(YEARS)) components_list << "yy";
+		break;
+	case YEAR_FIRST:
+		if (components.testFlag(YEARS)) components_list << "yy";
+		if (components.testFlag(MONTHS)) components_list << "MM";
+		if (components.testFlag(DAYS)) components_list << "dd";
+		break;
+	default:
+		Q_ASSERT_X(false, "formatDateConfig", qPrintable(QString("Format of date %1 not supported!").arg(date_format)));
+	}
+
+	return date.toString(components_list.join(QString(separator)));
 }
 
 QString DateConversions::formatDateTimeConfig(const QDateTime &datetime, char separator)
 {
-	return DateConversions::formatDateConfig(datetime.date(), separator) + datetime.time().toString(" HH:mm");
+	return DateConversions::formatDateConfig(datetime.date(), ALL, separator) + datetime.time().toString(" HH:mm");
 }
 
 QDate DateConversions::getDateConfig(const QString &date, char separator)
