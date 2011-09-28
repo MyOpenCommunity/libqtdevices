@@ -23,7 +23,7 @@
 #include "xml_functions.h" // getChildren, getTextChild
 #include "bann_lighting.h"
 #include "actuators.h"
-#include "main.h" // LIGHTING
+#include "main.h" // LIGHTING, bt_global::config
 #include "skinmanager.h" // SkinContext
 
 #include <QDomNode>
@@ -39,7 +39,8 @@ enum BannerType
 	DIMMER_GROUP = 2006,
 	LIGHT_GROUP = 2004,
 	TEMP_LIGHT = 2007,
-	STAIR_LIGHT = 2011,
+	STAIR_LIGHT = 2009,
+	STAIR_LIGHT_PI = 2011,
 	DIMMER100 = 2001,
 	TEMP_LIGHT_VARIABLE = 2008,
 	DIMMER100_GROUP = 2005,
@@ -150,6 +151,9 @@ Banner *Lighting::getBanner(const QDomNode &item_node)
 		DeviceType device_type = static_cast<DeviceType>(getTextChild(item_node, "device").toInt());
 		b = new TempLight(descr, where, oid, device_type, getPullMode(item_node));
 	}
+		break;
+	case STAIR_LIGHT_PI:
+		b = new ButtonActuator(descr, (*bt_global::config)[PI_ADDRESS], VCT_STAIRLIGHT, oid, NOT_PULL);
 		break;
 	case STAIR_LIGHT:
 		b = new ButtonActuator(descr, where, VCT_STAIRLIGHT, oid, NOT_PULL);
