@@ -416,7 +416,7 @@ void AlarmClock::stopAlarm()
 	if (alarm_type == BUZZER)
 	{
 		bt_global::display->setState(DISPLAY_OPERATIVE); // restore the normal lighting
-#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
+#if defined(BT_HARDWARE_PXA255)
 		setBeep(buzzer_enabled);
 #endif
 	}
