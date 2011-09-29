@@ -26,7 +26,7 @@
 
 #define BLENDING_DURATION 200
 #define MOSAIC_DURATION 200
-#define ENLARGE_DURATION 200
+#define ENLARGE_DURATION 300
 
 
 TransitionWidget::TransitionWidget(int time) : timeline(time, this)
@@ -158,6 +158,16 @@ EnlargeTransition::EnlargeTransition() : TransitionWidget(ENLARGE_DURATION)
 	connect(&timeline, SIGNAL(frameChanged(int)), SLOT(triggerRepaint(int)));
 }
 
+QString EnlargeTransition::borderColor()
+{
+	return border_color;
+}
+
+void EnlargeTransition::setBorderColor(QString color)
+{
+	border_color = color;
+}
+
 void EnlargeTransition::initTransition()
 {
 	timeline.setFrameRange(1, 100);
@@ -181,6 +191,8 @@ void EnlargeTransition::paintEvent(QPaintEvent *e)
 	int rect_height = height() / 100.0 * percentage;
 	// We put the rectangle of the new image aligned on the center of the widget
 	QRect target_rect(width() / 2 - rect_width / 2, height() / 2 - rect_height / 2, rect_width, rect_height);
-
+	QRect line_rect(target_rect.x() -1, target_rect.y() -1, target_rect.width() + 2, target_rect.height() + 2);
 	p.drawPixmap(target_rect, dest_image);
+	p.setPen(QColor(border_color));
+	p.drawRect(line_rect);
 }

@@ -25,6 +25,9 @@ EnergyTableContent {
 	qproperty-even_row_color: #2e3236;
 	qproperty-text_color: #d8d8d8;
 }
+TransitionWidget {
+	qproperty-border_color: #c0c0c0;
+}
 WaitLabel { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }
 KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
 FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }

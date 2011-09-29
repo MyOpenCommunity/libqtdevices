@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -125,8 +125,12 @@ private:
 class EnlargeTransition : public TransitionWidget
 {
 Q_OBJECT
+Q_PROPERTY(QString border_color READ borderColor WRITE setBorderColor)
 public:
 	EnlargeTransition();
+
+	QString borderColor();
+	void setBorderColor(QString color);
 
 protected:
 	virtual void paintEvent(QPaintEvent *e);
@@ -137,6 +141,7 @@ private slots:
 
 private:
 	int percentage;
+	QString border_color;
 };
 
 
