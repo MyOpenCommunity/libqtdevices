@@ -273,6 +273,10 @@ void LanSettings::valueReceived(const DeviceValues &values_list)
 				saved_status = lan_status;
 				setCfgValue("enable", lan_status, item_id);
 			}
+			if (!lan_status)
+				connectionDown();
+			else if (!tester->isTesting())
+				tester->test();
 		}
 		++it;
 	}
