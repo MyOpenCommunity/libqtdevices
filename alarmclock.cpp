@@ -291,13 +291,12 @@ void AlarmClock::ringAlarm()
 		bt_global::audio_states->toState(AudioStates::ALARM_TO_SPEAKER);
 #endif
 
-#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
 		timer_increase_volume = new QTimer(this);
 		timer_increase_volume->start(100);
+
+#if defined(BT_HARDWARE_PXA255)
 		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(buzzerAlarm()));
-#else // BT_HARDWARE_PXA270 && BT_HARDWARE_X11
-		timer_increase_volume = new QTimer(this);
-		timer_increase_volume->start(5000);
+#else // BT_HARDWARE_PXA270 && BT_HARDWARE_X11 && BT_HARDWARE_DM365
 		connect(timer_increase_volume, SIGNAL(timeout()), SLOT(wavAlarm()));
 #endif
 		buzzer_counter = 0;
@@ -367,26 +366,34 @@ void AlarmClock::buzzerAlarm()
 		buzzer_enabled = getBeep();
 		setBeep(true);
 	}
-	if  (buzzer_counter % 2 == 0)
+	if (buzzer_counter % 2 == 0)
 	{
 		if (((buzzer_counter + 2) % 12) && (buzzer_counter % 12))
 			beep(10);
 	}
 
-	// We cannot use the setState method because we are in forced operative mode
-	bt_global::display->changeBrightness((buzzer_counter % 8 == 0) ? DISPLAY_OPERATIVE : DISPLAY_FREEZED);
-
+	blinkScreen(buzzer_counter % 8 == 0);
 	buzzer_counter++;
 	if (buzzer_counter >= 1200) // the timeout, equal to 120 secs (100 * 1200)
 		stopAlarm();
 }
 
+void AlarmClock::blinkScreen(bool on)
+{
+	// We cannot use the setState method because we are in forced operative mode
+	bt_global::display->changeBrightness(on ? DISPLAY_OPERATIVE : DISPLAY_FREEZED);
+}
+
 void AlarmClock::wavAlarm()
 {
-	bt_global::sound->play(SOUND_PATH "alarm.wav");
+	if (buzzer_counter % 50 == 0)
+		bt_global::sound->play(SOUND_PATH "alarm.wav");
 
+#ifdef BT_HARDWARE_DM365
+	blinkScreen(buzzer_counter % 8 == 0);
+#endif
 	buzzer_counter++;
-	if (buzzer_counter >= 24) // the timeout, equal to 120 secs (24 * 5000)
+	if (buzzer_counter >= 1200) // the timeout, equal to 120 secs (100 * 1200)
 		stopAlarm();
 }
 

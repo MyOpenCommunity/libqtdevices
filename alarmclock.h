@@ -142,6 +142,7 @@ private:
 	AmplifierDevice *general;
 
 	void ringAlarm();
+	void blinkScreen(bool on);
 };
 
 
