@@ -3,7 +3,7 @@
 *.pro.user.*
 *.arm
 *.x86
-BTouch_qws
+*BTouch*
 devices/test/test
 test/test
 moc
