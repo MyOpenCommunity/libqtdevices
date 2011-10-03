@@ -233,7 +233,10 @@ void DisplayControl::setScreenSaverTimeouts(int freeze, int blank_screen)
 {
 	freeze_time = freeze;
 	screensaver_time = freeze_time + 3;
-	screenoff_time = blank_screen;
+	if (blank_screen == 0)
+		screenoff_time = 0;
+	else
+		screenoff_time = blank_screen + screensaver_time;
 }
 
 int DisplayControl::freezeTime()

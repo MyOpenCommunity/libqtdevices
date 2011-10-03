@@ -125,7 +125,7 @@ void DisplayPage::loadScreenSaver(QString icon, const QDomNode &config_node)
 {
 	int timeout = getTextChild(config_node, "timeout").toInt() / 1000;
 	int blank = getTextChild(config_node, "blankscreen").toInt() / 1000;
-	bt_global::display->setScreenSaverTimeouts(timeout, blank == 0 ? 0 : timeout + blank);
+	bt_global::display->setScreenSaverTimeouts(timeout, blank);
 
 	ScreenSaver::initData(config_node);
 
