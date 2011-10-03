@@ -83,6 +83,13 @@ void ConnectionTester::test()
 	startTest();
 }
 
+void ConnectionTester::cancel()
+{
+	current_reply->disconnect();
+	current_reply->deleteLater();
+	timeout_timer->stop();
+}
+
 void ConnectionTester::startTest()
 {
 	QString url = urls.at(current_url);
@@ -176,6 +183,8 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	box_text->addRow("", "");
 	box_text->addRow(tr("Connection Status"), "");
 	box_text->setSpacing(2);
+
+	connection_status = UNKNOWN; // Keep in sync with the 'Connection Status' label
 	tester = new ConnectionTester(this);
 	connect(tester, SIGNAL(testFailed()), SLOT(connectionDown()));
 	connect(tester, SIGNAL(testPassed()), SLOT(connectionUp()));
@@ -201,6 +210,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	nav_bar->displayScrollButtons(false);
 	buildPage(content, nav_bar, getTextChild(config_node, "descr"), TINY_TITLE_HEIGHT);
 	connect(nav_bar, SIGNAL(backClick()), SIGNAL(Closed()));
+	connect(this, SIGNAL(Closed()), SLOT(handleClose()));
 
 	dev = bt_global::add_device_to_cache(new PlatformDevice);
 	connect(dev, SIGNAL(valueReceived(const DeviceValues&)), SLOT(valueReceived(const DeviceValues&)));
@@ -210,36 +220,73 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	item_id = getTextChild(config_node, "itemID").toInt();
 }
 
+void LanSettings::handleClose()
+{
+	if (tester->isTesting())
+		tester->cancel();
+}
+
 void LanSettings::connectionDown()
 {
-	box_text->setText(10, tr("Down"));
+	--attempts;
+	if (attempts > 0)
+		QTimer::singleShot(attempts_delay, tester, SLOT(test()));
+	else
+	{
+		connection_status = DOWN;
+		updateConnectionStatus();
+	}
 }
 
 void LanSettings::connectionUp()
 {
-	box_text->setText(10, tr("Up"));
+	connection_status = UP;
+	updateConnectionStatus();
+}
+
+void LanSettings::updateConnectionStatus()
+{
+	QString text;
+	if (connection_status == DOWN)
+		text = tr("Down");
+	else if (connection_status == UP)
+		text = tr("Up");
+
+	box_text->setText(10, text);
 }
 
 void LanSettings::inizializza()
 {
-	qDebug() << "LanSettings::inizializza()";
 	dev->enableLan(saved_status);
 	requestNetworkInfo(dev);
-	if (!tester->isTesting())
-		tester->test();
 }
 
 void LanSettings::showPage()
 {
 	requestNetworkInfo(dev);
-	if (!tester->isTesting())
+	if (!tester->isTesting() && lan_status)
+	{
+		attempts = 1;
+		attempts_delay = 0;
+		connection_status = UNKNOWN;
+		updateConnectionStatus();
 		tester->test();
+	}
 	Page::showPage();
 }
 
 void LanSettings::toggleLan()
 {
 	dev->enableLan(!lan_status);
+}
+
+void LanSettings::startTest()
+{
+	attempts = 3;
+	attempts_delay = 10000;
+	connection_status = UNKNOWN;
+	updateConnectionStatus();
+	QTimer::singleShot(attempts_delay, tester, SLOT(test()));
 }
 
 void LanSettings::valueReceived(const DeviceValues &values_list)
@@ -268,15 +315,21 @@ void LanSettings::valueReceived(const DeviceValues &values_list)
 		{
 			lan_status = it.value().toBool();
 			toggle_btn->setStatus(lan_status);
+
+			if (!lan_status && saved_status)
+			{
+				attempts = 1;
+				connectionDown();
+			}
+			else if (lan_status && !saved_status)
+				startTest();
+
 			if (lan_status != saved_status)
 			{
 				saved_status = lan_status;
 				setCfgValue("enable", lan_status, item_id);
 			}
-			if (!lan_status)
-				connectionDown();
-			else if (!tester->isTesting())
-				tester->test();
+
 		}
 		++it;
 	}

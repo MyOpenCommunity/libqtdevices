@@ -49,8 +49,13 @@ namespace LanSettingsPrivate
 	Q_OBJECT
 	public:
 		ConnectionTester(QObject *parent);
+	public slots:
+		// Start a new test
 		void test();
+		// Check if a test is currently running
 		bool isTesting() const;
+		// Abort the test
+		void cancel();
 
 	signals:
 		void testFailed();
@@ -108,17 +113,34 @@ private slots:
 	void toggleLan();
 	void connectionUp();
 	void connectionDown();
+	void handleClose();
 
 private:
 	StateButton *toggle_btn;
 	Text2Column *box_text;
 	PlatformDevice *dev;
-	// The real status of the lan
+	// The status of the lan (enable or disable)
 	bool lan_status;
 	// The status of the lan as stored in the configuration file
 	bool saved_status;
+
+	enum ConnectionStatus
+	{
+		UNKNOWN,
+		UP,
+		DOWN
+	};
+
+	ConnectionStatus connection_status;
+	int attempts;
+	int attempts_delay;
+
 	int item_id;
 	LanSettingsPrivate::ConnectionTester *tester;
+
+
+	void updateConnectionStatus();
+	void startTest();
 };
 
 #endif // LAN_SETTINGS_H
