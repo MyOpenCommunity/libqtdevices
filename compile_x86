@@ -15,7 +15,7 @@ MACHINE=$1
 if [ "$MACHINE" = "TS35" ]
 then
   cd ts_3_5
-  qmake CONFIG+=release
+  qmake CONFIG+=release ts_3_5.x11.pro
   #make clean
   make || exit 1
   cd ..
@@ -25,7 +25,7 @@ fi
 if [ "$MACHINE" = "MMT" ]
 then
   cd ts_10
-  qmake CONFIG+=release
+  qmake CONFIG+=release ts_10.x11.pro
   make || exit 1
   cd ..
   exit 0
