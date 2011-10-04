@@ -227,7 +227,7 @@ private:
 	int blankScreenTime();
 
 	// called when we turn off the screen.
-	void turnOff();
+	void turnOff(Page *exit_page);
 
 	void startScreensaver(Page *target_page, Window *target_window, Page *exit_page);
 

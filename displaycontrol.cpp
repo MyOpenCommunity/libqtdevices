@@ -257,7 +257,7 @@ int DisplayControl::blankScreenTime()
 	if (screenoff_time == 0)
 		return 0;
 	else if (current_screensaver == ScreenSaver::NONE)
-		return screenoff_time - screensaver_time;
+		return screensaver_time;
 	else
 		return screenoff_time;
 }
@@ -303,7 +303,7 @@ void DisplayControl::installTransitionEffects(TransitionWidget::Type t)
 	}
 }
 
-void DisplayControl::turnOff()
+void DisplayControl::turnOff(Page *exit_page)
 {
 	qDebug() << "Turning screen off";
 	// the stopscreensaver() event is emitted when the user clicks on screen
@@ -311,6 +311,11 @@ void DisplayControl::turnOff()
 		screensaver->stop();
 	else
 	{
+		if (page_container->currentPage() != exit_page)
+			emit unrollPages();
+
+		exit_page->showPage();
+
 		// Some pages do things when the screensaver starts. For example the
 		// RDS radio stop the RDS updates. We want the same behaviour when
 		// the screen turn off.
@@ -391,7 +396,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 		((current_state == DISPLAY_SCREENSAVER && time >= blank_time) ||
 		 (current_state == DISPLAY_FREEZED && current_screensaver == ScreenSaver::NONE && time >= blank_time)))
 	{
-		turnOff();
+		turnOff(exit_page);
 	}
 	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{

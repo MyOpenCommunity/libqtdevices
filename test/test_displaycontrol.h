@@ -56,7 +56,9 @@ private slots:
 	void testScreensaverPostMakeActive();
 	void testScreenOffPostMakeActive();
 	void testScreensaverExitPage();
+	void testScreenOffExitPage();
 	void testScreensaverExitPageDefault();
+	void testScreenOffExitPageDefault();
 
 private:
 	DisplayControl *display;

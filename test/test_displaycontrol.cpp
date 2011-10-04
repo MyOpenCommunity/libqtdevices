@@ -212,7 +212,7 @@ void TestDisplayControl::testScreenOffNoScreeensaver()
 	display->current_screensaver = ScreenSaver::NONE;
 	display->startTime();
 
-	sleepSecs(display->screenoff_time - display->screensaver_time);
+	sleepSecs(display->screensaver_time);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_OFF);
@@ -396,6 +396,25 @@ void TestDisplayControl::testScreensaverExitPage()
 	QCOMPARE(page_container->currentPage(), exit);
 }
 
+void TestDisplayControl::testScreenOffExitPage()
+{
+	// Without page default and without screensaver
+	Page *target = page_container->currentPage(); // the homepage
+	Page *exit = new Page;
+	page_container->setCurrentPage(exit);
+
+	QSignalSpy spy(display, SIGNAL(unrollPages()));
+	display->current_screensaver = ScreenSaver::NONE;
+	display->startTime();
+	sleepSecs(display->screensaver_time);
+	display->checkScreensaver(target, target_window, exit);
+	display->checkScreensaver(target, target_window, exit);
+	QCOMPARE(display->current_state, DISPLAY_OFF);
+	QCOMPARE(spy.count(), 0);
+	display->makeActive();
+	QCOMPARE(page_container->currentPage(), exit);
+}
+
 void TestDisplayControl::testScreensaverExitPageDefault()
 {
 	// With page default
@@ -410,6 +429,26 @@ void TestDisplayControl::testScreensaverExitPageDefault()
 	display->checkScreensaver(target, target_window, exit);
 	display->checkScreensaver(target, target_window, exit);
 	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
+	QCOMPARE(spy.count(), 1);
+	display->makeActive();
+	QCOMPARE(page_container->currentPage(), exit);
+}
+
+void TestDisplayControl::testScreenOffExitPageDefault()
+{
+	// With page default and without screensaver
+	Page *target = new Page;
+	Page *exit = target;
+	Page *other = new Page;
+	page_container->setCurrentPage(other);
+
+	QSignalSpy spy(display, SIGNAL(unrollPages()));
+	display->current_screensaver = ScreenSaver::NONE;
+	display->startTime();
+	sleepSecs(display->screensaver_time);
+	display->checkScreensaver(target, target_window, exit);
+	display->checkScreensaver(target, target_window, exit);
+	QCOMPARE(display->current_state, DISPLAY_OFF);
 	QCOMPARE(spy.count(), 1);
 	display->makeActive();
 	QCOMPARE(page_container->currentPage(), exit);
