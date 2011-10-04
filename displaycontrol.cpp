@@ -311,11 +311,6 @@ void DisplayControl::turnOff(Page *exit_page)
 		screensaver->stop();
 	else
 	{
-		if (page_container->currentPage() != exit_page)
-			emit unrollPages();
-
-		exit_page->showPage();
-
 		// Some pages do things when the screensaver starts. For example the
 		// RDS radio stop the RDS updates. We want the same behaviour when
 		// the screen turn off.
@@ -326,6 +321,14 @@ void DisplayControl::turnOff(Page *exit_page)
 		bt_global::audio_states->toState(AudioStates::SCREENSAVER);
 #endif
 	setState(DISPLAY_OFF);
+
+	if (current_screensaver == ScreenSaver::NONE)
+	{
+		if (page_container->currentPage() != exit_page)
+			emit unrollPages();
+
+		exit_page->showPage();
+	}
 }
 
 void DisplayControl::startScreensaver(Page *target_page, Window *target_window, Page *exit_page)
