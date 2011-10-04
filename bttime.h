@@ -38,11 +38,11 @@ class BtTime
 friend class TestBtTime;
 public:
 	/*!
-		\brief Constructs a BtTime with given hour, minutes and seconds.
+		\brief Constructs a BtTime with given hour, minutes, seconds and tenths of seconds.
 
 		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
 	*/
-	BtTime(int h, int m, int s);
+	BtTime(int h, int m, int s, int ts = 0);
 
 	/*!
 		\brief Constructs a BtTime with hour, minutes and seconds equal to 0.
@@ -120,20 +120,26 @@ public:
 	*/
 	int second() const;
 
-private:
-	// used by constructors
-	void init(int h, int m, int s);
+	/*!
+		\brief Return the thens of a seconds.
+	*/
+	int tsecond() const;
 
 private:
-	int _hour, _minute, _second;
+	// used by constructors
+	void init(int h, int m, int s, int ts);
+
+private:
+	int _hour, _minute, _second, _tsecond;
 	int max_hours, max_minutes, max_seconds;
 };
 
-Q_DECLARE_METATYPE(BtTime);
+Q_DECLARE_METATYPE(BtTime)
+
 
 inline bool operator ==(const BtTime &f, const BtTime &s)
 {
-	return f.hour() == s.hour() && f.minute() == s.minute() && f.second() == s.second();
+	return f.hour() == s.hour() && f.minute() == s.minute() && f.second() == s.second() && f.tsecond() == s.tsecond();
 }
 
 inline bool operator !=(const BtTime &f, const BtTime &s)
@@ -144,4 +150,4 @@ inline bool operator !=(const BtTime &f, const BtTime &s)
 QString formatTime(const BtTime &t);
 
 
-#endif //BTTIME_H
+#endif // BTTIME_H

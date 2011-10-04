@@ -394,6 +394,7 @@ TempLight::TempLight(const QString &descr, const QString &where, int openserver_
 	times << BtTime(0, 5, 0);
 	times << BtTime(0, 15, 0);
 	times << BtTime(0, 0, 30);
+	times << BtTime(0, 0, 0, 5);
 	updateTimeLabel();
 	connect(left_button, SIGNAL(clicked()), SLOT(cycleTime()));
 	connect(right_button, SIGNAL(clicked()), SLOT(activate()));

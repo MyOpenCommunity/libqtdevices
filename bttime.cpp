@@ -22,6 +22,10 @@
 #include "bttime.h"
 
 #include <QDateTime>
+#include <QLocale>
+
+// The language used for the floating point number
+static QLocale loc(QLocale::Italian);
 
 
 QString formatTime(const BtTime &t)
@@ -30,7 +34,10 @@ QString formatTime(const BtTime &t)
 	int h = t.hour();
 	int m = t.minute();
 	int s = t.second();
-	if (h == 0 && m == 0)  // time in secs
+	float ts = t.tsecond();
+	if (h == 0 && m == 0 && s == 0) // time in tenths of a second
+		str = QString("%1''").arg(loc.toString(ts / 10, 'f', 1));
+	else if (h == 0 && m == 0)  // time in secs
 		str = QString("%1''").arg(s);
 	else if (h == 0) // time in mins
 		str = QString("%1'").arg(m);
@@ -42,28 +49,27 @@ QString formatTime(const BtTime &t)
 }
 
 
-// BtTime implementation
-
 BtTime::BtTime()
 {
-	init(0, 0, 0);
+	init(0, 0, 0, 0);
 }
 
-BtTime::BtTime(int h, int m, int s)
+BtTime::BtTime(int h, int m, int s, int ts)
 {
-	init(h, m , s);
+	init(h, m , s, ts);
 }
 
 BtTime::BtTime(const QTime &t)
 {
-	init(t.hour(), t.minute(), t.second());
+	init(t.hour(), t.minute(), t.second(), 0);
 }
 
-void BtTime::init(int h, int m, int s)
+void BtTime::init(int h, int m, int s, int ts)
 {
 	_hour = h;
 	_minute = m;
 	_second = s;
+	_tsecond = ts;
 	max_hours = 24;
 	max_minutes = 60;
 	max_seconds = 60;
@@ -193,6 +199,11 @@ int BtTime::minute() const
 int BtTime::second() const
 {
 	return _second;
+}
+
+int BtTime::tsecond() const
+{
+	return _tsecond;
 }
 
 QString BtTime::toString() const
