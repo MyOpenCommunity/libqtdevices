@@ -219,16 +219,29 @@ void BannContrast::done()
 
 BannVersion::BannVersion(QString icon, QString text, Version *v)
 {
+	timer = new QTimer(this);
+	timer->setSingleShot(true);
+	timer->setInterval(10000);
+	connect(timer, SIGNAL(timeout()), SLOT(handleClose()));
+
 	initBanner(QString(), icon, text);
 	connect(this, SIGNAL(rightClicked()), SLOT(showVersionPage()));
 	version_page = v;
-	connect(version_page, SIGNAL(exitRequested()), this, SIGNAL(pageClosed()));
+	connect(version_page, SIGNAL(exitRequested()), SLOT(handleClose()));
 }
 
 void BannVersion::showVersionPage()
 {
-	QTimer::singleShot(10000, this, SIGNAL(pageClosed()));
+	timer->start();
 	version_page->showPage();
+}
+
+void BannVersion::handleClose()
+{
+	if (timer->isActive())
+		timer->stop();
+
+	emit pageClosed();
 }
 
 

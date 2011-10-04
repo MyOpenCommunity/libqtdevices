@@ -37,6 +37,7 @@ class Keypad;
 class Contrast;
 class contdiff;
 class StateButton;
+class QTimer;
 
 #ifdef LAYOUT_TS_3_5
 
@@ -131,9 +132,11 @@ public:
 
 private slots:
 	void showVersionPage();
+	void handleClose();
 
 private:
 	Version *version_page;
+	QTimer *timer;
 };
 
 
