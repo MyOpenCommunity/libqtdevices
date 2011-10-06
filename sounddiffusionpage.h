@@ -151,7 +151,6 @@ public:
 	virtual void showPage();
 
 private:
-	QList<SourceDescription> loadSources(const QDomNode &config_node);
 	void loadItemsMulti(const QDomNode &config_node);
 	void loadItemsMono(const QDomNode &config_node);
 
@@ -172,8 +171,7 @@ class SoundDiffusionAlarmPage : public BannerPage
 {
 Q_OBJECT
 public:
-	SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources,
-				AmplifierDevice *general);
+	SoundDiffusionAlarmPage(const QDomNode &config_node, AmplifierDevice *general);
 
 	virtual void showPage();
 
@@ -181,7 +179,7 @@ signals:
 	void saveVolumes();
 
 private:
-	void loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources);
+	void loadItems(const QDomNode &config_node);
 
 private:
 	AmplifierDevice *general;

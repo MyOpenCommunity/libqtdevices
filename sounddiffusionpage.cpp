@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -90,6 +90,11 @@ enum AmbientType
 	ITEM_AMBIENT_8 = 12028,                    // normal ambient (with a zone)
 };
 
+enum ItemType
+{
+	SOURCES_ID = 2001
+};
+
 
 namespace
 {
@@ -128,6 +133,61 @@ namespace
 		bann->connectRightButton(details);
 		return bann;
 #endif
+	}
+
+	QList<SourceDescription> loadSources(const QDomNode &config_node)
+	{
+		QDomNode sources_node;
+		foreach (const QDomNode &item, getChildren(config_node, "item"))
+		{
+			QString sid_sources = getTextChild(item, "sid");
+			if (sid_sources.isNull())
+				continue;
+
+			const QDomNode &list_node = getConfElement("gui/sharedLists");
+			foreach (const QDomNode &item, getChildren(list_node, "sharedItem"))
+			{
+				QString sid = getTextChild(item, "sid");
+				if (!sid.isNull() && sid == sid_sources)
+				{
+					// Check if the item is the sources container
+					Q_ASSERT_X(getTextChild(item, "id").toInt() == SOURCES_ID, "loadSources",
+						"The sid element linked from the Sound diffusion page is not a source container!");
+					sources_node = item;
+				}
+			}
+		}
+
+		Q_ASSERT_X(!sources_node.isNull(), "loadSources", "No sources node found.");
+
+		QList<SourceDescription> sources_list;
+		foreach (const QDomNode &source, getChildren(sources_node, "item"))
+		{
+			SourceDescription d;
+			switch (getTextChild(source, "id").toInt())
+			{
+			case SOURCE_AUX_MONO:
+			case SOURCE_AUX_MULTI:
+				d.type = SourceDescription::AUX;
+				break;
+			case SOURCE_RADIO_MONO:
+			case SOURCE_RADIO_MULTI:
+				d.type = SourceDescription::RADIO;
+				break;
+			default: // SOURCE_MULTIMEDIA_MONO, SOURCE_MULTIMEDIA_MULTI
+				d.type = SourceDescription::MULTIMEDIA;
+				break;
+			}
+
+			d.cid = getTextChild(source, "cid").toInt();
+			d.descr = getTextChild(source, "descr");
+			d.where = getTextChild(source, "where");
+			d.details = NULL;
+			sources_list << d;
+		}
+
+		Q_ASSERT_X(!sources_list.isEmpty(), "loadSources", "No sound diffusion sources defined.");
+		return sources_list;
 	}
 }
 
@@ -212,7 +272,6 @@ SoundAmbientPage::SoundAmbientPage(const QDomNode &conf_node, const QList<Source
 #endif
 
 	loadItems(conf_node);
-
 	connect(this, SIGNAL(Closed()), SLOT(clearCurrentAmbient()));
 }
 
@@ -225,6 +284,9 @@ void SoundAmbientPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		if (!getChildWithName(item, "sid").isNull())
+			continue;
+
 		Banner *b = getBanner(item);
 		if (b)
 		{
@@ -382,6 +444,9 @@ void SoundAmbientAlarmPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		if (!getChildWithName(item, "sid").isNull())
+			continue;
+
 		Banner *b = SoundAmbientPage::getBanner(item);
 		if (b)
 		{
@@ -444,43 +509,9 @@ int SoundDiffusionPage::sectionId() const
 	return SOUNDDIFFUSION_MULTI;
 }
 
-QList<SourceDescription> SoundDiffusionPage::loadSources(const QDomNode &config_node)
-{
-	QDomNode sources_node = getChildWithName(config_node, "multimediasources");
-	QList<SourceDescription> sources_list;
-	foreach (const QDomNode &source, getChildren(sources_node, "item"))
-	{
-		SourceDescription d;
-		switch (getTextChild(source, "id").toInt())
-		{
-		case SOURCE_AUX_MONO:
-		case SOURCE_AUX_MULTI:
-			d.type = SourceDescription::AUX;
-			break;
-		case SOURCE_RADIO_MONO:
-		case SOURCE_RADIO_MULTI:
-			d.type = SourceDescription::RADIO;
-			break;
-		default: // SOURCE_MULTIMEDIA_MONO, SOURCE_MULTIMEDIA_MULTI
-			d.type = SourceDescription::MULTIMEDIA;
-			break;
-		}
-
-		d.cid = getTextChild(source, "cid").toInt();
-		d.descr = getTextChild(source, "descr");
-		d.where = getTextChild(source, "where");
-		d.details = NULL;
-		sources_list << d;
-	}
-
-	Q_ASSERT_X(!sources_list.isEmpty(), "SoundDiffusionPage::loadItems", "No sound diffusion sources defined.");
-
-	return sources_list;
-}
-
 void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 {
-	QList<SourceDescription> sources_list = loadSources(config_node);
+	QList<SourceDescription> sources_list;
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext context(getTextChild(item, "cid").toInt());
@@ -492,6 +523,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 			t = SoundAmbientPage::SPECIAL_AMBIENT;
 
 		QString descr = getTextChild(item, "descr");
+		QList<SourceDescription> sources_list = loadSources(page_node);
 		SoundAmbientPage *p = new SoundAmbientPage(page_node, sources_list, descr, t);
 
 		Banner *b = getAmbientBanner(descr, t, p);
@@ -504,7 +536,7 @@ void SoundDiffusionPage::loadItemsMulti(const QDomNode &config_node)
 			qFatal("ID %s not handled in SoundDiffusionPage", qPrintable(getTextChild(item, "id")));
 	}
 
-	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, sources_list, AmplifierDevice::createDevice("0"));
+	alarm_clock_page = new SoundDiffusionAlarmPage(config_node, AmplifierDevice::createDevice("0"));
 }
 
 void SoundDiffusionPage::loadItemsMono(const QDomNode &config_node)
@@ -552,8 +584,7 @@ bool SoundDiffusionPage::isMultichannel()
 }
 
 
-SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, const QList<SourceDescription> &sources,
-	AmplifierDevice *_general)
+SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, AmplifierDevice *_general)
 {
 	general = _general;
 
@@ -574,10 +605,10 @@ SoundDiffusionAlarmPage::SoundDiffusionAlarmPage(const QDomNode &config_node, co
 #else
 	buildPage(getTextChild(config_node, "descr"));
 #endif
-	loadItems(config_node, sources);
+	loadItems(config_node);
 }
 
-void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList<SourceDescription> &sources)
+void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode &item_node, getChildren(config_node, "item"))
 	{
@@ -585,6 +616,7 @@ void SoundDiffusionAlarmPage::loadItems(const QDomNode &config_node, const QList
 		int id = getTextChild(item_node, "id").toInt();
 		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
 
+		const QList<SourceDescription> sources = loadSources(page_node);
 		SoundAmbientPage::Type t = SoundAmbientPage::NORMAL_AMBIENT;
 		if (id == ITEM_SPECIAL_AMBIENT)
 			t = SoundAmbientPage::SPECIAL_AMBIENT;
