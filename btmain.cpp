@@ -475,13 +475,8 @@ void BtMain::loadGlobalConfig()
 	{
 		QString address = getTextChild(vde_pi_node, "address");
 		QString dev = getTextChild(vde_pi_node, "dev");
-		if (!address.isNull())
-		{
-			if (address == "-1")
-				(*config)[PI_ADDRESS] = "--";
-			else
-				(*config)[PI_ADDRESS] = dev + address;
-		}
+		if (!address.isNull() && address != "-1")
+			(*config)[PI_ADDRESS] = dev + address;
 
 		(*config)[PI_MODE] = getTextChild(vde_pi_node, "mode");
 	}
