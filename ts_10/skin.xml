@@ -560,7 +560,7 @@ AlarmList > QWidget {  background-image: url(); }
 	<item>
 		<cid>12001</cid>
 
-		<!-- source banner -->
+		<!-- radio source banner -->
 		<!--
 		Other images:
 		Notes: There's also an image set in the stylesheet above
@@ -591,6 +591,43 @@ AlarmList > QWidget {  background-image: url(); }
 
 		<img_details>diffusione/audiosetting.png</img_details>
 		<img_details_display>diffusione/displaybig.png</img_details_display>
+	</item>
+	<item>
+		<cid>12002</cid>
+
+		<!-- aux source banner -->
+		<!--
+		Other images:
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_previous_disabled>diffusione/precedentedis.png</img_previous_disabled>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_next_disabled>diffusione/successivodis.png</img_next_disabled>
+		<img_source_background>diffusione/display.png</img_source_background>
+		<img_details>diffusione/audiosetting.png</img_details>
+		<img_turn_on>diffusione/on.png</img_turn_on>
+		<img_turned_on>diffusione/onon.png</img_turned_on>
+
+	</item>
+	<item>
+		<cid>12003</cid>
+
+		<!-- multimedia source banner -->
+		<!--
+		Other images:
+		Notes: There's also an image set in the stylesheet above
+		-->
+		<img_cycle>diffusione/cycle.png</img_cycle>
+		<img_previous>diffusione/precedente.png</img_previous>
+		<img_previous_disabled>diffusione/precedentedis.png</img_previous_disabled>
+		<img_next>diffusione/successivo.png</img_next>
+		<img_next_disabled>diffusione/successivodis.png</img_next_disabled>
+		<img_source_background>diffusione/display.png</img_source_background>
+		<img_details>diffusione/audiosetting.png</img_details>
+		<img_turn_on>diffusione/on.png</img_turn_on>
+		<img_turned_on>diffusione/onon.png</img_turned_on>
 
 		<!-- Multimedia list icons -->
 		<img_eject>multimediale/umount.png</img_eject>
@@ -1162,7 +1199,7 @@ AlarmList > QWidget {  background-image: url(); }
 	<item>
 		<cid>11001</cid>
 
-		<!-- source banner -->
+		<!-- radio source banner -->
 		<!--
 		Other images:
 		Notes: There's also an image set in the stylesheet above
@@ -1189,17 +1226,48 @@ AlarmList > QWidget {  background-image: url(); }
 		<img_previous>diffusione/precedente.png</img_previous>
 
 		<img_details_display>diffusione/displaybig.png</img_details_display>
-
-		<!-- Multimedia list icons -->
-		<img_eject>multimediale/umount.png</img_eject>
-		<img_image_icon>multimediale/fotomini.png</img_image_icon>
-		<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
-		<img_video_icon>multimediale/videomini.png</img_video_icon>
-		<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
-		<img_play_file>multimediale/play.png</img_play_file>
-		<img_browse_directory>multimediale/vai.png</img_browse_directory>
 	</item>
+	<item>
+			<cid>11002</cid>
 
+			<!-- aux source banner -->
+			<!--
+			Other images:
+			Notes: There's also an image set in the stylesheet above
+			-->
+			<img_cycle>diffusione/cycle.png</img_cycle>
+			<img_previous>diffusione/precedente.png</img_previous>
+			<img_next>diffusione/successivo.png</img_next>
+			<img_source_background>diffusione/display.png</img_source_background>
+			<img_details>diffusione/audiosetting.png</img_details>
+			<img_turn_on>diffusione/on.png</img_turn_on>
+			<img_turned_on>diffusione/onon.png</img_turned_on>
+	</item>
+	<item>
+			<cid>11003</cid>
+
+			<!-- multimedia source banner -->
+			<!--
+			Other images:
+			Notes: There's also an image set in the stylesheet above
+			-->
+			<img_cycle>diffusione/cycle.png</img_cycle>
+			<img_previous>diffusione/precedente.png</img_previous>
+			<img_next>diffusione/successivo.png</img_next>
+			<img_source_background>diffusione/display.png</img_source_background>
+			<img_details>diffusione/audiosetting.png</img_details>
+			<img_turn_on>diffusione/on.png</img_turn_on>
+			<img_turned_on>diffusione/onon.png</img_turned_on>
+
+			<!-- Multimedia list icons -->
+			<img_eject>multimediale/umount.png</img_eject>
+			<img_image_icon>multimediale/fotomini.png</img_image_icon>
+			<img_audio_icon>multimediale/audiomini.png</img_audio_icon>
+			<img_video_icon>multimediale/videomini.png</img_video_icon>
+			<img_directory_icon>multimediale/cartellamini.png</img_directory_icon>
+			<img_play_file>multimediale/play.png</img_play_file>
+			<img_browse_directory>multimediale/vai.png</img_browse_directory>
+	</item>
 	<!-- automation banners -->
 	<item>
 		<!-- blind -->
