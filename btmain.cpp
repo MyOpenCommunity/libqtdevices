@@ -800,21 +800,18 @@ void BtMain::testPassword()
 	}
 }
 
-void BtMain::showPasswordKeypad()
-{
-	if (!password_keypad)
-	{
-		password_keypad = new KeypadWindow(Keypad::HIDDEN);
-		connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
-	}
-	bt_global::page_stack.showKeypad(password_keypad);
-	password_keypad->showWindow();
-}
-
 void BtMain::showKeypadIfNeeded()
 {
 	if (bt_global::status.check_password)
-		showPasswordKeypad();
+	{
+		if (!password_keypad)
+		{
+			password_keypad = new KeypadWindow(Keypad::HIDDEN);
+			connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
+		}
+		bt_global::page_stack.showKeypad(password_keypad);
+		password_keypad->showWindow();
+	}
 }
 
 // The global definition of btmain pointer

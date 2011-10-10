@@ -178,8 +178,6 @@ private:
 	// Load the global configuration (the item in "generale" section of xml config file)
 	void loadGlobalConfig();
 
-	void showPasswordKeypad();
-
 	Page *screensaverExitPage();
 	Page *screensaverTargetPage();
 	Window *screensaverTargetWindow();
