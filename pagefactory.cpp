@@ -58,12 +58,19 @@
 Page *getSectionPageFromId(int id)
 {
 	Page *page = 0;
-	QDomNode page_node = getPageNode(id);
-
-	Q_ASSERT_X(!page_node.isNull(), "getSectionPageFromId", qPrintable(QString("Page node null for id: %1").arg(id)));
-
+	
+	//	MC20111006
+	//  QDomNode page_node = getPageNode(id);
+	//  Q_ASSERT_X(!page_node.isNull(), "getSectionPageFromId", qPrintable(QString("Page node null for id: %1").arg(id)));
+	QDomNode page_node;
+	
 	if (bt_global::btmain->page_list.contains(id))
 		return bt_global::btmain->page_list[id];
+	else
+	{
+		page_node = getPageNode(id);
+		Q_ASSERT_X(!page_node.isNull(), "getSectionPageFromId", qPrintable(QString("Page node null for id: %1").arg(id)));
+	}
 
 	switch (id)
 	{
@@ -84,15 +91,25 @@ Page *getSectionPageFromId(int id)
 
 Page *getSectionPage(int page_id)
 {
-	QDomNode page_node = getPageNodeFromPageId(page_id);
-	int id = getTextChild(page_node, "id").toInt();
-
-	Q_ASSERT_X(!page_node.isNull(), "getSectionPage", qPrintable(QString("Page node null for page id: %1").arg(page_id)));
-
+	//	MC20111006
+	//	QDomNode page_node = getPageNodeFromPageId(page_id);
+	//	int id = getTextChild(page_node, "id").toInt();
+	//	Q_ASSERT_X(!page_node.isNull(), "getSectionPage", qPrintable(QString("Page node null for page id: %1").arg(page_id)));
+	QDomNode page_node;
+	int id=0;
+	
+	
 	// A section page (with the same page_id) can be built only once.
 	if (bt_global::btmain->page_list.contains(page_id))
 		return bt_global::btmain->page_list[page_id];
+	else
+	{
+		page_node = getPageNodeFromPageId(page_id);
+		id = getTextChild(page_node, "id").toInt();
+		Q_ASSERT_X(!page_node.isNull(), "getSectionPage", qPrintable(QString("Page node null for page id: %1").arg(page_id)));
+	}
 
+	
 	Page *page = 0;
 	switch (id)
 	{

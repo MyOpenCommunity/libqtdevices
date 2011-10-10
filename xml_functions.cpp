@@ -22,7 +22,7 @@
 #include "xml_functions.h"
 
 #include <QStringList>
-
+#include <QDebug>
 
 QDomElement getElement(const QDomNode &root, const QString &path)
 {
@@ -90,15 +90,30 @@ QDomNode findXmlNode(const QDomNode &root, const QRegExp &node_regexp, const QSt
 
 QList<QDomNode> getChildren(const QDomNode &parent, const QString &name)
 {
+	// MC110926
+	static unsigned int numCall= 0;
+	static unsigned int numCyc = 0;
+	
+	// MC110926
+	numCall++;
+	qDebug("**** CallCnt: %d ---> Looking for: %s under parent: %s", numCall, name.toStdString().c_str(), parent.nodeName().toStdString().c_str());
+	
 	QList<QDomNode> l;
 	QDomNode n = parent.firstChild();
 	while (!n.isNull())
 	{
+		// MC110926
+		numCyc++;
+		qDebug("**** IterationCnt: %d ---> Processing node: %s", numCyc, n.nodeName().toStdString().c_str());
+		
 		if (n.isElement() && n.nodeName().startsWith(name))
 			l.append(n);
 
 		n = n.nextSibling();
 	}
+	// MC110926
+	qDebug("**** getChildren Called NumCall: %d  numCycle: %d",numCall, numCyc);
+	
 	return l;
 }
 
