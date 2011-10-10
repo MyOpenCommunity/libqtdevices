@@ -160,7 +160,6 @@ void PageContainer::showPage(Page *p)
 			fixVisualization(p, size());
 			setCurrentPage(p);
 			startTransition(p);
-			return;
 		}
 		else
 			setCurrentPage(p);
@@ -175,17 +174,13 @@ void PageContainer::showPage(Page *p)
 void PageContainer::prepareTransition(QWidget *w)
 {
 	if (transition_manager->isActive())
-	{
 		transition_manager->prepareTransition(w);
-	}
 }
 
 void PageContainer::startTransition(QWidget *w)
 {
 	if (transition_manager->isActive())
-	{
 		transition_manager->startTransition(w);
-	}
 }
 
 void PageContainer::blockTransitions(bool block)
