@@ -239,8 +239,17 @@ protected:
 	*/
 	QWidget *__content;
 
-	void prepareTransition();
-	void startTransition();
+	/*!
+		\brief Prepare a transition using a snapshot of the widget argument as
+		starting widget.
+	*/
+	void prepareTransition(QWidget *w);
+
+	/*!
+		\brief Start a transition using a snapshot of the widget argument as
+		target widget.
+	*/
+	void startTransition(QWidget *w);
 
 	/*!
 		\brief Build the correct page layout for the hardware type.

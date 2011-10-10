@@ -245,14 +245,14 @@ void Page::forceClosed()
 	emit Closed();
 }
 
-void Page::prepareTransition()
+void Page::prepareTransition(QWidget *w)
 {
-	page_container->prepareTransition();
+	page_container->prepareTransition(w);
 }
 
-void Page::startTransition()
+void Page::startTransition(QWidget *w)
 {
-	page_container->startTransition(this);
+	page_container->startTransition(w);
 }
 
 int Page::sectionId() const

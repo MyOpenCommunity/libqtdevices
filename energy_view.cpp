@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -742,15 +742,16 @@ void EnergyView::showGraph(int graph_type)
 		widget_container->addWidget(graph);
 	}
 
+	prepareTransition(widget_container);
+
 	updateCurrentGraph();
 
-	prepareTransition();
 	showTableButton(true);
 	widget_container->setCurrentIndex(current_widget);
 	if (current_graph == EnergyDevice::DAILY_AVERAGE)
 		time_period->hideCycleButton();
 
-	startTransition();
+	startTransition(widget_container);
 }
 
 void EnergyView::showTableButton(bool show)
@@ -775,12 +776,12 @@ void EnergyView::showBannerWidget(bool use_transition)
 {
 	current_widget = BANNER_WIDGET;
 	if (use_transition)
-		prepareTransition();
+		prepareTransition(widget_container);
 	showTableButton(false);
 	time_period->showCycleButton();
 	widget_container->setCurrentIndex(current_widget);
 	if (use_transition)
-		startTransition();
+		startTransition(widget_container);
 }
 
 QWidget *EnergyView::buildBannerWidget()

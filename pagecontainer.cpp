@@ -47,36 +47,80 @@ namespace
 }
 
 
-PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
+TransitionManager::TransitionManager(QObject *parent) : QObject(parent)
 {
 	transition_widget = 0;
 	block_transitions = false;
-	prev_page = 0;
-	dest_page = 0;
 }
 
-void PageContainer::installTransitionWidget(TransitionWidget *tr)
+void TransitionManager::setTransitionWidget(TransitionWidget *tr)
 {
 	if (transition_widget)
 	{
 		transition_widget->disconnect();
 		transition_widget->deleteLater();
 	}
-
 	transition_widget = tr;
 	if (!transition_widget)
 		return;
 
-	addWidget(transition_widget);
+	transition_widget->setParent(0);
+	transition_widget->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
-void PageContainer::endTransition()
+bool TransitionManager::isActive() const
 {
-	setCurrentPage(dest_page);
-	parent_window->showWindow();
-	prev_page = 0;
-	dest_page = 0;
+	return transition_widget != 0 && !block_transitions;
+}
+
+void TransitionManager::prepareTransition(QWidget *prev)
+{
+	transition_widget->prepareTransition(QPixmap::grabWidget(prev));
+
+	// We should use MaptoGlobal, but it does not work.
+	QPoint pos = prev->pos();
+	QWidget *widget = prev;
+	while (QWidget *parent = qobject_cast<QWidget*>(widget->parent()))
+	{
+		pos += parent->pos();
+		widget = parent;
+	}
+	transition_widget->move(pos);
+	transition_widget->resize(prev->size());
+	transition_widget->show();
+	transition_widget->raise();
+}
+
+void TransitionManager::startTransition(QWidget *next)
+{
+	transition_widget->startTransition(QPixmap::grabWidget(next));
+}
+
+void TransitionManager::endTransition()
+{
+	transition_widget->hide();
+}
+
+void TransitionManager::blockTransitions(bool block)
+{
+	block_transitions = block;
+	if (block && transition_widget)
+	{
+		transition_widget->cancelTransition();
+		transition_widget->hide();
+	}
+}
+
+
+PageContainer::PageContainer(QWidget *parent) : QStackedWidget(parent)
+{
+	transition_manager = new TransitionManager(this);
+}
+
+void PageContainer::installTransitionWidget(TransitionWidget *tr)
+{
+	transition_manager->setTransitionWidget(tr);
 }
 
 void PageContainer::setCurrentPage(Page *p)
@@ -110,12 +154,11 @@ void PageContainer::showPage(Page *p)
 #endif
 		}
 
-		if (transition_widget && !block_transitions)
+		if (transition_manager->isActive())
 		{
-			prepareTransition();
-			setCurrentWidget(transition_widget);
-
+			prepareTransition(currentPage());
 			fixVisualization(p, size());
+			setCurrentPage(p);
 			startTransition(p);
 			return;
 		}
@@ -129,40 +172,30 @@ void PageContainer::showPage(Page *p)
 	parent_window->showWindow();
 }
 
-void PageContainer::prepareTransition()
+void PageContainer::prepareTransition(QWidget *w)
 {
-	if (transition_widget && !block_transitions)
+	if (transition_manager->isActive())
 	{
-		prev_page = currentPage();
-		transition_widget->prepareTransition(QPixmap::grabWidget(prev_page));
-
+		transition_manager->prepareTransition(w);
 	}
 }
 
-void PageContainer::startTransition(Page *p)
+void PageContainer::startTransition(QWidget *w)
 {
-	if (transition_widget && !block_transitions)
+	if (transition_manager->isActive())
 	{
-		dest_page = p;
-		transition_widget->startTransition(QPixmap::grabWidget(dest_page));
+		transition_manager->startTransition(w);
 	}
-}
-
-Page *PageContainer::currentPage()
-{
-	// if we are in the middle of a transition, we use the previous page as the current page
-	return prev_page ? prev_page : qobject_cast<Page*>(currentWidget());
 }
 
 void PageContainer::blockTransitions(bool block)
 {
-	block_transitions = block;
-	if (block && transition_widget)
-	{
-		transition_widget->cancelTransition();
-		if (prev_page)
-			setCurrentWidget(prev_page);
-	}
+	transition_manager->blockTransitions(block);
+}
+
+Page *PageContainer::currentPage()
+{
+	return qobject_cast<Page*>(currentWidget());
 }
 
 void PageContainer::addPage(Page *p)

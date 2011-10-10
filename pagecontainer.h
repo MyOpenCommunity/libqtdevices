@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -26,6 +26,37 @@
 class TransitionWidget;
 class Page;
 class Window;
+
+
+// Manage the transition effects. This class is designed to be used indirectly
+// through the PageContainer.
+class TransitionManager : public QObject
+{
+Q_OBJECT
+public:
+	TransitionManager(QObject *parent = 0);
+	// Set or unset the transition widget.
+	void setTransitionWidget(TransitionWidget *tr);
+	// Return true if a transition widget is installed and the transition effects
+	// are not disabled
+	bool isActive() const;
+
+	// Prepare the transition using a snapshot of the prev widget as the starting one.
+	void prepareTransition(QWidget *prev);
+
+	// Start the transition using a snapshot of the next widget as target.
+	void startTransition(QWidget *next);
+
+	// Disable or enable the transition effects.
+	void blockTransitions(bool block);
+
+private slots:
+	void endTransition();
+
+private:
+	TransitionWidget *transition_widget;
+	bool block_transitions;
+};
 
 
 /*!
@@ -81,12 +112,24 @@ public:
 	Page *currentPage();
 
 	/*!
-		\brief Stop the transition effect implicity called by the showPage method.
+		\brief Block the transition effect.
+
+		Block the transition effect implicity called (if the transition effects
+		are active) by the showPage method.
 	*/
 	void blockTransitions(bool block);
 
-	void prepareTransition();
-	void startTransition(Page *p);
+	/*!
+		\brief Prepare a transition using a snapshot of the widget argument as
+		starting widget.
+	*/
+	void prepareTransition(QWidget *w);
+
+	/*!
+		\brief Start a transition using a snapshot of the widget argument as
+		target widget.
+	*/
+	void startTransition(QWidget *w);
 
 	/*!
 		\brief Set the Window \a window as the container of the page.
@@ -112,18 +155,9 @@ signals:
 	void currentChanging(Page *p);
 
 private:
-	bool block_transitions;
-	TransitionWidget *transition_widget;
-
-	// The previous page if during the transition, 0 otherwise
-	Page *prev_page;
-	// The destination page if during the transition, 0 otherwise
-	Page *dest_page;
-
 	Window *parent_window;
 
-private slots:
-	void endTransition();
+	TransitionManager* transition_manager;
 };
 
 #endif // PAGE_CONTAINER_H

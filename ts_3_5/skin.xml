@@ -3,7 +3,7 @@
 	<!-- Touch 3.5'' skin file-->
 	<ver_xml>1.0</ver_xml>
 	<css>
-WindowContainer, PageContainer, Page, QLabel, QLCDNumber, Version { background-color:#1E1E1E; color:#D8D8D8; }
+QWidget { background-color:#1E1E1E; color:#D8D8D8; }
 BtButton { border: 0px; }
 QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
 QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
