@@ -333,7 +333,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
 	bt_global::display->setPageContainer(page_container);
-	connect(bt_global::display, SIGNAL(unfreezed()), SLOT(showKeypadIfNeeded()));
+	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(showKeypadIfNeeded()));
 	connect(bt_global::display, SIGNAL(unrollPages()), SLOT(unrollPages()));
 
 	rearmWDT();
