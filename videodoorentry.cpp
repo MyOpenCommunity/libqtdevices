@@ -374,6 +374,8 @@ void EchoCanceller::initScs()
 		usleep(100000);
 		silentExecute("echo 1 > /proc/sys/dev/btweb/reset_ZL1");
 	}
+
+	close(eeprom);
 }
 
 void EchoCanceller::initIp()
