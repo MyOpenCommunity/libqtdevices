@@ -2,22 +2,107 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="el" sourcelanguage="en">
 <context>
-    <name>AlarmClock</name>
+    <name>AlarmClockDays</name>
     <message>
-        <source>always</source>
-        <translation>πάντοτε</translation>
+        <source>Friday</source>
+        <translation>Παρασκευή</translation>
     </message>
     <message>
-        <source>mon-fri</source>
-        <translation>δευ-παρ</translation>
+        <source>Monday</source>
+        <translation>Δευτέρα</translation>
     </message>
     <message>
-        <source>once</source>
+        <source>Once</source>
         <translation>μια φορά</translation>
     </message>
     <message>
-        <source>sat-sun</source>
-        <translation>σαβ-κυρ</translation>
+        <source>Saturday</source>
+        <translation>Σάββατο</translation>
+    </message>
+    <message>
+        <source>Sunday</source>
+        <translation>Κυριακή</translation>
+    </message>
+    <message>
+        <source>Thursday</source>
+        <translation>Πέμπτη</translation>
+    </message>
+    <message>
+        <source>Tuesday</source>
+        <translation>Τρίτη</translation>
+    </message>
+    <message>
+        <source>Wednesday</source>
+        <translation>Τετάρτη</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmClockTimeDays</name>
+    <message>
+        <source>Fri</source>
+        <translation>Παρ</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>Δευ</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>Σαβ</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>Κυρ</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>Πεμ</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>Τρι</translation>
+    </message>
+    <message>
+        <source>Wake up</source>
+        <translation>Αφύπνιση</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>Τετ</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmListPage</name>
+    <message>
+        <source>Alarm type</source>
+        <translation>Τύπος συναγερμού</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>Συναγερμοί</translation>
+    </message>
+    <message>
+        <source>Date &amp; Hour</source>
+        <translation>Ημερομηνία &amp; Ώρα</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Ζώνη</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmPage</name>
+    <message>
+        <source>Date</source>
+        <translation>Ημερομηνία</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Ώρα</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Ζώνη</translation>
     </message>
 </context>
 <context>
@@ -38,28 +123,40 @@
         <source>technical</source>
         <translation>τεχνική</translation>
     </message>
-</context>
-<context>
-    <name>BrightnessPage</name>
     <message>
-        <source>High brightness</source>
-        <translation>Υψηλή φωτεινότητα</translation>
-    </message>
-    <message>
-        <source>Low brightness</source>
-        <translation>Αδύναμη φωτεινότητα</translation>
-    </message>
-    <message>
-        <source>Normal brightness</source>
-        <translation>κανονικός φωτισμός</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation>Απενεργοποίηση</translation>
+        <source>Z%1</source>
+        <translation>Z%1</translation>
     </message>
 </context>
 <context>
-    <name>Calibrate</name>
+    <name>AudioPlayerPage</name>
+    <message>
+        <source>Album:</source>
+        <translation>ΆΛΜΠΟΥΜ:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>Καλλιτέχνης:</translation>
+    </message>
+    <message>
+        <source>Information not available</source>
+        <translation>Απουσία πληροφορίας</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>Διάρκεια:</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>Φορτώνει…</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Ίχνος:</translation>
+    </message>
+</context>
+<context>
+    <name>CalibrationWidget</name>
     <message>
         <source>Click the crosshair</source>
         <translation>Κάντε κλικ στο σταυρόνημα</translation>
@@ -67,6 +164,42 @@
     <message>
         <source>Click the OK button</source>
         <translation>Κάντε κλικ στο κουμπί OK</translation>
+    </message>
+</context>
+<context>
+    <name>CallNotifierPage</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Κλειδωμένη πόρτα</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayDimming</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayOnOff</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayVolume</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -78,10 +211,6 @@
     <message>
         <source>Calibration</source>
         <translation>Βαθμονόμηση</translation>
-    </message>
-    <message>
-        <source>Clean Screen</source>
-        <translation>Καθαρισμός οθόνης</translation>
     </message>
     <message>
         <source>Screen Saver</source>
@@ -159,10 +288,36 @@
     </message>
 </context>
 <context>
-    <name>FSBannManual</name>
+    <name>FeedItemWidget</name>
     <message>
-        <source>Manual</source>
-        <translation>Χειροκίνητο</translation>
+        <source>No description</source>
+        <translation>Χωρίς περιγραφή</translation>
+    </message>
+</context>
+<context>
+    <name>HandsFree</name>
+    <message>
+        <source>Hands Free</source>
+        <translation>Hands Free</translation>
+    </message>
+</context>
+<context>
+    <name>InactiveBrightnessPage</name>
+    <message>
+        <source>High brightness</source>
+        <translation>Υψηλή φωτεινότητα</translation>
+    </message>
+    <message>
+        <source>Low brightness</source>
+        <translation>Αδύναμη φωτεινότητα</translation>
+    </message>
+    <message>
+        <source>Normal brightness</source>
+        <translation>κανονικός φωτισμός</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Απενεργοποίηση</translation>
     </message>
 </context>
 <context>
@@ -171,12 +326,24 @@
         <source>PASSWORD:</source>
         <translation>ΚΩΔΙΚΟΣ:</translation>
     </message>
+    <message>
+        <source>Wrong password</source>
+        <translation>λάθος κωδικός</translation>
+    </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
+        <source>Connection Status</source>
+        <translation>Κατάσταση Σύνδεσης</translation>
+    </message>
+    <message>
         <source>DNS</source>
         <translation>DNS</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>Κάτω</translation>
     </message>
     <message>
         <source>Gateway</source>
@@ -194,47 +361,57 @@
         <source>Subnet mask</source>
         <translation>Μάσκα υποδικτύου</translation>
     </message>
+    <message>
+        <source>Up</source>
+        <translation>Άνω</translation>
+    </message>
 </context>
 <context>
     <name>LoadDataContent</name>
     <message>
         <source>date/time</source>
-        <translation>ΗΜΕΡΟΜΗΝΙΑ/ΩΡΑ</translation>
+        <translation>Ημερ./Ώρα             </translation>
     </message>
 </context>
 <context>
-    <name>LoadDataPage</name>
+    <name>MultimediaContainer</name>
     <message>
-        <source>Text-Confirm-LoadDataPage</source>
-        <translation type="unfinished">Τα αποθηκευμένα δεδομένα θα διαγραφούν.
-OK για επιβεβαίωση.</translation>
+        <source>IP Radio</source>
+        <translation>IP Ράδιο</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation>Διακομιστές</translation>
     </message>
 </context>
 <context>
-    <name>MediaPlayWindow</name>
+    <name>MultimediaFileListPage</name>
     <message>
-        <source>Album:</source>
-        <translation>ΆΛΜΠΟΥΜ:</translation>
-    </message>
-    <message>
-        <source>Artist:</source>
-        <translation>Καλλιτέχνης:</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation>Διάρκεια:</translation>
-    </message>
-    <message>
-        <source>of</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Track:</source>
-        <translation>Ίχνος:</translation>
+        <source>Folder</source>
+        <translation>Φάκελος</translation>
     </message>
 </context>
 <context>
-    <name>PowerAmplifier</name>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Check password:</source>
+        <translation>Έλεγχος password:</translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation>Νέο password:</translation>
+    </message>
+    <message>
+        <source>Old password:</source>
+        <translation>Παλιό Password:</translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation>Επαλήθευση Password:</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPage</name>
     <message>
         <source>Balance</source>
         <translation>Ισοστάθμιση</translation>
@@ -300,6 +477,46 @@ OK για επιβεβαίωση.</translation>
     </message>
 </context>
 <context>
+    <name>ProbesPage</name>
+    <message>
+        <source>Probe</source>
+        <translation>Αισθητήρας</translation>
+    </message>
+    <message>
+        <source>Temperature</source>
+        <translation>Θερμοκρασία</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Ζώνη</translation>
+    </message>
+</context>
+<context>
+    <name>ProfessionalStudio</name>
+    <message>
+        <source>Professional studio</source>
+        <translation>Επαγγελματικό γραφείο</translation>
+    </message>
+</context>
+<context>
+    <name>RadioInfo</name>
+    <message>
+        <source>Channel: %1</source>
+        <translation>Κανάλι: %1</translation>
+    </message>
+    <message>
+        <source>FM %1</source>
+        <translation>FM %1</translation>
+    </message>
+</context>
+<context>
+    <name>RadioPage</name>
+    <message>
+        <source>RDS Radio</source>
+        <translation>Ράδιο RDS </translation>
+    </message>
+</context>
+<context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
@@ -314,6 +531,14 @@ OK για επιβεβαίωση.</translation>
         <translation>Δεν υπάρχει πρόγραμμα προστασίας της οθόνης</translation>
     </message>
     <message>
+        <source>Slideshow</source>
+        <translation>Προβολή σλάιντ </translation>
+    </message>
+    <message>
+        <source>Slideshow timeout</source>
+        <translation>Λήξη προβολής σλάιντ</translation>
+    </message>
+    <message>
         <source>Text</source>
         <translation>Κείμενο</translation>
     </message>
@@ -323,75 +548,74 @@ OK για επιβεβαίωση.</translation>
     </message>
 </context>
 <context>
-    <name>SourceChoice</name>
+    <name>ScreensaverTiming</name>
     <message>
-        <source>IP Radio</source>
-        <translation>IP Ράδιο</translation>
+        <source> sec</source>
+        <translation> δευτ</translation>
     </message>
+</context>
+<context>
+    <name>SlideshowSelector</name>
     <message>
-        <source>Servers</source>
-        <translation>Διακομιστές</translation>
+        <source>Folder</source>
+        <translation>Φάκελος</translation>
     </message>
 </context>
 <context>
     <name>SplitMode</name>
     <message>
-        <source>COOLING</source>
-        <translation>Ψύξη</translation>
-    </message>
-    <message>
-        <source>DRY</source>
-        <translation>Dry</translation>
-    </message>
-    <message>
-        <source>HEATING</source>
-        <translation>Θέρμανση</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Αυτόματο</translation>
     </message>
     <message>
         <source>FAN</source>
-        <translation>Ανεμιστήρας</translation>
+        <translation type="unfinished">Ανεμιστήρας</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Αυτόματο</translation>
+        <source>HEATING</source>
+        <translation type="unfinished">θέρμανση</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation type="unfinished">Ψύξη</translation>
     </message>
 </context>
 <context>
-    <name>SplitSettings</name>
+    <name>SplitPage</name>
     <message>
-        <source>SWING</source>
-        <translation>παλινδρόμηση</translation>
+        <source>Off</source>
+        <translation>Απενεργοποίηση</translation>
     </message>
 </context>
 <context>
     <name>SplitSpeed</name>
     <message>
-        <source>HIGH</source>
-        <translation>Υψηλό</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Αυτόματο</translation>
     </message>
     <message>
         <source>LOW</source>
-        <translation>Χαμηλή</translation>
+        <translation type="unfinished">Χαμηλή</translation>
     </message>
     <message>
         <source>MEDIUM</source>
-        <translation>Μεσαίο</translation>
+        <translation type="unfinished">Μεσαίο</translation>
     </message>
     <message>
         <source>SILENT</source>
-        <translation>Σιωπηρή</translation>
+        <translation type="unfinished">Σιωπηρός</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Αυτόματο</translation>
+        <source>HIGH</source>
+        <translation type="unfinished">Υψηλή</translation>
     </message>
 </context>
 <context>
-    <name>StopngoPage</name>
+    <name>StopAndGoBTestPage</name>
     <message>
         <source>Enable</source>
         <translation>Ενεργοποίηση</translation>
@@ -399,6 +623,20 @@ OK για επιβεβαίωση.</translation>
     <message>
         <source>Self-test</source>
         <translation>Αυτοδοκιμασία</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Ενεργοποίηση</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPlusPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Ενεργοποίηση</translation>
     </message>
     <message>
         <source>Test</source>
@@ -413,72 +651,21 @@ OK για επιβεβαίωση.</translation>
     </message>
 </context>
 <context>
-    <name>call_notifier</name>
+    <name>TransitionEffects</name>
     <message>
-        <source>Door lock</source>
-        <translation>Κλειδωμένη πόρτα</translation>
+        <source>Enlarge</source>
+        <translation>Μεγέθυνση</translation>
     </message>
     <message>
-        <source>Staircase light</source>
-        <translation>Φως της σκάλας</translation>
+        <source>None</source>
+        <translation>καμία</translation>
     </message>
+</context>
+<context>
+    <name>VideoDoorEntry</name>
     <message>
         <source>Unknown</source>
         <translation>Άγνωστος</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_aux</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming_100</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_light_status</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_volume</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
     </message>
 </context>
 </TS>

@@ -2,22 +2,107 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="nl" sourcelanguage="en">
 <context>
-    <name>AlarmClock</name>
+    <name>AlarmClockDays</name>
     <message>
-        <source>always</source>
-        <translation>altijd</translation>
+        <source>Friday</source>
+        <translation>Vrijdag</translation>
     </message>
     <message>
-        <source>mon-fri</source>
-        <translation>maan-vrij</translation>
+        <source>Monday</source>
+        <translation>Maandag</translation>
     </message>
     <message>
-        <source>once</source>
+        <source>Once</source>
         <translation>een keer</translation>
     </message>
     <message>
-        <source>sat-sun</source>
-        <translation>za-zon</translation>
+        <source>Saturday</source>
+        <translation>Zaterdag</translation>
+    </message>
+    <message>
+        <source>Sunday</source>
+        <translation>Zondag</translation>
+    </message>
+    <message>
+        <source>Thursday</source>
+        <translation>Donderdag</translation>
+    </message>
+    <message>
+        <source>Tuesday</source>
+        <translation>Dinsdag</translation>
+    </message>
+    <message>
+        <source>Wednesday</source>
+        <translation>Woensdag</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmClockTimeDays</name>
+    <message>
+        <source>Fri</source>
+        <translation>Vrij</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>Ma</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>Za</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>Zo</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>Do</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>Di</translation>
+    </message>
+    <message>
+        <source>Wake up</source>
+        <translation>Wekker</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>Wo</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmListPage</name>
+    <message>
+        <source>Alarm type</source>
+        <translation>Type Alarm</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>Alarmen</translation>
+    </message>
+    <message>
+        <source>Date &amp; Hour</source>
+        <translation>Datum en Uur</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Zone</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmPage</name>
+    <message>
+        <source>Date</source>
+        <translation>Datum</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Uur</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Zone</translation>
     </message>
 </context>
 <context>
@@ -38,28 +123,40 @@
         <source>technical</source>
         <translation>technisch</translation>
     </message>
-</context>
-<context>
-    <name>BrightnessPage</name>
     <message>
-        <source>High brightness</source>
-        <translation>Hoge helderheid</translation>
-    </message>
-    <message>
-        <source>Low brightness</source>
-        <translation>Lage helderheid</translation>
-    </message>
-    <message>
-        <source>Normal brightness</source>
-        <translation>Normale lichtsterkte</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
+        <source>Z%1</source>
+        <translation>Z%1</translation>
     </message>
 </context>
 <context>
-    <name>Calibrate</name>
+    <name>AudioPlayerPage</name>
+    <message>
+        <source>Album:</source>
+        <translation>Album:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>Artiest:</translation>
+    </message>
+    <message>
+        <source>Information not available</source>
+        <translation>Inlichtingen niet beschikbaar</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>Tijdsd.:</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>Laden...</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Tune:</translation>
+    </message>
+</context>
+<context>
+    <name>CalibrationWidget</name>
     <message>
         <source>Click the crosshair</source>
         <translation>Klik op het kruisje</translation>
@@ -67,6 +164,46 @@
     <message>
         <source>Click the OK button</source>
         <translation>Klik op de knop OK</translation>
+    </message>
+</context>
+<context>
+    <name>CallNotifierPage</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Slot</translation>
+    </message>
+    <message>
+        <source>Staircase light</source>
+        <translation>Traphuisverlichting</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayDimming</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayOnOff</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayVolume</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -78,10 +215,6 @@
     <message>
         <source>Calibration</source>
         <translation>Kalibrering</translation>
-    </message>
-    <message>
-        <source>Clean Screen</source>
-        <translation>Reinig Scherm</translation>
     </message>
     <message>
         <source>Screen Saver</source>
@@ -159,10 +292,36 @@
     </message>
 </context>
 <context>
-    <name>FSBannManual</name>
+    <name>FeedItemWidget</name>
     <message>
-        <source>Manual</source>
-        <translation>Manueel</translation>
+        <source>No description</source>
+        <translation>Geen beschrijving</translation>
+    </message>
+</context>
+<context>
+    <name>HandsFree</name>
+    <message>
+        <source>Hands Free</source>
+        <translation>Handsfree</translation>
+    </message>
+</context>
+<context>
+    <name>InactiveBrightnessPage</name>
+    <message>
+        <source>High brightness</source>
+        <translation>Hoge helderheid</translation>
+    </message>
+    <message>
+        <source>Low brightness</source>
+        <translation>Lage helderheid</translation>
+    </message>
+    <message>
+        <source>Normal brightness</source>
+        <translation>Normale lichtsterkte</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
@@ -171,12 +330,24 @@
         <source>PASSWORD:</source>
         <translation>PASSWORD:</translation>
     </message>
+    <message>
+        <source>Wrong password</source>
+        <translation>password  foutief</translation>
+    </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
+        <source>Connection Status</source>
+        <translation>Status van de aansluiting</translation>
+    </message>
+    <message>
         <source>DNS</source>
         <translation>DNS</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>Neer</translation>
     </message>
     <message>
         <source>Gateway</source>
@@ -194,47 +365,57 @@
         <source>Subnet mask</source>
         <translation>Subnet mask</translation>
     </message>
+    <message>
+        <source>Up</source>
+        <translation>Op</translation>
+    </message>
 </context>
 <context>
     <name>LoadDataContent</name>
     <message>
         <source>date/time</source>
-        <translation>DATUM/UUR</translation>
+        <translation>Datum/Tijd            </translation>
     </message>
 </context>
 <context>
-    <name>LoadDataPage</name>
+    <name>MultimediaContainer</name>
     <message>
-        <source>Text-Confirm-LoadDataPage</source>
-        <translation type="unfinished">De opgeslagen gegevens worden verwijderd.
-OK om te bevestigen.</translation>
+        <source>IP Radio</source>
+        <translation>Radio IP</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation>Servers</translation>
     </message>
 </context>
 <context>
-    <name>MediaPlayWindow</name>
+    <name>MultimediaFileListPage</name>
     <message>
-        <source>Album:</source>
-        <translation>Album:</translation>
-    </message>
-    <message>
-        <source>Artist:</source>
-        <translation>Artiest:</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation>Tijdsd.:</translation>
-    </message>
-    <message>
-        <source>of</source>
-        <translation>van</translation>
-    </message>
-    <message>
-        <source>Track:</source>
-        <translation>Tune:</translation>
+        <source>Folder</source>
+        <translation>Dossier</translation>
     </message>
 </context>
 <context>
-    <name>PowerAmplifier</name>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Check password:</source>
+        <translation>Controleer wachtwoord:</translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation>Nieuw wachtwoord:</translation>
+    </message>
+    <message>
+        <source>Old password:</source>
+        <translation>Oud wachtwoord:</translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation>Verifieer wachtwoord:</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPage</name>
     <message>
         <source>Balance</source>
         <translation>Balansregeling</translation>
@@ -300,6 +481,46 @@ OK om te bevestigen.</translation>
     </message>
 </context>
 <context>
+    <name>ProbesPage</name>
+    <message>
+        <source>Probe</source>
+        <translation>Sonde</translation>
+    </message>
+    <message>
+        <source>Temperature</source>
+        <translation>Temperatuur</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Zone</translation>
+    </message>
+</context>
+<context>
+    <name>ProfessionalStudio</name>
+    <message>
+        <source>Professional studio</source>
+        <translation>Professionele studio</translation>
+    </message>
+</context>
+<context>
+    <name>RadioInfo</name>
+    <message>
+        <source>Channel: %1</source>
+        <translation>Kanaal: %1</translation>
+    </message>
+    <message>
+        <source>FM %1</source>
+        <translation>FM %1</translation>
+    </message>
+</context>
+<context>
+    <name>RadioPage</name>
+    <message>
+        <source>RDS Radio</source>
+        <translation>RDS Radio</translation>
+    </message>
+</context>
+<context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
@@ -314,6 +535,14 @@ OK om te bevestigen.</translation>
         <translation>Geen Screensaver</translation>
     </message>
     <message>
+        <source>Slideshow</source>
+        <translation>Slideshow</translation>
+    </message>
+    <message>
+        <source>Slideshow timeout</source>
+        <translation>Slideshow time-out</translation>
+    </message>
+    <message>
         <source>Text</source>
         <translation>Tekst</translation>
     </message>
@@ -323,75 +552,74 @@ OK om te bevestigen.</translation>
     </message>
 </context>
 <context>
-    <name>SourceChoice</name>
+    <name>ScreensaverTiming</name>
     <message>
-        <source>IP Radio</source>
-        <translation>Radio IP</translation>
+        <source> sec</source>
+        <translation> sec</translation>
     </message>
+</context>
+<context>
+    <name>SlideshowSelector</name>
     <message>
-        <source>Servers</source>
-        <translation>Servers</translation>
+        <source>Folder</source>
+        <translation>Dossier</translation>
     </message>
 </context>
 <context>
     <name>SplitMode</name>
     <message>
-        <source>COOLING</source>
-        <translation>Koeling</translation>
-    </message>
-    <message>
-        <source>DRY</source>
-        <translation>Droog</translation>
-    </message>
-    <message>
-        <source>HEATING</source>
-        <translation>Verwarming</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automatisch</translation>
     </message>
     <message>
         <source>FAN</source>
-        <translation>Ventilator</translation>
+        <translation type="unfinished">Ventilator</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Automatisch</translation>
+        <source>HEATING</source>
+        <translation type="unfinished">Verwarming</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation type="unfinished">Koeling</translation>
     </message>
 </context>
 <context>
-    <name>SplitSettings</name>
+    <name>SplitPage</name>
     <message>
-        <source>SWING</source>
-        <translation>Swing</translation>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
     <name>SplitSpeed</name>
     <message>
-        <source>HIGH</source>
-        <translation>Hoog</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Automatisch</translation>
     </message>
     <message>
         <source>LOW</source>
-        <translation>Low</translation>
+        <translation type="unfinished">Low</translation>
     </message>
     <message>
         <source>MEDIUM</source>
-        <translation>Medium</translation>
+        <translation type="unfinished">Medium</translation>
     </message>
     <message>
         <source>SILENT</source>
-        <translation>Geruisloos</translation>
+        <translation type="unfinished">Stil alarm</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Automatisch</translation>
+        <source>HIGH</source>
+        <translation type="unfinished">High</translation>
     </message>
 </context>
 <context>
-    <name>StopngoPage</name>
+    <name>StopAndGoBTestPage</name>
     <message>
         <source>Enable</source>
         <translation>Activeren</translation>
@@ -399,6 +627,20 @@ OK om te bevestigen.</translation>
     <message>
         <source>Self-test</source>
         <translation>Autotest</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Activeren</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPlusPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Activeren</translation>
     </message>
     <message>
         <source>Test</source>
@@ -413,72 +655,21 @@ OK om te bevestigen.</translation>
     </message>
 </context>
 <context>
-    <name>call_notifier</name>
+    <name>TransitionEffects</name>
     <message>
-        <source>Door lock</source>
-        <translation>Slot</translation>
+        <source>Enlarge</source>
+        <translation>Vergroot</translation>
     </message>
     <message>
-        <source>Staircase light</source>
-        <translation>Licht trapzaal</translation>
+        <source>None</source>
+        <translation>geen</translation>
     </message>
+</context>
+<context>
+    <name>VideoDoorEntry</name>
     <message>
         <source>Unknown</source>
         <translation>Onbekend</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_aux</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming_100</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_light_status</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_volume</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
     </message>
 </context>
 </TS>

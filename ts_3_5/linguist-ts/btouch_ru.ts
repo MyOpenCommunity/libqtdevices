@@ -2,22 +2,107 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru" sourcelanguage="en">
 <context>
-    <name>AlarmClock</name>
+    <name>AlarmClockDays</name>
     <message>
-        <source>always</source>
-        <translation>всегда</translation>
+        <source>Friday</source>
+        <translation>Пятница</translation>
     </message>
     <message>
-        <source>mon-fri</source>
-        <translation>пон-пят</translation>
+        <source>Monday</source>
+        <translation>Понедельник</translation>
     </message>
     <message>
-        <source>once</source>
+        <source>Once</source>
         <translation>однажды</translation>
     </message>
     <message>
-        <source>sat-sun</source>
-        <translation>суб-воскр</translation>
+        <source>Saturday</source>
+        <translation>Суббота</translation>
+    </message>
+    <message>
+        <source>Sunday</source>
+        <translation>Воскресенье</translation>
+    </message>
+    <message>
+        <source>Thursday</source>
+        <translation>Четверг</translation>
+    </message>
+    <message>
+        <source>Tuesday</source>
+        <translation>Вторник</translation>
+    </message>
+    <message>
+        <source>Wednesday</source>
+        <translation>Среда</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmClockTimeDays</name>
+    <message>
+        <source>Fri</source>
+        <translation>Пт</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>Пн</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>Сб</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>Вс</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>Чт</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>Вт</translation>
+    </message>
+    <message>
+        <source>Wake up</source>
+        <translation>Будильник</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>Ср</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmListPage</name>
+    <message>
+        <source>Alarm type</source>
+        <translation>Тип сигнализации</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>Сигналы</translation>
+    </message>
+    <message>
+        <source>Date &amp; Hour</source>
+        <translation>Дата и время</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Зона</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmPage</name>
+    <message>
+        <source>Date</source>
+        <translation>Дата</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>Час</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Зона</translation>
     </message>
 </context>
 <context>
@@ -38,28 +123,40 @@
         <source>technical</source>
         <translation>технич.тревога</translation>
     </message>
-</context>
-<context>
-    <name>BrightnessPage</name>
     <message>
-        <source>High brightness</source>
-        <translation>Сильная яркость</translation>
-    </message>
-    <message>
-        <source>Low brightness</source>
-        <translation>Слабая яркость</translation>
-    </message>
-    <message>
-        <source>Normal brightness</source>
-        <translation>Нормальная яркость </translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation>Выкл.</translation>
+        <source>Z%1</source>
+        <translation>Z%1</translation>
     </message>
 </context>
 <context>
-    <name>Calibrate</name>
+    <name>AudioPlayerPage</name>
+    <message>
+        <source>Album:</source>
+        <translation>Альбом:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>Артист:</translation>
+    </message>
+    <message>
+        <source>Information not available</source>
+        <translation>Информация недоступна</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>Время:</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>Загружается…</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>Дорожка:</translation>
+    </message>
+</context>
+<context>
+    <name>CalibrationWidget</name>
     <message>
         <source>Click the crosshair</source>
         <translation>Нажмите crosshair</translation>
@@ -67,6 +164,42 @@
     <message>
         <source>Click the OK button</source>
         <translation>Нажмите кнопку ОК</translation>
+    </message>
+</context>
+<context>
+    <name>CallNotifierPage</name>
+    <message>
+        <source>Door lock</source>
+        <translation>Замок</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayDimming</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayOnOff</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayVolume</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -78,10 +211,6 @@
     <message>
         <source>Calibration</source>
         <translation>Калибровка</translation>
-    </message>
-    <message>
-        <source>Clean Screen</source>
-        <translation>Почистить экран</translation>
     </message>
     <message>
         <source>Screen Saver</source>
@@ -159,10 +288,36 @@
     </message>
 </context>
 <context>
-    <name>FSBannManual</name>
+    <name>FeedItemWidget</name>
     <message>
-        <source>Manual</source>
-        <translation>Ручной</translation>
+        <source>No description</source>
+        <translation>Нет описания</translation>
+    </message>
+</context>
+<context>
+    <name>HandsFree</name>
+    <message>
+        <source>Hands Free</source>
+        <translation>Свободные руки</translation>
+    </message>
+</context>
+<context>
+    <name>InactiveBrightnessPage</name>
+    <message>
+        <source>High brightness</source>
+        <translation>Сильная яркость</translation>
+    </message>
+    <message>
+        <source>Low brightness</source>
+        <translation>Слабая яркость</translation>
+    </message>
+    <message>
+        <source>Normal brightness</source>
+        <translation>Нормальная яркость </translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Выкл.</translation>
     </message>
 </context>
 <context>
@@ -171,12 +326,24 @@
         <source>PASSWORD:</source>
         <translation>ПАРОЛЬ:</translation>
     </message>
+    <message>
+        <source>Wrong password</source>
+        <translation>Неверный пароль</translation>
+    </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
+        <source>Connection Status</source>
+        <translation>Состояние соединения</translation>
+    </message>
+    <message>
         <source>DNS</source>
         <translation>DNS</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>Вниз</translation>
     </message>
     <message>
         <source>Gateway</source>
@@ -194,47 +361,57 @@
         <source>Subnet mask</source>
         <translation>Маска подсети</translation>
     </message>
+    <message>
+        <source>Up</source>
+        <translation>Вверх</translation>
+    </message>
 </context>
 <context>
     <name>LoadDataContent</name>
     <message>
         <source>date/time</source>
-        <translation>ДАТА/ВРЕМЯ</translation>
+        <translation>Дата/Время            </translation>
     </message>
 </context>
 <context>
-    <name>LoadDataPage</name>
+    <name>MultimediaContainer</name>
     <message>
-        <source>Text-Confirm-LoadDataPage</source>
-        <translation type="unfinished">Сохраненные данные будут удалены.
-OK для подтверждения.</translation>
+        <source>IP Radio</source>
+        <translation>IP-radio</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation>Серверы</translation>
     </message>
 </context>
 <context>
-    <name>MediaPlayWindow</name>
+    <name>MultimediaFileListPage</name>
     <message>
-        <source>Album:</source>
-        <translation>Альбом:</translation>
-    </message>
-    <message>
-        <source>Artist:</source>
-        <translation>Артист:</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation>Время:</translation>
-    </message>
-    <message>
-        <source>of</source>
-        <translation>из</translation>
-    </message>
-    <message>
-        <source>Track:</source>
-        <translation>Дорожка:</translation>
+        <source>Folder</source>
+        <translation>Папка</translation>
     </message>
 </context>
 <context>
-    <name>PowerAmplifier</name>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Check password:</source>
+        <translation>Проверить пароль:</translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation>Новый пароль:</translation>
+    </message>
+    <message>
+        <source>Old password:</source>
+        <translation>Старый пароль:</translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation>Проверить пароль:</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPage</name>
     <message>
         <source>Balance</source>
         <translation>Баланс</translation>
@@ -300,6 +477,46 @@ OK для подтверждения.</translation>
     </message>
 </context>
 <context>
+    <name>ProbesPage</name>
+    <message>
+        <source>Probe</source>
+        <translation>Датчик</translation>
+    </message>
+    <message>
+        <source>Temperature</source>
+        <translation>Температура</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>Зона</translation>
+    </message>
+</context>
+<context>
+    <name>ProfessionalStudio</name>
+    <message>
+        <source>Professional studio</source>
+        <translation>Профессиональная студия</translation>
+    </message>
+</context>
+<context>
+    <name>RadioInfo</name>
+    <message>
+        <source>Channel: %1</source>
+        <translation>Канал: %1</translation>
+    </message>
+    <message>
+        <source>FM %1</source>
+        <translation>FM %1</translation>
+    </message>
+</context>
+<context>
+    <name>RadioPage</name>
+    <message>
+        <source>RDS Radio</source>
+        <translation>Радио RDS </translation>
+    </message>
+</context>
+<context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
@@ -314,6 +531,14 @@ OK для подтверждения.</translation>
         <translation>Нет заставки экрана</translation>
     </message>
     <message>
+        <source>Slideshow</source>
+        <translation>Слайд-шоу</translation>
+    </message>
+    <message>
+        <source>Slideshow timeout</source>
+        <translation>Тайм-аут слайд-шоу</translation>
+    </message>
+    <message>
         <source>Text</source>
         <translation>Текст</translation>
     </message>
@@ -323,75 +548,74 @@ OK для подтверждения.</translation>
     </message>
 </context>
 <context>
-    <name>SourceChoice</name>
+    <name>ScreensaverTiming</name>
     <message>
-        <source>IP Radio</source>
-        <translation>IP-radio</translation>
+        <source> sec</source>
+        <translation>с</translation>
     </message>
+</context>
+<context>
+    <name>SlideshowSelector</name>
     <message>
-        <source>Servers</source>
-        <translation>Серверы</translation>
+        <source>Folder</source>
+        <translation>Папка</translation>
     </message>
 </context>
 <context>
     <name>SplitMode</name>
     <message>
-        <source>COOLING</source>
-        <translation>Охлаждение</translation>
-    </message>
-    <message>
-        <source>DRY</source>
-        <translation>Поглощение влаги</translation>
-    </message>
-    <message>
-        <source>HEATING</source>
-        <translation>Отопление</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Автоматически</translation>
     </message>
     <message>
         <source>FAN</source>
-        <translation>Вентиляция</translation>
+        <translation type="unfinished">Вентилятор</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Автоматическая</translation>
+        <source>HEATING</source>
+        <translation type="unfinished">отопление</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">OFF</translation>
+    </message>
+    <message>
+        <source>COOLING</source>
+        <translation type="unfinished">Охлаждение</translation>
     </message>
 </context>
 <context>
-    <name>SplitSettings</name>
+    <name>SplitPage</name>
     <message>
-        <source>SWING</source>
-        <translation>Качание</translation>
+        <source>Off</source>
+        <translation type="unfinished">Выкл</translation>
     </message>
 </context>
 <context>
     <name>SplitSpeed</name>
     <message>
-        <source>HIGH</source>
-        <translation>Высокая</translation>
+        <source>AUTOMATIC</source>
+        <translation type="unfinished">Автоматически</translation>
     </message>
     <message>
         <source>LOW</source>
-        <translation>Низкая</translation>
+        <translation type="unfinished">Низкая</translation>
     </message>
     <message>
         <source>MEDIUM</source>
-        <translation>Средний</translation>
+        <translation type="unfinished">Средний</translation>
     </message>
     <message>
         <source>SILENT</source>
-        <translation>Бесшумный</translation>
+        <translation type="unfinished">Без звука</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>Автоматическая</translation>
+        <source>HIGH</source>
+        <translation type="unfinished">Высокий</translation>
     </message>
 </context>
 <context>
-    <name>StopngoPage</name>
+    <name>StopAndGoBTestPage</name>
     <message>
         <source>Enable</source>
         <translation>Активировать</translation>
@@ -399,6 +623,20 @@ OK для подтверждения.</translation>
     <message>
         <source>Self-test</source>
         <translation>Самоанализ</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Активировать</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPlusPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>Активировать</translation>
     </message>
     <message>
         <source>Test</source>
@@ -413,72 +651,21 @@ OK для подтверждения.</translation>
     </message>
 </context>
 <context>
-    <name>call_notifier</name>
+    <name>TransitionEffects</name>
     <message>
-        <source>Door lock</source>
-        <translation>Замок</translation>
+        <source>Enlarge</source>
+        <translation>Увеличить</translation>
     </message>
     <message>
-        <source>Staircase light</source>
-        <translation>Свет лестница</translation>
+        <source>None</source>
+        <translation>нет</translation>
     </message>
+</context>
+<context>
+    <name>VideoDoorEntry</name>
     <message>
         <source>Unknown</source>
         <translation>Неизвестный</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_aux</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming_100</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_light_status</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_volume</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
     </message>
 </context>
 </TS>
