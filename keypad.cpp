@@ -322,3 +322,8 @@ void KeypadWindow::resetText()
 {
 	keypad->resetText();
 }
+
+void KeypadWindow::showWrongPassword(bool is_visible)
+{
+	keypad->showWrongPassword(is_visible);
+}

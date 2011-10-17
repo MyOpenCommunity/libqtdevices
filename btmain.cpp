@@ -786,6 +786,7 @@ void BtMain::testPassword()
 		if (text != bt_global::status.password)
 		{
 			password_keypad->resetText();
+			password_keypad->showWrongPassword(true);
 			qDebug() << "BtMain::testPassword the input text" << text
 				<< "doesn't match the password" << bt_global::status.password;
 		}

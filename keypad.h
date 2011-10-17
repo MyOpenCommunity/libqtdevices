@@ -120,6 +120,7 @@ public:
 	// merthods forwarded to the corresponding Keypad methods
 	QString getText();
 	void resetText();
+	void showWrongPassword(bool is_visible);
 
 private:
 	Keypad *keypad;

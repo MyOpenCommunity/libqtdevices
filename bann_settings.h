@@ -172,9 +172,6 @@ signals:
 	 */
 	void passwordActive(bool active);
 
-protected:
-	virtual void showEvent(QShowEvent *event);
-
 private:
 	enum PasswordStatus
 	{
@@ -190,11 +187,6 @@ private slots:
 	void checkPassword();
 	//
 	void resetState();
-
-	/**
-	 * Stops the error beep made when the password insertion is wrong
-	 */
-	void restoreBeepState();
 
 	void setStatus(PasswordStatus status);
 

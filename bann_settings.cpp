@@ -29,7 +29,6 @@
 #include "state_button.h"
 #include "fontmanager.h"
 #include "skinmanager.h" // bt_global::skin
-#include "delayedslotcaller.h"
 #include "btmain.h" // bt_global::status
 
 #ifdef LAYOUT_TS_10
@@ -262,7 +261,6 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 	}
 
 	connect(keypad, SIGNAL(Closed()), SIGNAL(finished()));
-	connect(keypad, SIGNAL(Closed()), SLOT(resetState()));
 	connect(keypad, SIGNAL(accept()), SLOT(checkPassword()));
 
 	active = check_active;
@@ -272,12 +270,14 @@ PasswordChanger::PasswordChanger(int _item_id, QString pwd, bool check_active)
 
 void PasswordChanger::changePassword()
 {
+	resetState();
 	keypad->showPage();
 }
 
 void PasswordChanger::requestPasswdOn()
 {
 	setStatus(ASK_PASSWORD);
+	keypad->showWrongPassword(false);
 	keypad->showPage();
 }
 
@@ -289,21 +289,6 @@ void PasswordChanger::toggleActivation()
 	bt_global::status.check_password = active;
 	bt_global::status.password = password;
 	emit passwordActive(active);
-}
-
-void PasswordChanger::showEvent(QShowEvent *event)
-{
-	// TODO: all this thing seems useless...
-	if (password.isEmpty())
-	{
-		setStatus(PASSWORD_NOT_SET);
-	}
-	else
-	{
-		setStatus(CHECK_OLD_PASSWORD);
-		keypad->setMode(Keypad::HIDDEN);
-	}
-	keypad->resetText();
 }
 
 void PasswordChanger::resetState()
@@ -329,14 +314,7 @@ void PasswordChanger::checkPassword()
 		{
 			qDebug() << "PasswordChanger: wrong password, it has to be" << password;
 			// only beep on error on TS 3.5''
-#ifdef LAYOUT_TS_3_5
-			sb = getBeep();
-			setBeep(true);
-			beep(200);
-			QTimer::singleShot(1100, this, SLOT(restoreBeepState()));
-#else
 			keypad->showWrongPassword(true);
-#endif
 		}
 		else // password is correct
 		{
@@ -373,10 +351,6 @@ void PasswordChanger::checkPassword()
 		if (c == password)
 		{
 			toggleActivation();
-			DelayedSlotCaller *slot_caller = new DelayedSlotCaller(true, DelayedSlotCaller::NO_CHECK);
-			connect(slot_caller, SIGNAL(called()), slot_caller, SLOT(deleteLater()));
-			slot_caller->setSlot(this, SLOT(setStatus(PasswordStatus)), 0);
-			slot_caller->addArgument(static_cast<int>(CHECK_OLD_PASSWORD));
 			emit finished();
 		}
 		else
@@ -419,14 +393,9 @@ void PasswordChanger::savePassword(const QString &passwd)
 
 		bt_global::status.check_password = active;
 		bt_global::status.password = password;
-		setStatus(CHECK_OLD_PASSWORD);
 	}
 }
 
-void PasswordChanger::restoreBeepState()
-{
-	setBeep(sb);
-}
 
 
 BannPassword::BannPassword(QString icon_on, QString icon_off, QString icon_label, QString descr,

@@ -28,7 +28,6 @@
 #include <QMap>
 
 class PageContainer;
-class KeypadWindow;
 class QEvent;
 class TransitionWidget;
 
