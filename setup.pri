@@ -43,8 +43,8 @@ TRGT_NAME = BTouch
 !isArm() {
 	message(x86 architecture detected.)
 
-	LIBS += -L../../common_files/lib/x86 -lcommon
-	INCLUDEPATH += ../../common_files
+	LIBS += -L../../stackopen/common_files/lib/x86 -lcommon
+	INCLUDEPATH += ../../stackopen/common_files
 	OBJECTS_DIR = obj/x86
 	MOC_DIR = moc/x86
 	isEmpty(HARDWARE) {

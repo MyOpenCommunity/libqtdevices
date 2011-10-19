@@ -105,6 +105,8 @@ namespace
 					volumes[i] = DEFAULT_VOLUME;
 			}
 		}
+
+		close(eeprom);
 	}
 
 	void activateVCTAudio()

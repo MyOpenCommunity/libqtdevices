@@ -2,22 +2,107 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ar" sourcelanguage="en">
 <context>
-    <name>AlarmClock</name>
+    <name>AlarmClockDays</name>
     <message>
-        <source>always</source>
-        <translation>دوماً</translation>
+        <source>Friday</source>
+        <translation>الجمعة</translation>
     </message>
     <message>
-        <source>mon-fri</source>
-        <translation>اثنين-ثلاثاء</translation>
+        <source>Monday</source>
+        <translation>الاثنين</translation>
     </message>
     <message>
-        <source>once</source>
+        <source>Once</source>
         <translation>مرة</translation>
     </message>
     <message>
-        <source>sat-sun</source>
-        <translation>سبت-أحد</translation>
+        <source>Saturday</source>
+        <translation>السبت</translation>
+    </message>
+    <message>
+        <source>Sunday</source>
+        <translation>الأحد</translation>
+    </message>
+    <message>
+        <source>Thursday</source>
+        <translation>الخميس</translation>
+    </message>
+    <message>
+        <source>Tuesday</source>
+        <translation>الثلاثاء</translation>
+    </message>
+    <message>
+        <source>Wednesday</source>
+        <translation>الأربعاء</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmClockTimeDays</name>
+    <message>
+        <source>Fri</source>
+        <translation>الجمعة</translation>
+    </message>
+    <message>
+        <source>Mon</source>
+        <translation>الاثنين</translation>
+    </message>
+    <message>
+        <source>Sat</source>
+        <translation>السبت</translation>
+    </message>
+    <message>
+        <source>Sun</source>
+        <translation>الأحد</translation>
+    </message>
+    <message>
+        <source>Thu</source>
+        <translation>الخميس</translation>
+    </message>
+    <message>
+        <source>Tue</source>
+        <translation>الثلاثاء</translation>
+    </message>
+    <message>
+        <source>Wake up</source>
+        <translation>استيقاظ</translation>
+    </message>
+    <message>
+        <source>Wed</source>
+        <translation>الأربعاء</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmListPage</name>
+    <message>
+        <source>Alarm type</source>
+        <translation>نوع الانذار</translation>
+    </message>
+    <message>
+        <source>Alarms</source>
+        <translation>إنذارات</translation>
+    </message>
+    <message>
+        <source>Date &amp; Hour</source>
+        <translation>أمبير</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>منطقة</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmPage</name>
+    <message>
+        <source>Date</source>
+        <translation>التاريخ</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>ساعة</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>منطقة</translation>
     </message>
 </context>
 <context>
@@ -38,28 +123,40 @@
         <source>technical</source>
         <translation>تقني</translation>
     </message>
-</context>
-<context>
-    <name>BrightnessPage</name>
     <message>
-        <source>High brightness</source>
-        <translation>درجة سطوع عالية</translation>
-    </message>
-    <message>
-        <source>Low brightness</source>
-        <translation>درجة سطوع منخفضة</translation>
-    </message>
-    <message>
-        <source>Normal brightness</source>
-        <translation>درجة سطوع عادية</translation>
-    </message>
-    <message>
-        <source>Off</source>
-        <translation>Off</translation>
+        <source>Z%1</source>
+        <translation>Z%1</translation>
     </message>
 </context>
 <context>
-    <name>Calibrate</name>
+    <name>AudioPlayerPage</name>
+    <message>
+        <source>Album:</source>
+        <translation>الألبوم:</translation>
+    </message>
+    <message>
+        <source>Artist:</source>
+        <translation>الفنان:</translation>
+    </message>
+    <message>
+        <source>Information not available</source>
+        <translation>معلومات غير متوفرة</translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation>الطول:</translation>
+    </message>
+    <message>
+        <source>Loading...</source>
+        <translation>الساعة والدقيقة...</translation>
+    </message>
+    <message>
+        <source>Track:</source>
+        <translation>السكة:</translation>
+    </message>
+</context>
+<context>
+    <name>CalibrationWidget</name>
     <message>
         <source>Click the crosshair</source>
         <translation>انقر على الشارت باستخدام رمز التقاطع</translation>
@@ -67,6 +164,42 @@
     <message>
         <source>Click the OK button</source>
         <translation>انقر على زر موافق</translation>
+    </message>
+</context>
+<context>
+    <name>CallNotifierPage</name>
+    <message>
+        <source>Door lock</source>
+        <translation>قفل الباب</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayDimming</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayOnOff</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
+    </message>
+</context>
+<context>
+    <name>DeviceConditionDisplayVolume</name>
+    <message>
+        <source>OFF</source>
+        <translation>OFF</translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation>ON</translation>
     </message>
 </context>
 <context>
@@ -78,10 +211,6 @@
     <message>
         <source>Calibration</source>
         <translation>المعايرة</translation>
-    </message>
-    <message>
-        <source>Clean Screen</source>
-        <translation>مسح الشاشة</translation>
     </message>
     <message>
         <source>Screen Saver</source>
@@ -159,10 +288,36 @@
     </message>
 </context>
 <context>
-    <name>FSBannManual</name>
+    <name>FeedItemWidget</name>
     <message>
-        <source>Manual</source>
-        <translation>يدوياً</translation>
+        <source>No description</source>
+        <translation>لا يوجد وصف</translation>
+    </message>
+</context>
+<context>
+    <name>HandsFree</name>
+    <message>
+        <source>Hands Free</source>
+        <translation>السماعات</translation>
+    </message>
+</context>
+<context>
+    <name>InactiveBrightnessPage</name>
+    <message>
+        <source>High brightness</source>
+        <translation>درجة سطوع عالية</translation>
+    </message>
+    <message>
+        <source>Low brightness</source>
+        <translation>درجة سطوع منخفضة</translation>
+    </message>
+    <message>
+        <source>Normal brightness</source>
+        <translation>درجة سطوع عادية</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
@@ -171,12 +326,24 @@
         <source>PASSWORD:</source>
         <translation>كلمة مرور:</translation>
     </message>
+    <message>
+        <source>Wrong password</source>
+        <translation>كلمة مرور خاطئة</translation>
+    </message>
 </context>
 <context>
     <name>LanSettings</name>
     <message>
+        <source>Connection Status</source>
+        <translation>حالة الاتصال</translation>
+    </message>
+    <message>
         <source>DNS</source>
         <translation>نظام أسماء المجالات (DNS)</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation>لأسفل</translation>
     </message>
     <message>
         <source>Gateway</source>
@@ -194,47 +361,50 @@
         <source>Subnet mask</source>
         <translation>قناع الشبكة التحتية</translation>
     </message>
-</context>
-<context>
-    <name>LoadDataContent</name>
     <message>
-        <source>date/time</source>
-        <translation>تاريخ/وقت</translation>
+        <source>Up</source>
+        <translation>لأعلى</translation>
     </message>
 </context>
 <context>
-    <name>LoadDataPage</name>
+    <name>MultimediaContainer</name>
     <message>
-        <source>Text-Confirm-LoadDataPage</source>
-        <translation type="unfinished">سيتم حذف البيانات المخزنة.
-موافق للتأكيد.</translation>
+        <source>IP Radio</source>
+        <translation>راديو IP</translation>
+    </message>
+    <message>
+        <source>Servers</source>
+        <translation>الملقم</translation>
     </message>
 </context>
 <context>
-    <name>MediaPlayWindow</name>
+    <name>MultimediaFileListPage</name>
     <message>
-        <source>Album:</source>
-        <translation>الألبوم:</translation>
-    </message>
-    <message>
-        <source>Artist:</source>
-        <translation>الفنان:</translation>
-    </message>
-    <message>
-        <source>Length:</source>
-        <translation>الطول:</translation>
-    </message>
-    <message>
-        <source>of</source>
-        <translation>من</translation>
-    </message>
-    <message>
-        <source>Track:</source>
-        <translation>السكة:</translation>
+        <source>Folder</source>
+        <translation>حافظة</translation>
     </message>
 </context>
 <context>
-    <name>PowerAmplifier</name>
+    <name>PasswordChanger</name>
+    <message>
+        <source>Check password:</source>
+        <translation>مراجعة كلمة المرور:</translation>
+    </message>
+    <message>
+        <source>New password:</source>
+        <translation>كلمة المرور الجديدة:</translation>
+    </message>
+    <message>
+        <source>Old password:</source>
+        <translation>كلمة المرور القديمة:</translation>
+    </message>
+    <message>
+        <source>Verify password:</source>
+        <translation>التحقق من كلمة المرور:</translation>
+    </message>
+</context>
+<context>
+    <name>PowerAmplifierPage</name>
     <message>
         <source>Balance</source>
         <translation>ميزان</translation>
@@ -300,6 +470,46 @@
     </message>
 </context>
 <context>
+    <name>ProbesPage</name>
+    <message>
+        <source>Probe</source>
+        <translation>مجس</translation>
+    </message>
+    <message>
+        <source>Temperature</source>
+        <translation>درجة الحرارة</translation>
+    </message>
+    <message>
+        <source>Zone</source>
+        <translation>منطقة</translation>
+    </message>
+</context>
+<context>
+    <name>ProfessionalStudio</name>
+    <message>
+        <source>Professional studio</source>
+        <translation>استديو محترف</translation>
+    </message>
+</context>
+<context>
+    <name>RadioInfo</name>
+    <message>
+        <source>Channel: %1</source>
+        <translation>القناة: %1</translation>
+    </message>
+    <message>
+        <source>FM %1</source>
+        <translation>FM %1</translation>
+    </message>
+</context>
+<context>
+    <name>RadioPage</name>
+    <message>
+        <source>RDS Radio</source>
+        <translation>نظام بيانات الراديو</translation>
+    </message>
+</context>
+<context>
     <name>ScreenSaverPage</name>
     <message>
         <source>Balls</source>
@@ -314,6 +524,14 @@
         <translation>لا توجد شاشة توقف</translation>
     </message>
     <message>
+        <source>Slideshow</source>
+        <translation>عرض الشرائح</translation>
+    </message>
+    <message>
+        <source>Slideshow timeout</source>
+        <translation>نفاذ وقت عرض الشرائح</translation>
+    </message>
+    <message>
         <source>Text</source>
         <translation>نص</translation>
     </message>
@@ -323,25 +541,28 @@
     </message>
 </context>
 <context>
-    <name>SourceChoice</name>
+    <name>ScreensaverTiming</name>
     <message>
-        <source>IP Radio</source>
-        <translation>راديو IP</translation>
+        <source> sec</source>
+        <translation>ثانية</translation>
     </message>
+</context>
+<context>
+    <name>SlideshowSelector</name>
     <message>
-        <source>Servers</source>
-        <translation>الملقم</translation>
+        <source>Folder</source>
+        <translation>حافظة</translation>
     </message>
 </context>
 <context>
     <name>SplitMode</name>
     <message>
-        <source>COOLING</source>
-        <translation>تبريد</translation>
+        <source>AUTOMATIC</source>
+        <translation>آلي</translation>
     </message>
     <message>
-        <source>DRY</source>
-        <translation>جاف (مزيل الرطوبة)</translation>
+        <source>FAN</source>
+        <translation>المروحة</translation>
     </message>
     <message>
         <source>HEATING</source>
@@ -352,26 +573,22 @@
         <translation>OFF</translation>
     </message>
     <message>
-        <source>FAN</source>
-        <translation>المروحة </translation>
-    </message>
-    <message>
-        <source>AUTOMATIC</source>
-        <translation>الأوتوماتيكية</translation>
+        <source>COOLING</source>
+        <translation>تبريد</translation>
     </message>
 </context>
 <context>
-    <name>SplitSettings</name>
+    <name>SplitPage</name>
     <message>
-        <source>SWING</source>
-        <translation>التأرجح</translation>
+        <source>Off</source>
+        <translation>Off</translation>
     </message>
 </context>
 <context>
     <name>SplitSpeed</name>
     <message>
-        <source>HIGH</source>
-        <translation>عالية</translation>
+        <source>AUTOMATIC</source>
+        <translation>آلي</translation>
     </message>
     <message>
         <source>LOW</source>
@@ -386,12 +603,12 @@
         <translation>صامت</translation>
     </message>
     <message>
-        <source>AUTOMATIC</source>
-        <translation>الأوتوماتيكية</translation>
+        <source>HIGH</source>
+        <translation>High</translation>
     </message>
 </context>
 <context>
-    <name>StopngoPage</name>
+    <name>StopAndGoBTestPage</name>
     <message>
         <source>Enable</source>
         <translation>تمكين</translation>
@@ -399,6 +616,20 @@
     <message>
         <source>Self-test</source>
         <translation>اختبار ذاتي</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>تمكين</translation>
+    </message>
+</context>
+<context>
+    <name>StopAndGoPlusPage</name>
+    <message>
+        <source>Enable</source>
+        <translation>تمكين</translation>
     </message>
     <message>
         <source>Test</source>
@@ -413,72 +644,21 @@
     </message>
 </context>
 <context>
-    <name>call_notifier</name>
+    <name>TransitionEffects</name>
     <message>
-        <source>Door lock</source>
-        <translation>قفل الباب</translation>
+        <source>Enlarge</source>
+        <translation>تكبير</translation>
     </message>
     <message>
-        <source>Staircase light</source>
-        <translation>ضوء السلم</translation>
+        <source>None</source>
+        <translation>لا شيء</translation>
     </message>
+</context>
+<context>
+    <name>VideoDoorEntry</name>
     <message>
         <source>Unknown</source>
         <translation>غير محدد</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_aux</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_dimming_100</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_light_status</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
-    </message>
-</context>
-<context>
-    <name>device_condition_volume</name>
-    <message>
-        <source>OFF</source>
-        <translation>OFF</translation>
-    </message>
-    <message>
-        <source>ON</source>
-        <translation>ON</translation>
     </message>
 </context>
 </TS>

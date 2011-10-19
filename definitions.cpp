@@ -31,7 +31,7 @@ FILE *StdLog = stdout;
 int VERBOSITY_LEVEL;
 
 // Only for the linking with libcommon
-#ifdef BT_HARDWARE_DM365
+#ifndef BT_HARDWARE_PXA277
 char *Prefix = const_cast<char*>("<BTo>");
 #else
 char *My_Parser = const_cast<char*>(MY_PARSER_DEFAULT);

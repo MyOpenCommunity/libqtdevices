@@ -355,7 +355,7 @@ void setBeep(bool enable)
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE* fd = fopen("/proc/sys/dev/btweb/buzzer_enable", "w");
-		if (fd >= 0)
+		if (fd != NULL)
 		{
 			fwrite(p, 1, 1, fd);
 			fclose(fd);
@@ -369,7 +369,7 @@ bool getBeep()
 	if (QFile::exists("/proc/sys/dev/btweb/buzzer_enable"))
 	{
 		FILE *fd = fopen("/proc/sys/dev/btweb/buzzer_enable",  "r");
-		if (fd >= 0)
+		if (fd != NULL)
 		{
 			fread (&c, 1, 1, fd);
 			fclose(fd);
