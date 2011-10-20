@@ -68,8 +68,10 @@ int maxWidth()
 	{
 #ifdef Q_WS_QWS
 		width = QScreen::instance()->width();
-#else
+#elif defined(LAYOUT_TS_10)
 		width = 800;
+#else // LAYOUT_TS_3_5
+		width = 240;
 #endif
 	}
 	return width;
@@ -82,8 +84,10 @@ int maxHeight()
 	{
 #ifdef Q_WS_QWS
 		height = QScreen::instance()->height();
-#else
+#elif defined(LAYOUT_TS_10)
 		height = 480;
+#else // LAYOUT_TS_3_5
+		height = 320;
 #endif
 	}
 	return height;
