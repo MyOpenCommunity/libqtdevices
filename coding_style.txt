@@ -1,0 +1,61 @@
+Code organization:
+- Each file can contain more related classes or functions, not excedeeing a
+  length of ¬ 1000 lines.
+- The code is never commented: we use a repository to avoid that old or
+  unmaintained code makes the code less readable.
+- A blank line should not contain any whitespace.
+- All functions or methods implementation must be separated by a newline
+- All the methods of a class have to be placed in an unique piece of the code
+  file. We use two newline to separate classes.
+
+Global code rules:
+- All the entities must have only one cohesive responsability.
+- Due to a better reusability, functions are the preferred way to encapsulate
+  the code logic, while classes are used when the code needs to use a status.
+- Each public function must have a documented prototype in the header file 
+  (using doxyxgen) and the implementation in the code file.
+- Private functions have to be placed on the top of the code file, inside an
+  anonymous namespace.
+- Each time that a 'magic' number (actually or potentially) can be modified to 
+  tune a functionality, it has to be replaced by a define or a const variabile,
+  placed at the top of the code file.
+- Avoid the code duplication and reinventing the wheel.
+
+Names rules:
+- A filename must be in lowercase, with _ used that can be used as word
+  separator.
+- A classname starts with an uppercase letter, while a functioname starts
+  with a lowercase one.
+- Classnames and functionnames follow the camelCase style.
+- Members are lowercase, and optionally use the _ to separate words. No
+  hungarian or members convention (m_<name>) are used. 
+- A name must be auto-descriptive and can contain abbreviations only if it 
+  is clear its meaning.
+
+Code style:
+- To indent use the tabs. To align comment, separate arguments, etc.. use 
+  spaces.
+- The braces are always after a newline.
+- A whitespace should be used to separate the statements (if, for, while, 
+  etc..) from their conditions. No whitespace are allowed between functions
+  name and their arguments.
+- A whitespace is used before and after every use of the assignment operator.
+- The cases inside a switch should be aligned with the switch. If a case
+  requires braces, they should be aligned with the case and switch.
+- In the definition of a class, protected methods/members should be below
+  the public ones and above the private ones.
+
+BTouch code style and conventions:
+- The parsing of configuration is performed only in the pages subclasses,
+  and never in banners.
+- If a banner or a page store a pointer to a device, that pointer should be
+  called 'dev'.
+- The content classes have to manage the items layout and positioning, while
+  the pages that use that incapsulate the specific page logic.
+- The bann* files contain only 'base' banner, which contain only the items
+  layout and positioning, while the derived banner classes encapsulate the
+  specific banner logic.
+- The *functions files contain functions that can be useful in many part
+  of the code. 
+
+
