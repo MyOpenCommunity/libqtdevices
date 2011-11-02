@@ -23,7 +23,7 @@
 #include "xml_functions.h"
 #include "generic_functions.h"
 
-#ifndef BT_HARDWARE_PXA277
+#ifndef BT_HARDWARE_PXA270
 #include <logger.h>
 #else
 #include <common_functions.h>
@@ -45,7 +45,7 @@
 #endif
 
 #define TIMESTAMP
-#ifdef BT_HARDWARE_PXA277
+#ifdef BT_HARDWARE_PXA270
 #ifdef TIMESTAMP
 #include <QDateTime>
 #endif
@@ -53,7 +53,7 @@
 
 #include <signal.h>
 
-#ifndef BT_HARDWARE_PAX277
+#ifndef BT_HARDWARE_PXA270
 logger *app_logger;
 #endif
 
@@ -79,7 +79,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 	switch (type)
 	{
 	case QtDebugMsg:
-#ifndef BT_HARDWARE_PXA277
+#ifndef BT_HARDWARE_PXA270
 		app_logger->debug(LOG_NOTICE, (char *) msg);
 #else
 		if (VERBOSITY_LEVEL > 1)
@@ -95,7 +95,7 @@ void myMessageOutput(QtMsgType type, const char *msg)
 #endif
 		break;
 	case QtWarningMsg:
-#ifndef BT_HARDWARE_PXA277
+#ifndef BT_HARDWARE_PXA270
 		app_logger->debug(LOG_INFO, (char *) msg);
 #else
 		if (VERBOSITY_LEVEL > 0)
@@ -178,7 +178,7 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 
 static void setupLogger(QString log_file)
 {
-#ifndef BT_HARDWARE_PXA277
+#ifndef BT_HARDWARE_PXA270
 #ifdef TIMESTAMP
 	app_logger = new logger(log_file.toAscii().data(), true);
 #else
@@ -239,7 +239,7 @@ int main(int argc, char **argv)
 	VERBOSITY_LEVEL = general_config.verbosity_level;
 
 	// Fine Lettura configurazione applicativo
-#ifndef BT_HARDWARE_PXA277
+#ifndef BT_HARDWARE_PXA270
 	signal(SIGUSR1, app_logger->signal_verbosity_up);
 #else
 	signal(SIGUSR1, MySignal);
