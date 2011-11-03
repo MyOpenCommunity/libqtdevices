@@ -24,6 +24,7 @@
 #include <QStackedWidget>
 
 class TransitionWidget;
+class QLabel;
 class Page;
 class Window;
 
@@ -34,7 +35,7 @@ class TransitionManager : public QObject
 {
 Q_OBJECT
 public:
-	TransitionManager(QObject *parent = 0);
+	TransitionManager(QWidget *page_container);
 	// Set or unset the transition widget.
 	void setTransitionWidget(TransitionWidget *tr);
 	// Return true if a transition widget is installed and the transition effects
@@ -54,7 +55,11 @@ private slots:
 	void endTransition();
 
 private:
+	QWidget *pageContainer();
+
+private:
 	TransitionWidget *transition_widget;
+	QLabel *background_widget;
 	bool block_transitions;
 };
 

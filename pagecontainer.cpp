@@ -33,6 +33,7 @@
 #include <QDebug>
 #include <QLayout>
 #include <QTimer>
+#include <QLabel>
 
 
 namespace
@@ -47,14 +48,36 @@ namespace
 }
 
 
-TransitionManager::TransitionManager(QObject *parent) : QObject(parent)
+// If the transition widget is a top-level window, for some reason, it's not shown
+// directly after calling show()/raise(), and there is a small but visible flicker
+//
+// If a page is logically visible (isVisible() == true) during a transition, even if the
+// page is completely covered by the transition widget, the transition is slower (it _might_
+// be a missing optimization for overlapping siblings)
+//
+// The code below works around both problems:
+// - an intermediate widget (QLabel) is shown at full screen
+//   and it displays the parts of the screen not covered by the transition
+// - the transition widget becomes a child of the background QLabel
+// - the page container is hidden at the start of a transition and shown again
+//   at the end of the transition
+//
+// The added constraint is that the background QLabel must be a sibling of
+// the PageContainer; the same schema will not work for TS 10 (because the
+// WindowContainer has no parent)
+
+TransitionManager::TransitionManager(QWidget *page_container) : QObject(page_container)
 {
+	background_widget = new QLabel();
 	transition_widget = 0;
 	block_transitions = false;
 }
 
 void TransitionManager::setTransitionWidget(TransitionWidget *tr)
 {
+	Q_ASSERT_X(pageContainer()->parentWidget(), "TransitionManager::setTransitionWidget",
+		   "PageContainer must have a parent before setting the transition widget");
+
 	if (transition_widget)
 	{
 		transition_widget->disconnect();
@@ -64,8 +87,9 @@ void TransitionManager::setTransitionWidget(TransitionWidget *tr)
 	if (!transition_widget)
 		return;
 
-	transition_widget->setParent(0);
-	transition_widget->setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
+	background_widget->setParent(pageContainer()->parentWidget());
+	transition_widget->setParent(background_widget);
+	transition_widget->show();
 	connect(transition_widget, SIGNAL(endTransition()), SLOT(endTransition()));
 }
 
@@ -76,30 +100,34 @@ bool TransitionManager::isActive() const
 
 void TransitionManager::prepareTransition(QWidget *prev)
 {
-	transition_widget->prepareTransition(QPixmap::grabWidget(prev));
+	QPixmap full_pixmap = QPixmap::grabWidget(pageContainer());
+	QPoint pos = prev->mapTo(pageContainer(), QPoint(0, 0));
 
-	// We should use MaptoGlobal, but it does not work.
-	QPoint pos = prev->pos();
-	QWidget *widget = prev;
-	while (QWidget *parent = qobject_cast<QWidget*>(widget->parent()))
-	{
-		pos += parent->pos();
-		widget = parent;
-	}
+	transition_widget->prepareTransition(full_pixmap.copy(QRect(pos, prev->size())));
 	transition_widget->move(pos);
 	transition_widget->resize(prev->size());
-	transition_widget->show();
-	transition_widget->raise();
+
+	background_widget->setPixmap(full_pixmap);
+	background_widget->setGeometry(pageContainer()->geometry());
+	background_widget->show();
+	background_widget->raise();
+	pageContainer()->hide();
 }
 
 void TransitionManager::startTransition(QWidget *next)
 {
-	transition_widget->startTransition(QPixmap::grabWidget(next));
+	QPoint pos = next->mapTo(pageContainer(), QPoint(0, 0));
+	// calling grabWidget(next) does not paint background correctly if the background
+	// color is defined on the parent widget, hence we grab a sub-rect of the page container
+	QPixmap pixmap = QPixmap::grabWidget(pageContainer(), QRect(pos, next->size()));
+
+	transition_widget->startTransition(pixmap);
 }
 
 void TransitionManager::endTransition()
 {
-	transition_widget->hide();
+	pageContainer()->show();
+	background_widget->hide();
 }
 
 void TransitionManager::blockTransitions(bool block)
@@ -108,8 +136,15 @@ void TransitionManager::blockTransitions(bool block)
 	if (block && transition_widget)
 	{
 		transition_widget->cancelTransition();
-		transition_widget->hide();
+		// show again page container if there is a transition in progress
+		if (background_widget->isVisible())
+			endTransition();
 	}
+}
+
+QWidget *TransitionManager::pageContainer()
+{
+	return qobject_cast<QWidget*>(parent());
 }
 
 
