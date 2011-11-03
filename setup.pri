@@ -70,6 +70,7 @@ TRGT_NAME = BTouch
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
+	QMAKE_CXXFLAGS += -Wno-psabi
 
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
