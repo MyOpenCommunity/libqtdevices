@@ -42,11 +42,6 @@ static void sleepSecs(int seconds)
 
 TestDisplayControl::TestDisplayControl()
 {
-	bt_global::status.alarm_clock_on = false;
-	bt_global::status.calibrating = false;
-	bt_global::status.vde_call_active = false;
-	bt_global::status.check_password = false;
-
 	bt_global::audio_states = new AudioStateMachine;
 	parent_window = new QWidget;
 	WindowContainer *w = new WindowContainer(100, 100, parent_window);
@@ -63,6 +58,11 @@ TestDisplayControl::TestDisplayControl()
 
 void TestDisplayControl::init()
 {
+	bt_global::status.alarm_clock_on = false;
+	bt_global::status.calibrating = false;
+	bt_global::status.vde_call_active = false;
+	bt_global::status.check_password = false;
+
 	display = new DisplayControl;
 	display->setPageContainer(page_container);
 	display->freeze_time = 1;
@@ -254,7 +254,6 @@ void TestDisplayControl::testMakeActive()
 	QCOMPARE(spy.count(), 1);
 }
 
-
 void TestDisplayControl::testMakeActivePassword()
 {
 	QSignalSpy spy(display, SIGNAL(unfreezed()));
@@ -265,7 +264,6 @@ void TestDisplayControl::testMakeActivePassword()
 
 	display->makeActive();
 	QCOMPARE(display->current_state, DISPLAY_FREEZED);
-	bt_global::status.check_password = false;
 	QCOMPARE(spy.count(), 0);
 }
 
@@ -308,7 +306,6 @@ void TestDisplayControl::testMakeActivePostScreensaverPassword()
 	QCOMPARE(display->screensaver->isRunning(), false);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::IDLE);
 	QCOMPARE(spy.count(), 1);
-	bt_global::status.check_password = false;
 }
 
 void TestDisplayControl::testMakeActivePostScreenOff()
