@@ -39,7 +39,10 @@ private slots:
 	void init();
 
 	void testFreeze();
+	void testUnfreeze();
+	void testUnfreezeLocked();
 	void testScreensaver();
+	void testScreensaverPassword();
 	void testScreensaverNone();
 	void testForcedOperativeMode();
 	void testScreensaverPostForcedOperativeMode();

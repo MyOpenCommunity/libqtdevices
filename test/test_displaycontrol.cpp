@@ -111,6 +111,39 @@ void TestDisplayControl::testFreeze()
 	QCOMPARE(spy.count(), 1);
 }
 
+void TestDisplayControl::testUnfreeze()
+{
+	QSignalSpy spy_unfreeze(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unlock(display, SIGNAL(unlockScreen()));
+
+	display->freeze(true);
+	QCOMPARE(display->current_state, DISPLAY_FREEZED);
+	QCOMPARE(spy_unfreeze.count(), 0);
+	QCOMPARE(spy_unlock.count(), 0);
+
+	display->freeze(false);
+	QCOMPARE(display->current_state, DISPLAY_OPERATIVE);
+	QCOMPARE(spy_unfreeze.count(), 1);
+	QCOMPARE(spy_unlock.count(), 0);
+}
+
+void TestDisplayControl::testUnfreezeLocked()
+{
+	QSignalSpy spy_unfreeze(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unlock(display, SIGNAL(unlockScreen()));
+
+	display->freeze(true);
+	display->setScreenLocked(true);
+	QCOMPARE(display->current_state, DISPLAY_FREEZED);
+	QCOMPARE(spy_unfreeze.count(), 0);
+	QCOMPARE(spy_unlock.count(), 0);
+
+	display->freeze(false);
+	QCOMPARE(display->current_state, DISPLAY_OPERATIVE);
+	QCOMPARE(spy_unfreeze.count(), 1);
+	QCOMPARE(spy_unlock.count(), 1);
+}
+
 void TestDisplayControl::testScreensaver()
 {
 	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
@@ -126,8 +159,24 @@ void TestDisplayControl::testScreensaver()
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
 	QCOMPARE(display->screensaver->isRunning(), true);
+	QVERIFY(!display->locked);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 	QCOMPARE(spy.count(), 1);
+}
+
+void TestDisplayControl::testScreensaverPassword()
+{
+	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
+	bt_global::status.check_password = true;
+	display->startTime();
+
+	sleepSecs(display->freeze_time);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	sleepSecs(display->screensaver_time - display->freeze_time);
+	QVERIFY(!display->locked);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QCOMPARE(display->current_state, DISPLAY_SCREENSAVER);
+	QVERIFY(display->locked);
 }
 
 void TestDisplayControl::testScreensaverNone()
@@ -144,6 +193,7 @@ void TestDisplayControl::testScreensaverNone()
 	display->checkScreensaver(target_page, target_window, exit_page);
 	// display can be in freeze or off mode depending on the screenoff var value.
 	QVERIFY(display->current_state != DISPLAY_SCREENSAVER);
+	QVERIFY(!display->locked);
 	QCOMPARE(spy.count(), display->current_state == DISPLAY_FREEZED ? 0 : 1);
 }
 
@@ -258,27 +308,34 @@ void TestDisplayControl::testScreenOff()
 
 void TestDisplayControl::testMakeActive()
 {
-	QSignalSpy spy(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unfreeze(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unlock(display, SIGNAL(unlockScreen()));
 	display->freeze(true);
 	QCOMPARE(display->current_state, DISPLAY_FREEZED);
-	QCOMPARE(spy.count(), 0);
+	QCOMPARE(spy_unfreeze.count(), 0);
+	QCOMPARE(spy_unlock.count(), 0);
 
 	display->makeActive();
 	QCOMPARE(display->current_state, DISPLAY_OPERATIVE);
-	QCOMPARE(spy.count(), 1);
+	QCOMPARE(spy_unfreeze.count(), 1);
+	QCOMPARE(spy_unlock.count(), 0);
 }
 
 void TestDisplayControl::testMakeActivePassword()
 {
-	QSignalSpy spy(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unfreeze(display, SIGNAL(unfreezed()));
+	QSignalSpy spy_unlock(display, SIGNAL(unlockScreen()));
 	bt_global::status.check_password = true;
+	display->locked = true;
 	display->freeze(true);
 	QCOMPARE(display->current_state, DISPLAY_FREEZED);
-	QCOMPARE(spy.count(), 0);
+	QCOMPARE(spy_unfreeze.count(), 0);
+	QCOMPARE(spy_unlock.count(), 0);
 
 	display->makeActive();
 	QCOMPARE(display->current_state, DISPLAY_FREEZED);
-	QCOMPARE(spy.count(), 0);
+	QCOMPARE(spy_unfreeze.count(), 0);
+	QCOMPARE(spy_unlock.count(), 0);
 }
 
 void TestDisplayControl::testMakeActivePostScreensaver()
