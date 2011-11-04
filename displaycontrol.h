@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -188,6 +188,9 @@ public:
 	/// Return the current transition effects installed
 	TransitionWidget::Type currentTransitionEffects();
 
+	/// Sets/unsets the locked status of the screen
+	void setScreenLocked(bool is_locked);
+
 signals:
 	/*!
 		\brief Notifies that some program is writing directly to the screen.
@@ -208,6 +211,14 @@ signals:
 	void freezed();
 
 	void unrollPages();
+
+	/*!
+		\brief Requests to unlock the screen
+		The signal is emitted when exiting the DISPLAY_FREEZED status with the screen
+		locked.  The signal must be handled by showing some sort of password prompt,
+		and calling \c setScreenLocked(false) if the user enters the correct password.
+	*/
+	void unlockScreen();
 
 protected:
 	virtual bool eventFilter(QObject *obj, QEvent *ev);
@@ -251,7 +262,7 @@ private:
 	int screenoff_time;
 
 	ScreenSaver *screensaver;
-	bool frozen;
+	bool frozen, locked;
 	int last_event_time;
 	PageContainer *page_container;
 };

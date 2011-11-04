@@ -333,7 +333,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 	connect(page_container, SIGNAL(currentPageChanged(Page*)), &bt_global::page_stack, SLOT(currentPageChanged(Page *)));
 
 	bt_global::display->setPageContainer(page_container);
-	connect(bt_global::display, SIGNAL(stopscreensaver()), SLOT(showKeypadIfNeeded()));
+	connect(bt_global::display, SIGNAL(unlockScreen()), SLOT(showPasswordKeypad()));
 	connect(bt_global::display, SIGNAL(unrollPages()), SLOT(unrollPages()));
 
 	rearmWDT();
@@ -793,6 +793,7 @@ void BtMain::testPassword()
 		else
 		{
 			qDebug() << "BtMain::testPassword password ok";
+			bt_global::display->setScreenLocked(false);
 			bt_global::page_stack.closeWindow(password_keypad);
 			password_keypad->disconnect();
 			password_keypad->deleteLater();
@@ -801,18 +802,15 @@ void BtMain::testPassword()
 	}
 }
 
-void BtMain::showKeypadIfNeeded()
+void BtMain::showPasswordKeypad()
 {
-	if (bt_global::status.check_password)
+	if (!password_keypad)
 	{
-		if (!password_keypad)
-		{
-			password_keypad = new KeypadWindow(Keypad::HIDDEN);
-			connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
-		}
-		bt_global::page_stack.showKeypad(password_keypad);
-		password_keypad->showWindow();
+		password_keypad = new KeypadWindow(Keypad::HIDDEN);
+		connect(password_keypad, SIGNAL(Closed()), SLOT(testPassword()));
 	}
+	bt_global::page_stack.showKeypad(password_keypad);
+	password_keypad->showWindow();
 }
 
 // The global definition of btmain pointer

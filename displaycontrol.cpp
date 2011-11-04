@@ -315,6 +315,7 @@ void DisplayControl::turnOff(Page *exit_page)
 		// RDS radio stop the RDS updates. We want the same behaviour when
 		// the screen turn off.
 		emit startscreensaver(page_container->currentPage());
+		setScreenLocked(bt_global::status.check_password);
 	}
 #ifdef LAYOUT_TS_10
 	if (current_state != DISPLAY_SCREENSAVER)
@@ -367,6 +368,7 @@ void DisplayControl::startScreensaver(Page *target_page, Window *target_window, 
 		qDebug() << "start screensaver:" << current_screensaver << "on:" << target_page << target_window;
 		screensaver->start(target_window);
 		emit startscreensaver(exit_page);
+		setScreenLocked(bt_global::status.check_password);
 
 		setState(DISPLAY_SCREENSAVER);
 #ifdef LAYOUT_TS_10
@@ -444,6 +446,8 @@ void DisplayControl::freeze(bool b)
 		setState(DISPLAY_OPERATIVE);
 		qApp->removeEventFilter(bt_global::display);
 		emit unfreezed();
+		if (locked)
+			emit unlockScreen();
 	}
 	else
 	{
@@ -478,9 +482,17 @@ void DisplayControl::makeActive()
 		// If the user has protected its touch with the password, we have to do
 		// all the things to show the event that calls the makeActive leaving
 		// the tounch in the freeze state so when the user clicks on the screen
-		// the keypad window (for inserting the password) is shown.
-		freeze(bt_global::status.check_password == true);
+		// the keypad window (for inserting the password) is shown.  Screen brightness
+		// must still be set as if the display was active.
+		freeze(locked);
+		if (locked)
+			changeBrightness(DISPLAY_OPERATIVE);
 	}
+}
+
+void DisplayControl::setScreenLocked(bool is_locked)
+{
+	locked = is_locked;
 }
 
 // The global definition of display

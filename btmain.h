@@ -140,7 +140,7 @@ private slots:
 	void startGui();
 	void handleSignal(int signal_number);
 	void testPassword();
-	void showKeypadIfNeeded();
+	void showPasswordKeypad();
 
 	// Unroll all the pages until homepage
 	void unrollPages();
