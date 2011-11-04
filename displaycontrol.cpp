@@ -63,7 +63,7 @@ DisplayControl::DisplayControl()
 	page_container = 0;
 	screensaver = 0;
 	last_event_time = 0;
-	frozen = false;
+	frozen = locked = false;
 
 #ifdef BT_HARDWARE_PXA270
 	operative_brightness = 1; // a low brightness for the touch 10''
