@@ -24,6 +24,7 @@
 #include <QRegExp>
 
 #include <iostream>
+#include <logger.h>
 
 #include "test_platform_device.h"
 #include "test_energy_device.h"
@@ -42,6 +43,8 @@
 #include "test_stopandgo_device.h"
 #include "test_antintrusion_device.h"
 #include "main.h" // bt_global::config
+
+logger *app_logger;
 
 
 int main(int argc, char *argv[])
