@@ -76,8 +76,22 @@ void TestDisplayControl::init()
 	bt_global::page_stack.clear();
 }
 
+// wait until (currentMSecsSinceEpoch() % 1000) == msec
+static void waitUntilMsec(int msec)
+{
+	qint64 current = QDateTime::currentMSecsSinceEpoch();
+
+	testSleep((1000 + msec - (current % 1000)) % 1000);
+}
+
 void TestDisplayControl::testFreeze()
 {
+	// the test makes the assumption that if current time in seconds is
+	// X, and we wait ((dX * 1000) - 200) milliseconds, then the current time
+	// in seconds will be (X + dX - 1); this is only true if we are close to
+	// the start of the second
+	waitUntilMsec(10);
+
 	// We can't set an interval smaller than this because the time elapsed
 	// in the screensaver is calculated in seconds, using the time() unix function.
 	int small_interval = 200;
