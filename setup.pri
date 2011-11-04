@@ -61,6 +61,7 @@ TRGT_NAME = BTouch
 	contains(HARDWARE, embedded-dm365) {
 		LIBS += -L../../stackopen/common_files -lcommon -lexpat
 		INCLUDEPATH += ../../stackopen/common_files
+		QMAKE_CXXFLAGS += -Wno-psabi
 	}
 	contains(HARDWARE, embedded-pxa270) {
 		LIBS += -L../../common_files -lcommon
@@ -70,7 +71,6 @@ TRGT_NAME = BTouch
 	OBJECTS_DIR = obj/arm
 	MOC_DIR = moc/arm
 	DEFINES += BT_EMBEDDED
-	QMAKE_CXXFLAGS += -Wno-psabi
 
 	TRGT_SUFFIX = $${TRGT_SUFFIX}.arm
 }
