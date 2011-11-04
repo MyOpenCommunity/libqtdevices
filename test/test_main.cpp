@@ -25,6 +25,7 @@
 #include <QApplication>
 
 #include <iostream>
+#include <logger.h>
 
 #include "test_scenevodevicescond.h"
 #include "test_bttime.h"
@@ -39,6 +40,7 @@
 
 
 BtStatus bt_global::status;
+logger *app_logger;
 
 // Objects required to replace the real objects and link successfully
 class VCTCallPage  : public QObject
