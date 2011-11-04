@@ -129,8 +129,6 @@ public:
 	void showHomePage();
 	Page *homePage();
 
-	bool alarm_clock_on;
-
 signals:
 	void resettimer();
 
