@@ -44,7 +44,12 @@ Bann4ButtonsIcon::Bann4ButtonsIcon(QWidget *parent) : Banner(parent)
 
 	QGridLayout *l = new QGridLayout(this);
 	l->setContentsMargins(0, 0, 0, 0);
+#ifdef LAYOUT_TS_10
 	l->setSpacing(0);
+#else
+	l->setHorizontalSpacing(0);
+	l->setVerticalSpacing(5);
+#endif
 
 	l->addWidget(left_button, 0, 0, Qt::AlignLeft);
 	l->setColumnStretch(0, 1);
