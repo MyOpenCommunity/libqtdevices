@@ -403,8 +403,9 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 	// signals must be disconnected and reconnected when the interface page is shown
 	EnergyTable *table = new EnergyTable;
 	EnergyGraph *graph = new EnergyGraph;
+	QList<QDomNode> interfaces = getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item");
 
-	foreach (const QDomNode &item, getChildren(getPageNodeFromChildNode(config_node, "lnk_pageID"), "item"))
+	foreach (const QDomNode &item, interfaces)
 	{
 		int mode = getTextChild(item, "mode").toInt();
 		QString measure = getTextChild(item, "measure");
@@ -427,7 +428,11 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 
 		views.append(next_page);
 
-		connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		if (interfaces.count() > 1)
+			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
+		else
+			connect(b, SIGNAL(pageClosed()), SIGNAL(Closed()));
+
 		page_content->appendBanner(b);
 	}
 
