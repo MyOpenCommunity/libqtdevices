@@ -42,10 +42,6 @@ void BannerPage::inizializza()
 {
 	if (page_content)
 		page_content->initBanners();
-#ifdef LAYOUT_TS_3_5
-	if (page_content)
-		page_content->setRowCount(3);
-#endif
 }
 
 void BannerPage::buildPage(BannerContent *content, AbstractNavigationBar *nav_bar, const QString &title)

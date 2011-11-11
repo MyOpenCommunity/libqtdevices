@@ -46,6 +46,9 @@ enum BannerType
 Scenario::Scenario(const QDomNode &config_node)
 {
 	buildPage(getTextChild(config_node, "descr"));
+#ifdef LAYOUT_TS_3_5
+	page_content->setRowCount(3);
+#endif
 	loadItems(config_node);
 	section_id = getTextChild(config_node, "id").toInt();
 }
