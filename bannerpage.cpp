@@ -175,8 +175,15 @@ void BannerContent::drawContent()
 					     (j % columns) * columns, Qt::AlignTop);
 		}
 
+		// in case of automatic layout, we want to pack all the banners at the
+		// top of the page; in case of fixed row count we want to distribute
+		// available space evenly between all rows, whether they contain a banner
+		// or not
 		if (rows == 0)
 			l->setRowStretch(l->rowCount(), 1);
+		else
+			for (int i = 0; i < rows; ++i)
+				l->setRowStretch(i, 1);
 
 		if (columns == 2)
 		{
