@@ -76,9 +76,11 @@ void BannerPage::setSpacing(int spacing)
 
 
 #ifdef LAYOUT_TS_3_5
-BannerContent::BannerContent(QWidget *parent) : ScrollableContent(parent), columns(1)
+BannerContent::BannerContent(QWidget *parent) :
+	ScrollableContent(parent), columns(1), rows(0)
 #else
-BannerContent::BannerContent(int _columns, QWidget *parent) : ScrollableContent(parent), columns(_columns)
+BannerContent::BannerContent(int _columns, QWidget *parent) :
+	ScrollableContent(parent), columns(_columns), rows(0)
 #endif
 {
 	QGridLayout *l = static_cast<QGridLayout *>(layout());
@@ -138,6 +140,11 @@ void BannerContent::clear()
 	current_page = 0;
 }
 
+void BannerContent::setRowCount(int _rows)
+{
+	rows = _rows;
+}
+
 void BannerContent::drawContent()
 {
 	QGridLayout *l = qobject_cast<QGridLayout*>(layout());
@@ -151,17 +158,25 @@ void BannerContent::drawContent()
 	if (pages.size() == 0)
 	{
 		// prepare the page list
-		prepareLayout(items, columns);
+		if (rows == 0)
+			prepareLayout(items, columns);
+		else
+			prepareFixedLayout(items, rows, columns);
 
 		// add items to the layout
 		for (int i = 0; i < pages.size() - 1; ++i)
 		{
 			int base = pages[i];
 			for (int j = 0; base + j < pages[i + 1]; ++j)
-				l->addWidget(banner_list.at(base + j), j / columns, (j % columns) * columns);
+				// Qt::AlignTop is needed when the page contains banners
+				// of different heights, to make smaller banners align
+				// with taller ones
+				l->addWidget(banner_list.at(base + j), j / columns,
+					     (j % columns) * columns, Qt::AlignTop);
 		}
 
-		l->setRowStretch(l->rowCount(), 1);
+		if (rows == 0)
+			l->setRowStretch(l->rowCount(), 1);
 
 		if (columns == 2)
 		{

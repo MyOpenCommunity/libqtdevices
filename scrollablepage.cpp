@@ -126,6 +126,15 @@ void ScrollableContent::prepareLayout(QList<QWidget *> items, int columns)
 	pages.append(items.size());
 }
 
+void ScrollableContent::prepareFixedLayout(QList<QWidget *> items, int rows, int columns)
+{
+	for (int i = 0; i < items.size(); i += rows * columns)
+		pages.append(i);
+
+	// see explanation in prepareLayout()
+	pages.append(items.size());
+}
+
 void ScrollableContent::updateLayout(QList<QWidget *> items)
 {
 	emit displayScrollButtons(pageCount() > 1);

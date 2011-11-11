@@ -163,9 +163,19 @@ public:
 	*/
 	void drawContent();
 
+	/*!
+		\brief Use a fixed row count to lay out the banners
+
+		By default, \c BannerContent tries to maximize the number or
+		banners per page; setting the row count to a positive value
+		uses a fixed number of banners per page; setting the row count to 0
+		restores the default behaviour.
+	*/
+	void setRowCount(int rows);
+
 private:
 	QList<Banner*> banner_list;
-	int columns;
+	int columns, rows;
 };
 
 

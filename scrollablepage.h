@@ -161,12 +161,19 @@ protected:
 	void showEvent(QShowEvent *e);
 
 	/*!
-		\brief Calculates the number of pages needed to paginate the children.
+		\brief Calculates the number of pages needed to display the childrens.
 
 		Using \a items number and sizes and \a column value, calculates the
 		number of pages to make possible to display them all.
 	*/
 	void prepareLayout(QList<QWidget *> items, int columns);
+
+	/*!
+		\brief Calculates the number of pages needed needed to display the childrens.
+
+		Similar to prepareLayout() but uses a fixed number of rows per page.
+	*/
+	void prepareFixedLayout(QList<QWidget *> items, int rows, int columns);
 
 	/*!
 		\brief Shows the subset of \a items for the current page.
