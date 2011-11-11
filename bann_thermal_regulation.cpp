@@ -142,6 +142,10 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 	sep->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("horizontal_separator")));
 
 	t->addWidget(sep);
+#else
+	// In the TS 3.5'' version there wasn't the external vertical layout, just the horizontal one,
+	// so the external layout should not add any padding on TS 3.5''
+	t->setContentsMargins(0, 0, 0, 0);
 #endif
 
 	temperature_label = new QLabel;
