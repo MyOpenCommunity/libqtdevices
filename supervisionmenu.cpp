@@ -111,6 +111,7 @@ LoadDiagnosticPage::LoadDiagnosticPage(const QDomNode &config_node)
 	SkinContext cxt(getTextChild(config_node, "cid").toInt());
 #ifdef LAYOUT_TS_3_5
 	buildPage();
+	page_content->setRowCount(3);
 #else
 	buildPage(getTextChild(config_node, "descr"), TITLE_HEIGHT);
 #endif
