@@ -27,7 +27,6 @@
 #include "fontmanager.h" // bt_global::font
 #include "displaycontrol.h" // bt_global::display
 #include "btmain.h" // bt_global::btmain
-#include "singlechoicepage.h"
 #include "skinmanager.h"
 #include "media_device.h" // AlarmSoundDiffDevice
 #include "navigation_bar.h"
