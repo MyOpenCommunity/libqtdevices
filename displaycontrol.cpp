@@ -303,33 +303,19 @@ void DisplayControl::installTransitionEffects(TransitionWidget::Type t)
 	}
 }
 
-void DisplayControl::turnOff(Page *exit_page)
+void DisplayControl::turnOff(Page *target_page, Window *target_window, Page *exit_page)
 {
+	// put the dummy screen saver on screen
+	if (current_state == DISPLAY_FREEZED && current_screensaver == ScreenSaver::NONE)
+		startScreensaver(target_page, target_window, exit_page);
+
 	qDebug() << "Turning screen off";
+
 	// the stopscreensaver() event is emitted when the user clicks on screen
 	if (screensaver && screensaver->isRunning())
-		screensaver->stop();
-	else
-	{
-		// Some pages do things when the screensaver starts. For example the
-		// RDS radio stop the RDS updates. We want the same behaviour when
-		// the screen turn off.
-		emit startscreensaver(page_container->currentPage());
-		setScreenLocked(bt_global::status.check_password);
-	}
-#ifdef LAYOUT_TS_10
-	if (current_state != DISPLAY_SCREENSAVER)
-		bt_global::audio_states->toState(AudioStates::SCREENSAVER);
-#endif
+		screensaver->pause();
+
 	setState(DISPLAY_OFF);
-
-	if (current_screensaver == ScreenSaver::NONE)
-	{
-		if (page_container->currentPage() != exit_page)
-			emit unrollPages();
-
-		exit_page->showPage();
-	}
 }
 
 void DisplayControl::startScreensaver(Page *target_page, Window *target_window, Page *exit_page)
@@ -401,7 +387,7 @@ void DisplayControl::checkScreensaver(Page *target_page, Window *target_window, 
 		((current_state == DISPLAY_SCREENSAVER && time >= blank_time) ||
 		 (current_state == DISPLAY_FREEZED && current_screensaver == ScreenSaver::NONE && time >= blank_time)))
 	{
-		turnOff(exit_page);
+		turnOff(target_page, target_window, exit_page);
 	}
 	else if (time >= freezeTime() && getBacklight() && !frozen)
 	{
@@ -424,16 +410,6 @@ void DisplayControl::freeze(bool b)
 		// below re-enters the event loop
 		last_event_time = now();
 
-		// in this case the screeensaver is not running, to reduce power consumption,
-		// but the state is as if it were
-		if (current_state == DISPLAY_OFF)
-		{
-#ifdef LAYOUT_TS_10
-			bt_global::audio_states->removeState(AudioStates::SCREENSAVER);
-#endif
-			emit stopscreensaver();
-		}
-
 		if (screensaver && screensaver->isRunning())
 		{
 #ifdef LAYOUT_TS_10
@@ -441,6 +417,15 @@ void DisplayControl::freeze(bool b)
 #endif
 			emit stopscreensaver();
 			screensaver->stop();
+		}
+
+		// this is needed to force the display of the page uncovered by screensaver->stop() above,
+		// before turning on the display, otherwise the user sees target_page briefly before
+		// the display switches to exit_page
+		if (current_state == DISPLAY_OFF)
+		{
+			page_container->repaint();
+			page_container->currentPage()->repaint();
 		}
 
 		setState(DISPLAY_OPERATIVE);

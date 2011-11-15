@@ -106,7 +106,7 @@ ScreenSaver *getScreenSaver(ScreenSaver::Type type)
 		return new LogoScreenSaver;
 #endif
 	case ScreenSaver::NONE:
-		return 0;
+		return new ScreenSaverNone;
 	default:
 		qFatal("Type of screensaver not handled!");
 	}
