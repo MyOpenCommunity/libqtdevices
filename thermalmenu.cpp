@@ -145,7 +145,7 @@ ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
 #ifdef LAYOUT_TS_3_5
 	buildPage(getTextChild(config_node, "descr"));
-	setSpacing(32);
+	page_content->setRowCount(3);
 #else
 	QWidget *content = new QWidget;
 	QGridLayout *l = new QGridLayout(content);

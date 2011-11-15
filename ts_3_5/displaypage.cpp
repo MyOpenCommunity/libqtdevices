@@ -61,7 +61,7 @@ DisplayPage::DisplayPage(const QDomNode &config_node)
 	BannerContent *content = new BannerContent;
 	main_layout->addWidget(content, 1);
 	buildPage(main_widget, content, new NavigationBar);
-	setSpacing(10);
+	page_content->setRowCount(3);
 	loadItems(config_node);
 }
 
