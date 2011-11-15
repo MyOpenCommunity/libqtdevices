@@ -182,8 +182,13 @@ void BannerContent::drawContent()
 		if (rows == 0)
 			l->setRowStretch(l->rowCount(), 1);
 		else
+		{
 			for (int i = 0; i < rows; ++i)
 				l->setRowStretch(i, 1);
+			// set zero vertical spacing, otherwise the spacing is different when the page
+			// is full and when one or more banners are missing
+			l->setVerticalSpacing(0);
+		}
 
 		if (columns == 2)
 		{
