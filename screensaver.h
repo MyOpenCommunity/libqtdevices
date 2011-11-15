@@ -93,6 +93,21 @@ public:
 	virtual void stop();
 
 	/*!
+		\brief Pauses the screensaver.
+
+		Updates are stopped but the Closed() signal is not sent.  Calling
+		resume() resumes  screen updates.
+	*/
+	virtual void pause();
+
+	/*!
+		\brief Resumes the screensaver.
+
+		Called after pause(), resumes screen updates.
+	*/
+	virtual void resume();
+
+	/*!
 		\brief Returns true if the screensaver is currently running.
 	*/
 	bool isRunning();
@@ -131,18 +146,6 @@ protected:
 		The \a refresh_time is in milliseconds.
 	*/
 	ScreenSaver(int refresh_time);
-
-	/*!
-		\brief Starts to periodically call the refresh() method.
-
-		\sa ScreenSaver::refresh(), ScreenSaver()
-	*/
-	void startRefresh();
-
-	/*!
-		\brief Stops to periodically call the refresh() method.
-	*/
-	void stopRefresh();
 
 protected slots:
 	/*!

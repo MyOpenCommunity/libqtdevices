@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -126,12 +126,12 @@ ScreenSaver::ScreenSaver(int refresh_time)
 	connect(timer, SIGNAL(timeout()), SLOT(refresh()));
 }
 
-void ScreenSaver::startRefresh()
+void ScreenSaver::resume()
 {
 	timer->start();
 }
 
-void ScreenSaver::stopRefresh()
+void ScreenSaver::pause()
 {
 	timer->stop();
 }
@@ -452,7 +452,7 @@ void ScreenSaverSlideshow::refreshSlideshow()
 	else
 	{
 		qDebug() << "no images, blank screen.";
-		stopRefresh();
+		pause();
 		current_image.fill(Qt::black);
 		next_image.fill(Qt::black);
 		update();
