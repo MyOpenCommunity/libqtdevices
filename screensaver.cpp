@@ -221,6 +221,7 @@ void ScreenSaverBalls::stop()
 	while (it.hasNext())
 	{
 		it.next();
+		it.key()->hide();
 		delete it.key();
 	}
 
@@ -306,6 +307,7 @@ void ScreenSaverLine::setLineHeight(int height)
 void ScreenSaverLine::stop()
 {
 	ScreenSaver::stop();
+	line->hide();
 	delete line;
 }
 
@@ -657,3 +659,9 @@ void ScreenSaverDeform::paintEvent(QPaintEvent *event)
 	painter.drawPixmap(topleft, lens_pixmap);
 }
 
+
+void ScreenSaverNone::start(Window *w)
+{
+	ScreenSaver::start(w);
+	pause();
+}

@@ -59,6 +59,9 @@ class ImageIterator;
 	screensaver is currently running the method isRunning() can be used.
 
 	The refresh interval can be set by the setRefreshInterval() method.
+
+	Note: the screen saver might not paint on itself (for example see ScreenSaverLine)
+	in this case it must not call showWindow() inside its start() method.
 */
 class ScreenSaver : protected Window
 {
@@ -346,6 +349,24 @@ private:
 	QVector<QVector<QPoint> > lens_lookup_table;
 	QImage bg_image, canvas_image;
 	bool need_refresh;
+};
+
+
+/*!
+	\ingroup Core
+	\brief No screen saver.
+*/
+class ScreenSaverNone : public ScreenSaver
+{
+Q_OBJECT
+public:
+	ScreenSaverNone() : ScreenSaver(0) { }
+
+	virtual void start(Window *w);
+	virtual Type type() { return NONE; }
+
+protected slots:
+	virtual void refresh() {};
 };
 
 #endif
