@@ -280,7 +280,8 @@ void TestDisplayControl::testScreenOffNoScreeensaver()
 	display->checkScreensaver(target_page, target_window, exit_page);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_OFF);
-	QVERIFY(display->screensaver == 0);
+	QVERIFY(display->screensaver != 0);
+	QCOMPARE(display->screensaver->isRunning(), true);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 	QCOMPARE(spy.count(), 1);
 }
@@ -301,7 +302,7 @@ void TestDisplayControl::testScreenOff()
 	sleepSecs(display->screenoff_time);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_OFF);
-	QCOMPARE(display->screensaver->isRunning(), false);
+	QCOMPARE(display->screensaver->isRunning(), true);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 	QCOMPARE(spy.count(), 0);
 }
@@ -388,7 +389,7 @@ void TestDisplayControl::testMakeActivePostScreenOff()
 	display->checkScreensaver(target_page, target_window, exit_page);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_OFF);
-	QCOMPARE(display->screensaver->isRunning(), false);
+	QCOMPARE(display->screensaver->isRunning(), true);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 
 	display->makeActive();
@@ -441,7 +442,7 @@ void TestDisplayControl::testScreenOffPostMakeActive()
 	display->checkScreensaver(target_page, target_window, exit_page);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_OFF);
-	QCOMPARE(display->screensaver->isRunning(), false);
+	QCOMPARE(display->screensaver->isRunning(), true);
 	QVERIFY(bt_global::audio_states->currentState() == AudioStates::SCREENSAVER);
 	QCOMPARE(spy.count(), 1);
 }
