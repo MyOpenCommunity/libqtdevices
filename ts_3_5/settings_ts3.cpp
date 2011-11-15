@@ -93,7 +93,6 @@ Banner *Settings::getBanner(const QDomNode &item_node)
 	{
 		QDomNode page_node = getPageNodeFromChildNode(item_node, "lnk_pageID");
 		ListPage *list_page = new ListPage(page_node);
-		list_page->setSpacing(10);
 		Bann2Buttons *bann = new Bann2Buttons;
 		bann->initBanner(QString(), bt_global::skin->getImage("alarm_icon"), descr);
 		bann->connectRightButton(list_page);
