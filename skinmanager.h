@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -152,55 +152,62 @@ public:
 	\ingroup Core
 	\brief a Sax parser version of Skin Xml Files.
 
-	A simple Sax handler used to parse XML Skin files 
-	according to the QXmlSimpleReader class.
+	A simple Sax handler used to parse XML Skin files according to the QXmlSimpleReader class.
 */
-class SkinSaxParser : public QXmlDefaultHandler	{
-	
-	public: 
-		SkinSaxParser(QString& theStyle, QHash<int, QHash<QString, QString> >& theImages);
-		~SkinSaxParser();
-		
-		//	Overwriten QXmlDefaultHandler services to provide
-		//  the required specific handling
-		bool 	characters ( const QString & ch );
-		bool 	endDocument ();
-		bool 	endElement ( const QString & namespaceURI, const QString & localName, const QString & qName );
-		bool 	error ( const QXmlParseException & exception );
-		bool 	fatalError ( const QXmlParseException & exception );
-		bool 	startDocument ();
-		bool 	startElement ( const QString & namespaceURI, const QString & localName, const QString & qName, const QXmlAttributes & atts );
-		bool 	warning ( const QXmlParseException & exception );
-	
-	private:
-		enum 	MngCntPhase {startPhs=0, endPhs=1};
-		void 	manageContent(MngCntPhase thePhase);
-		void 	handleSection(void);
-		
-		
-	private:
-		//	Skin related container reference
-		QString& 	m_style;
-		QHash<int, QHash<QString, QString> >& m_images;
-		
-		//	Expected const document tag
-		const char* const CSS_TAG;
-		const char* const ITEM_TAG;
-		const char* const CID_TAG;
-		const char* const IMG_TAG;
-		const char* const COMMON_TAG;
-		const char* const NO_TAG;
-		
-		enum 		DocSection {none_sec=0, root_sec=1, item_sec=2, comm_sec=3};
-		
-		int curCid;
-		
-		//	A two level staus (dcoument_section/current_tag) is enough to define the processing context
-		DocSection	m_curDocSec;
-		QString 	m_curTag;
-		
-		//	Content buffer
-		QString		m_contentBuf;
+class SkinSaxParser : public QXmlDefaultHandler
+{
+public:
+	SkinSaxParser(QString& style, QHash<int, QHash<QString, QString> >& images);
+
+	// Overwritten QXmlDefaultHandler services to provide the required specific handling
+	bool characters(const QString &ch);
+	bool endDocument();
+	bool endElement(const QString &namespaceURI, const QString &local_name, const QString &q_name);
+	bool error(const QXmlParseException &exception);
+	bool fatalError(const QXmlParseException &exception);
+	bool startDocument();
+	bool startElement(const QString &namespaceURI, const QString &local_name, const QString &q_name, const QXmlAttributes &atts);
+	bool warning(const QXmlParseException &exception);
+
+private:
+	enum ContentPhase
+	{
+		START_PHASE = 0,
+		END_PHASE = 1
+	};
+
+	void manageContent(ContentPhase phase);
+	void handleSection();
+
+
+private:
+	// Skin related container reference
+	QString style;
+	QHash<int, QHash<QString, QString> > images;
+
+	// Expected const document tag
+	const char* const CSS_TAG;
+	const char* const ITEM_TAG;
+	const char* const CID_TAG;
+	const char* const IMG_TAG;
+	const char* const COMMON_TAG;
+	const char* const NO_TAG;
+
+	enum DocumentSection
+	{
+		NONE_SECTION = 0,
+		ROOT_SECTION = 1,
+		ITEM_SECTION = 2,
+		COMMON_SECTION = 3
+	};
+
+	int current_cid;
+
+	// A two level status (document_section/current_tag) is enough to define the processing context
+	DocumentSection current_section;
+	QString current_tag;
+
+	QString content_buffer;
 };
 
 

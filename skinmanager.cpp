@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -43,57 +43,16 @@ SkinManager::SkinManager(QString filename)
 {
 	if (QFile::exists(filename))
 	{
-		/*
-		qDebug() << "******* Start Skin DOM Parser on: "<< filename;
-		QFile file(filename);
-		QDomDocument qdom;
-		if (qdom.setContent(&file))
-		{
-			QDomNode root = qdom.documentElement();
-			style = getTextChild(root, "css");
-			foreach (const QDomNode &item, getChildren(root, "item"))
-			{
-				int cid = getTextChild(item, "cid").toInt();
-				images[cid] = QHash<QString, QString>();
-				foreach (const QDomNode &img, getChildren(item, "img_"))
-				{
-					QDomElement el = img.toElement();
-					images[cid][el.tagName().mid(4)] = el.text();
-				}
-			}
-			QDomNode common = getChildWithName(root, "common");
-			foreach (const QDomNode &img, getChildren(common, "img_"))
-			{
-				QDomElement el = img.toElement();
-				images[-1][el.tagName().mid(4)] = el.text(); // we use -1 as special case
-			}
-			
-			qDebug() << "******* Skin DOM Parsing ended with success";
-		}
-		else
-			qWarning("SkinManager: the skin file called %s is not readable or a valid xml file",
-				qPrintable(filename));
-		*/
-		//	MC20111005	testing Sax Parser
+		QFile skin_file(filename);
 		
-		QFile skinFile(filename);
-		
-		qDebug() << "******* Start Skin SAX Parser on: "<< skinFile.fileName();
-		
-		SkinSaxParser    	skinParser(style, images);
-		QXmlSimpleReader 	reader;
-		QXmlInputSource 	source(&skinFile);
-		
-		//source.reset();
-		
-		reader.setContentHandler(&skinParser);
-		
+		SkinSaxParser skin_parser(style, images);
+		QXmlInputSource source(&skin_file);
 
-		if(reader.parse(source))		
-			qDebug() << "******* Skin SAX Parsing ended with success";
-		else
-			qWarning() << "******* Skin SAX Parsing ended with ERROR";
-		
+		QXmlSimpleReader reader;
+		reader.setContentHandler(&skin_parser);
+
+		if (!reader.parse(source))
+			qWarning() << "SkinManager: Skin SAX Parsing ended with ERROR";
 	}
 	else
 		qWarning("SkinManager: no skin file called %s", qPrintable(filename));
@@ -174,177 +133,145 @@ SkinContext::~SkinContext()
 }
 
 
-
-
-
-/* 
- * Skin Sax parser implementation
- */
-SkinSaxParser::SkinSaxParser(QString& theStyle, QHash<int, QHash<QString, QString> >& theImages):
-m_style(theStyle), m_images(theImages), CSS_TAG("css"), ITEM_TAG("item"), CID_TAG("cid"), IMG_TAG("img_"), COMMON_TAG("common"), 
-NO_TAG("NONE_TAG"), m_curDocSec(none_sec), m_curTag("")
+SkinSaxParser::SkinSaxParser(QString &s, QHash<int, QHash<QString, QString> > &img):
+	style(s), images(img), CSS_TAG("css"), ITEM_TAG("item"), CID_TAG("cid"), IMG_TAG("img_"), COMMON_TAG("common"),
+	NO_TAG("NONE_TAG"), current_section(NONE_SECTION), current_tag("")
 {
-	//	Set a reservation to limit the expensive grow operation
-	//  afterwards could be sqeezed to the size of css stuff
-	//	that seems to be the biggest
-	
-	//m_contentBuf.reserve(1500);	
-	//m_curTag.reserve(25);
-	
-	//m_images.reserve(150);
 }
 
-
-SkinSaxParser::~SkinSaxParser()	{
-	;
-}
-
-void SkinSaxParser::handleSection(void)	{
-	//static int curCid=-1;
-
-	//	Handle Item section content
-	if(m_curDocSec == item_sec)	
+void SkinSaxParser::handleSection()
+{
+	if (current_section == ITEM_SECTION)
 	{
-		if(m_curTag == CID_TAG)	
+		if (current_tag == CID_TAG)
 		{
-			curCid = m_contentBuf.toInt();
-			m_images[curCid] = QHash<QString, QString>();
+			current_cid = content_buffer.toInt();
+			images[current_cid] = QHash<QString, QString>();
 		}
 		else 
 		{
-			m_images[curCid][m_curTag.mid(4)] = m_contentBuf;
+			images[current_cid][current_tag.mid(4)] = content_buffer;
 		}
 	}
-	//	Handle common section content
-	else if(m_curDocSec == comm_sec)	
+	else if (current_section == COMMON_SECTION)
 	{
-			m_images[-1][m_curTag.mid(4)] = m_contentBuf;
+		images[-1][current_tag.mid(4)] = content_buffer;
 	}
-	//	Handle css content
-	else if(m_curDocSec == root_sec)
+	else if (current_section == ROOT_SECTION)
 	{
-		if(m_curTag == CSS_TAG)	{
-			m_style = m_contentBuf;
-			
+		if (current_tag == CSS_TAG)
+		{
+			style = content_buffer;
+
 			//  Release unused preallocated space
-			m_contentBuf.squeeze();
+			content_buffer.squeeze();
 		}
 	}
 }
 
-void SkinSaxParser::manageContent(MngCntPhase thePhase)	{
-	
-	switch (thePhase)	{
-		case startPhs:
-				m_contentBuf.clear();
-			break;
-			
-		case endPhs:
-				handleSection();
-			break;
-		
-		default:
-			qWarning() << "SkinSaxParser::manageContent Unnkown Phase handling";
+void SkinSaxParser::manageContent(ContentPhase phase)
+{
+	switch (phase)
+	{
+	case START_PHASE:
+		content_buffer.clear();
+		break;
+
+	case END_PHASE:
+		handleSection();
+		break;
+	default:
+		qWarning() << "SkinSaxParser::manageContent Unnkown Phase handling";
 	}
 }
 
-bool 	SkinSaxParser::characters ( const QString & ch )	{
-	//qDebug() << "******* SkinSaxParser::characters: "<<ch;
-	
-	//	Simply collect the received stuff
-	m_contentBuf.append(ch);
-	
+bool SkinSaxParser::characters(const QString &ch)
+{
+	// Simply collect the received stuff
+	content_buffer.append(ch);
 	return true;
 }
 
-
-bool 	SkinSaxParser::endDocument ()	{
-	//qDebug() << "******* SkinSaxParser::endDocument";
-
-	//	set the current document section to the no_section level
-	m_curDocSec = none_sec;	
-	
+bool SkinSaxParser::endDocument()
+{
+	current_section = NONE_SECTION;
 	return true;
 }
 
+bool SkinSaxParser::endElement(const QString &namespaceURI, const QString &local_name, const QString &q_name)
+{
+	Q_UNUSED(q_name)
+	Q_UNUSED(namespaceURI)
 
-bool 	SkinSaxParser::endElement ( const QString & namespaceURI, const QString & localName, const QString & qName )	{
-	
-	m_curTag = localName;
-	
-	//	Since a new element has been found we have to check if it is
-	//	a section identifier, if yes we have to change the section status
-	if( (localName == ITEM_TAG) ||
-		(localName == COMMON_TAG)	
-	  )
-		m_curDocSec = root_sec;
-	else	{
-		//	It's a leaf element end tag 
-		manageContent(endPhs);
-	}	
+	current_tag = local_name;
+	// Since a new element has been found we have to check if it is
+	// a section identifier, if yes we have to change the section status
+	if (local_name == ITEM_TAG || local_name == COMMON_TAG)
+		current_section = ROOT_SECTION;
+	else
+	{
+		// It's a leaf element end tag
+		manageContent(END_PHASE);
+	}
 
 	return true;
 }
 
-
-bool 	SkinSaxParser::error ( const QXmlParseException & exception )	{
-	
-	qWarning() << "SkinSaxParser::Error on line" << exception.lineNumber()<< ", column" << exception.columnNumber() << ":"<< exception.message();
-
-	return false;	
-}
-
-
-bool 	SkinSaxParser::fatalError ( const QXmlParseException & exception )	{
-	
-	qWarning() << "SkinSaxParser::Fatal error on line" << exception.lineNumber()<< ", column" << exception.columnNumber() << ":"<< exception.message();
-
+bool SkinSaxParser::error(const QXmlParseException &exception)
+{
+	qWarning() << "SkinSaxParser::Error on line" << exception.lineNumber() << ", column"
+		<< exception.columnNumber() << ":" << exception.message();
 	return false;
 }
 
+bool SkinSaxParser::fatalError(const QXmlParseException &exception)
+{
+	qWarning() << "SkinSaxParser::Fatal error on line" << exception.lineNumber()
+		<< ", column" << exception.columnNumber() << ":" << exception.message();
+	return false;
+}
 
-bool 	SkinSaxParser::startDocument ()	{
-	//qDebug() << "******* SkinSaxParser::startDocument";
-	
-	//	set the current document section to the root
-	m_curDocSec = root_sec;
-	
+bool SkinSaxParser::startDocument()
+{
+	current_section = ROOT_SECTION;
 	return true;
 }
 
+bool SkinSaxParser::startElement(const QString &namespaceURI, const QString &local_name, const QString &q_name, const QXmlAttributes &atts)
+{
+	Q_UNUSED(q_name)
+	Q_UNUSED(namespaceURI)
 
-bool 	SkinSaxParser::startElement ( const QString & namespaceURI, const QString & localName, const QString & qName, const QXmlAttributes & atts )	{
-	
-	m_curTag = localName;
-	
-	//	Since a new element has been found we have to check if it is
-	//	a section identifier, if yes we have to change the section status
-	if(localName == ITEM_TAG)
+	current_tag = local_name;
+
+	// Since a new element has been found we have to check if it is
+	// a section identifier, if yes we have to change the section status
+	if (local_name == ITEM_TAG)
 	{
-		m_curDocSec = item_sec;
+		current_section = ITEM_SECTION;
 		if (atts.count() > 0)
 		{
 			// <item cid="XXX" >  v.2
-			curCid = atts.value(0).toInt();
-			m_images[curCid] = QHash<QString, QString>();
+			current_cid = atts.value(0).toInt();
+			images[current_cid] = QHash<QString, QString>();
 		}
 	}
-	else if(localName == COMMON_TAG)
-		m_curDocSec = comm_sec;
-	else	{
-		manageContent(startPhs);
+	else if (local_name == COMMON_TAG)
+		current_section = COMMON_SECTION;
+	else
+	{
+		manageContent(START_PHASE);
 		if (atts.count() > 0)
-			m_contentBuf = atts.value(0);	//Assume only one tag is presente image
+			content_buffer = atts.value(0); // Assume only one tag is presente image
 	}
 		
 	return true;
 }
 
-
-bool 	SkinSaxParser::warning ( const QXmlParseException & exception )	{
-	
-	qWarning() << "SkinSaxParser::warning error on line" << exception.lineNumber()<< ", column" << exception.columnNumber() << ":"<< exception.message();
-	
+bool SkinSaxParser::warning(const QXmlParseException &exception)
+{
+	qWarning() << "SkinSaxParser::warning error on line" << exception.lineNumber()
+		<< ", column" << exception.columnNumber() << ":"<< exception.message();
 	return true;
 }
 
