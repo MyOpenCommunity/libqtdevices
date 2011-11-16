@@ -199,10 +199,9 @@ SkinSaxParser::~SkinSaxParser()	{
 	;
 }
 
-
 void SkinSaxParser::handleSection(void)	{
-	static int curCid=-1;
-	
+	//static int curCid=-1;
+
 	//	Handle Item section content
 	if(m_curDocSec == item_sec)	
 	{
@@ -213,7 +212,7 @@ void SkinSaxParser::handleSection(void)	{
 		}
 		else 
 		{
-				m_images[curCid][m_curTag.mid(4)] = m_contentBuf;
+			m_images[curCid][m_curTag.mid(4)] = m_contentBuf;
 		}
 	}
 	//	Handle common section content
@@ -233,8 +232,6 @@ void SkinSaxParser::handleSection(void)	{
 	}
 }
 
-
-
 void SkinSaxParser::manageContent(MngCntPhase thePhase)	{
 	
 	switch (thePhase)	{
@@ -250,7 +247,6 @@ void SkinSaxParser::manageContent(MngCntPhase thePhase)	{
 			qWarning() << "SkinSaxParser::manageContent Unnkown Phase handling";
 	}
 }
-
 
 bool 	SkinSaxParser::characters ( const QString & ch )	{
 	//qDebug() << "******* SkinSaxParser::characters: "<<ch;
@@ -273,7 +269,6 @@ bool 	SkinSaxParser::endDocument ()	{
 
 
 bool 	SkinSaxParser::endElement ( const QString & namespaceURI, const QString & localName, const QString & qName )	{
-	//qDebug() << "******* SkinSaxParser::endElement: " << localName;
 	
 	m_curTag = localName;
 	
@@ -319,19 +314,27 @@ bool 	SkinSaxParser::startDocument ()	{
 
 
 bool 	SkinSaxParser::startElement ( const QString & namespaceURI, const QString & localName, const QString & qName, const QXmlAttributes & atts )	{
-	//qDebug() << "******* SkinSaxParser::startElement: "<< localName;
 	
 	m_curTag = localName;
 	
 	//	Since a new element has been found we have to check if it is
 	//	a section identifier, if yes we have to change the section status
 	if(localName == ITEM_TAG)
+	{
 		m_curDocSec = item_sec;
+		if (atts.count() > 0)
+		{
+			// <item cid="XXX" >  v.2
+			curCid = atts.value(0).toInt();
+			m_images[curCid] = QHash<QString, QString>();
+		}
+	}
 	else if(localName == COMMON_TAG)
 		m_curDocSec = comm_sec;
 	else	{
-		//	It's a leaf element start tag 
 		manageContent(startPhs);
+		if (atts.count() > 0)
+			m_contentBuf = atts.value(0);	//Assume only one tag is presente image
 	}
 		
 	return true;
@@ -344,17 +347,6 @@ bool 	SkinSaxParser::warning ( const QXmlParseException & exception )	{
 	
 	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 // The global definition of skin manager pointer

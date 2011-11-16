@@ -193,6 +193,7 @@ class SkinSaxParser : public QXmlDefaultHandler	{
 		
 		enum 		DocSection {none_sec=0, root_sec=1, item_sec=2, comm_sec=3};
 		
+		int curCid;
 		
 		//	A two level staus (dcoument_section/current_tag) is enough to define the processing context
 		DocSection	m_curDocSec;
@@ -200,9 +201,6 @@ class SkinSaxParser : public QXmlDefaultHandler	{
 		
 		//	Content buffer
 		QString		m_contentBuf;
-	
-	
-	
 };
 
 
