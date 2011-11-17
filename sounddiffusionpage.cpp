@@ -92,7 +92,8 @@ enum AmbientType
 
 enum ItemType
 {
-	SOURCES_ID = 2001
+	SOURCES_ID_MONO = 11300,
+	SOURCES_ID_MULTI = 12300,
 };
 
 
@@ -151,9 +152,16 @@ namespace
 				if (!sid.isNull() && sid == sid_sources)
 				{
 					// Check if the item is the sources container
-					Q_ASSERT_X(getTextChild(item, "id").toInt() == SOURCES_ID, "loadSources",
-						"The sid element linked from the Sound diffusion page is not a source container!");
-					sources_node = item;
+					switch (getTextChild(item, "id").toInt())
+					{
+					case SOURCES_ID_MONO:
+					case SOURCES_ID_MULTI:
+						sources_node = item;
+						break;
+					default:
+						Q_ASSERT_X(false, "loadSources", "The sid element linked from the Sound diffusion page is not a source container!");
+						break;
+					}
 				}
 			}
 		}
