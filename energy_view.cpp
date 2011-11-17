@@ -238,10 +238,16 @@ void TimePeriodSelection::changeTimeScale()
 void TimePeriodSelection::setDate(QDate new_date)
 {
 	QDate current = QDate::currentDate();
+	QDate min = current.addYears(-1).addMonths(1);
+
+	// allow the date to go back up to 11 full months (for example, if today
+	// is any day in November 2011, the date can go back up to December 1st 2010)
+	min.setDate(min.year(), min.month(), 1);
+
 	if (new_date > current)
 		selection_date = current;
-	else if (new_date < current.addYears(-1).addMonths(1))
-		selection_date = current.addYears(-1).addMonths(1);
+	else if (new_date < min)
+		selection_date = min;
 	else
 		selection_date = new_date;
 }
