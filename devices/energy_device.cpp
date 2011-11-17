@@ -47,6 +47,13 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_5 = 1132,
 };
 
+enum EnergyType
+{
+	TYPE_ELECTRICITY = 1,
+	TYPE_GAS = 2,
+	TYPE_HEAT = 3,
+	TYPE_WATER = 4,
+};
 
 /*
  * in the new frames the measure unit is:
@@ -75,6 +82,26 @@ namespace
 	inline unsigned int whatArgU(OpenMsg &msg, int index)
 	{
 		return QString::fromStdString(msg.whatArg(index)).toUInt();
+	}
+
+	inline int modeToEnergyType(int mode)
+	{
+		switch (mode)
+		{
+		case 1:
+			return TYPE_ELECTRICITY;
+		case 2:
+			return TYPE_WATER;
+		case 3:
+			return TYPE_GAS;
+		case 4:
+			return TYPE_HEAT;
+		case 5:
+			return TYPE_HEAT;
+		default:
+			qFatal("Unknown mode on the energy management!");
+			return 0; // warning fix
+		}
 	}
 }
 
@@ -216,12 +243,14 @@ void AutomaticUpdates::requestCurrent()
 
 void AutomaticUpdates::sendUpdateStart()
 {
-	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(UPDATE_INTERVAL), where));
+	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL)
+					    .arg(modeToEnergyType(mode)).arg(UPDATE_INTERVAL), where));
 }
 
 void AutomaticUpdates::sendUpdateStop()
 {
-	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL).arg(mode).arg(0), where));
+	emit sendFrame(createDimensionFrame("18", QString("#%1#%2*%3").arg(_DIM_STATE_UPDATE_INTERVAL)
+					    .arg(modeToEnergyType(mode)).arg(0), where));
 }
 
 void AutomaticUpdates::setHasNewFrames()

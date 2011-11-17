@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -105,6 +105,9 @@ private slots:
 	void receivePic();
 
 private:
+	void doSendUpdateStart(int mode, QString frame);
+	void doSendUpdateStop(int mode, QString frame);
+
 	AutomaticUpdates *upd;
 	EnergyDevice *dev;
 	QString where;
