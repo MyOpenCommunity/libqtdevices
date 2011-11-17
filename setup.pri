@@ -59,8 +59,8 @@ TRGT_NAME = BTouch
 		INCLUDEPATH += ../../stackopen/common_files-pxa255
 	}
 	contains(HARDWARE, embedded-dm365) {
-		LIBS += -L../../stackopen/common_files -lcommon -lexpat
-		INCLUDEPATH += ../../stackopen/common_files
+		LIBS += -L../../stackopen/liblghal -llghal -L../../stackopen/common_files -lcommon -lexpat
+		INCLUDEPATH += ../../stackopen/common_files ../../stackopen/liblghal
 		QMAKE_CXXFLAGS += -Wno-psabi
 	}
 	contains(HARDWARE, embedded-pxa270) {

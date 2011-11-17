@@ -76,6 +76,10 @@
 #include <unistd.h> // write
 #include <signal.h> // SIGUSR2, SIGTERM
 
+#ifdef BT_HARDWARE_DM365
+#include <devicelghal.h>
+#endif
+
 #define DEBUG_MOUSEPRESS 0
 
 #define ACTIVITIES_CHECK 2000
@@ -461,7 +465,14 @@ void BtMain::loadGlobalConfig()
 		"Temperature scale is invalid.");
 	setConfigValue(n, "language", (*config)[LANGUAGE]);
 	setConfigValue(n, "clock/dateformat", (*config)[DATE_FORMAT]);
+#ifdef BT_HARDWARE_DM365
+	char *sup = NULL;
+	hal_get_codename(&sup);
+	(*config)[MODEL] = sup;
+	free(sup);
+#else
 	setConfigValue(n, "modello", (*config)[MODEL]);
+#endif
 	setConfigValue(n, "nome", (*config)[NAME]);
 
 	QDomNode vde_node = getConfElement("setup/vdes");
