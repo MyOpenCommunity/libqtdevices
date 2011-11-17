@@ -45,13 +45,18 @@ SkinManager::SkinManager(QString filename)
 	{
 		QFile skin_file(filename);
 		
-		SkinSaxParser skin_parser(style, images);
+		SkinSaxParser skin_parser;
 		QXmlInputSource source(&skin_file);
 
 		QXmlSimpleReader reader;
 		reader.setContentHandler(&skin_parser);
 
-		if (!reader.parse(source))
+		if (reader.parse(source))
+		{
+			style = skin_parser.getStyle();
+			images = skin_parser.getImages();
+		}
+		else
 			qWarning() << "SkinManager: Skin SAX Parsing ended with ERROR";
 	}
 	else
@@ -133,9 +138,9 @@ SkinContext::~SkinContext()
 }
 
 
-SkinSaxParser::SkinSaxParser(QString &s, QHash<int, QHash<QString, QString> > &img):
-	style(s), images(img), CSS_TAG("css"), ITEM_TAG("item"), CID_TAG("cid"), IMG_TAG("img_"), COMMON_TAG("common"),
-	NO_TAG("NONE_TAG"), current_section(NONE_SECTION), current_tag("")
+SkinSaxParser::SkinSaxParser():
+	CSS_TAG("css"), ITEM_TAG("item"), CID_TAG("cid"), IMG_TAG("img_"), COMMON_TAG("common"),
+	NO_TAG("NONE_TAG"), current_cid(-1), current_section(NONE_SECTION), current_tag("")
 {
 }
 
@@ -150,6 +155,7 @@ void SkinSaxParser::handleSection()
 		}
 		else 
 		{
+			Q_ASSERT_X(current_cid != -1, "SkinSaxParser::handleSection", "CID not set");
 			images[current_cid][current_tag.mid(4)] = content_buffer;
 		}
 	}

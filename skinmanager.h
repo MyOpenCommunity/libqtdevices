@@ -157,7 +157,7 @@ public:
 class SkinSaxParser : public QXmlDefaultHandler
 {
 public:
-	SkinSaxParser(QString& style, QHash<int, QHash<QString, QString> >& images);
+	SkinSaxParser();
 
 	// Overwritten QXmlDefaultHandler services to provide the required specific handling
 	bool characters(const QString &ch);
@@ -168,6 +168,9 @@ public:
 	bool startDocument();
 	bool startElement(const QString &namespaceURI, const QString &local_name, const QString &q_name, const QXmlAttributes &atts);
 	bool warning(const QXmlParseException &exception);
+
+	QString getStyle() { return style; }
+	QHash<int, QHash<QString, QString> > getImages() { return images; }
 
 private:
 	enum ContentPhase
@@ -181,7 +184,7 @@ private:
 
 
 private:
-	// Skin related container reference
+	// return values from the parsing
 	QString style;
 	QHash<int, QHash<QString, QString> > images;
 
