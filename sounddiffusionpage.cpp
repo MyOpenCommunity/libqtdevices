@@ -161,7 +161,7 @@ namespace
 		Q_ASSERT_X(!sources_node.isNull(), "loadSources", "No sources node found.");
 
 		QList<SourceDescription> sources_list;
-		foreach (const QDomNode &source, getChildren(sources_node, "item"))
+		foreach (const QDomNode &source, getChildrenExact(sources_node, "item"))
 		{
 			SourceDescription d;
 			switch (getTextChild(source, "id").toInt())
