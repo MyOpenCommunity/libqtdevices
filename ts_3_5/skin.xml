@@ -102,6 +102,11 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_link_icon>appant.png</img_link_icon>
 	</item>
 	<item>
+		<!-- Supervision -->
+		<cid>6</cid>
+		<img_link_icon>supervisione_impianto.png</img_link_icon>
+	</item>
+	<item>
 		<!-- Energy data -->
 		<cid>7</cid>
 		<img_link_icon>energy_data.png</img_link_icon>
@@ -242,7 +247,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- staircase light -->
 		<!-- uses: on -->
-		<cid>2011</cid>
+		<cid>2009</cid>
 		<img_action_icon>lampstair.png</img_action_icon>
 	</item>
 	<!-- End Lighting items -->
@@ -357,8 +362,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- ppt stat -->
 		<cid>3012</cid>
-		<img_pptstat_open>pptstatoff.png</img_pptstat_open>
-		<img_pptstat_close>pptstaton.png</img_pptstat_close>
+		<img_pptstat_open>pptstaton.png</img_pptstat_open>
+		<img_pptstat_close>pptstatoff.png</img_pptstat_close>
 	</item>
 	<item>
 		<!-- automation group -->
@@ -613,9 +618,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12151</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 1 -->
@@ -651,9 +656,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12161</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 2 -->
@@ -689,9 +694,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12171</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 3 -->
@@ -727,9 +732,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12181</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 4 -->
@@ -765,9 +770,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12191</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 5 -->
@@ -803,9 +808,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12201</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 6 -->
@@ -841,9 +846,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12211</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 7 -->
@@ -879,9 +884,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12221</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier ambient 8 -->
@@ -917,9 +922,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>12102</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- general special ambient -->
@@ -927,10 +932,10 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
 		-->
 		<cid>12103</cid>
-		<img_volume_on_left>onamplsxl.png</img_volume_on_left>
-		<img_volume_off_left>offamplsxl.png</img_volume_off_left>
-		<img_volume_on_right>onampldxl.png</img_volume_on_right>
-		<img_volume_off_right>offampldxl.png</img_volume_off_right>
+		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
+		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier special ambient -->
