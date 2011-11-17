@@ -102,6 +102,22 @@ QList<QDomNode> getChildren(const QDomNode &parent, const QString &name)
 	return l;
 }
 
+QList<QDomNode> getChildrenExact(const QDomNode &parent, const QString &name)
+{
+	QList<QDomNode> l;
+	QDomNode n = parent.firstChild();
+
+	while (!n.isNull())
+	{
+		if (n.isElement() && n.nodeName() == name)
+			l.append(n);
+
+		n = n.nextSibling();
+	}
+
+	return l;
+}
+
 QString getTextChild(const QDomNode &parent, const QString &name)
 {
 	QDomNode n = parent.namedItem(name);

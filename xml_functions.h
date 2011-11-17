@@ -89,6 +89,12 @@ QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
 
 /*!
 	\ingroup Core
+	\brief Return a list of children of node \a parent whose name is \a name.
+*/
+QList<QDomNode> getChildrenExact(const QDomNode &parent, const QString &name);
+
+/*!
+	\ingroup Core
 	\brief Looks for a node by parent and child.
 
 	Returns a node that is descendent of the node \a root and have a child
