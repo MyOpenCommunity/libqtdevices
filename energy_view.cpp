@@ -96,6 +96,17 @@ namespace
 		return bann;
 	}
 
+	QDate minimumDate()
+	{
+		QDate min = QDate::currentDate().addYears(-1).addMonths(1);
+
+		// allow the date to go back up to 11 full months (for example, if today
+		// is any day in November 2011, the date can go back up to December 1st 2010)
+		min.setDate(min.year(), min.month(), 1);
+
+		return min;
+	}
+
 	enum EnergyViewPage
 	{
 		DAILY_PAGE = 0,
@@ -138,23 +149,35 @@ void EnergyViewNavigation::showCurrencyButton(bool show)
 
 TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 {
+	// layout is a grid layout with one row:
+	// - stretchable column for the back button, left aligned
+	// - date label, centered
+	// - stretchable column for the forward button, right aligned
+	// - a spacer (width = HORIZONTAL_SPACE)
+	// - the cycle button
+
+#ifdef LAYOUT_TS_3_5
+	const int HORIZONTAL_SPACE = 8;
+#else
+	const int HORIZONTAL_SPACE = 5;
+#endif
+
 	delayed_update.setSingleShot(true);
 	delayed_update.setInterval(TIME_UPDATE_DELAY);
 	connect(&delayed_update, SIGNAL(timeout()), SLOT(emitTimeChanged()));
 
 	_status = DAY;
 	selection_date = QDate::currentDate();
-	QHBoxLayout *main_layout = new QHBoxLayout(this);
+	QGridLayout *main_layout = new QGridLayout(this);
 	main_layout->setContentsMargins(0, 0, 0, 0);
+	main_layout->setSpacing(0);
 
 #ifdef LAYOUT_TS_3_5
-	main_layout->setSpacing(8);
 	back_period = new BtButton(bt_global::skin->getImage("fast_backward"));
 	forw_period = new BtButton(bt_global::skin->getImage("fast_forward"));
 	btn_cycle = new BtButton(bt_global::skin->getImage("cycle"));
 	date_period_label = getLabel(this, formatDate(selection_date, _status), FontManager::SMALLTEXT);
 #else
-	main_layout->setSpacing(5);
 	back_period = new BtButton(bt_global::skin->getImage("fast_backward"), this);
 	forw_period = new BtButton(bt_global::skin->getImage("fast_forward"), this);
 	btn_cycle = new BtButton(bt_global::skin->getImage("cycle"), this);
@@ -163,16 +186,21 @@ TimePeriodSelection::TimePeriodSelection(QWidget *parent) : QWidget(parent)
 
 	back_period->setAutoRepeat(true);
 	connect(back_period, SIGNAL(clicked()), SLOT(periodBackward()));
-	main_layout->addWidget(back_period);
+	main_layout->addWidget(back_period, 0, 0, Qt::AlignLeft);
 
-	main_layout->addWidget(date_period_label, 1, Qt::AlignCenter);
+	main_layout->addWidget(date_period_label, 0, 1, Qt::AlignCenter);
 
 	forw_period->setAutoRepeat(true);
 	connect(forw_period, SIGNAL(clicked()), SLOT(periodForward()));
-	main_layout->addWidget(forw_period);
+	main_layout->addWidget(forw_period, 0, 2, Qt::AlignRight);
+
+	main_layout->addItem(new QSpacerItem(HORIZONTAL_SPACE, 0, QSizePolicy::Fixed, QSizePolicy::Expanding), 0, 3);
 
 	connect(btn_cycle, SIGNAL(clicked()), SLOT(changeTimeScale()));
-	main_layout->addWidget(btn_cycle);
+	main_layout->addWidget(btn_cycle, 0, 4);
+
+	main_layout->setColumnStretch(0, 1);
+	main_layout->setColumnStretch(2, 1);
 }
 
 QString TimePeriodSelection::formatDate(const QDate &date, TimePeriod period)
@@ -203,17 +231,35 @@ void TimePeriodSelection::showCycleButton()
 
 void TimePeriodSelection::displayDate()
 {
+	bool forw_visible, back_visible;
+	QDate current = QDate::currentDate();
+	QDate min = minimumDate();
+
 	switch (_status)
 	{
-	case YEAR:
-		back_period->hide();
-		forw_period->hide();
+	case DAY:
+		forw_visible = selection_date != current;
+		back_visible = selection_date != min;
 		break;
-	default:
-		back_period->show();
-		forw_period->show();
+	case MONTH:
+		forw_visible = selection_date.year() != current.year() || selection_date.month() != current.month();
+		back_visible = selection_date.year() != min.year() || selection_date.month() != min.month();
+		break;
+	case YEAR:
+		forw_visible = back_visible = false;
 		break;
 	}
+
+	// if an auto-repeating button is hidden while in auto-repeat state, it gets stuck and
+	// keeps on sending clicked events forever; forcing the button in the up state stops the
+	// automatic repeating
+	if (!back_visible)
+		back_period->setDown(false);
+	if (!forw_visible)
+		forw_period->setDown(false);
+
+	back_period->setVisible(back_visible);
+	forw_period->setVisible(forw_visible);
 	date_period_label->setText(formatDate(selection_date, _status));
 }
 
@@ -238,11 +284,7 @@ void TimePeriodSelection::changeTimeScale()
 void TimePeriodSelection::setDate(QDate new_date)
 {
 	QDate current = QDate::currentDate();
-	QDate min = current.addYears(-1).addMonths(1);
-
-	// allow the date to go back up to 11 full months (for example, if today
-	// is any day in November 2011, the date can go back up to December 1st 2010)
-	min.setDate(min.year(), min.month(), 1);
+	QDate min = minimumDate();
 
 	if (new_date > current)
 		selection_date = current;
@@ -267,11 +309,11 @@ void TimePeriodSelection::changeTimePeriod(int delta)
 	{
 	case DAY:
 		setDate(selection_date.addDays(delta));
-		date_period_label->setText(formatDate(selection_date, _status));
+		displayDate();
 		break;
 	case MONTH:
 		setDate(selection_date.addMonths(delta));
-		date_period_label->setText(formatDate(selection_date, _status));
+		displayDate();
 		break;
 	default:
 		qWarning("changeTimePeriod called with status==YEAR");
