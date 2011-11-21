@@ -222,8 +222,8 @@ namespace
 		stop_mouse_watch = true;
 	}
 #else
-	void startUpdateMouseClick() { }
-	void stopUpdateMouseClick() { }
+	void startCheckMouseClick() { }
+	void stopCheckMouseClick() { }
 #endif
 
 	volatile bool stop_watch_dog;
