@@ -71,7 +71,6 @@ namespace LanSettingsPrivate
 		QTimer *timeout_timer;
 		QStringList urls;
 		int current_url;
-		bool is_testing;
 		void startTest();
 	};
 };
