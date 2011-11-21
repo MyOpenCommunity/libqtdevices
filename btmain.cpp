@@ -70,11 +70,17 @@
 #include <QSocketNotifier>
 #include <QtConcurrentRun>
 #include <QMouseEvent>
+#if defined(BT_HARDWARE_DM365)
+#include <QProcessEnvironment>
+#endif
 
 #include <sys/types.h>
 #include <sys/socket.h> // socketpair
 #include <unistd.h> // write
 #include <signal.h> // SIGUSR2, SIGTERM
+#if defined(BT_HARDWARE_DM365)
+#include <fcntl.h> // open
+#endif
 
 #ifdef BT_HARDWARE_DM365
 #include <devicelghal.h>
@@ -84,6 +90,7 @@
 
 #define ACTIVITIES_CHECK 2000
 #define WD_THREAD_INTERVAL 5000
+#define CLICK_THREAD_INTERVAL 500
 
 #define TS_NUM_BASE_ADDRESS 0x700
 
@@ -154,6 +161,69 @@ namespace
 
 		return false;
 	}
+#endif
+
+#if defined(BT_HARDWARE_DM365)
+	// there are multiple problems with detecting click events at startup (when
+	// the event loop is not running):
+	//
+	// - some mouse events are discarded (presumably there is a fixed-size buffer
+	//   in the kernel that is trimmed when full and more events arrive)
+	// - when the event loop restarts, most of the time the clicks performed
+	//   during startup are not detected (probably caused by the fact that some of the
+	//   mouse events are discarded)
+	// - it is not predictable when the queued mouse events are processed (they
+	//   might be processed before or after the OpenWebNet frames that arrived
+	//   during startup)
+	//
+	// It seems that the most reliable way is to manually monitor the input file
+	// descriptor from another thread.
+
+	volatile bool stop_mouse_watch;
+
+	void checkMouseClick()
+	{
+		QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+		if (!env.contains("TSLIB_TSDEVICE"))
+			return;
+		int fd = open(env.value("TSLIB_TSDEVICE").toAscii(), O_NONBLOCK);
+		if (fd == -1)
+			return;
+
+		qDebug() << "Start startup click check" << env.value("TSLIB_TSDEVICE");
+
+		char event[16]; // size of an evdev input event
+
+		while (!stop_mouse_watch)
+		{
+			if (read(fd, event, sizeof(event)) == sizeof(event))
+			{
+				setTimePress(QDateTime::currentDateTime());
+				qDebug() << "Clicked during device startup";
+				break;
+			}
+			usleep(CLICK_THREAD_INTERVAL * 1000);
+		}
+
+		qDebug() << "Stop startup click check";
+		close(fd);
+	}
+
+	void startCheckMouseClick()
+	{
+		stop_mouse_watch = false;
+
+		QtConcurrent::run(&checkMouseClick);
+	}
+
+	void stopCheckMouseClick()
+	{
+		stop_mouse_watch = true;
+	}
+#else
+	void startUpdateMouseClick() { }
+	void stopUpdateMouseClick() { }
 #endif
 
 	volatile bool stop_watch_dog;
@@ -230,6 +300,9 @@ BtMain::BtMain(int openserver_reconnection_time)
 {
 	boot_time = new QTime;
 	boot_time->start();
+
+	// start checking for clicks during startup (must stop before calibration/normal operation)
+	startCheckMouseClick();
 
 	// construct global objects
 	bt_global::config = new QHash<GlobalField, QString>();
@@ -371,6 +444,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 #if !defined(BT_HARDWARE_X11)
 	if (!Calibration::exists())
 	{
+		stopCheckMouseClick();
 		qDebug() << "No pointer calibration file, calibrating";
 
 		// We have to force the skin manager context for the calibration
@@ -395,6 +469,7 @@ BtMain::BtMain(int openserver_reconnection_time)
 
 	if (qApp->arguments().contains("-testcalib"))
 	{
+		stopCheckMouseClick();
 		CalibrationTest *cal = new CalibrationTest;
 
 		cal->showWindow();
@@ -628,6 +703,7 @@ void BtMain::myMain()
 		p->inizializza();
 
 	device::initDevices();
+	stopCheckMouseClick();
 
 #if !defined(BT_HARDWARE_X11)
 	if (static_cast<int>(getTimePress()) * 1000 <= boot_time->elapsed() && !already_calibrated)
