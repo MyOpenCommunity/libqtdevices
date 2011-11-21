@@ -701,10 +701,16 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 			 time_period->date().month() == QDate::currentDate().month())
 			update_after_ssaver = true;
 
+#ifdef LAYOUT_TS_10
 		// When the screensaver starts and we are showing a table or a graph
-		// we want to move to the consumptions page
+		// we want to move to the consumptions page.
+		//
+		// see also the comment on screenSaverStopped()
 		if (prev_page == table)
 			table->forceClosed();
+#else
+		table_is_current_page = prev_page == table;
+#endif
 		// we need to force it here because the screen saver might start on this page
 		showBannerWidget(false);
 	}
@@ -712,6 +718,18 @@ void EnergyView::screenSaverStarted(Page *prev_page)
 
 void EnergyView::screenSaverStopped()
 {
+#ifdef LAYOUT_TS_3_5
+	// For TS 3.5, if there is no default page, when the screen saver stops,
+	// we need to show the consumption page.
+	//
+	// We do not really need to check whether the current page is the table
+	// because if is_current_page is true, then the currently-shown page can
+	// only be 'table' or 'this', but having an explicit check is more robust
+	//
+	// see also the comment on screenSaverStarted()
+	if (is_current_page && table_is_current_page)
+		table->forceClosed();
+#endif
 	if (update_after_ssaver)
 		time_period->forceDate(time_period->date(), time_period->status());
 	update_after_ssaver = false;

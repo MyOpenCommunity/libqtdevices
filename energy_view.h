@@ -203,6 +203,10 @@ private:
 	int currency_decimals;
 	bool update_after_ssaver;
 	bool is_current_page;
+#ifdef LAYOUT_TS_3_5
+	// set if the screen saver starts while displaying the table page
+	bool table_is_current_page;
+#endif
 
 #ifdef LAYOUT_TS_10
 	BtButton *table_button;
