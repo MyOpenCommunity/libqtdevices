@@ -140,9 +140,6 @@ void VideoDoorEntry::loadItems(const QDomNode &config_node)
 		popup_pages[where] = p;
 		page_content->appendBanner(b);
 	}
-
-	// The popup-page for unknown callers.
-	popup_pages[QString()] = new CallNotifierPage(tr("Unknown"), QString(), false, false);
 }
 
 void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
@@ -153,8 +150,14 @@ void VideoDoorEntry::valueReceived(const DeviceValues &values_list)
 		if (it.key() == VideoDoorEntryDevice::CALLER_ADDRESS)
 		{
 			QString where = it.value().toString();
+
+			// ignore the frame if the where is not in the list of
+			// configured addresses
 			if (!popup_pages.contains(where))
-				where = QString();
+			{
+				qDebug() << "Ignoring call from non-configured address" << where;
+				return;
+			}
 
 			bt_global::display->makeActive();
 			bt_global::page_stack.showUserPage(popup_pages[where]);
