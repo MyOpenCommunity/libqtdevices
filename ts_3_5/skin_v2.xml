@@ -1,0 +1,1232 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<style>
+	<!-- Touch 3.5'' skin file-->
+	<ver_xml>2.0</ver_xml>
+	<css>
+WindowContainer, PageContainer, Page, QLabel, QLCDNumber, Version, QStackedWidget { background-color:#1E1E1E; color:#D8D8D8; }
+BtButton { border: 0px; }
+QWidget[noStyle="true"] {background-color:#FFFFFF;color:#000000;}
+QWidget[noStyle="true"] QWidget {background-color:#FFFFFF;color:#000000;}
+QWidget[SecondFgColor="true"] {color:#6FB2FF;}
+QWidget[SecondFgColor="true"] QWidget {color:#6FB2FF;}
+QWidget[ReversedColor="true"] {color:#1E1E1E;background-color:#D8D8D8;}
+TextOnImageLabel { qproperty-text_color:#D8D8D8; }
+EnergyGraph {
+	qproperty-primary_color: #1449C8;
+	qproperty-secondary_color: #3587FF;
+	qproperty-border_color: blue;
+	qproperty-axis_color: white;
+	qproperty-text_color: white;
+}
+EnergyTableContent {
+	qproperty-border_color: #41474d;
+	qproperty-heading_color: #3587ff;
+	qproperty-odd_row_color: #41474d;
+	qproperty-even_row_color: #2e3236;
+	qproperty-text_color: #d8d8d8;
+}
+EnlargeTransition {
+	qproperty-border_color: #c0c0c0;
+}
+WaitLabel { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }
+KeypadWithState QLabel[ActiveState="true"] { background-color:white; color:black; }
+FileSelector > QLabel[Loading="true"] { background-color: #000000; background-image: url(cfg/extra/1/skin/loading.png); background-position: center center; background-repeat: no-repeat; }
+	</css>
+	<common>
+		<img_back image="arrlf.png"/>
+		<img_forward image="arrrg.png"/>
+		<img_ok image="btnok.png"/>
+		<img_scroll_up image="arrup.png"/>
+		<img_scroll_down image="arrdw.png"/>
+		<img_arrow_up image="arrup.png"/>
+		<img_arrow_down image="arrdw.png"/>
+		<img_plus image="btnplus.png"/>
+		<img_minus image="btnmin.png"/>
+		<img_cycle image="btnavanti.png"/>
+		<img_on image="btnon.png"/>
+		<img_off image="btnoff.png"/>
+		<img_stop image="btnstop.png"/>
+		<img_info image="btninfo.png"/>
+		<img_cancel image="btncanc.png"/>
+		<img_num_0 image="num0.png"/>
+		<img_num_1 image="num1.png"/>
+		<img_num_2 image="num2.png"/>
+		<img_num_3 image="num3.png"/>
+		<img_num_4 image="num4.png"/>
+		<img_num_5 image="num5.png"/>
+		<img_num_6 image="num6.png"/>
+		<img_num_7 image="num7.png"/>
+		<img_num_8 image="num8.png"/>
+		<img_num_9 image="num9.png"/>
+	</common>
+	<!-- Start HomePage buttons -->
+	<item cid="14">
+		<!-- Settings -->
+		<img_link_icon image="appconf.png"/>
+	</item>
+	<item cid="2">
+		<!-- Lighting -->
+		<img_link_icon image="appillum.png"/>
+	</item>
+	<item cid="3">
+		<!-- Automation -->
+		<img_link_icon image="appmov.png"/>
+	</item>
+	<item cid="1">
+		<!-- Scenarios -->
+		<img_link_icon image="appscen.png"/>
+	</item>
+	<item cid="9">
+		<!-- Evolved scenarios -->
+		<img_link_icon image="appscev.png"/>
+	</item>
+	<item cid="11">
+		<!-- Monochannel sound diffusion -->
+		<img_link_icon image="appdiff.png"/>
+	</item>
+	<item cid="12">
+		<!-- Multichannel sound diffusion -->
+		<img_link_icon image="appdiff.png"/>
+	</item>
+	<item cid="13">
+		<!-- Antintrusion -->
+		<img_link_icon image="appant.png"/>
+	</item>
+	<item cid="6">
+		<!-- Supervision -->
+		<img_link_icon image="supervisione_impianto.png"/>
+	</item>
+	<item cid="7">
+		<!-- Energy data -->
+		<img_link_icon image="energy_data.png"/>
+	</item>
+	<item cid="15">
+		<!-- Energy management -->
+		<img_link_icon image="energy_mng.png"/>
+	</item>
+	<item cid="5">
+		<!-- Loads -->
+		<img_link_icon image="appccar.png"/>
+	</item>
+	<item cid="8">
+		<!-- Thermal regulation -->
+		<img_link_icon image="appterm.png"/>
+	</item>
+	<item cid="10">
+		<!-- Video door entry -->
+		<img_link_icon image="appvct.png"/>
+	</item>
+	<!-- End HomePage buttons -->
+	<!-- Start Settings items -->
+	<item cid="14001">
+		<!-- Beep -->
+		<img_state_on image="beepon.png"/>
+		<img_state_off image="beepoff.png"/>
+	</item>
+	<item cid="14002">
+		<!-- Change date/time button -->
+		<!-- uses: info -->
+		<img_date_icon image="calendario.png"/>
+		<img_time_icon image="orologio.png"/>
+	</item>
+	<item cid="14003">
+		<!-- Password -->
+		<img_state_on image="pswon.png"/>
+		<img_state_off image="pswoff.png"/>
+		<img_edit image="btnpswchg.png"/>
+	</item>
+	<item cid="14007">
+		<!-- display -->
+		<img_display_items image="set.png"/>
+		<img_cleanscreen image="btnclean.png"/>
+		<img_logo image="my_home.png"/>
+		<img_unchecked image="btnempty.png"/>
+		<img_checked image="btnemptyp.png"/>
+	</item>
+	<item cid="14153">
+		<!-- calibration -->
+		<img_logo image="my_home.png"/>
+	</item>
+	<item cid="14008">
+		<!-- lan settings -->
+		<!-- uses: info -->
+		<img_network_enable image="ethon.png"/>
+		<img_network_disable image="ethoff.png"/>
+	</item>
+	<item cid="806">
+		<!-- version page -->
+		<img_logo image="my_home.png"/>
+		<img_bticino image="bticino.png"/>
+	</item>
+	<item cid="14009">
+		<!-- alarm clock -->
+		<img_state_on image="svegliaon.png"/>
+		<img_state_off image="svegliaoff.png"/>
+		<img_edit image="btninfo.png"/>
+		<img_alarm_icon image="svegliaon.png"/>
+		<img_day_off image="beepoff.png"/>
+		<img_day_on image="beepon.png"/>
+	</item>
+	<!-- End Settings items -->
+	<!-- Start Lighting items -->
+	<item cid="2001">
+		<!-- dimmer (10/100) -->
+		<!-- Notes: Divided in 2 parts, left and right. For tag 'img_dimmer', appends 'sxlN' for left image and 'dxlN' for right image, where N
+		     is dimmer level rounded to the nearest multiple of 5.
+		     For tag 'img_dimmer_broken', appends 'sx' for left image and 'dx' for right image -->
+		<!-- uses: on, off -->
+		<img_dimmer image="ondimmer.png"/>
+		<img_dimmer_broken image="dimow.png"/>
+	</item>
+	<item cid="2003">
+		<!-- Single light -->
+		<!-- uses: on, off -->
+		<img_actuator_state_on image="lampon.png"/>
+		<img_actuator_state_off image="lampoff.png"/>
+	</item>
+	<item cid="2004">
+		<!-- light group -->
+		<!-- uses: on, off -->
+		<img_lamp_group_on image="lampgrpon.png"/>
+	</item>
+	<item cid="3013">
+		<!-- light group in automation -->
+		<img_lamp_group_on image="lampgrpon.png"/>
+	</item>
+	<item cid="2005">
+		<!-- dimmer group -->
+		<!-- uses: on, off -->
+		<img_dimmer_grp_sx image="ondimgrpsx.png"/>
+		<img_dimmer_grp_dx image="ondimgrpdx.png"/>
+	</item>
+	<item cid="2007">
+		<!-- Timed and variable timed light -->
+		<!-- uses: on, off -->
+		<img_lamp_time_on image="lamptime.png"/>
+		<img_lamp_time_off image="lamptimeoff.png"/>
+		<img_lamp_cycle image="btncycle.png"/>
+	</item>
+	<item cid="2010">
+		<!-- Fixed timed light -->
+		<!-- uses: on -->
+		<img_lamp_status image="lampt.png"/>
+		<img_lamp_time image="time.png"/>
+	</item>
+	<item cid="2009">
+		<!-- staircase light -->
+		<!-- uses: on -->
+		<img_action_icon image="lampstair.png"/>
+	</item>
+	<!-- End Lighting items -->
+	<!-- Start Automation items -->
+	<item cid="101">
+		<img_actuator_state image="tappa.png"/>
+		<img_open image="arrup.png"/>
+		<img_close image="arrdw.png"/>
+	</item>
+	<item cid="3001">
+		<!-- blind -->
+		<!--Notes:
+		    In STOP state, image in 'img_actuator_state' will be used.
+		    In OPENING state, an 'o' will be appended to the image in 'img_actuator_state'.
+		    In CLOSING state, a 'c' will be appended.
+		-->
+		<!-- uses: stop -->
+		<img_close image="btnclose.png"/>
+		<img_open image="btnopen.png"/>
+		<img_actuator_state image="tenda.png"/>
+	</item>
+	<item cid="3002">
+		<!-- pivoting door -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<img_close image="arrdw.png"/>
+		<img_open image="arrup.png"/>
+		<img_actuator_state image="garage.png"/>
+	</item>
+	<item cid="3003">
+		<!-- shutter -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<img_close image="arrdw.png"/>
+		<img_open image="arrup.png"/>
+		<img_actuator_state image="tappa.png"/>
+	</item>
+	<item cid="3004">
+		<!-- gate automation -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: stop -->
+		<img_close image="btnclose.png"/>
+		<img_open image="btnopen.png"/>
+		<img_actuator_state image="canc.png"/>
+	</item>
+	<item cid="3005">
+		<!-- gate lighting -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<img_gate image="canc.png"/>
+	</item>
+	<item cid="3015">
+		<!-- gate lighting/VCT IP -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<img_gate image="canc.png"/>
+        </item>
+	<item cid="3006">
+		<!-- gate vct -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on -->
+		<img_gate image="canc.png"/>
+	</item>
+	<item cid="3007">
+		<!-- ventilation -->
+		<!-- uses: on, off -->
+		<img_actuator_state_on image="venton.png"/>
+		<img_actuator_state_off image="ventoff.png"/>
+	</item>
+	<item cid="3008">
+		<!-- irrigation -->
+		<!-- uses: on, off -->
+		<img_actuator_state_on image="idroon.png"/>
+		<img_actuator_state_off image="idrooff.png"/>
+	</item>
+	<item cid="3009">
+		<!-- loads -->
+		<!-- See Notes section on previous cid -->
+		<!-- uses: on, off -->
+		<img_actuator_state_on image="caricoon.png"/>
+		<img_actuator_state_off image="caricooff.png"/>
+	</item>
+	<item cid="3010">
+		<!-- door lock automation-->
+		<!-- uses: on -->
+		<img_action_icon image="funcautom.png"/>
+	</item>
+	<item cid="3011">
+		<!-- door lock vct-->
+		<!-- uses: on -->
+		<img_action_icon image="funcautom.png"/>
+	</item>
+	<item cid="3016">
+		<!-- door lock automation/VCT IP-->
+		<img_action_icon image="funcautom.png"/>
+	</item>
+	<item cid="3012">
+		<!-- ppt stat -->
+		<img_pptstat_open image="pptstaton.png"/>
+		<img_pptstat_close image="pptstatoff.png"/>
+	</item>
+	<item cid="3014">
+		<!-- automation group -->
+		<!-- uses: scroll_up, scroll_down -->
+		<img_stop image="stopmovs.png"/>
+	</item>
+	<!-- End Automation items -->
+	<!-- Start Scenario items -->
+	<item cid="1002">
+		<!-- Scenario Module -->
+		<!-- uses: forward, on, stop -->
+		<img_edit image="setscen.png"/>
+		<img_start_prog image="progscen.png"/>
+		<img_del_scen image="delscen.png"/>
+		<img_label image="scen.png"/>
+	</item>
+	<item cid="1003">
+		<!-- PPT scenario -->
+		<img_pptsce_on image="btnon.png"/>
+		<img_pptsce_off image="btnoff.png"/>
+		<img_pptsce_increase image="pptscedx.png"/>
+		<img_pptsce_decrease image="pptscesx.png"/>
+	</item>
+	<!-- End Scenario items -->
+	<!-- Start Evolved Scenario items -->
+	<item cid="9001">
+		<!-- Evolved scenario -->
+		<!-- uses: plus, minus, arrow_up, arrow_down, back, forward, ok-->
+		<img_enable_scen image="btnscevab.png"/>
+		<img_disable_scen image="btnscevdis.png"/>
+		<img_start image="btnstart120.png"/>
+		<img_program image="progscen.png"/>
+		<img_watch image="orologio.png"/>
+		<img_light image="imgluce.png"/>
+		<img_dimmer image="imgdimmer.png"/>
+		<img_amplifier image="imgdiffsonora.png"/>
+		<img_aux image="imgausiliario.png"/>
+		<img_probe image="imgtermo.png"/>
+	</item>
+	<item cid="9002">
+		<!-- Scheduled scenario -->
+		<img_enable_scen image="btnscevab.png"/>
+		<img_disable_scen image="btnscevdis.png"/>
+		<img_start image="btnstart.png"/>
+		<img_stop image="btnstopred.png"/>
+	</item>
+	<!-- End Evolved Scenario items -->
+	<!-- Start Monochannel Sound diffusion items -->
+	<item cid="11000">
+		<!-- Sound diffusion page -->
+		<img_goto_sounddiffusion image="appdiffsmall.png"/>
+		<img_play_file image="set.png"/>
+		<!-- Audio player page -->
+		<img_prev image="btnbackward.png"/>
+		<img_next image="btnforward.png"/>
+		<img_stop image="btnsdstop.png"/>
+		<img_play image="btnplay.png"/>
+		<img_pause image="btnpause.png"/>
+		<!-- Alarm sound diffusion page -->
+		<img_alarm_icon image="svegliaon.png"/>
+	</item>
+	<item cid="11001">
+		<!--radio source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnradioon.png"/>
+		<!-- radio source page -->
+		<img_cycle_tracks image="btncycle.png"/>
+		<img_auto_off image="btnautooff.png"/>
+		<img_auto_on image="btnauto.png"/>
+		<img_man_off image="btnmanoff.png"/>
+		<img_man_on image="btnman.png"/>
+		<img_mem image="btnmem.png"/>
+	</item>
+	<item cid="11002">
+		<!--aux source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnauxon.png"/>
+		<!-- aux source page -->
+		<img_next_source image="btnforward.png"/>
+	</item>
+	<item cid="11003">
+		<!--multimedia source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnmmon.png"/>
+		<!-- aux source page (used if the source is another touch) -->
+		<img_next_source image="btnforward.png"/>
+	</item>
+	<item cid="11020">
+		<!-- amplifier normal ambient -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="11021">
+		<!-- amplifier group normal ambient -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="offamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="offamplgrpdx.png"/>
+	</item>
+	<item cid="11022">
+		<!-- power amplifier -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<!-- End Monochannel Sound diffusion items -->
+	<!-- Start Multichannel Sound diffusion items -->
+	<item cid="12000">
+		<!-- Sound diffusion page -->
+		<!-- uses: forward -->
+		<img_sounddiffusion image="imgdiffson.png"/>
+		<img_goto_sounddiffusion image="appdiffsmall.png"/>
+		<img_play_file image="set.png"/>
+		<!-- Audio player page -->
+		<img_prev image="btnbackward.png"/>
+		<img_next image="btnforward.png"/>
+		<img_stop image="btnsdstop.png"/>
+		<img_play image="btnplay.png"/>
+		<img_pause image="btnpause.png"/>
+		<!-- Alarm sound diffusion page -->
+		<img_alarm_icon image="svegliaon.png"/>
+	</item>
+	<item cid="12020">
+		<!-- special ambient -->
+		<img_ambient image="imginsampl.png"/>
+	</item>
+	<item cid="12021">
+		<!-- ambient 1 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb1.png"/>
+	</item>
+	<item cid="12022">
+		<!-- ambient 2 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb2.png"/>
+	</item>
+	<item cid="12023">
+		<!-- ambient 3 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb3.png"/>
+	</item>
+	<item cid="12024">
+		<!-- ambient 4 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb4.png"/>
+	</item>
+	<item cid="12025">
+		<!-- ambient 5 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb5.png"/>
+	</item>
+	<item cid="12026">
+		<!-- ambient 6 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb6.png"/>
+	</item>
+	<item cid="12027">
+		<!-- ambient 7 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb7.png"/>
+	</item>
+	<item cid="12028">
+		<!-- ambient 8 -->
+		<!-- uses: sounddiffusion -->
+		<img_ambient image="imgamb8.png"/>
+	</item>
+	<item cid="12001">
+		<!--radio source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnradioon.png"/>
+		<!-- radio source page -->
+		<img_cycle_tracks image="btncycle.png"/>
+		<img_auto_off image="btnautooff.png"/>
+		<img_auto_on image="btnauto.png"/>
+		<img_man_off image="btnmanoff.png"/>
+		<img_man_on image="btnman.png"/>
+		<img_mem image="btnmem.png"/>
+	</item>
+	<item cid="12002">
+		<!--aux source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnauxon.png"/>
+		<!-- aux source page -->
+		<img_next_source image="btnforward.png"/>
+	</item>
+	<item cid="12003">
+		<!--multimedia source banner -->
+		<img_details image="audiosetting.png"/>
+		<img_turn_on image="btnmmon.png"/>
+		<!-- aux source page (used if the source is another touch) -->
+		<img_next_source image="btnforward.png"/>
+	</item>
+	<item cid="12150">
+		<!-- amplifier normal ambient 1 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12151">
+		<!-- amplifier group normal ambient 1 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12152">
+		<!-- power amplifier ambient 1 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12160">
+		<!-- amplifier normal ambient 2 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12161">
+		<!-- amplifier group normal ambient 2 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12162">
+		<!-- power amplifier ambient 2 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12170">
+		<!-- amplifier normal ambient 3 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12171">
+		<!-- amplifier group normal ambient 3 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12172">
+		<!-- power amplifier ambient 3 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12180">
+		<!-- amplifier normal ambient 4 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12181">
+		<!-- amplifier group normal ambient 4 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12182">
+		<!-- power amplifier ambient 4 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12190">
+		<!-- amplifier normal ambient 5 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12191">
+		<!-- amplifier group normal ambient 5 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12192">
+		<!-- power amplifier ambient 5 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12200">
+		<!-- amplifier normal ambient 6 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12201">
+		<!-- amplifier group normal ambient 6 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12202">
+		<!-- power amplifier ambient 6 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12210">
+		<!-- amplifier normal ambient 7 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12211">
+		<!-- amplifier group normal ambient 7 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12212">
+		<!-- power amplifier ambient 7 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12220">
+		<!-- amplifier normal ambient 8 -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12221">
+		<!-- amplifier group normal ambient 8 -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12222">
+		<!-- power amplifier ambient 8 -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<item cid="12101">
+		<!-- amplifier special ambient -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplsxl.png"/>
+		<img_volume_off_left image="offamplsxl.png"/>
+		<img_volume_on_right image="onampldxl.png"/>
+		<img_volume_off_right image="offampldxl.png"/>
+	</item>
+	<item cid="12102">
+		<!-- amplifier group special ambient -->
+		<!-- uses: on, off -->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12103">
+		<!-- general special ambient -->
+		<!-- uses: on, off
+			Notes: for each of the following tags, amplifier level (from 0 to 9) is appended
+		-->
+		<img_volume_on_left image="onamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
+		<img_volume_on_right image="onamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
+	</item>
+	<item cid="12104">
+		<!-- power amplifier special ambient -->
+		<!-- uses: on, off, minus, plus -->
+		<img_preset image="preset.png"/>
+		<img_treble image="louds.png"/>
+		<img_bass image="lows.png"/>
+		<img_balance image="balance_0.png"/>
+		<img_balance_sx image="balance_sx.png"/>
+		<img_balance_dx image="balance_dx.png"/>
+		<img_loud_on image="loud.png"/>
+		<img_loud_off image="loud_off.png"/>
+		<img_more image="more.png"/>
+		<img_less image="less.png"/>
+		<img_settings image="audiosetting.png"/>
+		<img_volume_active image="onampl.png"/>
+		<img_volume_inactive image="offampl.png"/>
+	</item>
+	<!-- End Multichannel Sound diffusion items -->
+	<!-- Start Antintrusion items -->
+	<item cid="13000">
+		<!-- Antintrusion page -->
+		<!-- uses: on, off, info -->
+		<img_partial image="btnparzializzazione.png"/>
+		<img_alarm_state_off image="antifurtodis.png"/>
+		<img_alarm_state_on image="antifurtoins.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_status_on image="imgantintrusione.png"/>
+		<img_zone_status_off image="imgantintrusioneoff.png"/>
+		<!-- Alarm page -->
+		<img_alarm_del image="btndel.png"/>
+		<img_technic_alarm_page image="imgalltec.png"/>
+		<img_intrusion_alarm_page image="imgallintr.png"/>
+		<img_tamper_alarm_page image="imgallintr.png"/>
+		<img_panic_alarm_page image="imgallintr.png"/>
+	</item>
+	<item cid="13001">
+		<!-- Antintrusion zone 1 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona1.png"/>
+	</item>
+	<item cid="13002">
+		<!-- Antintrusion zone 2 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona2.png"/>
+	</item>
+	<item cid="13003">
+		<!-- Antintrusion zone 3 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona3.png"/>
+	</item>
+	<item cid="13004">
+		<!-- Antintrusion zone 4 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona4.png"/>
+	</item>
+	<item cid="13005">
+		<!-- Antintrusion zone 5 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona5.png"/>
+	</item>
+	<item cid="13006">
+		<!-- Antintrusion zone 6 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona6.png"/>
+	</item>
+	<item cid="13007">
+		<!-- Antintrusion zone 7 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona7.png"/>
+	</item>
+	<item cid="13008">
+		<!-- Antintrusion zone 8 -->
+		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
+		<img_zone image="imgzona8.png"/>
+	</item>
+	<!-- End Antintrusion items -->
+	<!-- Start Energy data items -->
+	<item cid="7000">
+		<!-- Energy data page -->
+		<img_currency_exchange image="currency_exchange.png"/>
+		<img_select image="arrrg.png"/>
+		<!-- Energy cost page -->
+		<!-- uses: plus, minus, ok-->
+		<img_cost_electricity image="electricity.png"/>
+		<img_cost_water image="water.png"/>
+		<img_cost_dhw image="dhw.png"/>
+		<img_cost_gas image="gas.png"/>
+		<img_cost_conditioning image="heating_cooling.png"/>
+		<!-- Energy interface page -->
+		<img_empty image="empty.png"/>
+		<!-- Energy View -->
+		<!-- uses: cycle -->
+		<img_fast_forward image="btnforward.png"/>
+		<img_fast_backward image="btnbackward.png"/>
+		<img_bg_banner image="empty_180.png"/>
+		<img_graph image="chart.png"/>
+		<img_currency image="currency.png"/>
+		<img_table image="table.png"/>
+	</item>
+	<item cid="7001">
+		<!-- Energy type: electricity -->
+		<img_energy_type image="electricity.png"/>
+	</item>
+	<item cid="7002">
+		<!-- Energy type: water -->
+		<img_energy_type image="water.png"/>
+	</item>
+	<item cid="7003">
+		<!-- Energy type: gas -->
+		<img_energy_type image="gas.png"/>
+	</item>
+	<item cid="7004">
+		<!-- Energy type: dhw -->
+		<img_energy_type image="dhw.png"/>
+	</item>
+	<item cid="7005">
+		<!-- Energy type: heating/cooling -->
+		<img_energy_type image="heating_cooling.png"/>
+	</item>
+	<item cid="7006">
+		<!-- Energy type: custom -->
+		<img_energy_type image="EnergyData_custom.png"/>
+	</item>
+	<!-- End Energy data items -->
+	<!-- Start Energy management items -->
+	<item cid="15000">
+		<!-- Energy management page -->
+		<img_currency_exchange image="currency_exchange.png"/>
+		<!-- Energy cost page -->
+		<!-- uses: plus, minus, ok-->
+		<img_cost_electricity image="electricity.png"/>
+		<img_cost_water image="water.png"/>
+		<img_cost_dhw image="dhw.png"/>
+		<img_cost_gas image="gas.png"/>
+		<img_cost_conditioning image="heating_cooling.png"/>
+	</item>
+	<item cid="15001">
+		<!-- Supervision link -->
+		<img_link_icon image="supervisione_impianto.png"/>
+	</item>
+	<item cid="15002">
+		<!-- Energy data link -->
+		<img_link_icon image="energy_data.png"/>
+	</item>
+	<item cid="15003">
+		<!-- Load management link -->
+		<img_link_icon image="appLoadManagement.png"/>
+	</item>
+	<!-- End Energy management items -->
+	<!-- Start Load management items -->
+	<item cid="18000">
+		<!-- Load management page & Load data page -->
+		<!-- uses: back, ok -->
+		<img_currency_exchange image="currency_exchange.png"/>
+		<img_empty_background image="empty_180.png"/>
+		<img_reset image="btnReset.png"/>
+		<img_currency image="currency.png"/>
+	</item>
+	<item cid="18001">
+		<!-- banner with central unit & deactivation time page -->
+		<!-- uses: info, plus, minus -->
+		<img_on image="btnOnret.png"/>
+		<img_not_forced image="btnLoadManAb.png"/>
+		<img_forced image="btnLoadManDis.png"/>
+		<img_load image="LoadManagement.png"/>
+	</item>
+	<item cid="18002">
+		<!-- banner without central unit -->
+		<!-- uses: info -->
+		<img_load image="LoadManagement.png"/>
+	</item>
+	<!-- End Load management items -->
+	<!-- Start Supervision items -->
+	<item cid="6001">
+		<!-- Stop & Go banner -->
+		<img_center_icon image="S&amp;G_Chiuso.png"/>
+	</item>
+	<item cid="6002">
+		<!-- Load diagnostic banner-->
+		<img_center_icon image="LoadManagement.png"/>
+	</item>
+	<item cid="6150">
+		<!-- Load diagnostic page -->
+		<img_state_icon_ok image="Load1.png"/>
+		<img_state_icon_warning image="Load2.png"/>
+		<img_state_icon_critical image="Load3.png"/>
+	</item>
+	<item cid="6100">
+		<!-- Stop & Go pages -->
+		<!-- uses: forward -->
+		<img_status_closed image="S&amp;G_Chiuso.png"/>
+		<img_status_opened image="S&amp;G_Aperto.png"/>
+		<img_status_locked image="S&amp;G_Aperto_Blocco.png"/>
+		<img_status_cc image="S&amp;G_Aperto_Cortocircuito.png"/>
+		<img_status_ground_fail image="S&amp;G_Aperto_Guastoversoterra.png"/>
+		<img_status_vmax image="S&amp;G_Aperto_Sovratensione.png"/>
+		<img_open image="btnon.png"/>
+		<img_close image="btnoff.png"/>
+		<img_autoreset_enabled image="a_riarmo.png"/>
+		<img_autoreset_disabled image="d_riarmo.png"/>
+		<img_tracking_enabled image="a_verifica_impianto.png"/>
+		<img_tracking_disabled image="d_verifica_impianto.png"/>
+		<img_autocheck_enabled image="a_autotest.png"/>
+		<img_autocheck_disabled image="d_autotest.png"/>
+	</item>
+	<!-- End Supervision items -->
+	<!-- Start Thermal regulation items -->
+	<item cid="8000">
+		<!-- thermal regulation page -->
+		<!-- uses: forward -->
+	</item>
+	<item cid="8001">
+		<!-- external probe banner-->
+		<img_central_icon image="sonda_esterna.png"/>
+	</item>
+	<item cid="8002">
+		<!-- non controlled probe banner -->
+		<img_central_icon image="zona.png"/>
+	</item>
+	<item cid="8003">
+		<!-- 99 zones central banner -->
+		<img_central_icon image="impianto.png"/>
+	</item>
+	<item cid="8004">
+		<!-- 4 zones central banner -->
+		<img_central_icon image="impianto.png"/>
+	</item>
+	<item cid="8005">
+		<!-- Air condition banner -->
+		<img_central_icon image="AirConditioning.png"/>
+	</item>
+	<item cid="8041">
+		<!-- 4 zones central banner (in page 4 zones) -->
+		<img_central_icon image="centrale.png"/>
+	</item>
+	<item cid="8042">
+		<!-- controlled probe banner (in page 4 zones) -->
+		<img_central_icon image="zona.png"/>
+	</item>
+	<item cid="8300">
+		<!-- controlled probe 4z details page -->
+		<img_fan_1_on image="fancoil1on.png"/>
+		<img_fan_1_off image="fancoil1off.png"/>
+		<img_fan_2_on image="fancoil2on.png"/>
+		<img_fan_2_off image="fancoil2off.png"/>
+		<img_fan_3_on image="fancoil3on.png"/>
+		<img_fan_3_off image="fancoil3off.png"/>
+		<img_fan_4_on image="fancoilAon.png"/>
+		<img_fan_4_off image="fancoilAoff.png"/>
+		<img_probe_antifreeze image="sondaantigelo.png"/>
+		<img_probe_off image="sondaoff.png"/>
+	</item>
+	<item cid="8301">
+		<!-- 4 zones central details page -->
+		<img_summer_flat image="estate_s.png"/>
+		<img_winter_flat image="inverno_s.png"/>
+		<img_regulator image="centrale.png"/>
+		<img_regulator_off image="sondaoff.png"/>
+		<img_regulator_manual image="manuale.png"/>
+		<img_regulator_manual_timed image="manuale_temporizzato.png"/>
+		<img_regulator_program image="settimanale.png"/>
+		<img_regulator_scenario image="scenari.png"/>
+		<img_regulator_holiday image="feriale.png"/>
+		<img_regulator_weekend image="festivo.png"/>
+		<img_regulator_antifreeze image="sondaantigelo.png"/>
+		<img_settings image="set.png"/>
+	</item>
+	<item cid="8320">
+		<!-- 4 zones central settings page (and related pages) -->
+		<img_regulator image="centrale.png"/>
+		<img_regulator_off image="sondaoff.png"/>
+		<img_regulator_manual image="manuale.png"/>
+		<img_regulator_manual_timed image="manuale_temporizzato.png"/>
+		<img_regulator_program image="settimanale.png"/>
+		<img_regulator_scenario image="scenari.png"/>
+		<img_regulator_holiday image="feriale.png"/>
+		<img_regulator_weekend image="festivo.png"/>
+		<img_regulator_antifreeze image="antigelo.png"/>
+		<img_settings image="set.png"/>
+		<img_off_button image="off.png"/>
+		<img_summer image="estate.png"/>
+		<img_winter image="inverno.png"/>
+		<img_summer_program image="programma_estivo.png"/>
+		<img_winter_program image="programma_invernale.png"/>
+		<img_date_icon image="calendario.png"/>
+		<img_time_icon image="orologio.png"/>
+	</item>
+	<item cid="8011">
+		<!-- 99 zones central banner (in page 99 zones) -->
+		<img_central_icon image="centrale.png"/>
+	</item>
+	<item cid="8012">
+		<!-- controlled probe banner (in page 99 zones) -->
+		<img_central_icon image="zona.png"/>
+	</item>
+	<item cid="8050">
+		<!-- controlled probe 99z details page -->
+		<img_fan_1_on image="fancoil1on.png"/>
+		<img_fan_1_off image="fancoil1off.png"/>
+		<img_fan_2_on image="fancoil2on.png"/>
+		<img_fan_2_off image="fancoil2off.png"/>
+		<img_fan_3_on image="fancoil3on.png"/>
+		<img_fan_3_off image="fancoil3off.png"/>
+		<img_fan_4_on image="fancoilAon.png"/>
+		<img_fan_4_off image="fancoilAoff.png"/>
+		<img_probe_antifreeze image="sondaantigelo.png"/>
+		<img_probe_off image="sondaoff.png"/>
+		<img_probe_manual image="btnman.png"/>
+		<img_probe_auto image="btnauto.png"/>
+	</item>
+	<item cid="8051">
+		<!-- 99 zones central details page -->
+		<img_summer_flat image="estate_s.png"/>
+		<img_winter_flat image="inverno_s.png"/>
+		<img_regulator image="centrale.png"/>
+		<img_regulator_off image="sondaoff.png"/>
+		<img_regulator_manual image="manuale.png"/>
+		<img_regulator_manual_timed image="manuale_temporizzato.png"/>
+		<img_regulator_program image="settimanale.png"/>
+		<img_regulator_scenario image="scenari.png"/>
+		<img_regulator_holiday image="feriale.png"/>
+		<img_regulator_weekend image="festivo.png"/>
+		<img_regulator_antifreeze image="sondaantigelo.png"/>
+		<img_settings image="set.png"/>
+	</item>
+	<item cid="8100">
+		<!-- 99 zones central settings page (and related pages) -->
+		<img_regulator image="centrale.png"/>
+		<img_regulator_off image="sondaoff.png"/>
+		<img_regulator_manual image="manuale.png"/>
+		<img_regulator_manual_timed image="manuale_temporizzato.png"/>
+		<img_regulator_program image="settimanale.png"/>
+		<img_regulator_scenario image="scenari.png"/>
+		<img_regulator_holiday image="feriale.png"/>
+		<img_regulator_weekend image="festivo.png"/>
+		<img_regulator_antifreeze image="antigelo.png"/>
+		<img_settings image="set.png"/>
+		<img_off_button image="off.png"/>
+		<img_summer image="estate.png"/>
+		<img_winter image="inverno.png"/>
+		<img_summer_program image="programma_estivo.png"/>
+		<img_winter_program image="programma_invernale.png"/>
+		<img_date_icon image="calendario.png"/>
+		<img_time_icon image="orologio.png"/>
+		<img_summer_scenario image="scenario_estivo.png"/>
+		<img_winter_scenario image="scenario_invernale.png"/>
+	</item>
+	<!-- End Thermal regulation items -->
+	<!-- Special page -->
+	<item cid="66666">
+		<img_command image="btnspecial.png"/>
+	</item>
+	<!-- Start Air conditioning items-->
+	<item cid="4000">
+		<!-- Air conditioning main page -->
+		<!-- uses: off, on -->
+		<img_split_cmd image="btnon.png"/>
+	</item>
+	<item cid="4001">
+		<!-- Single split basic banner and related page -->
+		<img_air_single image="UnitAirConditioning.png"/>
+		<img_air_single_temp image="empty.png"/>
+	</item>
+	<item cid="4002">
+		<!-- General split basic banner and related page -->
+		<img_air_general image="GroupAirConditioning.png"/>
+	</item>
+	<item cid="4003">
+		<!-- Single split advanced banner and related page -->
+		<img_air_single image="UnitAirConditioning.png"/>
+		<img_air_single_temp image="empty.png"/>
+		<img_split_settings image="set.png"/>
+		<img_custom_button image="CustomAirConditioning.png"/>
+		<img_cycle_mode image="btnCiclaMod.png"/>
+		<img_plus_disabled image="btnPiu.png"/>
+		<img_minus_disabled image="btnMeno.png"/>
+		<img_cycle_speed image="btnCiclaFancoil.png"/>
+		<img_swing_on image="btnon.png"/>
+		<img_swing_off image="btnoff.png"/>
+		<img_swing_on_checked image="btnonp.png"/>
+		<img_swing_off_checked image="btnoffp.png"/>
+		<img_setstate_error image="airconditioning_error.png"/>
+	</item>
+	<item cid="4004">
+		<!-- General split advanced banner and related page -->
+		<img_air_general image="GroupAirConditioning.png"/>
+	</item>
+	<!-- End Air conditioning items-->
+	<!-- Start Video door entry items -->
+	<item cid="10053">
+		<!-- Entrance panel banner and call notifier page -->
+		<img_entrance_panel image="imgPE.png"/>
+		<img_entrance_panel_key image="btnserratura.png"/>
+		<img_entrance_panel_light image="btnlucescale.png"/>
+	</item>
+	<!-- End Video door entry items -->
+</style>
