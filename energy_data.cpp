@@ -349,18 +349,18 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 	BtButton *edit_costs = 0;
 
 #ifdef LAYOUT_TS_3_5
-	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
+	NavigationBar *nav_bar;
 	if (edit_rates && EnergyRates::energy_rates.hasRates())
 	{
 		Page *costs = new EnergyCost;
 
 		connect(this, SIGNAL(forwardClick()), costs, SLOT(showPage()));
 		connect(costs, SIGNAL(Closed()), SLOT(showPage()));
+		nav_bar = new NavigationBar(bt_global::skin->getImage("currency_exchange"));
 	}
 	else
-		nav_bar->forward_button->setVisible(false);
+		nav_bar = new NavigationBar;
 
-	edit_costs = nav_bar->forward_button;
 	buildPage(new BannerContent, nav_bar);
 
 #else
