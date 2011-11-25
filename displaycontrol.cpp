@@ -254,10 +254,10 @@ int DisplayControl::screensaverTime()
 
 int DisplayControl::blankScreenTime()
 {
-	if (screenoff_time == 0)
-		return 0;
-	else if (current_screensaver == ScreenSaver::NONE)
+	if (current_screensaver == ScreenSaver::NONE)
 		return screensaver_time;
+	else if (screenoff_time == 0)
+		return 0;
 	else
 		return screenoff_time;
 }

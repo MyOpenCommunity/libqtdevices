@@ -179,7 +179,7 @@ void TestDisplayControl::testScreensaverPassword()
 	QVERIFY(display->locked);
 }
 
-void TestDisplayControl::testScreensaverNone()
+void TestDisplayControl::testScreensaverNoneScreenOffSet()
 {
 	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
 	display->current_screensaver = ScreenSaver::NONE;
@@ -191,10 +191,27 @@ void TestDisplayControl::testScreensaverNone()
 
 	sleepSecs(display->screensaver_time - display->freeze_time);
 	display->checkScreensaver(target_page, target_window, exit_page);
-	// display can be in freeze or off mode depending on the screenoff var value.
-	QVERIFY(display->current_state != DISPLAY_SCREENSAVER);
+	QVERIFY(display->current_state == DISPLAY_OFF);
 	QVERIFY(!display->locked);
-	QCOMPARE(spy.count(), display->current_state == DISPLAY_FREEZED ? 0 : 1);
+	QCOMPARE(spy.count(), 1);
+}
+
+void TestDisplayControl::testScreensaverNoneScreenOffInfinite()
+{
+	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
+	display->current_screensaver = ScreenSaver::NONE;
+	display->screenoff_time = 0;
+	display->startTime();
+
+	sleepSecs(display->freeze_time);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QCOMPARE(display->current_state, DISPLAY_FREEZED);
+
+	sleepSecs(display->screensaver_time - display->freeze_time);
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QVERIFY(display->current_state == DISPLAY_OFF);
+	QVERIFY(!display->locked);
+	QCOMPARE(spy.count(), 1);
 }
 
 void TestDisplayControl::testForcedOperativeMode()
