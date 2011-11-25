@@ -370,7 +370,7 @@ protected:
 
 		\sa manageFrame()
 	*/
-	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { return false; }
+	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { Q_UNUSED(msg); Q_UNUSED(values_list); return false; }
 
 private slots:
 	void slotSendFrame(QString frame) const;

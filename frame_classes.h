@@ -180,7 +180,7 @@ protected:
 		\a "who" subscribed arrives from the Openserver.
 		\sa subscribeAck(), manageNak()
 	 */
-	virtual void manageAck(OpenMsg &msg) {}
+	virtual void manageAck(OpenMsg &msg) { Q_UNUSED(msg); }
 
 	/*!
 		\brief Manages nak from the OpenServer
@@ -189,7 +189,7 @@ protected:
 		\a "who" subscribed arrives from the Openserver.
 		\sa subscribeAck(), manageAck()
 	 */
-	virtual void manageNak(OpenMsg &msg) {}
+	virtual void manageNak(OpenMsg &msg) { Q_UNUSED(msg); }
 
 	static QHash<int, Clients> clients;
 
