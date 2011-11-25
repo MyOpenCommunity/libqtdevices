@@ -35,6 +35,9 @@ class Window;
 
 	Decides also which is the next window/page to be shown when the top page
 	is closed/destroyed.
+
+	Note that the page/window at the top of the stack might not be visible on
+	screen (this happens for example for some of the screen savers).
 */
 class PageStack : public QObject
 {
