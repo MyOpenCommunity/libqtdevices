@@ -153,7 +153,11 @@ private:
 	\ingroup ThermalRegulation
 	\brief Display description and temperature for non-controlled zones and external probes.
  */
+#ifdef LAYOUT_TS_10
 class BannTemperature : public Banner
+#else
+class BannTemperature : public Bann2Buttons
+#endif
 {
 Q_OBJECT
 public:
@@ -166,8 +170,10 @@ private:
 	void updateTemperature(int temperature);
 
 private:
+	void setTemperatureText(const QString &text);
+#ifdef LAYOUT_TS_10
 	QLabel *temperature_label;
-
+#endif
 	TemperatureScale temperature_scale;
 };
 

@@ -125,6 +125,7 @@ void BannWeekly::performAction()
 	emit programNumber(index);
 }
 
+#ifdef LAYOUT_TS_10
 
 BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 {
@@ -135,18 +136,12 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 
 	QVBoxLayout *t = new QVBoxLayout(this);
 
-#ifdef LAYOUT_TS_10
 	descr_label->setFixedHeight(40);
 
 	QLabel *sep = new QLabel;
 	sep->setPixmap(*bt_global::icons_cache.getIcon(bt_global::skin->getImage("horizontal_separator")));
 
 	t->addWidget(sep);
-#else
-	// In the TS 3.5'' version there wasn't the external vertical layout, just the horizontal one,
-	// so the external layout should not add any padding on TS 3.5''
-	t->setContentsMargins(0, 0, 0, 0);
-#endif
 
 	temperature_label = new QLabel;
 	temperature_label->setFont(bt_global::font->get(FontManager::EXTERNAL_PROBE));
@@ -164,6 +159,31 @@ BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 			SLOT(valueReceived(DeviceValues)));
 }
 
+void BannTemperature::setTemperatureText(const QString &text)
+{
+	temperature_label->setText(text);
+}
+
+#else
+
+BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
+{
+	initBanner(QString(), bt_global::skin->getImage("empty"), QString(), descr);
+	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
+
+	updateTemperature(1235);
+
+	connect(dev, SIGNAL(valueReceived(DeviceValues)),
+			SLOT(valueReceived(DeviceValues)));
+}
+
+void BannTemperature::setTemperatureText(const QString &text)
+{
+	setCentralText(text);
+}
+
+#endif
+
 void BannTemperature::valueReceived(const DeviceValues &values_list)
 {
 	if (!values_list.contains(NonControlledProbeDevice::DIM_TEMPERATURE))
@@ -177,10 +197,10 @@ void BannTemperature::updateTemperature(int temperature)
 	switch (temperature_scale)
 	{
 		case CELSIUS:
-			temperature_label->setText(celsiusString(bt2Celsius(temperature)));
+			setTemperatureText(celsiusString(bt2Celsius(temperature)));
 			break;
 		case FAHRENHEIT:
-			temperature_label->setText(fahrenheitString(bt2Fahrenheit(temperature)));
+			setTemperatureText(fahrenheitString(bt2Fahrenheit(temperature)));
 			break;
 		default:
 			qWarning("BannTemperature: unknown scale");
