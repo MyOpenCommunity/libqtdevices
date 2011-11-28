@@ -80,10 +80,13 @@ void OpenServerManager::handleConnectionDown()
 
 void OpenServerManager::timerEvent(QTimerEvent*)
 {
-	monitor->connectToHost();
-	command->connectToHost();
-	request->connectToHost();
-	if (supervisor)
+	if (!monitor->isConnected() && !monitor->isConnecting())
+		monitor->connectToHost();
+	if (!command->isConnected() && !command->isConnecting())
+		command->connectToHost();
+	if (!request->isConnected() && !request->isConnecting())
+		request->connectToHost();
+	if (supervisor && !supervisor->isConnected() && !supervisor->isConnecting())
 		supervisor->connectToHost();
 	connection_timer.start(reconnection_time * 1000, this);
 }
@@ -102,6 +105,13 @@ void OpenServerManager::handleConnectionUp()
 			qDebug("OpenServerManager::connectionUp for openserver [%d]", openserver_id);
 			bt_global::devices_cache.initOpenserverDevices(openserver_id);
 			emit connectionUp();
+		}
+		else
+		{
+			// restart the connection timer to handle the case when we get
+			// a connectionDown signal followed by a connectionUp, so the
+			// timer is stopped even if not all sockets are connected
+			connection_timer.start(reconnection_time * 1000, this);
 		}
 	}
 }

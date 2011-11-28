@@ -125,6 +125,12 @@ bool Client::isConnected()
 	return is_connected;
 }
 
+bool Client::isConnecting()
+{
+	return socket->state() == QAbstractSocket::HostLookupState ||
+	       socket->state() == QAbstractSocket::ConnectingState;
+}
+
 void Client::socketConnected()
 {
 	if (!is_connected)

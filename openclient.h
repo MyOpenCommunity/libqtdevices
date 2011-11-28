@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -86,6 +86,11 @@ public:
 		\brief Check if the client is connected
 	*/
 	bool isConnected();
+
+	/*!
+		\brief Check if the client connection is in progress
+	*/
+	bool isConnecting();
 
 #if DEBUG
 	int bytesAvailable() { return socket->bytesAvailable(); }
