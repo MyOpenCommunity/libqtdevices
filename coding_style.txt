@@ -56,8 +56,6 @@ Code style:
 BTouch code style and conventions:
 - The parsing of configuration is performed only in the pages subclasses,
   and never in banners.
-- If a banner or a page store a pointer to a device, that pointer should be
-  called 'dev'.
 - The content classes have to manage the items layout and positioning, while
   the pages that use that incapsulate the specific page logic.
 - The bann* files contain only 'base' banner, which contain only the items
@@ -65,5 +63,9 @@ BTouch code style and conventions:
   specific banner logic.
 - The *functions files contain functions that can be useful in many part
   of the code. 
-
+- Common names:
+  - a device pointer should be called 'dev';
+  - a banner pointer should be called 'b' or 'bann';
+  - generic banner classes start with 'Bann'
+  - devices classes end with 'Device'
 
