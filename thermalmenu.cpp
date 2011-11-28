@@ -143,6 +143,7 @@ void ThermalMenu::showPage()
 
 ProbesPage::ProbesPage(const QDomNode &config_node, bool are_probes_external)
 {
+	SkinContext context(getTextChild(config_node, "cid").toInt());
 #ifdef LAYOUT_TS_3_5
 	buildPage(getTextChild(config_node, "descr"));
 	page_content->setRowCount(3);
@@ -173,6 +174,7 @@ void ProbesPage::loadItems(const QDomNode &config_node, bool are_probes_external
 {
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
+		SkinContext context(getTextChild(item, "cid").toInt());
 		QString addr = getTextChild(item, "where");
 		QString text = getTextChild(item, "descr");
 
