@@ -163,7 +163,28 @@ void PageStack::removeObject(QObject *obj)
 		showState(states.back());
 	}
 	else
+	{
+		// if the window at the top of the stack is not shown on screen
+		// (can happen with some of the screen savers) and the page below
+		// it is closed, then display on screen the next visible
+		// window/page (which will actually be displayed under the screen saver)
+		int next_state = -1;
+
+		for (int i = states.size() - 1; i >= 0; --i)
+		{
+			if (states[i].window && !states[i].window->isVisible())
+				continue;
+			if (states[i].current_page == obj)
+				next_state = i - 1;
+
+			break;
+		}
+
 		removeFromStack(obj);
+
+		if (next_state >= 0)
+			showState(states[next_state]);
+	}
 }
 
 void PageStack::removeFromStack(QObject *obj)

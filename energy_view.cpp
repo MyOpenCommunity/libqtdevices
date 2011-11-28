@@ -1041,9 +1041,13 @@ void EnergyView::updateBanners()
 
 void EnergyView::systemTimeChanged()
 {
-	if (is_current_page && time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
+	// if this is not the current page, showPage() will request an update when entering the page
+	if (!is_current_page)
+		return;
+
+	if (time_period->status() == TimePeriodSelection::DAY && time_period->date() > QDate::currentDate())
 		time_period->forceDate(QDate::currentDate(), time_period->status());
-	else if (is_current_page && time_period->date().month() > QDate::currentDate().month())
+	else if (time_period->date().month() > QDate::currentDate().month())
 		time_period->forceDate(QDate::currentDate(), time_period->status());
 	else
 		changeTimePeriod(time_period->status(), time_period->date());

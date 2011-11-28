@@ -164,8 +164,11 @@ void Bann4Buttons::initBanner(const QString &right, const QString &center_right,
 	const QString &center_left, const QString &left, const QString &banner_text)
 {
 	initButton(right_button, right);
-	initButton(center_right_button, center_right);
-	initButton(center_left_button, center_left);
+	// if one of the central buttons is missing, keep the other from moving
+	if (!initButton(center_right_button, center_right))
+		center_layout->insertStretch(1, 1);
+	if (!initButton(center_left_button, center_left))
+		center_layout->insertStretch(0, 1);
 	initButton(left_button, left);
 	initLabel(text, banner_text, bt_global::font->get(FontManager::BANNERDESCRIPTION));
 }
