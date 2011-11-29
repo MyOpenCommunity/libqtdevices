@@ -359,7 +359,21 @@ void AlarmManager::deleteAlarm()
 		qPrintable(QString("Current alarm index (%1) out of range! [0, %2]").arg(current_alarm).arg(alarm_pages.size())));
 
 	// the page is removed from the alarm_pages in the alarmDestroyed slot
-	AlarmPage *to_die = alarm_pages.at(current_alarm);
+	AlarmPage *to_die = alarm_pages.takeAt(current_alarm);
+
+	// we can't just destroy the currently-displayed window, and we need to keep
+	// in sync the current_alarm field with the page currently on screen, otherwise
+	// deleteAlarm() ends up displaying the wrong page, and cycling the pages produces
+	// weird results
+	//
+	// on the other hand we need to ensure the next page is displayed on screen before
+	// deleting this page, otherwise transition effects occur on the wrong page
+	if (--current_alarm < 0)
+		current_alarm = 0;
+	if (alarm_pages.size() > 0)
+		alarm_pages.at(current_alarm)->showPage();
+	else
+		bt_global::page_stack.closePage(to_die);
 
 	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
 	// so we want to delete also the entry from the AlarmList. We do that using a global
@@ -390,14 +404,9 @@ void AlarmManager::showAlarmList()
 
 void AlarmManager::alarmDestroyed(QObject *page)
 {
+	// only needed for TS 10, when the page is deleted by AlarmPage::cleanUp()
 	alarm_pages.removeOne(static_cast<AlarmPage*>(page));
-	if (--current_alarm < 0)
-		current_alarm = 0;
-
-#ifdef LAYOUT_TS_3_5
-	if (alarm_pages.size() > 0)
-		alarm_pages.at(current_alarm)->showPage();
-#endif
+	current_alarm = qMax(qMin(alarm_pages.size() - 1, current_alarm), 0);
 }
 
 
