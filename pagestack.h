@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -107,6 +107,7 @@ private:
 private slots:
 	void closed();
 	void removeObject(QObject *obj);
+	void removeDestroyedObject(QObject *obj);
 
 private:
 	QList<State> states;

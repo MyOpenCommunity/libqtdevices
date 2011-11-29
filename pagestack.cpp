@@ -85,7 +85,7 @@ void PageStack::addState(const State &state)
 	else
 		states.insert(states.size() - 1, state);
 
-	connect(state.object(), SIGNAL(destroyed(QObject*)), SLOT(removeObject(QObject*)));
+	connect(state.object(), SIGNAL(destroyed(QObject*)), SLOT(removeDestroyedObject(QObject*)));
 }
 
 void PageStack::showState(const State &state)
@@ -149,6 +149,16 @@ void PageStack::closeWindow(Window *window)
 void PageStack::closePage(Page *page)
 {
 	removeObject(page);
+}
+
+void PageStack::removeDestroyedObject(QObject *obj)
+{
+	// destroying the top level object causes problems to the transition effects, so
+	// the caller must show another page before deleting the current one
+	Q_ASSERT_X(obj != states.back().object(), "PageStack::removeDestroyedObject",
+		   "A Page/Window has been destroyed while it was the displayed object");
+
+	removeObject(obj);
 }
 
 void PageStack::removeObject(QObject *obj)
