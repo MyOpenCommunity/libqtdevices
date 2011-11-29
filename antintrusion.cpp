@@ -361,6 +361,12 @@ void AlarmManager::deleteAlarm()
 	// the page is removed from the alarm_pages in the alarmDestroyed slot
 	AlarmPage *to_die = alarm_pages.takeAt(current_alarm);
 
+	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
+	// so we want to delete also the entry from the AlarmList. We do that using a global
+	// static alarm id; this must be done before showing the next page (which might be the
+	// antintrusion page)
+	alarm_list->removeAlarm(to_die->alarmId());
+
 	// we can't just destroy the currently-displayed window, and we need to keep
 	// in sync the current_alarm field with the page currently on screen, otherwise
 	// deleteAlarm() ends up displaying the wrong page, and cycling the pages produces
@@ -375,10 +381,6 @@ void AlarmManager::deleteAlarm()
 	else
 		bt_global::page_stack.closePage(to_die);
 
-	// In this case the user has seen the alarm and delete it directly from the AlarmPage,
-	// so we want to delete also the entry from the AlarmList. We do that using a global
-	// static alarm id.
-	alarm_list->removeAlarm(to_die->alarmId());
 	to_die->deleteLater();
 }
 
