@@ -40,18 +40,9 @@ AntintrusionZone::AntintrusionZone(int zone, QString descr)
 	left_off = bt_global::skin->getImage("zone_inactive");
 	left_on = bt_global::skin->getImage("zone_active");
 
-#ifdef LAYOUT_TS_3_5
-	status_off = bt_global::skin->getImage("zone_status_off");
-	status_on = bt_global::skin->getImage("zone_status_on");
-
-	initBanner(QString(), status_off, bt_global::skin->getImage("zone"), left_off, descr);
-	setCentralSpacing(false);
-	disableCentralButtons();
-#else
 	initBanner(left_off, QString(), descr);
 	disabled_left_off = getPressName(left_off);
 	disabled_left_on = getPressName(left_on);
-#endif
 
 	connect(left_button, SIGNAL(clicked()), SLOT(leftClicked()));
 }
@@ -73,21 +64,13 @@ void AntintrusionZone::enablePartialization(bool enabled)
 	{
 		if (enabled)
 		{
-#ifdef LAYOUT_TS_3_5
-			left_button->show();
-#else
 			left_button->setImage(partialized ? left_off : left_on);
 			left_button->enable();
-#endif
 		}
 		else
 		{
-#ifdef LAYOUT_TS_3_5
-			left_button->hide();
-#else
 			left_button->setImage(partialized ? disabled_left_off : disabled_left_on);
 			left_button->disable();
-#endif
 		}
 		partialization_enabled = enabled;
 	}
@@ -95,9 +78,6 @@ void AntintrusionZone::enablePartialization(bool enabled)
 
 void AntintrusionZone::setPartialization(bool _partialized)
 {
-#ifdef LAYOUT_TS_3_5
-	center_right_button->setImage(_partialized ? status_off : status_on);
-#endif
 	left_button->setImage(_partialized ? left_off : left_on);
 	partialized = _partialized;
 }

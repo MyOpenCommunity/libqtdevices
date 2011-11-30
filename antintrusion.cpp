@@ -442,9 +442,8 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	layout->setContentsMargins(10, 0, 20, 10);
 	partial_button = new BtButton(bt_global::skin->getImage("partial"));
 	layout->addWidget(partial_button);
-
 #else
-	layout->setContentsMargins(0, 0, 0, 25);
+	layout->setContentsMargins(0, 0, 0, 7);
 #endif
 
 	BannerContent *content = new BannerContent;
@@ -461,6 +460,7 @@ Antintrusion::Antintrusion(const QDomNode &config_node)
 	NavigationBar *nav_bar = new NavigationBar(bt_global::skin->getImage("partial"));
 	partial_button = nav_bar->forward_button;
 	buildPage(main_widget, content, nav_bar);
+	setSpacing(12);
 #endif
 
 	connect(partial_button, SIGNAL(clicked()), SLOT(partialize()));

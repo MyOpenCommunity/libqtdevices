@@ -857,10 +857,6 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_partial image="btnparzializzazione.png"/>
 		<img_alarm_state_off image="antifurtodis.png"/>
 		<img_alarm_state_on image="antifurtoins.png"/>
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
-		<img_zone_status_on image="imgantintrusione.png"/>
-		<img_zone_status_off image="imgantintrusioneoff.png"/>
 		<!-- Alarm page -->
 		<img_alarm_del image="btndel.png"/>
 		<img_technic_alarm_page image="imgalltec.png"/>
@@ -870,43 +866,43 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	</item>
 	<item cid="13001">
 		<!-- Antintrusion zone 1 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona1.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13002">
 		<!-- Antintrusion zone 2 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona2.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13003">
 		<!-- Antintrusion zone 3 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona3.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13004">
 		<!-- Antintrusion zone 4 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona4.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13005">
 		<!-- Antintrusion zone 5 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona5.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13006">
 		<!-- Antintrusion zone 6 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona6.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13007">
 		<!-- Antintrusion zone 7 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona7.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<item cid="13008">
 		<!-- Antintrusion zone 8 -->
-		<!-- uses: zone_active, zone_inactive, zone_status_on, zone_status_off -->
-		<img_zone image="imgzona8.png"/>
+		<img_zone_active image="btnsparzializza.png"/>
+		<img_zone_inactive image="btnparzializza.png"/>
 	</item>
 	<!-- End Antintrusion items -->
 	<!-- Start Energy data items -->
