@@ -33,7 +33,7 @@ SingleChoicePage::SingleChoicePage(const QString &title)
 {
 #ifdef LAYOUT_TS_3_5
 	buildPage(new SingleChoiceContent, new NavigationBar("ok"), title);
-	page_content->setRowCount(3);
+	setSpacing(10);
 #else
 	buildPage(new SingleChoiceContent, new NavigationBar, title);
 #endif
@@ -79,8 +79,6 @@ CheckableBanner::CheckableBanner(const QString &text, const QString &right_icon)
 	initBanner(bt_global::skin->getImage("unchecked"), right_icon, text);
 #ifdef LAYOUT_TS_10
 	layout()->setContentsMargins(0, 0, 0, 10);
-#else
-	layout()->setContentsMargins(0, 0, 0, 0);
 #endif
 	left_button->setCheckable(true);
 	left_button->setOffImage(bt_global::skin->getImage("unchecked"));
