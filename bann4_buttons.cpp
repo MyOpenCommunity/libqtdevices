@@ -154,8 +154,11 @@ Bann4Buttons::Bann4Buttons(QWidget *parent) : Banner(parent)
 
 	grid->addLayout(center_layout, 0, 1, 1, 2);
 	grid->addWidget(right_button, 0, 3);
+	// this used to call setColumnStretch(i, 1), but this gives more space to
+	// the lateral columns when the central columns contain stretchable items
+	// (for example one of the central buttons is hidden)
 	for (int i = 0; i < grid->columnCount(); ++i)
-		grid->setColumnStretch(i, 1);
+		grid->addItem(new QSpacerItem(0, 0), 0, i);
 
 	grid->addWidget(text, 1, 0, 1, 4);
 }
