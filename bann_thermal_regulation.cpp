@@ -169,6 +169,7 @@ void BannTemperature::setTemperatureText(const QString &text)
 BannTemperature::BannTemperature(QString descr, NonControlledProbeDevice *dev)
 {
 	initBanner(QString(), bt_global::skin->getImage("empty"), QString(), descr);
+	setCentralFont(FontManager::EXTERNAL_PROBE);
 	temperature_scale = static_cast<TemperatureScale>((*bt_global::config)[TEMPERATURE_SCALE].toInt());
 
 	updateTemperature(1235);
