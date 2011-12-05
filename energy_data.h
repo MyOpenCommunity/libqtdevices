@@ -148,7 +148,7 @@ public slots:
 	void toggleCurrency();
 
 private:
-	bool loadItems(const QDomNode &config_node);
+	bool loadItems(const QDomNode &config_node, bool parent_skipped);
 	bool checkTypeForCurrency(const QString &type, const QDomNode &conf);
 	void updateBanners();
 	EnergyView *next_page;

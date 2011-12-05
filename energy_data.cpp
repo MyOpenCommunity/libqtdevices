@@ -383,7 +383,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 
 #endif
 
-	bool show_currency_button = loadItems(config_node);
+	bool show_currency_button = loadItems(config_node, parent_skipped);
 	if (edit_costs)
 		edit_costs->setVisible(show_currency_button);
 
@@ -394,7 +394,7 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
-bool EnergyInterface::loadItems(const QDomNode &config_node)
+bool EnergyInterface::loadItems(const QDomNode &config_node, bool parent_skipped)
 {
 	Q_ASSERT_X(bt_global::skin->hasContext() , "EnergyInterface::loadItems", "Skin context not set!");
 	QString energy_type = getTextChild(config_node, "descr");
@@ -428,7 +428,7 @@ bool EnergyInterface::loadItems(const QDomNode &config_node)
 
 		views.append(next_page);
 
-		if (interfaces.count() > 1)
+		if (interfaces.count() > 1 || parent_skipped)
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		else
 			connect(b, SIGNAL(pageClosed()), SIGNAL(Closed()));
