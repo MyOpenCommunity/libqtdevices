@@ -186,6 +186,16 @@ void Bann2Buttons::setCentralText(const QString &t)
 		center_label->setScrollingText(t);
 }
 
+void Bann2Buttons::setCentralFont(FontManager::Type text_font)
+{
+	QFont font = bt_global::font->get(text_font);
+
+	if (center_icon)
+		center_icon->setFont(font);
+	else
+		center_label->setFont(font);
+}
+
 void Bann2Buttons::setDescriptionText(const QString &t)
 {
 	description->setScrollingText(t);

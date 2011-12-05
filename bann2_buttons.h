@@ -122,6 +122,7 @@ signals:
 
 protected:
 	void setBackgroundImage(const QString &i);
+	void setCentralFont(FontManager::Type text_font);
 
 	// an overloaded constructor to change the class of left/right buttons
 	template<class ButtonType>
