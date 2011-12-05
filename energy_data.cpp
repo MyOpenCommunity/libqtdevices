@@ -386,12 +386,6 @@ EnergyInterface::EnergyInterface(const QDomNode &config_node, bool edit_rates, b
 	bool show_currency_button = loadItems(config_node, parent_skipped);
 	if (edit_costs)
 		edit_costs->setVisible(show_currency_button);
-
-	// only skip page if parent was not skipped
-	if (parent_skipped)
-		next_page = NULL;
-	if (next_page)
-		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 }
 
 bool EnergyInterface::loadItems(const QDomNode &config_node, bool parent_skipped)
@@ -436,8 +430,11 @@ bool EnergyInterface::loadItems(const QDomNode &config_node, bool parent_skipped
 		page_content->appendBanner(b);
 	}
 
-	if (page_content->bannerCount() > 1)
+	// only skip page if parent was not skipped
+	if (page_content->bannerCount() > 1 || parent_skipped)
 		next_page = NULL;
+	if (next_page)
+		connect(next_page, SIGNAL(Closed()), SIGNAL(Closed()));
 
 	return is_any_interface_enabled;
 }
