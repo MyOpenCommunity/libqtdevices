@@ -43,7 +43,7 @@ enum RequestCurrent
 	REQ_CURRENT_MODE_1 = 113,
 	REQ_CURRENT_MODE_2 = 1134,
 	REQ_CURRENT_MODE_3 = 1130,
-	REQ_CURRENT_MODE_4 = 1132,
+	REQ_CURRENT_MODE_4 = 1134,
 	REQ_CURRENT_MODE_5 = 1132,
 };
 
@@ -95,7 +95,7 @@ namespace
 		case 3:
 			return TYPE_GAS;
 		case 4:
-			return TYPE_HEAT;
+			return TYPE_WATER;
 		case 5:
 			return TYPE_HEAT;
 		default:

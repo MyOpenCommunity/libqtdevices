@@ -259,7 +259,7 @@ void TestEnergyDevice::sendRequestCurrent4()
 	dev->current_updates->mode = 4;
 	dev->requestCurrent();
 	client_command->flush();
-	QString req(QString("*#18*%1*1132##").arg(where));
+	QString req(QString("*#18*%1*1134##").arg(where));
 	QCOMPARE(server->frameCommand(), req);
 }
 
@@ -833,7 +833,7 @@ void TestEnergyDevice::sendUpdateStart()
 	doSendUpdateStart(1, "*#18*%1*#1200#1*255##");
 	doSendUpdateStart(2, "*#18*%1*#1200#4*255##");
 	doSendUpdateStart(3, "*#18*%1*#1200#2*255##");
-	doSendUpdateStart(4, "*#18*%1*#1200#3*255##");
+	doSendUpdateStart(4, "*#18*%1*#1200#4*255##");
 	doSendUpdateStart(5, "*#18*%1*#1200#3*255##");
 }
 
@@ -852,7 +852,7 @@ void TestEnergyDevice::sendUpdateStop()
 	doSendUpdateStop(1, "*#18*%1*#1200#1*0##");
 	doSendUpdateStop(2, "*#18*%1*#1200#4*0##");
 	doSendUpdateStop(3, "*#18*%1*#1200#2*0##");
-	doSendUpdateStop(4, "*#18*%1*#1200#3*0##");
+	doSendUpdateStop(4, "*#18*%1*#1200#4*0##");
 	doSendUpdateStop(5, "*#18*%1*#1200#3*0##");
 }
 
