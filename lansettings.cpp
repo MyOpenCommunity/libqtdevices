@@ -134,6 +134,7 @@ Text2Column::Text2Column()
 {
 	main_layout = new QGridLayout(this);
 	main_layout->setSpacing(0);
+	main_layout->setContentsMargins(5, 5, 5, 5);
 }
 
 void Text2Column::setSpacing(int spacing)
@@ -195,7 +196,7 @@ LanSettings::LanSettings(const QDomNode &config_node)
 	main_layout->setSpacing(5);
 
 	QHBoxLayout *label_layout = new QHBoxLayout;
-	label_layout->setContentsMargins(5, 0, 5, 0);
+	label_layout->setContentsMargins(0, 0, 0, 0);
 	label_layout->addWidget(box_text);
 	main_layout->addLayout(label_layout);
 
