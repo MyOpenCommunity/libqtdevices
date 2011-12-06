@@ -220,7 +220,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- light group in automation -->
 		<cid>3013</cid>
-		<img_lamp_group_on>lampgrpon.png</img_lamp_group_on>
+		<img_lamp_group_on>imgillumgrpon.png</img_lamp_group_on>
 	</item>
 	<item>
 		<!-- dimmer group -->
@@ -479,9 +479,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- uses: on, off -->
 		<cid>11021</cid>
 		<img_volume_on_left>onamplgrpsx.png</img_volume_on_left>
-		<img_volume_off_left>offamplgrpsx.png</img_volume_off_left>
+		<img_volume_off_left>onamplgrpsx.png</img_volume_off_left>
 		<img_volume_on_right>onamplgrpdx.png</img_volume_on_right>
-		<img_volume_off_right>offamplgrpdx.png</img_volume_off_right>
+		<img_volume_off_right>onamplgrpdx.png</img_volume_off_right>
 	</item>
 	<item>
 		<!-- power amplifier -->
@@ -969,8 +969,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_alarm_del>btndel.png</img_alarm_del>
 		<img_technic_alarm_page>imgalltec.png</img_technic_alarm_page>
 		<img_intrusion_alarm_page>imgallintr.png</img_intrusion_alarm_page>
-		<img_tamper_alarm_page>imgallintr.png</img_tamper_alarm_page>
-		<img_panic_alarm_page>imgallintr.png</img_panic_alarm_page>
+		<img_tamper_alarm_page>imgallarmemanomissione.png</img_tamper_alarm_page>
+		<img_panic_alarm_page>imgallarmeantipanico.png</img_panic_alarm_page>
 	</item>
 	<item>
 		<!-- Antintrusion zone 1 -->
@@ -1204,6 +1204,16 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Air condition banner -->
 		<cid>8005</cid>
 		<img_central_icon>AirConditioning.png</img_central_icon>
+	</item>
+		<item>
+		<!-- central banner for external probes -->
+		<cid>8020</cid>
+		<img_empty>empty.png</img_empty>
+	</item>
+		<item>
+		<!-- central banner for non controlled zones -->
+		<cid>8030</cid>
+		<img_empty>empty.png</img_empty>
 	</item>
 	<item>
 		<!-- 4 zones central banner (in page 4 zones) -->

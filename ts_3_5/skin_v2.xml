@@ -116,8 +116,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Video door entry -->
 		<img_link_icon image="appvct.png"/>
 	</item>
-	<!-- End HomePage buttons -->
-	<!-- Start Settings items -->
+	<item cid="18">
+		<img_link_icon image="appLoadManagement.png"/>
+	</item>
 	<item cid="14001">
 		<!-- Beep -->
 		<img_state_on image="beepon.png"/>
@@ -190,8 +191,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_lamp_group_on image="lampgrpon.png"/>
 	</item>
 	<item cid="3013">
-		<!-- light group in automation -->
-		<img_lamp_group_on image="lampgrpon.png"/>
+		<img_lamp_group_on image="imgillumgrpon.png"/>
 	</item>
 	<item cid="2005">
 		<!-- dimmer group -->
@@ -271,7 +271,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- See Notes section on previous cid -->
 		<!-- uses: on -->
 		<img_gate image="canc.png"/>
-        </item>
+	</item>
 	<item cid="3006">
 		<!-- gate vct -->
 		<!-- See Notes section on previous cid -->
@@ -416,9 +416,9 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- amplifier group normal ambient -->
 		<!-- uses: on, off -->
 		<img_volume_on_left image="onamplgrpsx.png"/>
-		<img_volume_off_left image="offamplgrpsx.png"/>
+		<img_volume_off_left image="onamplgrpsx.png"/>
 		<img_volume_on_right image="onamplgrpdx.png"/>
-		<img_volume_off_right image="offamplgrpdx.png"/>
+		<img_volume_off_right image="onamplgrpdx.png"/>
 	</item>
 	<item cid="11022">
 		<!-- power amplifier -->
@@ -861,8 +861,8 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_alarm_del image="btndel.png"/>
 		<img_technic_alarm_page image="imgalltec.png"/>
 		<img_intrusion_alarm_page image="imgallintr.png"/>
-		<img_tamper_alarm_page image="imgallintr.png"/>
-		<img_panic_alarm_page image="imgallintr.png"/>
+		<img_tamper_alarm_page image="imgallarmemanomissione.png"/>
+		<img_panic_alarm_page image="imgallarmeantipanico.png"/>
 	</item>
 	<item cid="13001">
 		<!-- Antintrusion zone 1 -->
@@ -1059,6 +1059,12 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item cid="8005">
 		<!-- Air condition banner -->
 		<img_central_icon image="AirConditioning.png"/>
+	</item>
+	<item cid="8020">
+		<img_empty image="empty.png"/>
+	</item>
+	<item cid="8030">
+		<img_empty image="empty.png"/>
 	</item>
 	<item cid="8041">
 		<!-- 4 zones central banner (in page 4 zones) -->
