@@ -975,50 +975,50 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- Antintrusion zone 1 -->
 		<cid>13001</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza1on.png</img_zone_active>
+		<img_zone_inactive>parzializza1off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 2 -->
 		<cid>13002</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza2on.png</img_zone_active>
+		<img_zone_inactive>parzializza2off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 3 -->
 		<cid>13003</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza3on.png</img_zone_active>
+		<img_zone_inactive>parzializza3off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 4 -->
 		<cid>13004</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza4on.png</img_zone_active>
+		<img_zone_inactive>parzializza4off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 5 -->
 		<cid>13005</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza5on.png</img_zone_active>
+		<img_zone_inactive>parzializza5off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 6 -->
 		<cid>13006</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza6on.png</img_zone_active>
+		<img_zone_inactive>parzializza6off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 7 -->
 		<cid>13007</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza7on.png</img_zone_active>
+		<img_zone_inactive>parzializza7off.png</img_zone_inactive>
 	</item>
 	<item>
 		<!-- Antintrusion zone 8 -->
 		<cid>13008</cid>
-		<img_zone_active>btnsparzializza.png</img_zone_active>
-		<img_zone_inactive>btnparzializza.png</img_zone_inactive>
+		<img_zone_active>parzializza8on.png</img_zone_active>
+		<img_zone_inactive>parzializza8off.png</img_zone_inactive>
 	</item>
 	<!-- End Antintrusion items -->
 

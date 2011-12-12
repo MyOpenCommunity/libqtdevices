@@ -865,44 +865,36 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_panic_alarm_page image="imgallarmeantipanico.png"/>
 	</item>
 	<item cid="13001">
-		<!-- Antintrusion zone 1 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza1on.png"/>
+		<img_zone_inactive image="parzializza1off.png"/>
 	</item>
 	<item cid="13002">
-		<!-- Antintrusion zone 2 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza2on.png"/>
+		<img_zone_inactive image="parzializza2off.png"/>
 	</item>
 	<item cid="13003">
-		<!-- Antintrusion zone 3 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza3on.png"/>
+		<img_zone_inactive image="parzializza3off.png"/>
 	</item>
 	<item cid="13004">
-		<!-- Antintrusion zone 4 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza4on.png"/>
+		<img_zone_inactive image="parzializza4off.png"/>
 	</item>
 	<item cid="13005">
-		<!-- Antintrusion zone 5 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza5on.png"/>
+		<img_zone_inactive image="parzializza5off.png"/>
 	</item>
 	<item cid="13006">
-		<!-- Antintrusion zone 6 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza6on.png"/>
+		<img_zone_inactive image="parzializza6off.png"/>
 	</item>
 	<item cid="13007">
-		<!-- Antintrusion zone 7 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza7on.png"/>
+		<img_zone_inactive image="parzializza7off.png"/>
 	</item>
 	<item cid="13008">
-		<!-- Antintrusion zone 8 -->
-		<img_zone_active image="btnsparzializza.png"/>
-		<img_zone_inactive image="btnparzializza.png"/>
+		<img_zone_active image="parzializza8on.png"/>
+		<img_zone_inactive image="parzializza8off.png"/>
 	</item>
 	<!-- End Antintrusion items -->
 	<!-- Start Energy data items -->
