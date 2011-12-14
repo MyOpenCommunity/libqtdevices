@@ -1066,6 +1066,15 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- controlled probe banner (in page 4 zones) -->
 		<img_central_icon image="zona.png"/>
 	</item>
+	<item cid="8043">
+		<img_central_icon image="zona.png"/>
+	</item>
+	<item cid="8044">
+		<img_central_icon image="zona.png"/>
+	</item>
+	<item cid="8045">
+		<img_central_icon image="zona.png"/>
+	</item>
 	<item cid="8300">
 		<!-- controlled probe 4z details page -->
 		<img_fan_1_on image="fancoil1on.png"/>

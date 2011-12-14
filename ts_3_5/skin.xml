@@ -1221,8 +1221,23 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_central_icon>centrale.png</img_central_icon>
 	</item>
 	<item>
-		<!-- controlled probe banner (in page 4 zones) -->
+		<!-- zone 1 banner (in page 4 zones) -->
 		<cid>8042</cid>
+		<img_central_icon>zona.png</img_central_icon>
+	</item>
+	<item>
+		<!-- zone 2 banner (in page 4 zones) -->
+		<cid>8043</cid>
+		<img_central_icon>zona.png</img_central_icon>
+	</item>
+	<item>
+		<!-- zone 3 banner (in page 4 zones) -->
+		<cid>8044</cid>
+		<img_central_icon>zona.png</img_central_icon>
+	</item>
+	<item>
+		<!-- zone 4 banner (in page 4 zones) -->
+		<cid>8045</cid>
 		<img_central_icon>zona.png</img_central_icon>
 	</item>
 	<item>
