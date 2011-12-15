@@ -1026,8 +1026,14 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_autocheck_enabled image="a_autotest.png"/>
 		<img_autocheck_disabled image="d_autotest.png"/>
 	</item>
-	<!-- End Supervision items -->
-	<!-- Start Thermal regulation items -->
+	<item cid="6102">
+		<img_status_closed image="sng_plus.png"/>
+		<img_status_opened image="sng_plus_aperto.png"/>
+	</item>
+	<item cid="6103">
+		<img_status_closed image="sng_btest.png"/>
+		<img_status_opened image="sng_btest_aperto.png"/>
+	</item>
 	<item cid="8000">
 		<!-- thermal regulation page -->
 		<!-- uses: forward -->

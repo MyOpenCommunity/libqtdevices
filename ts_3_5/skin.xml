@@ -1172,6 +1172,24 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_autocheck_enabled>a_autotest.png</img_autocheck_enabled>
 		<img_autocheck_disabled>d_autotest.png</img_autocheck_disabled>
 	</item>
+	<item>
+		<cid>6102</cid>
+		<img_status_closed>sng_plus.png</img_status_closed>
+		<img_status_opened>sng_plus_aperto.png</img_status_opened>
+	</item>
+	<item>
+		<cid>6103</cid>
+		<img_status_closed>sng_btest.png</img_status_closed>
+		<img_status_opened>sng_btest_aperto.png</img_status_opened>
+	</item>
+	<item>
+		<cid>8001</cid>
+		<img_central_icon>sonda_esterna.png</img_central_icon>
+	</item>
+	<item>
+		<cid>8001</cid>
+		<img_central_icon>sonda_esterna.png</img_central_icon>
+	</item>
 	<!-- End Supervision items -->
 
 	<!-- Start Thermal regulation items -->
