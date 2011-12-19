@@ -1139,7 +1139,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<item>
 		<!-- Stop & Go banner -->
 		<cid>6001</cid>
-		<img_center_icon>S&amp;G_Chiuso.png</img_center_icon>
+		<img_center_icon>sng_Chiuso.png</img_center_icon>
 	</item>
 	<item>
 		<!-- Load diagnostic banner-->
@@ -1157,12 +1157,12 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<!-- Stop & Go pages -->
 		<!-- uses: forward -->
 		<cid>6100</cid>
-		<img_status_closed>S&amp;G_Chiuso.png</img_status_closed>
-		<img_status_opened>S&amp;G_Aperto.png</img_status_opened>
-		<img_status_locked>S&amp;G_Aperto_Blocco.png</img_status_locked>
-		<img_status_cc>S&amp;G_Aperto_Cortocircuito.png</img_status_cc>
-		<img_status_ground_fail>S&amp;G_Aperto_Guastoversoterra.png</img_status_ground_fail>
-		<img_status_vmax>S&amp;G_Aperto_Sovratensione.png</img_status_vmax>
+		<img_status_closed>sng_Chiuso.png</img_status_closed>
+		<img_status_opened>sng_Aperto.png</img_status_opened>
+		<img_status_locked>sng_Aperto_Blocco.png</img_status_locked>
+		<img_status_cc>sng_Aperto_Cortocircuito.png</img_status_cc>
+		<img_status_ground_fail>sng_Aperto_Guastoversoterra.png</img_status_ground_fail>
+		<img_status_vmax>sng_Aperto_Sovratensione.png</img_status_vmax>
 		<img_open>btnon.png</img_open>
 		<img_close>btnoff.png</img_close>
 		<img_autoreset_enabled>a_riarmo.png</img_autoreset_enabled>

@@ -995,8 +995,7 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 	<!-- End Load management items -->
 	<!-- Start Supervision items -->
 	<item cid="6001">
-		<!-- Stop & Go banner -->
-		<img_center_icon image="S&amp;G_Chiuso.png"/>
+		<img_center_icon image="sng_Chiuso.png"/>
 	</item>
 	<item cid="6002">
 		<!-- Load diagnostic banner-->
@@ -1009,14 +1008,12 @@ FileSelector > QLabel[Loading="true"] { background-color: #000000; background-im
 		<img_state_icon_critical image="Load3.png"/>
 	</item>
 	<item cid="6100">
-		<!-- Stop & Go pages -->
-		<!-- uses: forward -->
-		<img_status_closed image="S&amp;G_Chiuso.png"/>
-		<img_status_opened image="S&amp;G_Aperto.png"/>
-		<img_status_locked image="S&amp;G_Aperto_Blocco.png"/>
-		<img_status_cc image="S&amp;G_Aperto_Cortocircuito.png"/>
-		<img_status_ground_fail image="S&amp;G_Aperto_Guastoversoterra.png"/>
-		<img_status_vmax image="S&amp;G_Aperto_Sovratensione.png"/>
+		<img_status_closed image="sng_Chiuso.png"/>
+		<img_status_opened image="sng_Aperto.png"/>
+		<img_status_locked image="sng_Aperto_Blocco.png"/>
+		<img_status_cc image="sng_Aperto_Cortocircuito.png"/>
+		<img_status_ground_fail image="sng_Aperto_Guastoversoterra.png"/>
+		<img_status_vmax image="sng_Aperto_Sovratensione.png"/>
 		<img_open image="btnon.png"/>
 		<img_close image="btnoff.png"/>
 		<img_autoreset_enabled image="a_riarmo.png"/>
