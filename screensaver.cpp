@@ -46,7 +46,7 @@
 
 #include <stdlib.h> // RAND_MAX
 #define BALL_NUM 5
-
+#define REFRESH_TIME 1000
 namespace
 {
 	inline void setRandomColor(QWidget *w)
@@ -171,7 +171,7 @@ void ScreenSaver::setSlideshowInterval(int interval)
 }
 
 
-ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(120)
+ScreenSaverBalls::ScreenSaverBalls() : ScreenSaver(REFRESH_TIME)
 {
 }
 
@@ -277,7 +277,7 @@ void ScreenSaverBalls::refresh()
 }
 
 
-ScreenSaverLine::ScreenSaverLine() : ScreenSaver(150)
+ScreenSaverLine::ScreenSaverLine() : ScreenSaver(REFRESH_TIME)
 {
 	line = 0;
 }
