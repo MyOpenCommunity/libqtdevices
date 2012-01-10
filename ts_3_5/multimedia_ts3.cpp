@@ -146,7 +146,7 @@ void MultimediaContainer::currentPlayerExited()
 void MultimediaContainer::gotoPlayerPage()
 {
 	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
-		if (page->isPlayerInstanceRunning())
+		if (page && page->isPlayerInstanceRunning())
 		{
 			page->showPage();
 			break;
