@@ -130,7 +130,7 @@ void ScreenSaverPage::bannerSelected(int id)
 		timing->setVisible(id == ScreenSaver::SLIDESHOW);
 
 	bt_global::display->setScreenSaver(static_cast<ScreenSaver::Type>(id));
-#ifdef BT_HARDWARE_PXA255
+#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
 	if (id == ScreenSaver::NONE)
 		bt_global::display->setInactiveBrightness(BRIGHTNESS_OFF);
 #endif
