@@ -97,6 +97,12 @@ void BannStopAndGo::valueReceived(const DeviceValues &values_list)
 	StopAndGo::Status st;
 	QString icon;
 
+	// in theory we should check for the presence of all the dimensions below; however
+	// we know they are sent together in the same valueReceived() signal, hence checking
+	// for just one of them suffices
+	if (!values_list.contains(StopAndGoDevice::DIM_OPENED))
+		return;
+
 	if (!values_list[StopAndGoDevice::DIM_OPENED].toBool())
 		st = STATUS_CLOSED;
 	else
