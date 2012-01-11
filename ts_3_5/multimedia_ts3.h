@@ -44,6 +44,8 @@ public slots:
 private slots:
 	void gotoPlayerPage();
 	void currentPlayerExited();
+	void showUPnpPage();
+	void uPnpPageClosed();
 
 private:
 	void loadItems(const QDomNode &config_node);

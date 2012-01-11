@@ -101,8 +101,15 @@ void MultimediaContainer::loadItems(const QDomNode &config_node)
 			hbox->addWidget(l);
 			BtButton *b = new BtButton(bt_global::skin->getImage("forward"));
 			hbox->addWidget(b);
-			connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
-			connect(p, SIGNAL(Closed()), SLOT(showPage()));
+			if (p == upnp_page)
+			{
+				connect(b, SIGNAL(clicked()), this, SLOT(showUPnpPage()));
+			}
+			else
+			{
+				connect(b, SIGNAL(clicked()), p, SLOT(showPage()));
+				connect(p, SIGNAL(Closed()), SLOT(showPage()));
+			}
 			main_layout->addLayout(hbox);
 		}
 	}
@@ -146,9 +153,36 @@ void MultimediaContainer::currentPlayerExited()
 void MultimediaContainer::gotoPlayerPage()
 {
 	foreach (AudioPlayerPage *page, AudioPlayerPage::audioPlayerPages())
+	{
 		if (page && page->isPlayerInstanceRunning())
 		{
+			// Because from the current player we can turn back to the upnp page we
+			// have to connect/disconnect the upnp page from the MultimediaSectionPage.
+			// We do this even if the current player is not playing an upnp file (because
+			// it doesn't make problems).
+			if (upnp_page)
+			{
+				disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+				connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+			}
+
 			page->showPage();
 			break;
 		}
+	}
+}
+
+void MultimediaContainer::showUPnpPage()
+{
+	// Because the upnp_page is the same for every MultimediaSectionPage created
+	// we have to connect/disconnect the page from its container.
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	connect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	upnp_page->showPage();
+}
+
+void MultimediaContainer::uPnpPageClosed()
+{
+	disconnect(upnp_page, SIGNAL(Closed()), this, SLOT(uPnpPageClosed()));
+	showPage();
 }
