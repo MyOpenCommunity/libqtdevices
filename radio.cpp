@@ -353,11 +353,12 @@ RadioPage::RadioPage(RadioSourceDevice *_dev, const QString &title)
 
 #else
 	buildPage(createContent(), nav_bar, title);
-#endif
+
 	memory_number = 0;
 	memory_timer.setInterval(MEMORY_PRESS_TIME);
 	memory_timer.setSingleShot(true);
 	connect(&memory_timer, SIGNAL(timeout()), SLOT(storeMemoryStation()));
+#endif
 
 	request_frequency.setInterval(REQUEST_FREQUENCY_TIME);
 	request_frequency.setSingleShot(true);
@@ -448,12 +449,14 @@ QList<BtButton*> RadioPage::createMemoryButtons()
 
 #ifdef LAYOUT_TS_10
 	connect(button_group, SIGNAL(buttonClicked(int)), SLOT(changeStation(int)));
-#endif
 	connect(button_group, SIGNAL(buttonPressed(int)), SLOT(memoryButtonPressed(int)));
 	connect(button_group, SIGNAL(buttonReleased(int)), SLOT(memoryButtonReleased(int)));
+#else
+	connect(button_group, SIGNAL(buttonClicked(int)), SLOT(storeMemoryStation(int)));
+#endif
+
 	return buttons;
 }
-
 
 #ifdef LAYOUT_TS_10
 QWidget *RadioPage::createContent()
@@ -502,7 +505,6 @@ QWidget *RadioPage::createContent()
 
 	return content;
 }
-#endif
 
 void RadioPage::changeStation(int station_num)
 {
@@ -522,13 +524,21 @@ void RadioPage::memoryButtonReleased(int but_num)
 	memory_timer.stop();
 	qDebug("Memory button released: %d", but_num);
 }
+#endif
 
+#ifdef LAYOUT_TS_3_5
+void RadioPage::storeMemoryStation(int number)
+{
+	qDebug("Storing frequency to memory station %d", number);
+	dev->saveStation(QString::number(number));
+	beep();
+}
+#else
 void RadioPage::storeMemoryStation()
 {
 	qDebug("Storing frequency to memory station %d", memory_number);
 	dev->saveStation(QString::number(memory_number));
 
-#ifdef LAYOUT_TS_10
 	int state = bt_global::audio_states->currentState();
 
 	if (!QFile::exists(SOUND_PATH "beep.wav"))
@@ -544,12 +554,8 @@ void RadioPage::storeMemoryStation()
 	}
 	else if (state == AudioStates::BEEP_ON)
 		QTimer::singleShot(save_sound_delay, this, SLOT(playSaveSound()));
-#else // LAYOUT_TS_3_5
-	beep();
-#endif
 }
 
-#ifdef LAYOUT_TS_10
 void RadioPage::enterBeepState(int new_state)
 {
 	// avoid problems in case of state-change races

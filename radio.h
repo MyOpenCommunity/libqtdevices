@@ -115,8 +115,11 @@ private:
 	// if set, use a fixed 50Hz step for the frequency up/down, do automatic tuning otherwise
 	bool manual;
 
-	QTimer memory_timer, request_frequency;
+	QTimer request_frequency;
+#ifdef LAYOUT_TS_10
+	QTimer memory_timer;
 	int memory_number;
+#endif
 	BtButton *minus_button, *plus_button;
 	StateButton *auto_button, *manual_button;
 	RadioInfo *radio_info;
@@ -136,10 +139,14 @@ private slots:
 	void frequencyUp();
 	void frequencyDown();
 	void requestFrequency();
+#ifdef LAYOUT_TS_3_5
+	void storeMemoryStation(int number);
+#else
 	void changeStation(int station_num);
 	void memoryButtonPressed(int but_num);
 	void memoryButtonReleased(int but_num);
 	void storeMemoryStation();
+#endif
 
 	void previousStation();
 	void nextStation();
