@@ -63,6 +63,7 @@ public:
 	// and what are the active amplifiers in order to use the same setup of the
 	// sound diffusion during the alarm.
 	void setReceiveFrames(bool receive);
+	void setActiveArea(QString area);
 
 	static void addSource(SourceDevice *dev, int source_id);
 	static void addAmplifier(AmplifierDevice *dev, int address);
@@ -74,7 +75,12 @@ private slots:
 	void amplifierValueReceived(const DeviceValues &values_list);
 
 private:
+	void updateActiveSource(DeviceValues &values_list);
+
+private:
 	bool receive_frames;
+	QString area;
+
 	// the list of the sources used in sound diffusion
 	static QHash<int, SourceDevice*> sources;
 	// the list of the amplifiers used in sound diffusion

@@ -45,6 +45,7 @@ private slots:
 	void cleanupTestCase();
 	void init();
 
+	void setCurrentArea();
 	void sendSetVolume();
 
 	void receiveStatus();
@@ -52,6 +53,7 @@ private slots:
 	void receiveStatusOff();
 	void receiveSource();
 	void receiveRadioStation();
+	void receiveAreaUpdate();
 
 	void testStartAlarm();
 	void testStopAlarm();

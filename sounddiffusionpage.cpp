@@ -366,9 +366,9 @@ SoundAmbientAlarmPage::SoundAmbientAlarmPage(const QDomNode &conf_node, const QL
 	const QString &descr, AmplifierDevice *_general)
 {
 	general = _general;
+	dev = bt_global::add_device_to_cache(new AlarmSoundDiffDevice());
 
 	SkinContext context(getTextChild(conf_node, "cid").toInt());
-	QString area;
 
 	if (getTextChild(conf_node, "id").toInt() == SOUNDDIFFUSION)
 		area = "0";
@@ -470,6 +470,8 @@ void SoundAmbientAlarmPage::showPage()
 {
 	if (general)
 		general->turnOff();
+	if (dev)
+		dev->setActiveArea(area);
 
 	BannerPage::showPage();
 }

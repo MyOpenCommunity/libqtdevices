@@ -49,6 +49,7 @@ void TestAlarmSoundDiffDevice::cleanupTestCase()
 {
 	delete dev;
 	AlarmSoundDiffDevice::alarm_device = NULL; // shouldn't be necessary, but does not hurt
+	SourceDevice::setIsMultichannel(false);
 }
 
 void TestAlarmSoundDiffDevice::init()
@@ -163,6 +164,36 @@ void TestAlarmSoundDiffDevice::receiveRadioStation()
 
 	tss.check("*#22*5#2#21*11*22*33*7##", 7);
 	tss.check("*#22*2#21*6*4##", 4);
+}
+
+void TestAlarmSoundDiffDevice::receiveAreaUpdate()
+{
+	SourceDevice::setIsMultichannel(true);
+
+	SourceDevice source("21");
+	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_SOURCE);
+	tss.addReceiver(&source);
+
+	dev->setActiveArea("2");
+	tss.check("*22*2#4#2*5#2#21##", 21);
+
+	dev->setActiveArea("3");
+	tss.checkSignals("*22*2#4#2*5#2#21##", 0);
+}
+
+void TestAlarmSoundDiffDevice::setCurrentArea()
+{
+	SourceDevice::setIsMultichannel(true);
+
+	SourceDevice source("21");
+	DeviceTester tss(dev, AlarmSoundDiffDevice::DIM_SOURCE);
+	tss.addReceiver(&source);
+
+	dev->setActiveArea("3");
+	tss.checkSignals("*22*2#4#2*5#2#21##", 0);
+
+	dev->setActiveArea("2");
+	tss.check(21);
 }
 
 

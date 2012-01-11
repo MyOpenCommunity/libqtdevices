@@ -33,6 +33,7 @@ class QDomNode;
 class QLabel;
 class BtButton;
 class AmplifierDevice;
+class AlarmSoundDiffDevice;
 class VirtualAmplifierDevice;
 class VirtualSourceDevice;
 class ScrollingLabel;
@@ -127,6 +128,8 @@ private:
 
 private:
 	AmplifierDevice *general;
+	AlarmSoundDiffDevice *dev;
+	QString area;
 };
 
 

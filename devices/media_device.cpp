@@ -131,6 +131,17 @@ void AlarmSoundDiffDevice::setReceiveFrames(bool receive)
 	receive_frames = receive;
 }
 
+void AlarmSoundDiffDevice::setActiveArea(QString active_area)
+{
+	area = active_area;
+
+	DeviceValues alarm_values_list;
+	updateActiveSource(alarm_values_list);
+
+	if (alarm_values_list.count() > 0)
+		emit valueReceived(alarm_values_list);
+}
+
 void AlarmSoundDiffDevice::requestStation(int source)
 {
 	// If the source is not a radio, we skip the frame
@@ -273,9 +284,23 @@ void AlarmSoundDiffDevice::sourceValueReceived(const DeviceValues &values_list)
 			alarm_values_list[DIM_SOURCE] = source->getSourceId();
 		}
 	}
+	else if (values_list.contains(SourceDevice::DIM_AREAS_UPDATED))
+		updateActiveSource(alarm_values_list);
 
 	if (alarm_values_list.count() > 0)
 		emit valueReceived(alarm_values_list);
+}
+
+void AlarmSoundDiffDevice::updateActiveSource(DeviceValues &values_list)
+{
+	foreach (SourceDevice *source, sources)
+	{
+		if (source->isActive(area))
+		{
+			values_list[DIM_SOURCE] = source->getSourceId();
+			break;
+		}
+	}
 }
 
 
