@@ -49,6 +49,9 @@ Loads::Loads(const QDomNode &config_node)
 {
 	SkinContext context(getTextChild(config_node, "cid").toInt());
 	buildPage();
+#ifdef LAYOUT_TS_3_5
+	setSpacing(10);
+#endif
 	loadItems(config_node);
 }
 
