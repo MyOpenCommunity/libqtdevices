@@ -564,6 +564,16 @@ void TestScenEvoDevicesCond::testAux()
 	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), true);
 }
 
+void TestScenEvoDevicesCond::testAuxAtStart()
+{
+	DeviceConditionAux cond(mock_display, "0", dev_where);
+	QSignalSpy spy(&cond, SIGNAL(condSatisfied()));
+	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), true);
+	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*9*1*%1##").arg(dev_where), false);
+	checkCondition(spy, QString("*9*0*%1##").arg(dev_where), true);
+}
+
 void TestScenEvoDevicesCond::testAuxConditionChange1()
 {
 	DeviceConditionAux cond(mock_display, "0", dev_where);

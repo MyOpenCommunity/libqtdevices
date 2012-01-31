@@ -204,8 +204,9 @@ protected:
 
 		Build the %DeviceCondition object and use the DeviceConditionDisplayInterface
 		\a cond_display object the draw the graphical representation.
+		\a start_initialized initial value for the 'initialized' field
 	*/
-	DeviceCondition(DeviceConditionDisplayInterface *cond_display);
+	DeviceCondition(DeviceConditionDisplayInterface *cond_display, bool start_initialized = false);
 
 	// The method to update the descriptive text of the condition using the
 	// the DeviceConditionDisplay widget.

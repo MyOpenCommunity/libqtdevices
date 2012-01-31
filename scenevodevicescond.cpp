@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -153,11 +153,11 @@ void DeviceConditionDisplayTemperature::updateText(int min_condition_value, int 
 }
 
 
-DeviceCondition::DeviceCondition(DeviceConditionDisplayInterface *cond_display)
+DeviceCondition::DeviceCondition(DeviceConditionDisplayInterface *cond_display, bool start_initialized)
 {
 	condition_display = cond_display;
 	satisfied = false;
-	initialized = false;
+	initialized = start_initialized;
 	dev = 0;
 }
 
@@ -1077,7 +1077,7 @@ bool DeviceConditionTemperature::parseValues(const DeviceValues &values_list)
 
 
 DeviceConditionAux::DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where) :
-	DeviceCondition(cond_display)
+	DeviceCondition(cond_display, true)
 {
 	set_condition_value(trigger);
 	set_current_value(DeviceCondition::get_condition_value());

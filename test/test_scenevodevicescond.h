@@ -91,6 +91,7 @@ private slots:
 	void testExternalTemperatureConditionChange2();
 	void testExternalTemperatureConditionChange3();
 	void testAux();
+	void testAuxAtStart();
 	void testAuxConditionChange1();
 	void testAuxConditionChange2();
 	void testAuxConditionChange3();
