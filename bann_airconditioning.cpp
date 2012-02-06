@@ -53,6 +53,7 @@ SingleSplit::SingleSplit(QString descr, bool show_right_button, AirConditioningI
 	}
 
 	initBanner(img_off, bt_global::skin->getImage(air_single), show_right_button ? img_forward : QString(), descr);
+	setCentralFont(FontManager::EXTERNAL_PROBE);
 	connect(left_button, SIGNAL(clicked()), SLOT(setDeviceOff()));
 
 	if (dev_probe)
