@@ -247,7 +247,7 @@ bool ControlledProbeDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			if (!has_central_info)
 			{
 				has_central_info = true;
-				sendFrame("*#" + who + "*" + where_full);
+				sendFrame("*#" + who + "*" + where_full + "##");
 			}
 		}
 	}
