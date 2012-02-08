@@ -403,6 +403,20 @@ bool ClientWriter::sendFrames(const QList<QByteArray> &to_send)
 		socket->abort();
 		qDebug() << "Disconnect for inactivity of" << inactivity_time.elapsed() / 1000
 			<< "seconds on client" << qPrintable(description);
+
+		// if there are frame in ack_source_list means that these frames weren't send by openserver,
+		// so we resend every frame, when the connection is up, modifying send_on_connected.
+		int size = ack_source_list.size();
+		for (int i = 0; i < size; i++)
+		{
+			QByteArray actual_frame = ack_source_list.takeFirst();
+			if (actual_frame != __NONE__)
+			{
+				qDebug() << "ClientWriter::sendFrames()" << qPrintable(description) << "NAK for:" << actual_frame
+					<< "it will be resend";
+				send_on_connected.append(actual_frame);
+			}
+		}
 	}
 
 	QAbstractSocket::SocketState state = socket->state();
