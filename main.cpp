@@ -160,9 +160,18 @@ static void loadGeneralConfig(QString xml_file, GeneralConfig &general_config)
 			QDomNode el = getElement(qdom_config, "root/sw");
 			if (!el.isNull())
 			{
+#ifndef BT_HARDWARE_PXA270
+				QDomNode v = getElement(el, "BTouch/logverbosity");
+				if (!v.isNull())
+				{
+					bool ok;
+					general_config.verbosity_level = v.toElement().text().toInt(&ok, 16);
+				}
+#else
 				QDomElement v = getElement(el, "BTouch/logverbosity");
 				if (!v.isNull())
 					general_config.verbosity_level = v.text().toInt();
+#endif
 
 				QDomElement r = getElement(el, "BTouch/reconnectiontime");
 				if (!r.isNull())
@@ -239,9 +248,7 @@ int main(int argc, char **argv)
 	VERBOSITY_LEVEL = general_config.verbosity_level;
 
 	// Fine Lettura configurazione applicativo
-#ifndef BT_HARDWARE_PXA270
-	signal(SIGUSR1, app_logger->signal_verbosity_up);
-#else
+#ifdef BT_HARDWARE_PXA270
 	signal(SIGUSR1, MySignal);
 #endif
 	struct sigaction sa;
