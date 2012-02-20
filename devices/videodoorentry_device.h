@@ -185,6 +185,9 @@ public:
 		VCT_TYPE,  // the value doesn't matter
 		RESTORE_MM_AMPLI = 64,
 		SILENCE_MM_AMPLI = 63,
+		TELE_ANSWER = 77,
+		TELE_TIMEOUT = 78,
+		TELE_SESSION = 79
 	};
 
 	/*!
@@ -290,6 +293,16 @@ public slots:
 	void releaseLock() const;
 
 	/*!
+		\brief Send  Start Teleloop frame.
+	*/
+	void startTeleLoop(QString) const;
+
+	/*!
+		\brief Send  Association with Teleloop frame.
+	*/
+	void linkTeleLoop(int, QString) const;
+
+	/*!
 		\brief Switch from a camera to another one.
 
 		Change the current camera watched. After this command, a valueReceived()
@@ -368,6 +381,7 @@ private:
 	bool is_calling;
 	bool ip_call;
 	bool is_waiting_pager_answer;
+	bool is_associate;
 };
 
 #endif //VIDEODOOR_ENTRY_DEVICE_H

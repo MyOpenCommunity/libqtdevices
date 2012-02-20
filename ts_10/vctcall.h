@@ -157,6 +157,7 @@ namespace VCTCallPrivate
 		QProcess video_grabber;
 
 		void activateAudio();
+		void activateAudioTeleloop();
 	};
 
 	/*!
@@ -212,6 +213,7 @@ public:
 
 	static void setHandsFree(bool on);
 	static void setProfStudio(bool on);
+	static void setTeleLoop(bool on);
 
 	virtual int sectionId() const;
 	virtual void showPage();

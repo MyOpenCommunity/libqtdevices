@@ -40,6 +40,7 @@ class StateButton;
 class ItemTuning;
 class QDomNode;
 class QSignalMapper;
+class QTimer;
 
 /*!
 	\defgroup VideoDoorEntry Video Door Entry
@@ -210,6 +211,7 @@ private:
 	int ringtone;
 	bool already_closed;
 	void callStarted();
+	void callStartedTeleloop();
 };
 
 
@@ -303,6 +305,47 @@ protected:
 	virtual void updateStatus();
 };
 
+/*!
+	\ingroup VideoDoorEntry
+	\ingroup Settings
+	\brief Associate teleloop for video/intercom calls.
+
+	The banner represents the possibility to associate a teleloop for intercom
+	or video calls. Associated with the banner there is an icon on the Toolbar
+	present if the association is on.
+*/
+class TeleLoop : public Bann2StateButtons
+{
+Q_OBJECT
+public:
+	TeleLoop(bool _status, int _mod, int _item_id);
+
+protected:
+	virtual void updateStatus();
+	/*!
+		\brief The tray button (used as a simply icon).
+	*/
+	BtButton *tray_button;
+
+private slots:
+	void valueReceived(const DeviceValues &values_list);
+	void associateFailed();
+	void associateFinished();
+	void associate();
+
+private:
+	VideoDoorEntryDevice *dev;
+	QTimer *timeout_timer;
+	bool is_linking;
+	bool is_linked;
+	bool status;
+	void startLink();
+	int item_id;
+	int mod;
+	void linkDown();
+	void linkWait();
+	void linkUp();
+};
 
 #endif // #ifdef LAYOUT_TS_3_5
 

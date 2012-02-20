@@ -65,6 +65,7 @@ namespace VCTCallPrivate
 		ItemTuningStatus volume_status;
 		bool hands_free;
 		bool prof_studio;
+		bool tele_loop;
 		bool call_active;
 		bool move_enabled;
 		bool video_enabled;
@@ -100,10 +101,11 @@ StateButton *getButton(const QString &image_path)
 
 VCTCallStatus::VCTCallStatus()
 {
-	// Hands free and Professional studio are initialized here, see the comment
-	// above regarding the resetStatus() method.
+	/* Hands free, Tele loop and Professional studio are initialized here, 
+	 see the comment above regarding the resetStatus() method.*/
 	hands_free = false;
 	prof_studio = false;
+	tele_loop = false;
 	video_enabled = true;
 	resetStatus();
 }
@@ -112,6 +114,7 @@ void VCTCallStatus::resetStatus()
 {
 	connected = false;
 	stopped = false;
+	tele_loop = false;
 	mute = StateButton::DISABLED;
 	call_active = false;
 	move_enabled = false;
@@ -213,6 +216,7 @@ VCTCall::VCTCall(VideoDoorEntryDevice *d, FormatVideo f)
 	QString call_icon = bt_global::skin->getImage("call");
 	call_accept = new StateButton;
 	call_accept->setOffImage(getBostikName(call_icon, "off"));
+	call_accept->setDisabledImage(getBostikName(call_icon, "dis"));
 	call_accept->setOnImage(getBostikName(call_icon, "on"));
 	connect(call_accept, SIGNAL(clicked()), SLOT(toggleCall()));
 
@@ -311,9 +315,14 @@ void VCTCall::changeBrightness(int value)
 
 void VCTCall::refreshStatus()
 {
-	call_accept->setStatus(call_status->connected);
-	volume->setStatus(call_status->volume_status);
-	mute_button->setStatus(call_status->mute);
+	if (VCTCall::call_status->tele_loop)
+		call_accept->setStatus(StateButton::DISABLED);
+	else
+	{
+		call_accept->setStatus(call_status->connected);
+		volume->setStatus(call_status->volume_status);
+		mute_button->setStatus(call_status->mute);
+	}
 	camera->setMoveEnabled(call_status->move_enabled);
 
 	image_control->brightness->setStatus(call_status->brightness_status);
@@ -351,6 +360,15 @@ void VCTCall::activateAudio()
 
 	call_status->connected = true;
 	call_status->mute = StateButton::OFF;
+	refreshStatus();
+}
+
+void VCTCall::activateAudioTeleloop()
+{
+	bt_global::audio_states->toState(AudioStates::MUTE);
+
+	call_status->connected = true;
+	call_status->mute = StateButton::ON;
 	refreshStatus();
 }
 
@@ -418,7 +436,6 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		{
 			return;
 		}
-
 	DeviceValues::const_iterator it = values_list.constBegin();
 	while (it != values_list.constEnd())
 	{
@@ -491,6 +508,13 @@ void VCTCall::valueReceived(const DeviceValues &values_list)
 		case VideoDoorEntryDevice::ANSWER_CALL:
 			if (!call_status->connected)
 				activateAudio();
+			break;
+		case VideoDoorEntryDevice::TELE_SESSION:
+			if (!call_status->connected)
+			{
+				VCTCallPage::setTeleLoop(true);
+				activateAudioTeleloop();
+			}
 			break;
 		}
 		++it;
@@ -792,6 +816,11 @@ void VCTCallPage::setHandsFree(bool on)
 void VCTCallPage::setProfStudio(bool on)
 {
 	VCTCall::call_status->prof_studio = on;
+}
+
+void VCTCallPage::setTeleLoop(bool on)
+{
+	VCTCall::call_status->tele_loop = on;
 }
 
 void VCTCallPage::incomingCall()

@@ -46,6 +46,7 @@ enum
 	MOVE_DOWN = 60,
 	MOVE_LEFT = 61,
 	MOVE_RIGHT = 62,
+	TELE_START = 76,
 	VDE_WHAT_MAX = 9000
 };
 
@@ -194,6 +195,16 @@ void VideoDoorEntryDevice::releaseLock() const
 	BasicVideoDoorEntryDevice::releaseLock(is_calling ? caller_address : where);
 }
 
+void VideoDoorEntryDevice::startTeleLoop(QString pi_address) const
+{
+	sendCommand(QString::number(TELE_START), pi_address);
+}
+
+void VideoDoorEntryDevice::linkTeleLoop(int _mod, QString pi_address) const
+{
+	sendCommand(QString("%1#%2").arg(TELE_ANSWER).arg(_mod), pi_address);
+}
+
 void VideoDoorEntryDevice::cycleExternalUnits() const
 {
 	// Cycling on the external units configured means send a specific frame to
@@ -278,14 +289,14 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		values_list[what] = true;
 		return true;
 	}
-
 	// We want parse all frames if we are in connected state, and only the CALL
 	// frame if we are in unconnected state.
 	bool is_call = (what == CALL);
 	bool is_my_where = (QString::fromStdString(msg.whereFull()) == where);
 	bool is_broadcast_where = (QString::fromStdString(msg.whereFull()) == QString("4"));
-	bool is_pager_call = (msg.whatArgN(0) % 100 == 14);
+	bool is_pager_call = (msg.whatArgCnt() > 0 && msg.whatArgN(0) % 100 == 14);
 	bool is_answer_call = (what == ANSWER_CALL);
+	bool is_tele_association = (what == TELE_ANSWER || what == TELE_TIMEOUT);
 
 	// if someone else answers to a pager call, I send an END_OF_CALL frame
 	if (!is_waiting_pager_answer && is_pager_call && is_answer_call)
@@ -297,7 +308,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	if (!is_calling)
 	{
-		if (!is_call) // ignores all frames except CALL
+		if (!is_call && !is_tele_association) // ignores all frames except CALL
 			return false;
 		if (!is_my_where && !is_broadcast_where) // ignores if where is not mine
 			return false;
@@ -423,6 +434,16 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			values_list[END_OF_CALL] = true;
 		}
 		break;
+	case TELE_ANSWER:
+		values_list[TELE_ANSWER] = msg.whatArgN(0);
+		break;
+	case TELE_TIMEOUT:
+		values_list[TELE_TIMEOUT] = true;
+		break;
+	case TELE_SESSION:
+		values_list[TELE_SESSION] = true;
+		break;
+
 	default:
 		return false;
 	}

@@ -67,6 +67,7 @@
 // Another executable of zarlink, used in a pipeline to adjust the volume of the call.
 #define ZARLINK_VOLUME  "/home/bticino/bin/zarlink2"
 
+#define TELELOOP_TIMEOUT_CONNECTION 11
 
 #define CALL_NOTIFIER_TIMEOUT 30000
 
@@ -90,6 +91,7 @@ enum ItemsSettings
 	ITEM_HANDSFREE = 14251,
 	ITEM_PROF_STUDIO = 14252,
 	ITEM_RING_EXCLUSION = 14253,
+	ITEM_TELE_LOOP = 14254
 };
 
 #ifdef LAYOUT_TS_10
@@ -661,6 +663,14 @@ void IntercomCallPage::callStarted()
 	volume->enable();
 }
 
+void IntercomCallPage::callStartedTeleloop()
+{
+	if (dev->ipCall())
+		bt_global::audio_states->toState(AudioStates::IP_INTERCOM_CALL);
+	else
+		bt_global::audio_states->toState(AudioStates::SCS_INTERCOM_CALL);
+}
+
 void IntercomCallPage::toggleMute()
 {
 	StateButton::Status st = mute_button->getStatus();
@@ -723,6 +733,10 @@ void IntercomCallPage::valueReceived(const DeviceValues &values_list)
 		case VideoDoorEntryDevice::ANSWER_CALL:
 			if (call_active)
 				callStarted();
+			break;
+		case VideoDoorEntryDevice::TELE_ANSWER:
+			if (call_active)
+				callStartedTeleloop();
 			break;
 		case VideoDoorEntryDevice::END_OF_CALL:
 			if (call_active)
@@ -818,10 +832,15 @@ void VctSettings::loadItems(const QDomNode &config_node)
 		case ITEM_RING_EXCLUSION:
 			b = new RingtoneExclusion(status, item_id);
 			break;
+		case ITEM_TELE_LOOP:
+		{
+			int mod = getTextChild(item, "mod").toInt();
+			b = new TeleLoop(status, mod, item_id);
+		}
+			break;
 		default:
 			Q_ASSERT_X(false, "VctSettings::loadItems", qPrintable(QString("Unknown item %1").arg(id)));
 		}
-
 		if (b)
 			page_content->appendBanner(b);
 	}
@@ -864,6 +883,143 @@ void RingtoneExclusion::updateStatus()
 {
 	BannOnTray::updateStatus();
 	VideoDoorEntry::ring_exclusion = left_button->getStatus() == StateButton::ON;
+}
+
+
+TeleLoop::TeleLoop(bool _status, int _mod, int _item_id)
+{
+	is_linking = false;
+	is_linked = _status;
+	item_id = _item_id;
+	mod = _mod;
+	status = _status;
+
+	initBanner("teleloop_off", QString(), tr("TeleLoop Association"));
+	setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+	left_button->setOffImage(bt_global::skin->getImage("teleloop_off"));
+	left_button->setDisabledImage(bt_global::skin->getImage("teleloop_wait"));
+	left_button->setOnImage(bt_global::skin->getImage("teleloop_on"));
+	left_button->setStatus(status);
+	connect(left_button, SIGNAL(clicked()), SLOT(associate()));
+
+	timeout_timer = new QTimer(this);
+	timeout_timer->setSingleShot(true);
+	timeout_timer->setInterval( TELELOOP_TIMEOUT_CONNECTION * 1000);
+	connect(timeout_timer, SIGNAL(timeout()), SLOT(associateFailed()));
+
+	tray_button = new BtButton(bt_global::skin->getImage("tray_teleloop"));
+	bt_global::btmain->trayBar()->addButton(tray_button, TrayBar::TELE_LOOP);
+	updateStatus();
+
+	dev = bt_global::add_device_to_cache(new VideoDoorEntryDevice((*bt_global::config)[PI_ADDRESS],
+		(*bt_global::config)[PI_MODE]));	
+	connect(dev, SIGNAL(valueReceived(DeviceValues)), SLOT(valueReceived(DeviceValues)));
+	if (status)
+		dev->linkTeleLoop(mod, (*bt_global::config)[PI_ADDRESS]);
+}
+
+void TeleLoop::updateStatus()
+{
+	tray_button->setVisible(left_button->getStatus() == StateButton::ON);
+}
+
+void TeleLoop::linkDown()
+{
+	left_button->setStatus(StateButton::OFF);
+	updateStatus();
+	is_linked = false;
+	if (item_id != -1)
+	{
+		mod = 0;
+		setCfgValue("enable", is_linked, item_id);
+		setCfgValue("mod", mod, item_id);
+	}
+}
+
+void TeleLoop::linkWait()
+{
+	left_button->setStatus(StateButton::DISABLED);
+}
+
+void TeleLoop::linkUp()
+{
+	left_button->setStatus(StateButton::ON);
+	updateStatus();
+}
+
+void TeleLoop::associate()
+{
+	is_linking = true;
+	startLink();
+	linkWait();
+}
+
+void TeleLoop::valueReceived(const DeviceValues &values_list)
+{
+	DeviceValues::const_iterator it = values_list.constBegin();
+	while (it != values_list.constEnd())
+	{
+		switch (it.key()) {
+			case VideoDoorEntryDevice::TELE_ANSWER:
+			if (is_linking)
+			{
+				int mod_status = it.value().toInt();
+				if (mod > 0)
+					is_linked = true;
+				if (mod_status > 0 && mod_status != mod && item_id != -1)
+				{
+					is_linked = true;
+					mod = mod_status;
+					setCfgValue("enable", is_linked, item_id);
+					setCfgValue("mod", mod_status, item_id);
+				}
+			associateFinished();
+			}
+			break;
+			case VideoDoorEntryDevice::TELE_TIMEOUT:
+				is_linking = false;
+				if (mod < 1)
+				{
+					is_linked = false;
+					associateFailed();
+				}
+			break;
+		}
+		break;
+	}
+	++it;
+}
+
+void TeleLoop::startLink()
+{
+	dev->startTeleLoop((*bt_global::config)[PI_ADDRESS]);
+	timeout_timer->start();
+}
+
+void TeleLoop::associateFailed()
+{
+	timeout_timer->stop();
+	is_linking = false;
+	if (mod < 1)
+	{
+		is_linked = false;
+		linkDown();
+	}
+	else
+		left_button->setStatus(StateButton::ON);
+}
+
+void TeleLoop::associateFinished()
+{
+	timeout_timer->stop();
+	if (!is_linked)
+	{
+		associateFailed();
+		return;
+	}
+	is_linking = false;
+	linkUp();
 }
 
 #endif

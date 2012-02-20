@@ -49,6 +49,7 @@ public:
 		HANDS_FREE,
 		PROF_STUDIO,
 		AUDIO_PLAYER,
+		TELE_LOOP
 	};
 
 	TrayBar();
