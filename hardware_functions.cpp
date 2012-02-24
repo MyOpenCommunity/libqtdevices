@@ -281,13 +281,47 @@ void setBacklight(bool b)
 	getName(name);
 	if (!strncmp(name, "DINGO", strlen("DINGO")))
 	{
-		if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
+		if (b)
 		{
-			fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_WRONLY);
-			if (fd >= 0)
+			if (QFile::exists("/sys/class/davinci_display/ch0/enable"))
 			{
-				writeValueToFd(fd, !b);
-				close(fd);
+				fd = open("/sys/class/davinci_display/ch0/enable", O_WRONLY);
+				if (fd >= 0)
+				{
+					write(fd, "on", strlen("on"));
+					close(fd);
+				}
+			}
+			usleep(100000);
+			if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
+			{
+				fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_WRONLY);
+				if (fd >= 0)
+				{
+					writeValueToFd(fd, !b);
+					close(fd);
+				}
+			}
+		}
+		else
+		{
+			if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
+			{
+				fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_WRONLY);
+				if (fd >= 0)
+				{
+					writeValueToFd(fd, 4);
+					close(fd);
+				}
+			}
+			if (QFile::exists("/sys/class/davinci_display/ch0/enable"))
+			{
+				fd = open("/sys/class/davinci_display/ch0/enable", O_WRONLY);
+				if (fd >= 0)
+				{
+					write(fd, "off", strlen("off"));
+					close(fd);
+				}
 			}
 		}
 	}

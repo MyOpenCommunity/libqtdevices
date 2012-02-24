@@ -861,6 +861,7 @@ void BtMain::handleSignal(int signal_number)
 	else if (signal_number == SIGTERM)
 	{
 		qDebug("Terminating on SIGTERM");
+		bt_global::display->freeze(false);
 		qApp->quit();
 	}
 }
