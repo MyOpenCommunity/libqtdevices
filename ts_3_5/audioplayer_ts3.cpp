@@ -87,13 +87,14 @@ AudioPlayerPage::AudioPlayerPage(MediaType t)
 	connect(player, SIGNAL(mplayerPaused()), SLOT(stopped()));
 	connect(player, SIGNAL(mplayerStopped()), SLOT(refreshPlayInfo()));
 
+	type = t;
+
 	// a radio channel is without an end. If mplayer has finished maybe there is an error.
 	const char *done_slot = (type == IP_RADIO) ? SLOT(stop()) : SLOT(mplayerDone());
 	connect(player, SIGNAL(mplayerDone()), done_slot);
 
 	list_manager = 0;
 
-	type = t;
 	popup_mode = false;
 	if (type == AudioPlayerPage::UPNP_FILE)
 	{
