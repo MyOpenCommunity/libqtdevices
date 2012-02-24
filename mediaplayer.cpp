@@ -296,8 +296,7 @@ QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 #ifdef BT_HARDWARE_X11
 	return QList<QString>();
 #else
-	return QList<QString>() << "-ac" << "mad," << "-af" << "channels=2,resample=48000"
-			<< "-ao" << MPLAYER_AUDIO_DEVICE
+	return QList<QString>() << "-ao" << MPLAYER_AUDIO_DEVICE
 			<< "-ss" << QString::number(seek_time);
 #endif
 }
