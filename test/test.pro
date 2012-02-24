@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS_WARN_ON += -Wno-unused-parameter
 
 TEMPLATE = app
 
-LIBS+= -L ../../common_files/lib/x86 -lcommon -lssl
+LIBS+= -L ../../stackopen/common_files/lib/x86 -lcommon -lssl
 
 VPATH = ..
 
