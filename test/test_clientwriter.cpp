@@ -324,3 +324,40 @@ void TestClientWriter::testMultipleAckNak()
 	QCOMPARE(frame_sender.ack_history, expected);
 }
 
+void TestClientWriter::testResendUnackedFramesOnReconnect()
+{
+	ClientWriter *client = createClient(Client::COMMAND);
+	QTcpSocket *command = newConnection(client);
+
+	FrameSenderMock frame_sender(client, 0);
+
+	frame_sender.subscribeAck(1);
+
+	QStringList frames;
+	frames << "*#18*12*250##" << "*#1*82##" << "*#18*51*#1200#1*255##" << "*#1*12##";
+	frames << "*#5*#1##" << "*#2*16##" << "*#1*11##" << "*#0*01##" << "*8*37#1*11##";
+
+	foreach (QString frame, frames)
+		client->sendFrameOpen(frame);
+
+	client->flush();
+
+	for (int i = 0; i < frames.size() - 2; ++i)
+		command->write(ACK_FRAME);
+
+	command->flush();
+	waitForData(client);
+
+	QCOMPARE(client->ack_source_list.count(), 2);
+	QCOMPARE(client->socket->state(), QAbstractSocket::ConnectedState);
+
+	client->inactivity_time = client->inactivity_time.addSecs(-1000); // must be greater than CONNECTION_TIMEOUT_SECS
+	client->sendFrameOpen("*#18*12*250##");
+	client->flush();
+
+	QCOMPARE(client->socket->state(), QAbstractSocket::ConnectingState);
+	QCOMPARE(client->ack_source_list.count(), 0);
+	QCOMPARE(client->send_on_connected.count(), 3);
+	QCOMPARE(client->send_on_connected,
+			 QList<QByteArray>() << "*#0*01##" << "*8*37#1*11##" << "*#18*12*250##");
+}

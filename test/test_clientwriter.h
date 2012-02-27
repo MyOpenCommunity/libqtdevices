@@ -65,6 +65,7 @@ private slots:
 	void testAckMultipleWho();
 	void testAckMultipleReceivers();
 	void testMultipleAckNak();
+	void testResendUnackedFramesOnReconnect();
 
 private:
 	QTcpServer *server;
