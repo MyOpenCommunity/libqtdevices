@@ -714,9 +714,11 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 void TestEnergyDevice::receiveMonthlyAverage()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_MONTLY_AVERAGE, DeviceTester::MULTIPLE_VALUES);
+	// use a fixed month different from the current one, to avoid the condition in EnergyDevice::fillMonthlyAverage
+	int month = QDate::currentDate().month() == 2 ? 3 : 2;
 
-	t.check(QString("*#18*%1*52#8#2*106##").arg(where),
-			EnergyValue(QDate(2008, 2, 1), qRound(1.0 * 106 / QDate(2008, 2, 1).daysInMonth())));
+	t.check(QString("*#18*%1*52#8#%2*106##").arg(where).arg(month),
+			EnergyValue(QDate(2008, month, 1), qRound(1.0 * 106 / QDate(2008, month, 1).daysInMonth())));
 	t.check(QString("*#18*%1*53*95##").arg(where),
 			EnergyValue(QDate::currentDate(), qRound(1.0 * 95 / QDate::currentDate().day())));
 	t.check(QString("*#18*%1*53*4294967295##").arg(where),
