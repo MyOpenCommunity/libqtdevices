@@ -75,6 +75,9 @@ void TestScenEvoDevicesCond::init()
 TestScenEvoDevicesCond::~TestScenEvoDevicesCond()
 {
 	delete server;
+	// avoid crash during global destruction (tries to unsubscribe a FrameReceiver
+	// that is connected to a destroyed client)
+	bt_global::devices_cache.clear();
 }
 
 void TestScenEvoDevicesCond::checkCondition(QSignalSpy &spy, QString frame, bool satisfied)
