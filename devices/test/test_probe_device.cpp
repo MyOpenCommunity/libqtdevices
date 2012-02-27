@@ -243,3 +243,37 @@ void TestControlledProbeDevice::receiveSetPointAdjusted()
 	t << makePair(ControlledProbeDevice::DIM_SETPOINT, 220);
 	t.check("*#4*23*12*0250*3##", MultiDeviceTester::CONTAINS);
 }
+
+void TestControlledProbeDevice::receiveHeatingAndRequestStatus()
+{
+	MultiDeviceTester t(dev);
+	t << makePair(ControlledProbeDevice::DIM_STATUS, (int)ControlledProbeDevice::ST_AUTO);
+	DeviceTester nosignal(dev, ControlledProbeDevice::DIM_STATUS);
+
+	// update status and send status request
+	dev->has_central_info = false;
+	dev->status = ControlledProbeDevice::ST_NONE;
+	t.check("*4*1*23##", MultiDeviceTester::CONTAINS);
+
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*#4*23##"));
+	QVERIFY(dev->has_central_info);
+
+	// update status but do not send status request
+	dev->has_central_info = true;
+	dev->status = ControlledProbeDevice::ST_NONE;
+	t.check("*4*1*23##", MultiDeviceTester::CONTAINS);
+
+	client_command->flush();
+	QCOMPARE(server->frameCommand(500), QString());
+	QVERIFY(dev->has_central_info);
+
+	// do nothing
+	dev->has_central_info = true;
+	dev->status = ControlledProbeDevice::ST_AUTO;
+	nosignal.checkSignals("*4*1*23##", 0);
+
+	client_command->flush();
+	QCOMPARE(server->frameCommand(500), QString());
+	QVERIFY(dev->has_central_info);
+}

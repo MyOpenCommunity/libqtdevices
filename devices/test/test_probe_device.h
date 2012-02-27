@@ -84,6 +84,7 @@ private slots:
 	void receiveLocalOff();
 	void receiveLocalAntifreeze();
 	void receiveSetPointAdjusted();
+	void receiveHeatingAndRequestStatus();
 
 private:
 	ControlledProbeDevice *dev;
