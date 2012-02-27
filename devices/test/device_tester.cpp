@@ -83,8 +83,9 @@ QVariant DeviceTester::getResult()
 					"DeviceValues must contain only one item");
 			return values_list[dim_type];
 		}
+		Q_ASSERT_X(false, "DeviceTester::getResult", "Signal does not contain the required dimension");
 	}
-	Q_ASSERT_X(false, "DeviceTester::getResult", "Error on parsing the signal content.");
+	Q_ASSERT_X(false, "DeviceTester::getResult", "Could not convert signal value to DeviceValues.");
 	return QVariant(); // only to avoid warning
 }
 
