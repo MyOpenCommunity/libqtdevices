@@ -123,6 +123,7 @@ private:
 class FrameCompressor : public QObject
 {
 friend class TestDevice;
+friend class TestBtObject;
 Q_OBJECT
 public:
 	FrameCompressor();
@@ -205,6 +206,7 @@ private:
 class device : public QObject, public FrameReceiver, public FrameSender
 {
 friend class TestDevice;
+friend class TestBtObject;
 friend class BtMain;
 Q_OBJECT
 
