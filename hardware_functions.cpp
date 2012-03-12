@@ -292,6 +292,15 @@ void setBacklight(bool b)
 					close(fd);
 				}
 			}
+			if (QFile::exists("/sys/class/lcd/tm035kbh02/lcd_power"))
+			{
+				fd = open("/sys/class/lcd/tm035kbh02/lcd_power", O_WRONLY);
+				if (fd >= 0)
+				{
+					writeValueToFd(fd, !b);
+					close(fd);
+				}
+			}
 			usleep(100000);
 			if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
 			{
@@ -308,6 +317,15 @@ void setBacklight(bool b)
 			if (QFile::exists("/sys/class/backlight/dingo_backlight/bl_power"))
 			{
 				fd = open("/sys/class/backlight/dingo_backlight/bl_power", O_WRONLY);
+				if (fd >= 0)
+				{
+					writeValueToFd(fd, 4);
+					close(fd);
+				}
+			}
+			if (QFile::exists("/sys/class/lcd/tm035kbh02/lcd_power"))
+			{
+				fd = open("/sys/class/lcd/tm035kbh02/lcd_power", O_WRONLY);
 				if (fd >= 0)
 				{
 					writeValueToFd(fd, 4);
