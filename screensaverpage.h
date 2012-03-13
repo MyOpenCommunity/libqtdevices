@@ -53,6 +53,7 @@ protected:
 private:
 	ScreensaverTiming *timing;
 	int item_id;
+	int last_screensaver;
 };
 
 #ifdef LAYOUT_TS_10

@@ -91,17 +91,22 @@ ScreenSaverPage::ScreenSaverPage(const QDomNode &conf_node) :
 	connect(page_content, SIGNAL(bannerSelected(int)), SLOT(confirmSelection()));
 #endif
 
-	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
+	connect(this, SIGNAL(forwardClick()), SLOT(cleanUp()));
 
 	// this load the current screensaver into the global display object
 	bannerSelected(getTextChild(conf_node, "type").toInt());
 
 	// to save parameters
 	item_id = getTextChild(conf_node, "itemID").toInt();
+
+	last_screensaver = bt_global::display->currentScreenSaver();
 }
 
 void ScreenSaverPage::cleanUp()
 {
+	if (last_screensaver == bt_global::display->currentScreenSaver())
+		return;
+
 	QMap<QString, QString> data;
 	data["type"] = QString::number(bt_global::display->currentScreenSaver());
 	if (timing)
@@ -110,6 +115,7 @@ void ScreenSaverPage::cleanUp()
 		data["timeSlideShow"] = QString::number(timing->getTiming());
 	}
 	setCfgValue(data, item_id);
+	last_screensaver = bt_global::display->currentScreenSaver();
 }
 
 void ScreenSaverPage::showPage()
