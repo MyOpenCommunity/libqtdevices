@@ -143,6 +143,7 @@ namespace
 			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
 			content->move(me->globalPos());
 			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+			qCritical() << "Press\tat : X , Y [" << me->globalX() << "," <<me->globalY() << "]";
 		}
 		if (ev->type() == QEvent::MouseButtonRelease)
 		{
@@ -155,6 +156,7 @@ namespace
 			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
 			content->move(me->globalPos());
 			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+			qCritical() << "Release\tat : X , Y [" << me->globalX() << "," <<me->globalY() << "]";
 		}
 #endif
 
