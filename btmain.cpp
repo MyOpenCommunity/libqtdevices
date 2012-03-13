@@ -144,6 +144,18 @@ namespace
 			content->move(me->globalPos());
 			QTimer::singleShot(10000, content, SLOT(deleteLater()));
 		}
+		if (ev->type() == QEvent::MouseButtonRelease)
+		{
+			QWidget *content = new QWidget;
+			content->setWindowFlags(Qt::FramelessWindowHint);
+			content->show();
+			content->raise();
+			content->setFixedSize(3, 3);
+			content->setStyleSheet("*{background-color: green}");
+			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
+			content->move(me->globalPos());
+			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+		}
 #endif
 
 		// Save last click time
