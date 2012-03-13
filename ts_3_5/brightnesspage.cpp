@@ -28,7 +28,8 @@
 #include <QDebug>
 
 
-InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node)
+InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node):
+	SingleChoicePage(getTextChild(config_node, "descr"))
 {
 	addBanner(SingleChoice::createBanner(tr("Off")), BRIGHTNESS_OFF);
 	addBanner(SingleChoice::createBanner(tr("Low brightness")), BRIGHTNESS_LOW);
@@ -49,8 +50,9 @@ InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node)
 	// But because the current inactive brightness can be changed also by the
 	// screensaver page we have to check the status of the page even in the showEvent
 	// method.
-	connect(this, SIGNAL(Closed()), SLOT(updateStatus()), Qt::QueuedConnection);
-	updateStatus(true);
+	connect(this, SIGNAL(forwardClick()), SLOT(cleanUp()), Qt::QueuedConnection);
+	updateStatus();
+	last_brightness = bt_global::display->inactiveBrightness();
 }
 
 int InactiveBrightnessPage::getCurrentId()
@@ -58,19 +60,24 @@ int InactiveBrightnessPage::getCurrentId()
 	return bt_global::display->inactiveBrightness();
 }
 
+void InactiveBrightnessPage::cleanUp()
+{
+	if (last_brightness == bt_global::display->inactiveBrightness())
+		return;
+
+	QMap<QString, QString> data;
+	data["level"] = QString::number(bt_global::display->inactiveBrightness());
+	setCfgValue(data, item_id);
+	last_brightness = bt_global::display->inactiveBrightness();
+}
+
 void InactiveBrightnessPage::bannerSelected(int id)
 {
 	bt_global::display->setInactiveBrightness(static_cast<BrightnessLevel>(id));
-	QMap<QString, QString> data;
-	data["level"] = QString::number(id);
-	setCfgValue(data, item_id);
 }
 
-void InactiveBrightnessPage::updateStatus(bool force)
+void InactiveBrightnessPage::updateStatus()
 {
-	if (force  == false && last_brightness == bt_global::display->inactiveBrightness())
-		return;
-
 	bool banners_active = (bt_global::display->inactiveBrightness() != BRIGHTNESS_OFF ||
 		bt_global::display->currentScreenSaver() != ScreenSaver::NONE);
 
@@ -88,6 +95,7 @@ void InactiveBrightnessPage::updateStatus(bool force)
 
 void InactiveBrightnessPage::showEvent(QShowEvent *e)
 {
+	setCheckedId(getCurrentId());
 	updateStatus();
 	SingleChoicePage::showEvent(e);
 }
