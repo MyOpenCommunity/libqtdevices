@@ -94,6 +94,7 @@ public:
 		- 4: 5 minutes
 		- 5: 15 minutes
 		- 6: 30 seconds
+		- 7: 0,5 seconds
 
 		Use requestVariableTiming() to periodically request the remaining time.
 		\sa variableTiming()
