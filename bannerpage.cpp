@@ -246,14 +246,12 @@ void ListPage::loadItems(const QDomNode &config_node)
 {
 	foreach (const QDomNode& item, getChildren(config_node, "item"))
 	{
-		int id = getTextChild(item, "id").toInt();
-
 		if (Banner *b = getBanner(item))
 		{
 			page_content->appendBanner(b);
 			connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 		}
 		else
-			Q_ASSERT_X(false, "ListPage::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(id)));
+			Q_ASSERT_X(false, "ListPage::loadItems", qPrintable(QString("Type of item %1 not handled!").arg(getTextChild(item, "id").toInt())));
 	}
 }
