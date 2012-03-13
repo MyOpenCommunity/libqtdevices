@@ -395,18 +395,34 @@ void TestRadioSourceDevice::cleanupTestCase()
 	delete dev;
 }
 
-void TestRadioSourceDevice::sendFrequenceUp()
+void TestRadioSourceDevice::sendFrequenceUpManual()
+{
+	dev->frequency=9890;
+	dev->frequenceUp("1");
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*22*5#1*2#%1##").arg(source_id));
+}
+
+void TestRadioSourceDevice::sendFrequenceDownManual()
+{
+	dev->frequency=9890;
+	dev->frequenceDown("1");
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*22*6#1*2#%1##").arg(source_id));
+}
+
+void TestRadioSourceDevice::sendFrequenceUpAutomatic()
 {
 	dev->frequenceUp();
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*5#*2#%1##").arg(source_id));
+	QCOMPARE(server->frameCommand(), QString("*22*5*2#%1##").arg(source_id));
 }
 
-void TestRadioSourceDevice::sendFrequenceDown()
+void TestRadioSourceDevice::sendFrequenceDownAutomatic()
 {
 	dev->frequenceDown();
 	client_command->flush();
-	QCOMPARE(server->frameCommand(), QString("*22*6#*2#%1##").arg(source_id));
+	QCOMPARE(server->frameCommand(), QString("*22*6*2#%1##").arg(source_id));
 }
 
 void TestRadioSourceDevice::sendSetStation()
