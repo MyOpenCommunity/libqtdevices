@@ -39,20 +39,25 @@ TransitionEffects::TransitionEffects(const QDomNode &conf_node) :
 	addBanner(SingleChoice::createBanner(tr("Mosaic")), TransitionWidget::MOSAIC);
 	addBanner(SingleChoice::createBanner(tr("Enlarge")), TransitionWidget::ENLARGE);
 
-	connect(this, SIGNAL(Closed()), SLOT(cleanUp()));
+	connect(this, SIGNAL(forwardClick()), SLOT(cleanUp()));
 
 	// this load the current transition effect into the global display object
 	bannerSelected(getTextChild(conf_node, "type").toInt());
 
 	// to save parameters
 	item_id = getTextChild(conf_node, "itemID").toInt();
+	last_transitions = bt_global::display->currentTransitionEffects();
 }
 
 void TransitionEffects::cleanUp()
 {
+	if (last_transitions == bt_global::display->currentTransitionEffects())
+		return;
+
 	QMap<QString, QString> data;
 	data["type"] = QString::number(bt_global::display->currentTransitionEffects());
 	setCfgValue(data, item_id);
+	last_transitions = bt_global::display->currentTransitionEffects();
 }
 
 void TransitionEffects::showPage()

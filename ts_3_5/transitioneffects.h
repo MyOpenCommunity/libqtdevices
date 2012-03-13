@@ -45,6 +45,7 @@ protected:
 
 private:
 	int item_id;
+	int last_transitions;
 };
 
 #endif // TRANSITIONEFFECTS_H
