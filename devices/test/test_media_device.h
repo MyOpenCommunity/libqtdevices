@@ -109,8 +109,10 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 
-	void sendFrequenceUp();
-	void sendFrequenceDown();
+	void sendFrequenceUpManual();
+	void sendFrequenceDownManual();
+	void sendFrequenceUpAutomatic();
+	void sendFrequenceDownAutomatic();
 	void sendSaveStation();
 	void sendSetStation();
 	void sendRequestFrequency();
