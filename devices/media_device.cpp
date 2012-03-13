@@ -526,9 +526,11 @@ void RadioSourceDevice::frequenceUp(QString value)
 
 		values_list[DIM_FREQUENCY] = frequency;
 		emit valueReceived(values_list);
-	}
 
-	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_UP).arg(value));
+		sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_UP).arg(value));
+	}
+	else if(value.isEmpty())
+		sendCommand(QString("%1").arg(REQ_FREQUENCE_UP));
 }
 
 void RadioSourceDevice::frequenceDown(QString value)
@@ -544,9 +546,11 @@ void RadioSourceDevice::frequenceDown(QString value)
 
 		values_list[DIM_FREQUENCY] = frequency;
 		emit valueReceived(values_list);
-	}
 
-	sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_DOWN).arg(value));
+		sendCommand(QString("%1#%2").arg(REQ_FREQUENCE_DOWN).arg(value));
+	}
+	else if(value.isEmpty())
+		sendCommand(QString("%1").arg(REQ_FREQUENCE_DOWN));
 }
 
 void RadioSourceDevice::saveStation(QString station) const
