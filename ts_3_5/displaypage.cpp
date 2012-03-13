@@ -82,9 +82,9 @@ void DisplayPage::loadItems(const QDomNode &config_node)
 #ifndef BT_HARDWARE_X11
 		else if (link_id == CALIBRATION)
 			loadCalibration(img_items);
+#endif
 		else if (link_id == INACTIVE_BRIGHTNESS)
 			loadInactiveBrightness(img_items, item);
-#endif
 		else if (link_id == SCREENSAVER)
 			loadScreenSaver(img_items, item);
 		else if (link_id == TRANSITIONEFFECTS)
@@ -111,6 +111,7 @@ void DisplayPage::loadCalibration(QString icon)
 	connect(calibration_window, SIGNAL(Closed()), this, SLOT(showPage()));
 	page_content->appendBanner(b);
 }
+#endif
 
 void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_node)
 {
@@ -119,7 +120,6 @@ void DisplayPage::loadInactiveBrightness(QString icon, const QDomNode &config_no
 	connect(b, SIGNAL(pageClosed()), SLOT(showPage()));
 	page_content->appendBanner(b);
 }
-#endif
 
 void DisplayPage::loadScreenSaver(QString icon, const QDomNode &config_node)
 {
