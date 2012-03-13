@@ -231,7 +231,7 @@ void TimePeriodSelection::showCycleButton()
 
 void TimePeriodSelection::displayDate()
 {
-	bool forw_visible, back_visible;
+	bool forw_visible = false, back_visible = false;
 	QDate current = QDate::currentDate();
 	QDate min = minimumDate();
 

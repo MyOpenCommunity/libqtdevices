@@ -65,8 +65,7 @@ void Loads::loadItems(const QDomNode &config_node)
 	foreach (const QDomNode &item, getChildren(config_node, "item"))
 	{
 		SkinContext context(getTextChild(item, "cid").toInt());
-		int id = getTextChild(item, "id").toInt();
-		Q_ASSERT_X(id == LOAD, "Loads::loadItems", "Type of item not handled on loads page!");
+		Q_ASSERT_X(getTextChild(item, "id").toInt() == LOAD, "Loads::loadItems", "Type of item not handled on loads page!");
 
 		page_content->appendBanner(new BannLoad(getTextChild(item, "descr"), getTextChild(item, "where")));
 	}
