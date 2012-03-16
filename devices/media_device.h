@@ -109,6 +109,7 @@ class SourceDevice : public device
 {
 friend class TestSourceDevice;
 friend class TestVirtualSourceDevice;
+friend class TestSourceBase;
 Q_OBJECT
 public:
 	/*!
