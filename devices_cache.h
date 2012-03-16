@@ -59,6 +59,7 @@ friend class TestScenEvoDevicesCond;
 friend class TestVideoDoorEntryDevice;
 friend class BtMain;
 friend class TestDevice;
+friend class TestBtObject;
 public:
 	DevicesCache();
 	~DevicesCache();
