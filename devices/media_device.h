@@ -414,7 +414,7 @@ public:
 		If the touchscreen is configured as an SCS amplifier, setVirtualAmplifierWhere()
 		must be called before instantiating any amplifier.
 	*/
-	static AmplifierDevice *createDevice(const QString &where);
+	static AmplifierDevice *createDevice(const QString &where, int openserver_id = 0);
 
 	/*!
 		\brief Set the where address of the local amplifier.

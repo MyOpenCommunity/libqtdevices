@@ -784,7 +784,7 @@ AmplifierDevice *AmplifierDevice::createVirtualDevice()
 	return bt_global::add_device_to_cache(new VirtualAmplifierDevice(virtual_amplifier_where));
 }
 
-AmplifierDevice *AmplifierDevice::createDevice(const QString &where)
+AmplifierDevice *AmplifierDevice::createDevice(const QString &where, int openserver_id)
 {
 	if (!virtual_amplifier_where.isEmpty())
 	{
@@ -795,14 +795,14 @@ AmplifierDevice *AmplifierDevice::createDevice(const QString &where)
 			  AmplifierDevice::getAmplifierArea(where) == AmplifierDevice::getAmplifierArea(virtual_amplifier_where)))
 		{
 			AmplifierDevice *v = createVirtualDevice();
-			AmplifierDevice *n = bt_global::add_device_to_cache(new AmplifierDevice(where));
+			AmplifierDevice *n = bt_global::add_device_to_cache(new AmplifierDevice(where, openserver_id));
 
 			return bt_global::add_device_to_cache(new CompositeAmplifierDevice(QList<AmplifierDevice*>() << n << v));
 		}
 
 	}
 
-	return bt_global::add_device_to_cache(new AmplifierDevice(where));
+	return bt_global::add_device_to_cache(new AmplifierDevice(where, openserver_id));
 }
 
 AmplifierDevice::AmplifierDevice(QString _where, int openserver_id) :
