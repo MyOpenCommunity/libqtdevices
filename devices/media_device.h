@@ -236,6 +236,7 @@ private slots:
 class RadioSourceDevice : public SourceDevice
 {
 friend class TestRadioSourceDevice;
+friend class TestSourceRadio;
 Q_OBJECT
 public:
 	/*!
