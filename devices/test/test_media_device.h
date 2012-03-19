@@ -233,6 +233,7 @@ private slots:
 	void sendBalanceDown();
 	void sendNextPreset();
 	void sendPrevPreset();
+	void sendSetPreset();
 	void sendLoudOn();
 	void sendLoudOff();
 

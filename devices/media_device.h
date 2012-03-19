@@ -758,6 +758,11 @@ public:
 	void prevPreset() const;
 
 	/*!
+		\brief Switch to the specified preset.
+	 */
+	void setPreset(int index) const;
+
+	/*!
 		\brief Turn on loudness.
 	 */
 	void loudOn() const;

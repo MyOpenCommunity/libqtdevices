@@ -894,6 +894,14 @@ void TestPowerAmplifierDevice::sendPrevPreset()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestPowerAmplifierDevice::sendSetPreset()
+{
+	dev->setPreset(12);
+	client_command->flush();
+	QString cmd(QString("*#22*3#%1#%2*#19*%3##").arg(area).arg(point).arg(12));
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
 void TestPowerAmplifierDevice::sendLoudOn()
 {
 	dev->loudOn();

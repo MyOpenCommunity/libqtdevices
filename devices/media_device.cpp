@@ -1274,6 +1274,11 @@ void PowerAmplifierDevice::prevPreset() const
 	sendCommand(REQ_PREV_PRESET);
 }
 
+void PowerAmplifierDevice::setPreset(int preset) const
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_PRESET).arg(preset), where));
+}
+
 void PowerAmplifierDevice::loudOn() const
 {
 	sendFrame(createWriteDimensionFrame(who, QString("%1*1").arg(REQ_LOUD), where));
