@@ -44,7 +44,6 @@ class QPixmap;
 class QString;
 class QTimer;
 class QTime;
-class QSocketNotifier;
 
 
 /*!
@@ -62,30 +61,6 @@ class QSocketNotifier;
 	\brief Encapsulates all the global objects.
 */
 
-/*!
-	\ingroup Core
-	\brief Manages the unix signals used on the BTicino hardware.
-*/
-class SignalsHandler : public QObject
-{
-Q_OBJECT
-public:
-	SignalsHandler();
-	~SignalsHandler();
-
-	static void signalHandler(int signal_number);
-
-signals:
-	void signalReceived(int signal_number);
-
-private slots:
-	void handleSignal();
-
-private:
-	static long parent_pid;
-	static int signalfd[2];
-	QSocketNotifier *sn_signal;
-};
 
 
 struct BtStatus
