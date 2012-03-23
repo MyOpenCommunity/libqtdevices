@@ -35,7 +35,11 @@
 #include <QDebug>
 #include <QWSMouseHandler> // QWSCalibratedMouseHandler
 
+#ifdef BT_HARDWARE_DM365
+#define QWS_MOUSE_FILTER 2
+#else
 #define QWS_MOUSE_FILTER 5
+#endif
 #define BUTTON_SEC_TIMEOUT 10
 
 #define MINUMUM_RAW_X_SIZE 2200
