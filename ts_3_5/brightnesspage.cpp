@@ -27,6 +27,8 @@
 
 #include <QDebug>
 
+int InactiveBrightnessPage::item_id = 0;
+
 
 InactiveBrightnessPage::InactiveBrightnessPage(const QDomNode &config_node):
 	SingleChoicePage(getTextChild(config_node, "descr"))
@@ -65,9 +67,7 @@ void InactiveBrightnessPage::cleanUp()
 	if (last_brightness == bt_global::display->inactiveBrightness())
 		return;
 
-	QMap<QString, QString> data;
-	data["level"] = QString::number(bt_global::display->inactiveBrightness());
-	setCfgValue(data, item_id);
+	saveBrightnessLevel(bt_global::display->inactiveBrightness());
 	last_brightness = bt_global::display->inactiveBrightness();
 }
 
@@ -98,4 +98,11 @@ void InactiveBrightnessPage::showEvent(QShowEvent *e)
 	setCheckedId(getCurrentId());
 	updateStatus();
 	SingleChoicePage::showEvent(e);
+}
+
+static void InactiveBrightnessPage::saveBrightnessLevel(int level)
+{
+	QMap<QString, QString> data;
+	data["level"] = QString::number(level);
+	setCfgValue(data, item_id);
 }

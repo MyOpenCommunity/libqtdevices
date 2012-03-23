@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -36,6 +36,7 @@
 #include "multimedia_ts10.h" // FilesystemBrowseButton
 #endif
 #include "main.h" // getPageNode(), MULTIMEDIA
+#include "brightnesspage.h"
 
 #include <QAbstractButton>
 #include <QGridLayout>
@@ -115,6 +116,10 @@ void ScreenSaverPage::cleanUp()
 		data["timeSlideShow"] = QString::number(timing->getTiming());
 	}
 	setCfgValue(data, item_id);
+#if defined(BT_HARDWARE_PXA255) || defined(BT_HARDWARE_DM365)
+	if (bt_global::display->currentScreenSaver() == ScreenSaver::NONE)
+		InactiveBrightnessPage::saveBrightnessLevel(BRIGHTNESS_OFF);
+#endif
 	last_screensaver = bt_global::display->currentScreenSaver();
 }
 
