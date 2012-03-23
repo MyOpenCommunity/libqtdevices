@@ -100,6 +100,7 @@ HEADERS += actuators.h \
 	screensaverpage.h \
 	scrollablepage.h \
 	sectionpage.h \
+	signalshandler.h \
 	singlechoicepage.h \
 	skinmanager.h \
 	specialpage.h \
@@ -208,6 +209,7 @@ SOURCES += actuators.cpp \
 	screensaverpage.cpp \
 	scrollablepage.cpp \
 	sectionpage.cpp \
+	signalshandler.cpp \
 	singlechoicepage.cpp \
 	skinmanager.cpp \
 	sounddiffusionpage.cpp \

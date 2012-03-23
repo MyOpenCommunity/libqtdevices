@@ -1,4 +1,5 @@
 /* 
+
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -19,9 +20,10 @@
  */
 
 
-#include "btmain.h" // bt_global::btmain, SignalsHandler
+#include "btmain.h" // bt_global::btmain
 #include "xml_functions.h"
 #include "generic_functions.h"
+#include "signalshandler.h"
 
 #ifndef BT_HARDWARE_PXA270
 #include <logger.h>
@@ -51,7 +53,6 @@
 #endif
 #endif
 
-#include <signal.h>
 
 #ifndef BT_HARDWARE_PXA270
 logger *app_logger;
@@ -251,17 +252,7 @@ int main(int argc, char **argv)
 #ifdef BT_HARDWARE_PXA270
 	signal(SIGUSR1, MySignal);
 #endif
-	struct sigaction sa;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sa.sa_flags |= SA_RESTART;
-	sa.sa_handler = SignalsHandler::signalHandler;
-	if (sigaction(SIGUSR2, &sa, 0) != 0)
-		qWarning() << "Error on installing the handler for the SIGUSR2 signal";
-	if (sigaction(SIGTERM, &sa, 0) != 0)
-		qWarning() << "Error on installing the handler for the SIGTERM signal";
-
-	SignalsHandler *sh = new SignalsHandler;
+	SignalsHandler *sh = installSignalsHandler();
 
 	qDebug("Start BtMain");
 	bt_global::btmain = new BtMain(general_config.openserver_reconnection_time);
