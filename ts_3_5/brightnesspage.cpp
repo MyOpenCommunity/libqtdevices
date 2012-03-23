@@ -100,7 +100,7 @@ void InactiveBrightnessPage::showEvent(QShowEvent *e)
 	SingleChoicePage::showEvent(e);
 }
 
-static void InactiveBrightnessPage::saveBrightnessLevel(int level)
+void InactiveBrightnessPage::saveBrightnessLevel(int level)
 {
 	QMap<QString, QString> data;
 	data["level"] = QString::number(level);
