@@ -94,6 +94,10 @@
 
 #define TS_NUM_BASE_ADDRESS 0x700
 
+#if DEBUG_MOUSEPRESS
+#include <QPainter>
+#endif
+
 
 namespace
 {
@@ -128,34 +132,63 @@ namespace
 
 	bool LastClickTime::pressed = false;
 
+#if DEBUG_MOUSEPRESS
+	class ClickPositionWidget : public QWidget
+	{
+	public:
+		ClickPositionWidget(QColor bg, QMouseEvent *me) : background(bg)
+		{
+			QWidget *parent = qApp->topLevelAt(me->globalPos());
+
+			setParent(parent);
+
+			setWindowFlags(Qt::FramelessWindowHint);
+			setAttribute(Qt::WA_TransparentForMouseEvents);
+
+			setFixedSize(3, 3);
+			move(parent->mapFromGlobal(me->globalPos()));
+
+			QTimer::singleShot(10000, this, SLOT(deleteLater()));
+		}
+
+		void showAndRaise()
+		{
+			show();
+			raise();
+		}
+
+	protected:
+		void paintEvent(QPaintEvent *)
+		{
+			QPainter p(this);
+
+			p.setBrush(QBrush(background));
+			p.drawRect(0, 0, 3, 3);
+		}
+
+	private:
+		QColor background;
+	};
+#endif
+
 	bool LastClickTime::eventFilter(QObject *obj, QEvent *ev)
 	{
 
 #if DEBUG_MOUSEPRESS
 		if (ev->type() == QEvent::MouseButtonPress)
 		{
-			QWidget *content = new QWidget;
-			content->setWindowFlags(Qt::FramelessWindowHint);
-			content->show();
-			content->raise();
-			content->setFixedSize(3, 3);
-			content->setStyleSheet("*{background-color: red}");
 			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
-			content->move(me->globalPos());
-			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+			ClickPositionWidget *content = new ClickPositionWidget(Qt::red, me);
+
+			content->showAndRaise();
 			qCritical() << "Press\tat : X , Y [" << me->globalX() << "," <<me->globalY() << "]";
 		}
 		if (ev->type() == QEvent::MouseButtonRelease)
 		{
-			QWidget *content = new QWidget;
-			content->setWindowFlags(Qt::FramelessWindowHint);
-			content->show();
-			content->raise();
-			content->setFixedSize(3, 3);
-			content->setStyleSheet("*{background-color: green}");
 			QMouseEvent *me = static_cast<QMouseEvent*>(ev);
-			content->move(me->globalPos());
-			QTimer::singleShot(10000, content, SLOT(deleteLater()));
+			ClickPositionWidget *content = new ClickPositionWidget(Qt::green, me);
+
+			content->showAndRaise();
 			qCritical() << "Release\tat : X , Y [" << me->globalX() << "," <<me->globalY() << "]";
 		}
 #endif
