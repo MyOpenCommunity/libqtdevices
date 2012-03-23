@@ -33,7 +33,9 @@
 #include <QScreen>
 #include <QWSServer>
 #include <QDebug>
+#include <QWSMouseHandler> // QWSCalibratedMouseHandler
 
+#define QWS_MOUSE_FILTER 5
 #define BUTTON_SEC_TIMEOUT 10
 
 #define MINUMUM_RAW_X_SIZE 2200
@@ -53,6 +55,12 @@ namespace
 			pointercal_file = QString(pointercal_file_env);
 		return pointercal_file;
 	}
+
+	class QWSCalibratedMouseHandlerUnprotect : public QWSCalibratedMouseHandler
+	{
+	public:
+		using QWSCalibratedMouseHandler::setFilterSize;
+	};
 }
 
 
@@ -160,7 +168,11 @@ void CalibrationWidget::startCalibration()
 	if (QFile::exists(pointercal_file))
 		system(qPrintable(QString("cp %1 %1.calibrated").arg(pointercal_file)));
 
-	QWSServer::mouseHandler()->clearCalibration();
+	QWSCalibratedMouseHandlerUnprotect *handler = static_cast<QWSCalibratedMouseHandlerUnprotect *>(QWSServer::mouseHandler());
+
+	handler->clearCalibration();
+	handler->setFilterSize(QWS_MOUSE_FILTER);
+
 	grabMouse();
 	qCritical("Start Calibration");
 }

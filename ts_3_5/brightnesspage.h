@@ -37,6 +37,8 @@ Q_OBJECT
 public:
 	InactiveBrightnessPage(const QDomNode &config_node);
 
+	static void saveBrightnessLevel(int level);
+
 protected:
 	virtual int getCurrentId();
 	virtual void bannerSelected(int id);
@@ -49,8 +51,10 @@ private slots:
 	void updateStatus();
 
 private:
-	int item_id;
 	BrightnessLevel last_brightness;
+
+	// need
+	static int item_id;
 };
 
 #endif // BRIGHTNESSPAGE_H
