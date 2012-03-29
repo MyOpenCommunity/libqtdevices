@@ -30,7 +30,8 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netinet/tcp.h>
+#include <netinet/in.h> // IPPROTO_TCP
+#include <netinet/tcp.h> // TCP_*
 
 // The channels id
 #define SOCKET_MONITOR "*99*1##"
@@ -62,10 +63,15 @@ namespace
 
 		if (enable)
 		{
-			if (setsockopt(s, SOL_TCP, TCP_KEEPIDLE, &idle, sizeof(idle)) < 0 ||
-				setsockopt(s, SOL_TCP, TCP_KEEPINTVL, &interval, sizeof(interval)) < 0 ||
-				setsockopt(s, SOL_TCP, TCP_KEEPCNT, &count, sizeof(count)) < 0)
+#ifdef Q_OS_DARWIN
+			if (setsockopt(s, IPPROTO_TCP, TCP_KEEPALIVE, &idle, sizeof(idle)) < 0)
 				return false;
+#else
+			if (setsockopt(s, IPPROTO_TCP, TCP_KEEPIDLE, &idle, sizeof(idle)) < 0 ||
+				setsockopt(s, IPPROTO_TCP, TCP_KEEPINTVL, &interval, sizeof(interval)) < 0 ||
+				setsockopt(s, IPPROTO_TCP, TCP_KEEPCNT, &count, sizeof(count)) < 0)
+				return false;
+#endif
 		}
 		return true;
 	}
