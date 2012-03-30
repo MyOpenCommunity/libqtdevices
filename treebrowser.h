@@ -163,6 +163,48 @@ signals:
 
 
 /*!
+	\brief Allow retrieving directory listings in small chunks
+
+	The number of returned items is ELEMENTS_DISPLAYED, defined in the implementation file
+*/
+class PagedTreeBrowser : public TreeBrowser
+{
+Q_OBJECT
+public:
+	/*!
+		\brief Reads the previous page in the file list
+
+		Emits listReceived() on success, listRetrieveError() on failure.
+	*/
+	virtual void getPreviousFileList() = 0;
+
+	/*!
+		\brief Reads the next page in the file list
+
+		Emits listReceived() on success, listRetrieveError() on failure.
+	*/
+	virtual void getNextFileList() = 0;
+
+	/*!
+		\brief Return the total number of elements in the directory
+	*/
+	virtual int getNumElements() = 0;
+
+	/*!
+		\brief Return the current position in the directory listing
+	*/
+	virtual int getStartingElement() = 0;
+
+	/*!
+		\brief Return ELEMENTS_DISPLAYED elements starting at the given position
+
+		Emits listReceived() on success, listRetrieveError() on failure.
+	*/
+	virtual void getFileList(int starting_element) = 0;
+};
+
+
+/*!
 	\ingroup Core
 	\brief File system navigation for FileSelector
  */
@@ -192,7 +234,7 @@ private:
 	\ingroup Core
 	\brief UPnP navigation for FileSelector
 */
-class UPnpClientBrowser : public TreeBrowser
+class UPnpClientBrowser : public PagedTreeBrowser
 {
 Q_OBJECT
 friend class TestUPnpClientBrowser;
@@ -207,12 +249,11 @@ public:
 	virtual void setContext(const QStringList &context);
 	virtual void reset();
 
-	// Specific UPnpClientBrowser methods
-	void getPreviousFileList();
-	void getNextFileList();
-	int getNumElements();
-	int getStartingElement();
-	void getFileList(int starting_element);
+	virtual void getPreviousFileList();
+	virtual void getNextFileList();
+	virtual int getNumElements();
+	virtual int getStartingElement();
+	virtual void getFileList(int starting_element);
 
 private slots:
 	void handleResponse(const XmlResponse &response);
