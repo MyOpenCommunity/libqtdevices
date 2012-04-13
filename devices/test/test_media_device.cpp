@@ -912,9 +912,19 @@ void TestPowerAmplifierDevice::sendPrevPreset()
 
 void TestPowerAmplifierDevice::sendSetPreset()
 {
-	dev->setPreset(12);
+	int parameter_preset = 9;
+	int device_preset = parameter_preset + 2;
+
+	dev->setPreset(parameter_preset);
 	client_command->flush();
-	QString cmd(QString("*#22*3#%1#%2*#19*%3##").arg(area).arg(point).arg(12));
+	QString cmd(QString("*#22*3#%1#%2*#19*%3##").arg(area).arg(point).arg(device_preset));
+	QCOMPARE(server->frameCommand(), cmd);
+
+	parameter_preset = 10;
+	device_preset = parameter_preset + 6;
+	dev->setPreset(parameter_preset);
+	client_command->flush();
+	cmd = QString("*#22*3#%1#%2*#19*%3##").arg(area).arg(point).arg(device_preset);
 	QCOMPARE(server->frameCommand(), cmd);
 }
 

@@ -1213,6 +1213,7 @@ bool PowerAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	return true;
 }
 
+
 void PowerAmplifierDevice::requestTreble() const
 {
 	sendRequest(DIM_TREBLE);
@@ -1280,6 +1281,11 @@ void PowerAmplifierDevice::prevPreset() const
 
 void PowerAmplifierDevice::setPreset(int preset) const
 {
+	if (preset >= 0 && preset <= 9) // fixed preset
+		preset += 2;
+	else if (preset >= 10 && preset <= 19) // custom preset
+		preset += 6;
+
 	sendFrame(createWriteDimensionFrame(who, QString("%1*%2").arg(DIM_PRESET).arg(preset), where));
 }
 
