@@ -22,6 +22,38 @@
 #include "xml_functions.h"
 
 #include <QStringList>
+#include <QDebug>
+
+QString getAttribute(const QDomNode &n, const QString &attr)
+{
+	QDomNode attribute = n.attributes().namedItem(attr);
+	if (attribute.isNull())
+	{
+		qWarning() << "Attribute " << attr << " not present for node " << n.localName();
+		return QString();
+	}
+
+	if (!attribute.isAttr())
+	{
+		qWarning() << "Attribute" << attr << "is not a QDomAttr";
+		return QString();
+	}
+
+	return attribute.toAttr().value();
+}
+
+int getIntAttribute(const QDomNode &n, const QString &attr)
+{
+	QString a = getAttribute(n, attr);
+	bool ok;
+	int val = a.toInt(&ok);
+	if (!ok)
+	{
+		qWarning() << "Error converting attribute " << attr << "of node " << n.localName() << " to int";
+		return -1;
+	}
+	return val;
+}
 
 QDomElement getElement(const QDomNode &root, const QString &path)
 {

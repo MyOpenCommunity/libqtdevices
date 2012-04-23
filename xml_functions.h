@@ -26,6 +26,16 @@
 #include <QRegExp>
 #include <QString>
 
+/*!
+	Return the value of the attribute \a attr in node \a n.
+*/
+QString getAttribute(const QDomNode &n, const QString &attr);
+
+/*!
+	Return the int value of the attribute \a attr.
+	A warning is printed if the attribute is not an integer number.
+*/
+int getIntAttribute(const QDomNode &n, const QString &attr);
 
 /*!
 	\ingroup Core
