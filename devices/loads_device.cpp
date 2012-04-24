@@ -41,7 +41,7 @@ enum
 };
 
 
-LoadsDevice::LoadsDevice(const QString &where) : device("18", where)
+LoadsDevice::LoadsDevice(const QString &where, int openserver_id) : device("18", where, openserver_id)
 {
 	current_updates = new AutomaticUpdates(where, 1);
 	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));

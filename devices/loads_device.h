@@ -97,7 +97,7 @@ public:
 
 		Constructs a new LoadsDevice with the given \a where.
 	*/
-	LoadsDevice(const QString &where);
+	LoadsDevice(const QString &where, int openserver_id = 0);
 
 	~LoadsDevice();
 	virtual void init();
