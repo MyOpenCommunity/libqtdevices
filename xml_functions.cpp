@@ -24,19 +24,19 @@
 #include <QStringList>
 #include <QDebug>
 
-QString getAttribute(const QDomNode &n, const QString &attr)
+QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
 {
 	QDomNode attribute = n.attributes().namedItem(attr);
 	if (attribute.isNull())
 	{
 		qWarning() << "Attribute " << attr << " not present for node " << n.localName();
-		return QString();
+		return def;
 	}
 
 	if (!attribute.isAttr())
 	{
 		qWarning() << "Attribute" << attr << "is not a QDomAttr";
-		return QString();
+		return def;
 	}
 
 	return attribute.toAttr().value();

@@ -28,8 +28,10 @@
 
 /*!
 	Return the value of the attribute \a attr in node \a n.
+
+	If \a attr is not present or invalid, \a def is returned instead.
 */
-QString getAttribute(const QDomNode &n, const QString &attr);
+QString getAttribute(const QDomNode &n, const QString &attr, const QString &def=QString());
 
 /*!
 	Return the int value of the attribute \a attr.
