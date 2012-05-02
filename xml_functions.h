@@ -37,7 +37,7 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def=
 	Return the int value of the attribute \a attr.
 	A warning is printed if the attribute is not an integer number.
 */
-int getIntAttribute(const QDomNode &n, const QString &attr);
+int getIntAttribute(const QDomNode &n, const QString &attr, int def = -1);
 
 /*!
 	\ingroup Core

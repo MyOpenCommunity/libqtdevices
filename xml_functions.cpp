@@ -42,7 +42,7 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
 	return attribute.toAttr().value();
 }
 
-int getIntAttribute(const QDomNode &n, const QString &attr)
+int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 {
 	QString a = getAttribute(n, attr);
 	bool ok;
@@ -50,7 +50,7 @@ int getIntAttribute(const QDomNode &n, const QString &attr)
 	if (!ok)
 	{
 		qWarning() << "Error converting attribute " << attr << "of node " << n.localName() << " to int";
-		return -1;
+		return def;
 	}
 	return val;
 }
