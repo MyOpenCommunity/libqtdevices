@@ -94,6 +94,8 @@ namespace
 
 	QHash<int,QVariant> handle_welcome_message(const QDomNode &node)
 	{
+		Q_UNUSED(node);
+
 		QHash<int,QVariant> result;
 		result[XmlResponses::WELCOME] =  QVariant();
 
@@ -214,6 +216,8 @@ namespace
 
 	QHash<int,QVariant> handle_notifications(const QDomNode &node)
 	{
+		Q_UNUSED(node);
+
 		QHash<int,QVariant> result;
 		// For now, the only notification is about the server down.
 		result[XmlResponses::INVALID].setValue(XmlError(XmlResponses::INVALID, XmlError::SERVER_DOWN));

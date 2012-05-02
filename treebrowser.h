@@ -49,7 +49,7 @@ public:
 
 		Implementors might not support setRootPath() and getRootPath().
 	 */
-	virtual void setRootPath(const QStringList &root_path) {}
+	virtual void setRootPath(const QStringList &root_path) { Q_UNUSED(root_path); }
 
 	/*!
 		\brief Returns the root path set with setRootPath().

@@ -151,6 +151,8 @@ void AlarmSoundDiffDevice::requestStation(int source)
 
 bool AlarmSoundDiffDevice::isValid(int source, int radio_station, int *alarmVolumes)
 {
+	Q_UNUSED(radio_station);
+
 	if (!sources[source])
 	{
 		qDebug() << "Invalid alarm clock source" << source;
@@ -1130,6 +1132,9 @@ void CompositeAmplifierDevice::volumeDown()
 
 bool CompositeAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
+	Q_UNUSED(msg);
+	Q_UNUSED(values_list);
+
 	// avoid actually parsing the frames
 	return true;
 }
