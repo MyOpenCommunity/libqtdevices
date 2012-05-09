@@ -138,6 +138,11 @@ AutomaticUpdates::AutomaticUpdates(QString _where, int _mode)
 	connect(update_timer, SIGNAL(timeout()), SLOT(pollingTimeout()));
 }
 
+int AutomaticUpdates::getEnergyType() const
+{
+	return mode;
+}
+
 void AutomaticUpdates::requestCurrentUpdate()
 {
 	if (!has_new_frames)
@@ -332,6 +337,11 @@ EnergyDevice::EnergyDevice(QString where, int mode) : device(QString("18"), wher
 
 	for (int i = 1; i <= 12; ++i)
 		buffer_year_data[i] = 0;
+}
+
+int EnergyDevice::getEnergyType() const
+{
+	return current_updates->getEnergyType();
 }
 
 EnergyDevice::~EnergyDevice()

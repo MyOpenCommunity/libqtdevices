@@ -83,6 +83,8 @@ public:
 	void setHasNewFrames();
 	void handleAutomaticUpdate(OpenMsg &msg);
 
+	int getEnergyType() const;
+
 signals:
 	// request to send a frame
 	void sendFrame(QString);
@@ -296,6 +298,13 @@ public:
 		CUMULATIVE_YEAR,  /*!< Total consumption for each month in a year. */
 		DAILY_AVERAGE     /*!< Average consumption for each hour in a day (computed over a month). */
 	};
+
+	/*!
+		\brief The type of energy read by this device
+
+		\sa EnergyDevice
+	*/
+	int getEnergyType() const;
 
 protected:
 	bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
