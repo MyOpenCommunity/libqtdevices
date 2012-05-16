@@ -322,7 +322,7 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 }
 
 
-EnergyDevice::EnergyDevice(QString where, int mode) : device(QString("18"), where)
+EnergyDevice::EnergyDevice(QString where, int mode, int openserver_id) : device(QString("18"), where, openserver_id)
 {
 	current_updates = new AutomaticUpdates(where, mode);
 	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));

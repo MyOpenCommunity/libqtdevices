@@ -179,7 +179,7 @@ public:
 		- 4: hot water
 		- 5: heating/conditioning
 	*/
-	EnergyDevice(QString where, int mode);
+	EnergyDevice(QString where, int mode, int openserver_id = 0);
 
 	~EnergyDevice();
 
