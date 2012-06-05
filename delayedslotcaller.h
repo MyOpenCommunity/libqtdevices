@@ -129,6 +129,7 @@ protected:
 
 private slots:
 	void callSlot();
+	void targetDestroyed();
 
 private:
 	QObject *target;

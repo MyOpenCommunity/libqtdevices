@@ -66,6 +66,8 @@ void DelayedSlotCaller::setSlot(QObject *receiver, const char *slot, int msecs)
 	method_to_call = mo->method(index);
 	target = receiver;
 	timer_id = startTimer(msecs);
+
+	connect(target, SIGNAL(destroyed()), this, SLOT(targetDestroyed()));
 }
 
 void DelayedSlotCaller::addArgument(const char *arg)
@@ -139,4 +141,8 @@ void DelayedSlotCaller::callSlot()
 	method_to_call.invoke(target, arg(0), arg(1), arg(2), arg(3), arg(4), arg(5), arg(6), arg(7), arg(8), arg(9));
 }
 
-
+void DelayedSlotCaller::targetDestroyed()
+{
+	abort();
+	deleteLater();
+}
