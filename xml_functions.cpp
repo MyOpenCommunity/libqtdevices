@@ -29,7 +29,10 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
 	QDomNode attribute = n.attributes().namedItem(attr);
 	if (attribute.isNull())
 	{
-		qWarning() << "Attribute " << attr << " not present for node " << n.localName();
+		if (def.isEmpty())
+			qWarning() << "Attribute" << attr << "not present for node" << n.nodeName();
+		else
+			qWarning() << "Using default value" << def << "for node" << n.nodeName();
 		return def;
 	}
 
@@ -49,7 +52,10 @@ int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 	int val = a.toInt(&ok);
 	if (!ok)
 	{
-		qWarning() << "Error converting attribute " << attr << "of node " << n.localName() << " to int";
+		if (def == -1)
+			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() << "to int";
+		else
+			qWarning() << "Using default value" << def << "for node" << n.nodeName();
 		return def;
 	}
 	return val;
