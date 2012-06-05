@@ -61,6 +61,41 @@ int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 	return val;
 }
 
+QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def)
+{
+	QString a = getAttribute(n, attr);
+	if (a.isEmpty())
+	{
+		qWarning() << "Using default value" << def << "for node" << n.nodeName();
+		return def;
+	}
+	QStringList hms = a.split(":");
+	int hours, minutes, seconds;
+	bool ok;
+	if (hms.length() == 0)
+	{
+		qWarning() << "Attribute" << attr << "not in right format";
+		hours = 0;
+	}
+	else
+		hours = hms[0].toInt(&ok);
+	if (hms.length() <= 1)
+	{
+		qWarning() << "Attribute" << attr << "not in right format, minutes missing";
+		minutes = 0;
+	}
+	else
+		minutes = hms[1].toInt(&ok);
+	if (hms.length() <= 2)
+	{
+		qWarning() << "Attribute" << attr << "not in right format, seconds missing";
+		seconds = 0;
+	}
+	else
+		seconds = hms[2].toInt(&ok);
+	return QTime(hours, minutes, seconds);
+}
+
 QDomElement getElement(const QDomNode &root, const QString &path)
 {
 	QStringList sl = path.split('/');

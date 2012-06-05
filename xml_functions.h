@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -25,6 +25,7 @@
 #include <QDomNode>
 #include <QRegExp>
 #include <QString>
+#include <QTime>
 
 /*!
 	Return the value of the attribute \a attr in node \a n.
@@ -38,6 +39,14 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def=
 	A warning is printed if the attribute is not an integer number.
 */
 int getIntAttribute(const QDomNode &n, const QString &attr, int def = -1);
+
+/*!
+	Return the time value of the attribute \a attr.
+	The expected format is something like 05:09:32 with hours, minutes and seconds
+	always specified.
+	A warning is printed if the attribute is not in the right format.
+*/
+QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def = QTime());
 
 /*!
 	\ingroup Core
