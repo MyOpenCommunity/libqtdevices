@@ -66,7 +66,8 @@ QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def)
 	QString a = getAttribute(n, attr);
 	if (a.isEmpty())
 	{
-		qWarning() << "Using default value" << def << "for node" << n.nodeName();
+		// def.toString() is required when compiling with -DQT_NO_DEBUG_OUTPUT
+		qWarning() << "Using default value" << def.toString() << "for node" << n.nodeName();
 		return def;
 	}
 	QStringList hms = a.split(":");
