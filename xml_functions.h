@@ -27,6 +27,16 @@
 #include <QString>
 #include <QTime>
 
+// TODO: is the right place?
+bool saveXml(const QDomDocument &document, const QString &filename);
+
+/*!
+	Set \a value for the attribute \a attr of node \a n.
+
+	If \a attr is not present, return false.
+*/
+bool setAttribute(QDomNode &n, const QString &attr, const QString &value);
+
 /*!
 	Return the value of the attribute \a attr in node \a n.
 

@@ -21,8 +21,36 @@
 
 #include "xml_functions.h"
 
+#include <QFile>
 #include <QStringList>
 #include <QDebug>
+
+
+bool saveXml(const QDomDocument &document, const QString &filename)
+{
+	// TODO: write in a temporary file and move it at the end replacing the
+	// old configuration file.
+	QFile fh(filename);
+	if (!fh.open(QIODevice::WriteOnly))
+		return false;
+
+	QTextStream stream(&fh);
+	stream.setCodec("UTF-8");
+	stream << document.toString(4);
+	stream.flush();
+	fh.close();
+	return true;
+}
+
+bool setAttribute(QDomNode &n, const QString &attr, const QString &value)
+{
+	QDomAttr a = n.toElement().attributeNode(attr);
+	if (a.isNull())
+		return false;
+
+	a.setValue(value);
+	return true;
+}
 
 QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
 {
