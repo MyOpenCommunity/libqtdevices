@@ -442,6 +442,8 @@ void MediaPlayer::requestInitialPlayingInfo(const QString &track)
 
 void MediaPlayer::requestInitialVideoInfo(const QString &track)
 {
+	Q_UNUSED(track);
+
 	QMap<QString, QString> info;
 	info.insert("current_time", "00:00");
 
