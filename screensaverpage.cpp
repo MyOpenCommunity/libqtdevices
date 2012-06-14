@@ -36,7 +36,9 @@
 #include "multimedia_ts10.h" // FilesystemBrowseButton
 #endif
 #include "main.h" // getPageNode(), MULTIMEDIA
+#ifdef LAYOUT_TS_3_5
 #include "brightnesspage.h"
+#endif
 
 #include <QAbstractButton>
 #include <QGridLayout>
