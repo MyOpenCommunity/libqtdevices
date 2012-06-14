@@ -20,7 +20,9 @@
 
 
 #include "mediaplayer.h"
+#ifndef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
 #include "hardware_functions.h" // maxWidth, maxHeight, getAudioCmdLine
+#endif
 #include "displaycontrol.h"
 #ifdef LAYOUT_TS_10
 #include "audiostatemachine.h"
@@ -111,14 +113,14 @@ namespace
 		return info_data;
 	}
 
-	QMap<QString, QString> extractMPlayerInfo(QList<QString> mplayer_args, QMap<QString,QString> data_search,
+	QMap<QString, QString> extractMPlayerInfo(QString executable, QList<QString> mplayer_args, QMap<QString,QString> data_search,
 		QSet<QString> required_keys)
 	{
 		QTime time_guard;
 		time_guard.start();
 
 		QProcess fake_player;
-		fake_player.start(MPLAYER_FILENAME, mplayer_args);
+		fake_player.start(executable, mplayer_args);
 		fake_player.waitForStarted(300);
 
 		QMap<QString, QString> info_data;
@@ -147,13 +149,13 @@ namespace
 		return info_data;
 	}
 
-	QMap<QString, QString> startFakePlayer(const QString &track, QMap<QString,QString> data_search)
+	QMap<QString, QString> startFakePlayer(const QString &executable, const QString &track, QMap<QString,QString> data_search)
 	{
 		QList<QString> args;
 		args << "-nolirc" << "-ao" << "null" << "-vo" << "null" << track;
 		// We want to wait until the current time info because it's the last, always present
 		// info of the mplayer output.
-		return extractMPlayerInfo(args, data_search, QSet<QString>() << "current_time");
+		return extractMPlayerInfo(executable, args, data_search, QSet<QString>() << "current_time");
 	}
 
 	QString removeDot(const QString &time)
@@ -176,6 +178,19 @@ namespace
 		if (!res.isValid())
 			res = QTime::fromString(s, "mm:ss");
 		return res;
+	}
+
+	QStringList replaceArguments(QStringList tmpl, QString file_name, int seconds)
+	{
+		for (int i = 0; i < tmpl.size(); ++i)
+		{
+			if (tmpl[i] == "<FILE_NAME>")
+				tmpl[i] = file_name;
+			else if (tmpl[i] == "<SEEK_TIME>")
+				tmpl[i] = QString::number(seconds);
+		}
+
+		return tmpl;
 	}
 }
 
@@ -209,6 +224,13 @@ QString formatTime(const QString &current_time, const QString &total_time)
 // All other methods are no-ops.
 Q_GLOBAL_STATIC(QProcess, mplayer_proc)
 
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+QString MediaPlayer::player_executable;
+QStringList MediaPlayer::audio_cmdline;
+QStringList MediaPlayer::video_cmdline;
+#else
+QString MediaPlayer::player_executable = MPLAYER_FILENAME;
+#endif
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 {
@@ -239,7 +261,7 @@ bool MediaPlayer::checkVideoResolution(QString track)
 	args << "-identify" << "-vo" << "/dev/null" << "-frames" << "1" << track;
 	QMap<QString, QString> data_search;
 	data_search["resolution"] = "VIDEO:\\s+[^\\n\\r]+\\s+(\\d+x\\d+)";
-	QMap<QString, QString> info = extractMPlayerInfo(args, data_search, QSet<QString>() << "resolution");
+	QMap<QString, QString> info = extractMPlayerInfo(player_executable, args, data_search, QSet<QString>() << "resolution");
 
 	if (!info.contains("resolution"))
 	{
@@ -256,8 +278,7 @@ bool MediaPlayer::checkVideoResolution(QString track)
 
 bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
 {
-	QList<QString> mplayer_args = getStandardArgs();
-	mplayer_args.append(getVideoArgs(start_time));
+	QList<QString> mplayer_args = getVideoArgs(start_time);
 
 	mplayer_args << "-vf" << QString("scale=%1:%2").arg(geometry.width()).arg(geometry.height())
 		     << "-geometry" << QString("%1:%2").arg(geometry.left()).arg(geometry.top())
@@ -269,14 +290,20 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 
 bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
 {
-	QList<QString> mplayer_args = getStandardArgs();
-	mplayer_args.append(getVideoArgs(start_time));
+	QList<QString> mplayer_args = getVideoArgs(start_time);
 	mplayer_args << "-fs" << track;
 	is_video = true;
 
 	return runMPlayer(mplayer_args, write_output);
 }
-
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+void MediaPlayer::setCommandLineArguments(QString executable, QStringList audio, QStringList video)
+{
+	player_executable = executable;
+	audio_cmdline = audio;
+	video_cmdline = video;
+}
+#endif
 QList<QString> MediaPlayer::getStandardArgs()
 {
 	return QList<QString>() << "-nolirc" << "-slave";
@@ -284,27 +311,32 @@ QList<QString> MediaPlayer::getStandardArgs()
 
 QList<QString> MediaPlayer::getVideoArgs(int seek_time)
 {
-	return QList<QString>() << "-screenw" << QString::number(maxWidth())
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	return getStandardArgs() + replaceArguments(video_cmdline, QString(), seek_time);
+#else
+	return getStandardArgs() << "-screenw" << QString::number(maxWidth())
 			<< "-screenh" << QString::number(maxHeight())
 			<< "-ac" << "mad," << "-af" << "channels=2,resample=48000"
 			<< "-ao" << "oss:/dev/dsp1"
 			<< "-ss" << QString::number(seek_time);
+#endif
 }
 
 QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 {
-#if defined(BT_HARDWARE_X11)
-	return QList<QString>();
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	return getStandardArgs() + replaceArguments(audio_cmdline, QString(), seek_time);
+#elif defined(BT_HARDWARE_X11)
+	return getStandardArgs();
 #else
-	return QList<QString>() << "-ao" << MPLAYER_AUDIO_DEVICE
+	return getStandardArgs() << "-ao" << MPLAYER_AUDIO_DEVICE
 			<< "-ss" << QString::number(seek_time);
 #endif
 }
 
 bool MediaPlayer::play(QString track, bool write_output)
 {
-	QList<QString> mplayer_args = getStandardArgs();
-	mplayer_args.append(getAudioArgs(0));
+	QList<QString> mplayer_args = getAudioArgs(0);
 
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)) || (track.contains(".pls", Qt::CaseInsensitive)))
 	{
@@ -331,7 +363,7 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 	if (!write_output)
 		mplayer_proc()->setStandardOutputFile("/dev/null");
 
-	mplayer_proc()->start(MPLAYER_FILENAME, args);
+	mplayer_proc()->start(player_executable, args);
 	paused = really_paused = false;
 
 	bool started = mplayer_proc()->waitForStarted(300);
@@ -436,7 +468,7 @@ void MediaPlayer::requestInitialPlayingInfo(const QString &track)
 	info_watcher = new QFutureWatcher<QMap<QString, QString> >(this);
 	connect(info_watcher, SIGNAL(finished()), SLOT(infoReceived()));
 
-	QFuture<QMap<QString,QString> > future = QtConcurrent::run(startFakePlayer, track, getAudioDataSearchMap());
+	QFuture<QMap<QString,QString> > future = QtConcurrent::run(startFakePlayer, player_executable, track, getAudioDataSearchMap());
 	info_watcher->setFuture(future);
 }
 
@@ -578,6 +610,11 @@ void MediaPlayer::infoReceived()
 
 Q_GLOBAL_STATIC(QProcess, sox_process)
 
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+QString SoundPlayer::player_executable;
+QStringList SoundPlayer::audio_cmdline;
+#endif
+
 SoundPlayer::SoundPlayer(QObject *parent) : QObject(parent)
 {
 	connect(sox_process(), SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
@@ -643,8 +680,12 @@ void SoundPlayer::start()
 		return;
 	active = true;
 
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	sox_process()->start(player_executable, replaceArguments(audio_cmdline, to_play, 0));
+#else
 	QPair<QString, QStringList> cmdline = getAudioCmdLine(to_play);
 	sox_process()->start(cmdline.first, cmdline.second);
+#endif
 	to_play = QString();
 }
 
@@ -663,6 +704,12 @@ void SoundPlayer::stop()
 
 	sox_process()->terminate();
 }
-
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+void SoundPlayer::setCommandLineArguments(QString executable, QStringList arguments)
+{
+	player_executable = executable;
+	audio_cmdline = arguments;
+}
+#endif
 // The global definition of sound player pointer
 SoundPlayer *bt_global::sound = 0;

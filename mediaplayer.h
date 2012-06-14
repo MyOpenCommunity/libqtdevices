@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -263,6 +263,15 @@ public:
 	*/
 	bool checkVideoResolution(QString track);
 
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	/*!
+		\brief Set the template for command line arguments
+
+		The special values "<FILE_NAME>" and "<SEEK_TIME>" are replaced with file name and seek time (in seconds).
+	*/
+	static void setCommandLineArguments(QString executable, QStringList audio, QStringList video);
+#endif
+
 private:
 	bool active, is_video;
 
@@ -287,6 +296,11 @@ private:
 	QFutureWatcher<QMap<QString,QString> > *info_watcher;
 
 	bool paused, really_paused;
+
+	static QString player_executable;
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	static QStringList audio_cmdline, video_cmdline, fullscreen_video_cmdline;
+#endif
 
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
@@ -366,6 +380,15 @@ public:
 	 */
 	void stop();
 
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	/*!
+		\brief Set the template for command line arguments
+
+		The special value "<FILE_NAME>" is replaced with file name.
+	*/
+	static void setCommandLineArguments(QString executable, QStringList arguments);
+#endif
+
 signals:
 	/*!
 		This signal is not emitted when the currently-playing sound is stopped
@@ -383,6 +406,11 @@ private slots:
 private:
 	bool active;
 	QString to_play;
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	static QString player_executable;
+	static QStringList audio_cmdline;
+#endif
+
 	void start();
 };
 
