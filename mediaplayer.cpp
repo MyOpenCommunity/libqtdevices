@@ -106,7 +106,7 @@ namespace
 		{
 			QRegExp rx(it.value());
 
-			if (rx.indexIn(raw_data) > -1)
+			if (rx.lastIndexIn(raw_data) > -1)
 				info_data[it.key()] = rx.cap(1);
 		}
 
