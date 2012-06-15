@@ -329,7 +329,7 @@ void AudioPlayerPage::startMPlayer(QString filename, int time)
 {
 	clearLabels();
 
-	player->play(filename, true);
+	player->play(filename);
 	refresh_data->start(MPLAYER_POLLING);
 }
 

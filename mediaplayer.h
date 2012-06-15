@@ -69,6 +69,13 @@ class MediaPlayer : public QObject
 {
 Q_OBJECT
 public:
+	enum OutputMode
+	{
+		OutputStdout = 1,
+		OutputStderr = 2,
+		OutputAll    = OutputStdout|OutputStderr
+	};
+
 	/*!
 		\brief Constructor.
 	 */
@@ -83,7 +90,7 @@ public:
 
 		\see getPlayingInfo()
 	 */
-	bool play(QString track, bool write_output = true);
+	bool play(QString track, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Start playing a video file.
@@ -100,7 +107,7 @@ public:
 		\see getVideoInfo()
 		\see playVideoFullScreen()
 	 */
-	bool playVideo(QString track, QRect geometry, int start_time, bool write_output = true);
+	bool playVideo(QString track, QRect geometry, int start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Start playing a video file full screen.
@@ -108,7 +115,7 @@ public:
 		\see getVideoInfo()
 		\see playVideo()
 	 */
-	bool playVideoFullScreen(QString track, int start_time, bool write_output = true);
+	bool playVideoFullScreen(QString track, int start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Pause playback.
@@ -289,7 +296,7 @@ private:
 	void updateDirectAccessState(bool state);
 #endif
 
-	bool runMPlayer(const QList<QString> &args, bool write_output);
+	bool runMPlayer(const QList<QString> &args, OutputMode write_output);
 	QList<QString> getStandardArgs();
 	QList<QString> getVideoArgs(int seek_time);
 	QList<QString> getAudioArgs(int seek_time);

@@ -276,7 +276,7 @@ bool MediaPlayer::checkVideoResolution(QString track)
 	return width <= MAX_VIDEO_WIDTH && height <= MAX_VIDEO_HEIGHT;
 }
 
-bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool write_output)
+bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getVideoArgs(start_time);
 
@@ -288,7 +288,7 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, bool 
 	return runMPlayer(mplayer_args, write_output);
 }
 
-bool MediaPlayer::playVideoFullScreen(QString track, int start_time, bool write_output)
+bool MediaPlayer::playVideoFullScreen(QString track, int start_time, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getVideoArgs(start_time);
 	mplayer_args << "-fs" << track;
@@ -334,7 +334,7 @@ QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 #endif
 }
 
-bool MediaPlayer::play(QString track, bool write_output)
+bool MediaPlayer::play(QString track, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getAudioArgs(0);
 
@@ -350,7 +350,7 @@ bool MediaPlayer::play(QString track, bool write_output)
 	return runMPlayer(mplayer_args, write_output);
 }
 
-bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
+bool MediaPlayer::runMPlayer(const QList<QString> &args, OutputMode write_output)
 {
 	if (mplayer_proc()->state() != QProcess::NotRunning)
 	{
@@ -360,8 +360,10 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, bool write_output)
 
 	active = true;
 
-	if (!write_output)
+	if (!(write_output & OutputStdout))
 		mplayer_proc()->setStandardOutputFile("/dev/null");
+	if (!(write_output & OutputStderr))
+		mplayer_proc()->setStandardErrorFile("/dev/null");
 
 	mplayer_proc()->start(player_executable, args);
 	paused = really_paused = false;
