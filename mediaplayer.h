@@ -43,6 +43,9 @@ class QRect;
 // [hh:]mm:ss / hh:mm:ss if the total hours is more than 1.
 QString formatTime(const QString &current_time, const QString &total_time);
 
+// Given the current time (as a string, in one of teh formats returned by MPlayer,
+// discards fractional seconds and returns a QTime object
+QTime parseMPlayerTime(const QString &time);
 
 /*!
 	\ingroup Multimedia

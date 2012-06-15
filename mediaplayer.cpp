@@ -169,17 +169,6 @@ namespace
 		return res;
 	}
 
-	QTime getTime(const QString &time)
-	{
-		QString s = removeDot(time);
-		QTime res = QTime::fromString(s, "h:mm:ss");
-		if (!res.isValid())
-			res = QTime::fromString(s, "ss");
-		if (!res.isValid())
-			res = QTime::fromString(s, "mm:ss");
-		return res;
-	}
-
 	QStringList replaceArguments(QStringList tmpl, QString file_name, int seconds)
 	{
 		for (int i = 0; i < tmpl.size(); ++i)
@@ -194,10 +183,21 @@ namespace
 	}
 }
 
+QTime parseMPlayerTime(const QString &time)
+{
+	QString s = removeDot(time);
+	QTime res = QTime::fromString(s, "h:mm:ss");
+	if (!res.isValid())
+		res = QTime::fromString(s, "ss");
+	if (!res.isValid())
+		res = QTime::fromString(s, "mm:ss");
+	return res;
+}
+
 QString formatTime(const QString &current_time, const QString &total_time)
 {
-	QTime current = getTime(current_time);
-	QTime total = getTime(total_time);
+	QTime current = parseMPlayerTime(current_time);
+	QTime total = parseMPlayerTime(total_time);
 	QString curr, tot;
 
 	if (total.hour() == 0)
