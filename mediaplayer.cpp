@@ -365,6 +365,7 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, OutputMode write_output
 	if (!(write_output & OutputStderr))
 		mplayer_proc()->setStandardErrorFile("/dev/null");
 
+	qDebug() << "About to start mplayer exec (" << player_executable << ") with args: " << args;
 	mplayer_proc()->start(player_executable, args);
 	paused = really_paused = false;
 
@@ -576,7 +577,7 @@ void MediaPlayer::mplayerError(QProcess::ProcessError error)
 {
 	int idx = mplayer_proc()->metaObject()->indexOfEnumerator("ProcessError");
 	QMetaEnum e = mplayer_proc()->metaObject()->enumerator(idx);
-	qDebug() << "[AUDIO] mplayer_proc raised an error: " << e.key(error);
+	qDebug() << "[AUDIO] mplayer_proc raised an error: " << "'" << e.key(error) << "'";
 }
 
 #ifdef LAYOUT_TS_10
