@@ -177,6 +177,9 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid), Fram
 	openserver_id = oid;
 	subscribeMonitor(who.toInt());
 
+	supported_init_mode = NORMAL_INIT;
+	init_request_done = false;
+
 	OpenServerManager *manager = getManager(openserver_id);
 
 	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
@@ -219,6 +222,48 @@ void device::initDevices()
 	foreach (int id, openservers.keys())
 		if (openservers[id]->isConnected())
 			bt_global::devices_cache.initOpenserverDevices(id);
+}
+
+
+bool device::smartInit(SupportedInitMode cur_init_mode)
+{
+	bool retCode=true;
+
+	if(cur_init_mode == DEFERRED_INIT)
+	{
+		if(!init_request_done)
+		{
+			init();
+			init_request_done = true;
+		}
+	}
+	else
+	{
+		switch(supported_init_mode)
+		{
+		case  DEFERRED_INIT:
+			init_request_done = false;
+			retCode = false;
+			break;
+
+		case  NORMAL_INIT:
+			init();
+			init_request_done = true;
+			break;
+
+		default:
+			qWarning("device::smartInit Unsupported INIT mode");
+		}
+	}
+	return retCode;
+}
+
+device::SupportedInitMode device::getSupportedInitMode()	{
+	return supported_init_mode;
+}
+
+void device::setSupportedInitMode(SupportedInitMode the_mode)	{
+	supported_init_mode = the_mode;
 }
 
 int device::openserverId()

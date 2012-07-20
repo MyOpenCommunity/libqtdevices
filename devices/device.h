@@ -212,6 +212,13 @@ Q_OBJECT
 
 public:
 
+
+	enum SupportedInitMode
+	{
+		DEFERRED_INIT = 0,
+		NORMAL_INIT
+	};
+
 	enum
 	{
 		/*!
@@ -229,6 +236,16 @@ public:
 	virtual void init() { }
 
 	/*!
+		\brief Send messages to initialize data.
+
+		Depending on the device capability an the
+		required init mode a device will be initialized
+		or attached to an initialization list that will
+		be processed according to the LazyUpdate policy
+	*/
+	bool smartInit(SupportedInitMode cur_init_mode);
+
+	/*!
 		\brief Returns cache key
 		\sa DevicesCache
 	*/
@@ -239,6 +256,17 @@ public:
 		\brief Returns true if is connected to the OpenServer.
 	*/
 	bool isConnected();
+
+	/*!
+		\brief Returns the supported init mode value.
+	*/
+	SupportedInitMode getSupportedInitMode();
+
+
+	/*!
+		\brief Set the supported init mode value.
+	*/
+	void setSupportedInitMode(SupportedInitMode the_mode);
 
 	/*!
 		\brief Returns the Openserver id.
@@ -388,6 +416,10 @@ private:
 	static QHash<int, OpenServerManager*> openservers;
 
 	FrameCompressor frame_compressor, request_compressor;
+
+	SupportedInitMode supported_init_mode;
+
+	bool init_request_done;
 };
 
 
