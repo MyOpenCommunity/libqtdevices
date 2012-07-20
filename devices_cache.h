@@ -71,6 +71,10 @@ public:
 	// call this after all devices have been created
 	void devicesCreated();
 
+	// lazy update
+	void setLazyUpdate(bool enable);
+	void checkLazyUpdate(int group);
+
 private:
 	QHash<QString, device*> cache;
 	QHash<int, QList<QString> > init_frames;
@@ -80,6 +84,8 @@ private:
 	bool contains(QString key) const;
 	device *get(QString key) const;
 	void insert(QString key, device* d);
+
+	QList<device*> lazy_update_list;
 };
 
 

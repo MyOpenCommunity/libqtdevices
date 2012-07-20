@@ -38,6 +38,23 @@ void DevicesCache::devicesCreated()
 	devices_created = true;
 }
 
+void DevicesCache::setLazyUpdate(bool enable)
+{
+	qDebug("DevicesCache::setLazyUpdate(), set lazy update to = %d", enable);
+}
+
+void DevicesCache::checkLazyUpdate(int group)
+{
+	if (!lazy_update_list.isEmpty())
+	{
+		do
+		{
+			if(lazy_update_list.takeFirst()->smartInit(device::DEFERRED_INIT))
+				group--;
+		} while ((group > 0) && (!lazy_update_list.isEmpty()));
+	}
+}
+
 void DevicesCache::initOpenserverDevices(int openserver_id)
 {
 	if (!devices_created)
@@ -53,11 +70,19 @@ void DevicesCache::initOpenserverDevices(int openserver_id)
 	foreach (const QString &frame, init_frames[openserver_id])
 		FrameSender::sendCommandFrame(openserver_id, frame);
 
+	if (!lazy_update_list.isEmpty())
+		lazy_update_list.clear();
+
 	for (QHash<QString, device*>::Iterator it = cache.begin(); it != cache.end(); ++it)
 	{
 		device *dev = it.value();
 		if (dev->openserverId() == openserver_id)
-			dev->init();
+		{
+			if (!dev->smartInit(device::NORMAL_INIT))
+			{
+				lazy_update_list << dev;
+			}
+		}
 	}
 	FrameSender::delayFrames(false);
 }
