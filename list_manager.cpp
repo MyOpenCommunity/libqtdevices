@@ -20,7 +20,9 @@
 
 
 #include "list_manager.h"
+#ifndef BT_EXPERIENCE_TODO_REVIEW_ME
 #include "displaycontrol.h" // bt_global::display
+#endif
 
 
 FileListManager::FileListManager()
@@ -116,7 +118,9 @@ void UPnpListManager::handleError(int response, int code)
 
 	// Because the serverDown error can change the current page and hide the screensaver,
 	// we have to restore the normal status of the display.
+#ifndef BT_EXPERIENCE_TODO_REVIEW_ME
 	bt_global::display->makeActive();
+#endif
 }
 
 void UPnpListManager::nextFile()
