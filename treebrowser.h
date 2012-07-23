@@ -27,6 +27,19 @@
 #include <QString>
 
 
+class TreeBrowserMemento
+{
+};
+
+class DirectoryBrowserMemento : public TreeBrowserMemento
+{
+friend class DirectoryTreeBrowser;
+private:
+	QStringList context;
+	int mask;
+	QStringList root_path;
+};
+
 /*!
 	\ingroup Core
 	\brief Abstract class to navigate a hierarchical tree of files/directories
@@ -115,6 +128,14 @@ public:
 		This command can ben used to re-start the navigation from the beginning.
 	*/
 	virtual void reset() = 0;
+
+	/*!
+		\brief Clone the internal state of the TreeBrowser
+
+		Returned object must be destroyed by caller.
+	*/
+	virtual TreeBrowserMemento *clone() { return new TreeBrowserMemento; };
+	virtual void restore(TreeBrowserMemento *m) { };
 
 protected:
 	/*!
@@ -222,6 +243,8 @@ public:
 	virtual QString pathKey();
 	virtual void setContext(const QStringList &context);
 	virtual void reset();
+	virtual TreeBrowserMemento *clone();
+	virtual void restore(TreeBrowserMemento *m);
 
 private:
 	int level;
