@@ -12,3 +12,4 @@ cfg
 Makefile
 *.qm
 .nfs*
+doc/
