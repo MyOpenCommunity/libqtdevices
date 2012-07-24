@@ -85,7 +85,7 @@ void DirectoryTreeBrowser::reset()
 	current_dir.setPath(root_path);
 }
 
-TreeBrowserMemento *DirectoryTreeBrowser::clone()
+DirectoryBrowserMemento *DirectoryTreeBrowser::clone()
 {
 	DirectoryBrowserMemento *m = new DirectoryBrowserMemento;
 	m->root_path = getRootPath();
@@ -99,13 +99,11 @@ TreeBrowserMemento *DirectoryTreeBrowser::clone()
 	return m;
 }
 
-void DirectoryTreeBrowser::restore(TreeBrowserMemento *m)
+void DirectoryTreeBrowser::restore(DirectoryBrowserMemento *m)
 {
-	TreeBrowser::restore(m);
-	DirectoryBrowserMemento *dm = static_cast<DirectoryBrowserMemento *>(m);
-	setRootPath(dm->root_path);
-	setFilter(dm->mask);
-	setContext(dm->context);
+	setRootPath(m->root_path);
+	setFilter(m->mask);
+	setContext(m->context);
 }
 
 QStringList DirectoryTreeBrowser::getRootPath()

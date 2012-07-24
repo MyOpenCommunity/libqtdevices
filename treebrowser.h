@@ -27,11 +27,7 @@
 #include <QString>
 
 
-class TreeBrowserMemento
-{
-};
-
-class DirectoryBrowserMemento : public TreeBrowserMemento
+class DirectoryBrowserMemento
 {
 friend class DirectoryTreeBrowser;
 private:
@@ -128,14 +124,6 @@ public:
 		This command can ben used to re-start the navigation from the beginning.
 	*/
 	virtual void reset() = 0;
-
-	/*!
-		\brief Clone the internal state of the TreeBrowser
-
-		Returned object must be destroyed by caller.
-	*/
-	virtual TreeBrowserMemento *clone() { return new TreeBrowserMemento; };
-	virtual void restore(TreeBrowserMemento *m) { };
 
 protected:
 	/*!
@@ -243,8 +231,13 @@ public:
 	virtual QString pathKey();
 	virtual void setContext(const QStringList &context);
 	virtual void reset();
-	virtual TreeBrowserMemento *clone();
-	virtual void restore(TreeBrowserMemento *m);
+	/*!
+		\brief Clone the internal state of the TreeBrowser
+
+		Returned object must be destroyed by caller.
+	*/
+	DirectoryBrowserMemento *clone();
+	void restore(DirectoryBrowserMemento *m);
 
 private:
 	int level;
