@@ -51,6 +51,7 @@
 class AntintrusionDevice : public device
 {
 friend class TestAntintrusionDevice;
+friend class TestAntintrusionSystem;
 Q_OBJECT
 public:
 	AntintrusionDevice(int openserver_id = 0);
