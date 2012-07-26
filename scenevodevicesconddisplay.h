@@ -82,6 +82,22 @@ public slots:
 
 /*!
 	\ingroup Scenarios
+	\brief Displays a dimming 100 device condition.
+*/
+class DeviceConditionDisplayDimming100 : public DeviceConditionDisplay
+{
+Q_OBJECT
+public:
+	DeviceConditionDisplayDimming100(QWidget *parent, QString descr, QString top_icon) :
+		DeviceConditionDisplay(parent, descr, top_icon) {}
+
+public slots:
+	void updateText(int min_condition_value, int max_condition_value);
+};
+
+
+/*!
+	\ingroup Scenarios
 	\brief Displays a volume device condition.
 */
 class DeviceConditionDisplayVolume : public DeviceConditionDisplay

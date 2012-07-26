@@ -336,7 +336,7 @@ void DeviceConditionDimming::Down()
 
 void DeviceConditionDimming::Draw()
 {
-	updateText(get_current_value_min()*10, get_current_value_max()*10);
+	updateText(get_current_value_min(), get_current_value_max());
 }
 
 bool DeviceConditionDimming::conditionChanged()

@@ -176,7 +176,7 @@ ScenEvoDeviceCondition::ScenEvoDeviceCondition(int _item_id, const QDomNode &con
 		break;
 	case DeviceCondition::DIMMING100:
 		icon = bt_global::skin->getImage("dimmer");
-		condition_display = new DeviceConditionDisplayDimming(this, description, icon);
+		condition_display = new DeviceConditionDisplayDimming100(this, description, icon);
 		device_cond = new DeviceConditionDimming100(condition_display, trigger, w, oid, getPullMode(config_node));
 		break;
 	default:

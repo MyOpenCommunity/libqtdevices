@@ -77,6 +77,15 @@ void DeviceConditionDisplayDimming::updateText(int min_condition_value, int max_
 	if (min_condition_value == 0)
 		condition->setText(tr("OFF"));
 	else
+		condition->setText(QString("%1% - %2%").arg(min_condition_value * 10).arg(max_condition_value * 10));
+}
+
+
+void DeviceConditionDisplayDimming100::updateText(int min_condition_value, int max_condition_value)
+{
+	if (min_condition_value == 0)
+		condition->setText(tr("OFF"));
+	else
 		condition->setText(QString("%1% - %2%").arg(min_condition_value).arg(max_condition_value));
 }
 
