@@ -87,6 +87,27 @@ QString DeviceCondition::getConditionAsString()
 	return QString::number(get_condition_value());
 }
 
+void DeviceCondition::setState(ConditionState state)
+{
+	set_current_value(state.first);
+	Draw();
+}
+
+DeviceCondition::ConditionState DeviceCondition::getState()
+{
+	return qMakePair(get_current_value(), get_current_value());
+}
+
+DeviceCondition::ConditionState DeviceCondition::getDefaultState()
+{
+	return qMakePair(get_min(), get_min());
+}
+
+DeviceCondition::ConditionState DeviceCondition::getOffState()
+{
+	return qMakePair(get_min(), get_min());
+}
+
 void DeviceCondition::Up()
 {
 	int val = get_current_value();
@@ -216,6 +237,16 @@ DeviceConditionLight::DeviceConditionLight(DeviceConditionDisplayInterface* cond
 	Draw();
 }
 
+DeviceCondition::ConditionState DeviceConditionLight::getDefaultState()
+{
+	return qMakePair(1, 1);
+}
+
+DeviceCondition::ConditionState DeviceConditionLight::getOffState()
+{
+	return qMakePair(0, 0);
+}
+
 void DeviceConditionLight::Draw()
 {
 	updateText(get_current_value(), get_current_value());
@@ -286,6 +317,28 @@ int DeviceConditionDimming::get_min()
 int DeviceConditionDimming::get_max()
 {
 	return 10;
+}
+
+void DeviceConditionDimming::setState(ConditionState state)
+{
+	set_current_value_min(state.first);
+	set_current_value_max(state.second);
+	Draw();
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming::getState()
+{
+	return qMakePair(get_current_value_min(), get_current_value_max());
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming::getDefaultState()
+{
+	return qMakePair(2, 4);
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming::getOffState()
+{
+	return qMakePair(0, 0);
 }
 
 void DeviceConditionDimming::Up()
@@ -477,6 +530,29 @@ int DeviceConditionDimming100::get_min()
 int DeviceConditionDimming100::get_max()
 {
 	return 100;
+}
+
+
+void DeviceConditionDimming100::setState(ConditionState state)
+{
+	set_current_value_min(state.first);
+	set_current_value_max(state.second);
+	Draw();
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming100::getState()
+{
+	return qMakePair(get_current_value_min(), get_current_value_max());
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming100::getDefaultState()
+{
+	return qMakePair(1, 20);
+}
+
+DeviceCondition::ConditionState DeviceConditionDimming100::getOffState()
+{
+	return qMakePair(0, 0);
 }
 
 void DeviceConditionDimming100::Up()
@@ -729,6 +805,29 @@ QString DeviceConditionVolume::getConditionAsString()
 		return "-1";
 
 	return QString("%1-%2").arg(get_condition_value_min()).arg(get_condition_value_max());
+}
+
+
+void DeviceConditionVolume::setState(ConditionState state)
+{
+	set_current_value_min(state.first);
+	set_current_value_max(state.second);
+	Draw();
+}
+
+DeviceCondition::ConditionState DeviceConditionVolume::getState()
+{
+	return qMakePair(get_current_value_min(), get_current_value_max());
+}
+
+DeviceCondition::ConditionState DeviceConditionVolume::getDefaultState()
+{
+	return qMakePair(0, 31);
+}
+
+DeviceCondition::ConditionState DeviceConditionVolume::getOffState()
+{
+	return qMakePair(-1, -1);
 }
 
 void DeviceConditionVolume::Up()

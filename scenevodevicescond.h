@@ -64,6 +64,8 @@ class DeviceCondition : public QObject
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
+	typedef QPair<int, int> ConditionState;
+
 	/*!
 		\brief The types of the device conditions.
 	*/
@@ -98,6 +100,47 @@ public:
 		\brief Resets the current value to the condition.
 	*/
 	void reset();
+
+	/*!
+		\brief Set condition value state
+
+		Set the trigger value/range to the specified state; only set it to a
+		value obtained through  \ref getState(), otherwise \ref Up() and
+		\ref Down() might break.
+
+		\sa getState
+		\sa getDefaultState
+		\sa getOffState
+	*/
+	virtual void setState(ConditionState state);
+
+	/*!
+		\brief Get current condition range
+	*/
+	virtual ConditionState getState();
+
+	/*!
+		\brief Get default on state
+
+		Can be used when changing the device condition state from off to on
+		but the previous on state for the condition is not known.
+
+		Only makes sense for light/dimming and volume conditions.
+
+		\sa setState
+	*/
+	virtual ConditionState getDefaultState();
+
+	/*!
+		\brief Get off state
+
+		Device condition state that corresponds to an "off" device state.
+
+		Only makes sense for light/dimming and volume conditions.
+
+		\sa setState
+	*/
+	virtual ConditionState getOffState();
 
 public slots:
 	// Invoked when UP button is pressed
@@ -187,6 +230,9 @@ public:
 	DeviceConditionLight(DeviceConditionDisplayInterface* condition_display, QString trigger, QString where,
 		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 
+	virtual ConditionState getDefaultState();
+	virtual ConditionState getOffState();
+
 protected:
 	virtual void Draw();
 	virtual int get_max();
@@ -210,6 +256,11 @@ public:
 		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
 
 	virtual QString getConditionAsString();
+
+	virtual void setState(ConditionState state);
+	virtual ConditionState getState();
+	virtual ConditionState getDefaultState();
+	virtual ConditionState getOffState();
 
 public slots:
 	virtual void Up();
@@ -261,6 +312,11 @@ public:
 
 	virtual QString getConditionAsString();
 
+	virtual void setState(ConditionState state);
+	virtual ConditionState getState();
+	virtual ConditionState getDefaultState();
+	virtual ConditionState getOffState();
+
 public slots:
 	virtual void Up();
 	virtual void Down();
@@ -307,6 +363,11 @@ public:
 	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 
 	virtual QString getConditionAsString();
+
+	virtual void setState(ConditionState state);
+	virtual ConditionState getState();
+	virtual ConditionState getDefaultState();
+	virtual ConditionState getOffState();
 
 public slots:
 	virtual void Up();
