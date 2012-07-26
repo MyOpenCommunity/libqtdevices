@@ -26,6 +26,7 @@
 #include "xml_functions.h" // getTextChild
 #include "scenevodevicescond.h"
 #include "datetime.h" //BtTimeEdit
+#include "scenevodevicesconddisplay.h"
 
 #include <QLabel>
 

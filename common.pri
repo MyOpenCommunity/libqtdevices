@@ -96,6 +96,7 @@ HEADERS += actuators.h \
 	scenario.h \
 	scenevocond.h \
 	scenevodevicescond.h \
+	scenevodevicesconddisplay.h \
 	screensaver.h \
 	screensaverpage.h \
 	scrollablepage.h \
@@ -205,6 +206,7 @@ SOURCES += actuators.cpp \
 	scenario.cpp \
 	scenevocond.cpp \
 	scenevodevicescond.cpp \
+	scenevodevicesconddisplay.cpp \
 	screensaver.cpp \
 	screensaverpage.cpp \
 	scrollablepage.cpp \
