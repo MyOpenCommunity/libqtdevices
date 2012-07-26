@@ -253,7 +253,7 @@ friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
-		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
+		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN, bool down_off = true);
 
 	virtual QString getConditionAsString();
 
@@ -295,6 +295,8 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	// prevent Down() from changing device state to "off"
+	bool down_off;
 };
 
 
@@ -308,7 +310,7 @@ friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
 	DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where,
-		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN);
+		int openserver_id = 0, PullMode pull_mode = PULL_UNKNOWN, bool down_off = true);
 
 	virtual QString getConditionAsString();
 
@@ -348,6 +350,8 @@ private:
 	int max_val;
 	int current_value_min;
 	int current_value_max;
+	// prevent Down() from changing device state to "off"
+	bool down_off;
 };
 
 
@@ -360,7 +364,7 @@ class DeviceConditionVolume : public DeviceCondition
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
-	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
+	DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool down_off = true);
 
 	virtual QString getConditionAsString();
 
@@ -398,6 +402,8 @@ private:
 	int current_value_min;
 	int current_value_max;
 	bool amplifier_on;
+	// prevent Down() from changing device state to "off"
+	bool down_off;
 };
 
 

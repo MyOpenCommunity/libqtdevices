@@ -280,9 +280,11 @@ void DeviceConditionLight::set_condition_value(QString s)
 }
 
 
-DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
+DeviceConditionDimming::DeviceConditionDimming(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode, bool _down_off)
 	: DeviceCondition(cond_display)
 {
+	down_off = _down_off;
+
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -347,6 +349,8 @@ void DeviceConditionDimming::Up()
 	switch (val)
 	{
 	case 0:
+		if (!down_off)
+			break;
 		set_current_value_min(2);
 		set_current_value_max(4);
 		break;
@@ -370,6 +374,8 @@ void DeviceConditionDimming::Down()
 	switch (val)
 	{
 	case 2:
+		if (!down_off)
+			break;
 		set_current_value_min(0);
 		set_current_value_max(0);
 		break;
@@ -495,9 +501,11 @@ bool DeviceConditionDimming::parseValues(const DeviceValues &values_list)
 }
 
 
-DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode)
+DeviceConditionDimming100::DeviceConditionDimming100(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, int openserver_id, PullMode pull_mode, bool _down_off)
 	: DeviceCondition(cond_display)
 {
+	down_off = _down_off;
+
 	if (trigger == "0")
 	{
 		set_condition_value_min(0);
@@ -561,6 +569,8 @@ void DeviceConditionDimming100::Up()
 	switch (val)
 	{
 	case 0:
+		if (!down_off)
+			break;
 		set_current_value_min(1);
 		set_current_value_max(20);
 		break;
@@ -588,6 +598,8 @@ void DeviceConditionDimming100::Down()
 	switch (val)
 	{
 	case 1:
+		if (!down_off)
+			break;
 		set_current_value_min(0);
 		set_current_value_max(0);
 		break;
@@ -719,9 +731,11 @@ bool DeviceConditionDimming100::parseValues(const DeviceValues &values_list)
 }
 
 
-DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where)
+DeviceConditionVolume::DeviceConditionVolume(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where, bool _down_off)
 	: DeviceCondition(cond_display)
 {
+	down_off = _down_off;
+
 	if (trigger == "-1")
 	{
 		set_condition_value_min(-1);
@@ -837,8 +851,11 @@ void DeviceConditionVolume::Up()
 	qDebug("value_min = %d - value_max = %d", value_min, value_max);
 	if (value_min == -1)
 	{
-		value_min = 0;
-		value_max = 31;
+		if (down_off)
+		{
+			value_min = 0;
+			value_max = 31;
+		}
 	}
 	else if (value_min == 0)
 	{
@@ -890,7 +907,7 @@ void DeviceConditionVolume::Down()
 	{
 		if (value_max == 6)
 			value_max = 31;
-		else
+		else if (down_off)
 		{
 			value_min = -1;
 			value_max = -1;
