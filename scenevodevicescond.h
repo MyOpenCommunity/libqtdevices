@@ -61,6 +61,7 @@ public:
 */
 class DeviceCondition : public QObject
 {
+friend class TestScenarioAdvanced;
 friend class TestScenEvoDevicesCond;
 Q_OBJECT
 public:
