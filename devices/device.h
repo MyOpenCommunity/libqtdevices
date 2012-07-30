@@ -386,4 +386,26 @@ private:
 	FrameCompressor frame_compressor, request_compressor;
 };
 
+
+/*!
+	\brief Trivial device that can only be used to send arbitrary frames
+
+	Some graphical objects (mainly scenarios) need to send frames to
+	arbitrary devices.
+*/
+class RawDevice : public device
+{
+	Q_OBJECT
+
+public:
+	/// Create a new raw device
+	RawDevice(int openserver_id = 0);
+
+	/// Send a command frame (must be a complete frame, including the trailing "##")
+	void sendCommand(QString frame);
+
+	/// Send an init frame (must be a complete frame, including the trailing "##")
+	void sendRequest(QString frame);
+};
+
 #endif //__DEVICE_H__

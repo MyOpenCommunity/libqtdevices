@@ -279,3 +279,17 @@ QString device::get_key()
 	return QString("%4-%1#%2*%3").arg(openserver_id).arg(who).arg(where).arg(metaObject()->className());
 }
 
+RawDevice::RawDevice(int openserver_id) :
+	device("0", "0", openserver_id)
+{
+}
+
+void RawDevice::sendCommand(QString frame)
+{
+	sendFrame(frame);
+}
+
+void RawDevice::sendRequest(QString frame)
+{
+	sendInit(frame);
+}
