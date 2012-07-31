@@ -73,7 +73,7 @@ void LoadsDevice::forceOn() const
 void LoadsDevice::forceOff(int time) const
 {
 	// TODO to be confirmed
-	sendCommand(QString("73#%1").arg(time / 10));
+	sendCommand(QString("73#%1").arg(time / FORCE_DURATION_STEP));
 }
 
 void LoadsDevice::requestCurrent() const

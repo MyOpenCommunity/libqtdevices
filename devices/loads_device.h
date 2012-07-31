@@ -93,6 +93,21 @@ public:
 	};
 
 	/*!
+		\brief Force duration values in minutes change with this step
+	*/
+	static const int FORCE_DURATION_STEP = 10;
+
+	/*!
+		\brief Force duration minimal value in minutes
+	*/
+	static const int FORCE_DURATION_MIN = 10;
+
+	/*!
+		\brief Force duration maximal values in minutes
+	*/
+	static const int FORCE_DURATION_MAX = 240;
+
+	/*!
 		\brief Constructor.
 
 		Constructs a new LoadsDevice with the given \a where.
