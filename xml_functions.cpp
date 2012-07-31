@@ -81,7 +81,8 @@ int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 	if (!ok)
 	{
 		if (def == -1)
-			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() << "to int";
+			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() <<
+				"at line" << n.lineNumber() << "to int";
 		else
 			qWarning() << "Using default value" << def << "for node" << n.nodeName();
 		return def;
