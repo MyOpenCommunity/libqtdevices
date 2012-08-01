@@ -121,6 +121,9 @@ enum RequestDimension
 	REQ_DAY_GRAPH_16BIT               = 57,   // request graph data for a specific day (16bit frames)
 	REQ_CUMULATIVE_MONTH_GRAPH        = 56,   // request graph data for cumulative month
 	REQ_CUMULATIVE_MONTH_GRAPH_32BIT  = 59,   // request graph data for cumulative month (32 bit frames)
+
+	REQ_THRESHOLD_STATE               = 516,  // request whether electricity thresholds are enabled/exceeded
+	REQ_THRESHOLD_VALUE               = 517,  // request electricity threshold value
 };
 
 
@@ -544,6 +547,21 @@ void EnergyDevice::requestCumulativeYearGraph() const
 		requestCumulativeMonth(curr.addMonths(i * -1));
 }
 
+void EnergyDevice::requestThresholdState() const
+{
+	sendRequest(REQ_THRESHOLD_STATE);
+}
+
+void EnergyDevice::requestThresholdValue(int index) const
+{
+	sendRequest(QString("%1#%2").arg(REQ_THRESHOLD_VALUE).arg(index + 1));
+}
+
+void EnergyDevice::setThresholdValue(int index, int value)
+{
+	sendFrame(createWriteDimensionFrame(who, QString("%1#%2*%3").arg(REQ_THRESHOLD_VALUE).arg(index + 1).arg(value), where));
+}
+
 /*
  * The main assumptions on the incoming frames are that:
  *  - the frames for a graph arrive in order;
@@ -686,6 +704,32 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		setHasNewFrames();
 		values_list[DIM_ADVANCED_DEVICE] = true;
 		managed = true;
+	}
+	else if (what == REQ_THRESHOLD_STATE)
+	{
+		bool thresh1exc = msg.whatArgN(0), thresh2exc = msg.whatArgN(2);
+		bool thresh1set = msg.whatArgN(1), thresh2set = msg.whatArgN(3);
+		QList<int> vals;
+
+		vals.append(!thresh1set ? THRESHOLD_DISABLED :
+			     thresh1exc ? THRESHOLD_EXCEEDED :
+					  THRESHOLD_ENABLED);
+		vals.append(!thresh2set ? THRESHOLD_DISABLED :
+			     thresh2exc ? THRESHOLD_EXCEEDED :
+					  THRESHOLD_ENABLED);
+
+		QVariant val;
+		val.setValue(vals);
+
+		values_list[DIM_THRESHOLD_STATE] = val;
+	}
+	else if (what == REQ_THRESHOLD_VALUE)
+	{
+		int num = msg.whatSubArgN(0);
+		int val = msg.whatArgN(0);
+
+		values_list[DIM_THRESHOLD_VALUE] = val;
+		values_list[DIM_THRESHOLD_INDEX] = num - 1;
 	}
 
 	return managed;

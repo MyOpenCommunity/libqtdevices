@@ -56,6 +56,8 @@ private slots:
 	void sendRequestCumulativeDayGraph16BitOldPic();
 	void sendRequestCumulativeMonthGraph32Bit();
 	void sendRequestCumulativeMonthGraph32BitOldPic();
+	void sendRequestThresholdState();
+	void sendRequestThresholdValue();
 
 	void receiveCumulativeDay();
 	void receiveCumulativeDay2();
@@ -81,6 +83,8 @@ private slots:
 	void receiveMonthlyAverage16Bit();
 	void receiveCumulativeDayRequest();
 	void receiveCumulativeMonthRequest();
+	void receiveThresholdState();
+	void receiveThresholdValue();
 
 	void testGetDateFromFrame();
 	void testConsecutiveGraphFrames();
@@ -100,6 +104,8 @@ private slots:
 	void testUpdateStartPolling();
 	void testUpdateStartAutomatic();
 	void testUpdateStop();
+
+	void testSetThresholdValue();
 
 	// pic
 	void receivePic();

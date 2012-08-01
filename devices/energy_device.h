@@ -152,6 +152,9 @@ private:
 	\dim{DIM_CUMULATIVE_YEAR_GRAPH,GraphData,,Total consumption for each month in the last year (current month and the previous 11 months)}
 	\dim{DIM_MONTLY_AVERAGE,::EnergyValue,,Average consumption value for the days in a month.}
 	\dim{DIM_ADVANCED_DEVICE,bool,,Whether device is advanced (supports thresholds and stores more than one year of data).}
+	\dim{DIM_THRESHOLD_STATE,QList<int>,,Each element is a ThresholdState value describing the state of a threshold.}
+	\dim{DIM_THRESHOLD_INDEX,int,,The threshold index for DIM_THRESHOLD_VALUE (starting from 0).}
+	\dim{DIM_THRESHOLD_VALUE,int,,The currently-set threshold value.}
 	\enddim
 
 	After requesting a status update for a specific measure, it is not unusual that
@@ -261,6 +264,23 @@ public:
 	void requestCurrentUpdateStop();
 
 	/*!
+		\brief Request current threshold state (DIM_THRESHOLD_STATE)
+
+		\sa ThresholdState
+	*/
+	void requestThresholdState() const;
+
+	/*!
+		\brief Request current threshold value (DIM_THRESHOLD_INDEX and DIM_THRESHOLD_VALUE)
+	*/
+	void requestThresholdValue(int index) const;
+
+	/*!
+		\brief Sets a new threshold value.
+	*/
+	void setThresholdValue(int index, int value);
+
+	/*!
 		\brief Stop automatic updates directly.
 
 		Called after requestCurrentUpdateStop(), forces the update stop to be processed
@@ -288,6 +308,9 @@ public:
 		DIM_CUMULATIVE_YEAR_GRAPH,  // read graph data for comulative year (as DIM_CURRENT, the value doesn't matter)
 		DIM_MONTLY_AVERAGE, // as DIM_CURRENT, the value doesn't matter
 		DIM_ADVANCED_DEVICE, // whether the device is advanced
+		DIM_THRESHOLD_STATE, // a QList<int> containing values from ThresholdState
+		DIM_THRESHOLD_INDEX, // threshold index for DIM_THRESHOLD_VALUE (0 or 1)
+		DIM_THRESHOLD_VALUE, // threshold values
 	};
 
 	/*!
@@ -299,6 +322,16 @@ public:
 		CUMULATIVE_MONTH, /*!< Total consumption for each day in a month. */
 		CUMULATIVE_YEAR,  /*!< Total consumption for each month in a year. */
 		DAILY_AVERAGE     /*!< Average consumption for each hour in a day (computed over a month). */
+	};
+
+	/*!
+		\brief Current threshold state
+	*/
+	enum ThresholdState
+	{
+		THRESHOLD_DISABLED, //!< Threshold is disabled
+		THRESHOLD_ENABLED, //!< Threshold is enabled but not exceeded
+		THRESHOLD_EXCEEDED, //!< Threshold is enabled and exceeded
 	};
 
 	/*!
@@ -425,6 +458,8 @@ Q_DECLARE_METATYPE(GraphData)
 */
 typedef QPair<QDate, qint64> EnergyValue;
 Q_DECLARE_METATYPE(EnergyValue);
+
+Q_DECLARE_METATYPE(QList<int>);
 
 #endif // ENERGY_DEVICE_H
 

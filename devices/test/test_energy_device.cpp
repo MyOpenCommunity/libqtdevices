@@ -263,6 +263,22 @@ void TestEnergyDevice::sendRequestCurrent4()
 	QCOMPARE(server->frameCommand(), req);
 }
 
+void TestEnergyDevice::sendRequestThresholdState()
+{
+	dev->requestThresholdState();
+	client_command->flush();
+	QString req(QString("*#18*%1*516##").arg(where));
+	QCOMPARE(server->frameCommand(), req);
+}
+
+void TestEnergyDevice::sendRequestThresholdValue()
+{
+	dev->requestThresholdValue(0);
+	client_command->flush();
+	QString req(QString("*#18*%1*517#%2##").arg(where).arg(1));
+	QCOMPARE(server->frameCommand(), req);
+}
+
 void TestEnergyDevice::receiveCumulativeDay()
 {
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_DAY);
@@ -758,6 +774,22 @@ void TestEnergyDevice::receiveCumulativeMonthRequest()
 	t.checkSignals(QString("*18*56#10*%1##").arg(where), 0);
 }
 
+void TestEnergyDevice::receiveThresholdState()
+{
+	DeviceTester t(dev, EnergyDevice::DIM_THRESHOLD_STATE);
+	t.check(QString("*#18*%1*516*0*1*1*0##").arg(where), QList<int>() << EnergyDevice::THRESHOLD_ENABLED << EnergyDevice::THRESHOLD_DISABLED);
+	t.check(QString("*#18*%1*516*1*1*1*1##").arg(where), QList<int>() << EnergyDevice::THRESHOLD_EXCEEDED << EnergyDevice::THRESHOLD_EXCEEDED);
+}
+
+void TestEnergyDevice::receiveThresholdValue()
+{
+	DeviceTester ti(dev, EnergyDevice::DIM_THRESHOLD_INDEX, DeviceTester::MULTIPLE_VALUES);
+	DeviceTester tv(dev, EnergyDevice::DIM_THRESHOLD_VALUE, DeviceTester::MULTIPLE_VALUES);
+	ti.check(QString("*#18*%1*517#1*1234##").arg(where), 0);
+	ti.check(QString("*#18*%1*517#2*1234##").arg(where), 1);
+	tv.check(QString("*#18*%1*517#1*1234##").arg(where), 1234);
+}
+
 void TestEnergyDevice::testGetDateFromFrame()
 {
 	int month = 10;
@@ -928,6 +960,14 @@ void TestEnergyDevice::testUpdateStop()
 	upd->requestCurrentUpdateStop();
 	upd->stoppingTimeout();
 	QCOMPARE(upd->update_count, 0);
+}
+
+void TestEnergyDevice::testSetThresholdValue()
+{
+       dev->setThresholdValue(0, 1234);
+       client_command->flush();
+       QString req(QString("*#18*%1*#517#1*1234##").arg(where));
+       QCOMPARE(server->frameCommand(), req);
 }
 
 void TestEnergyDevice::receivePic()
