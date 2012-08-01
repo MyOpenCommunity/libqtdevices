@@ -701,8 +701,9 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	else if (what == _DIM_STATE_UPDATE_INTERVAL && msg.whatArgCnt() == 1)
 	{
 		current_updates->handleAutomaticUpdate(msg);
+		if (!has_new_frames)
+			values_list[DIM_ADVANCED_DEVICE] = true;
 		setHasNewFrames();
-		values_list[DIM_ADVANCED_DEVICE] = true;
 		managed = true;
 	}
 	else if (what == REQ_THRESHOLD_STATE)
