@@ -341,6 +341,16 @@ public:
 	*/
 	int getEnergyType() const;
 
+	/*!
+		\brief Whether this a basic or advanced device
+
+		This property starts \c false, once the device is detected as advanced,
+		the property becomes \c true.
+
+		\sa DIM_ADVANCED_DEVICE
+	*/
+	bool isAdvanced() const;
+
 protected:
 	bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 

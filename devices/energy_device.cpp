@@ -344,6 +344,11 @@ int EnergyDevice::getEnergyType() const
 	return current_updates->getEnergyType();
 }
 
+bool EnergyDevice::isAdvanced() const
+{
+	return has_new_frames;
+}
+
 EnergyDevice::~EnergyDevice()
 {
 	delete current_updates;
