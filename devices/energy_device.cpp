@@ -114,9 +114,6 @@ enum RequestDimension
 	_DIM_DAILY_AVERAGE_GRAPH_16BIT         = 512,// used internally, the status list contains DIM_DAILY_AVERAGE_GRAPH
 	_DIM_CUMULATIVE_MONTH_GRAPH_32BIT      = 513, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
 	_DIM_CUMULATIVE_MONTH_GRAPH_PREV_32BIT = 514, // used internally, the status list contains DIM_CUMULATIVE_MONTH_GRAPH
-	// TODO change the invalid frame what when it's finalized
-	_DIM_INVALID_FRAME = 777,            // if received, it means the device supports auto updates and the
-					     // 16/32 bit graph frames
 
 	REQ_DAILY_AVERAGE_GRAPH           = 53,   // graph data for daily average
 	REQ_DAILY_AVERAGE_GRAPH_16BIT     = 58,   // graph data for daily average (16bit frames)
@@ -683,17 +680,9 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 		managed = true;
 	}
-
-	if (what == _DIM_STATE_UPDATE_INTERVAL && msg.whatArgCnt() == 1)
+	else if (what == _DIM_STATE_UPDATE_INTERVAL && msg.whatArgCnt() == 1)
 	{
 		current_updates->handleAutomaticUpdate(msg);
-		setHasNewFrames();
-		managed = true;
-	}
-	else if (what == _DIM_INVALID_FRAME)
-	{
-		// switch the flag for old/new frame support and resend
-		// the auto update request if needed
 		setHasNewFrames();
 		managed = true;
 	}

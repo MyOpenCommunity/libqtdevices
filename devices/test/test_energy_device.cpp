@@ -792,11 +792,6 @@ void TestEnergyDevice::receiveInvalidFrameRequestDailyAverageGraph16Bit()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*18*53#9*%1##").arg(where));
-
-	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
-	client_command->flush();
-
-	QCOMPARE(server->frameCommand(), QString("*18*58#9*%1##").arg(where));
 }
 
 void TestEnergyDevice::receiveInvalidFrameRequestCumulativeDayGraph16Bit()
@@ -807,11 +802,6 @@ void TestEnergyDevice::receiveInvalidFrameRequestCumulativeDayGraph16Bit()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*18*52#9#1*%1##").arg(where));
-
-	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
-	client_command->flush();
-
-	QCOMPARE(server->frameCommand(), QString("*18*57#9#1*%1##").arg(where));
 }
 
 void TestEnergyDevice::receiveInvalidFrameRequestCumulativeMonthGraph32Bit()
@@ -822,11 +812,6 @@ void TestEnergyDevice::receiveInvalidFrameRequestCumulativeMonthGraph32Bit()
 	client_command->flush();
 
 	QCOMPARE(server->frameCommand(), QString("*18*56#9*%1##").arg(where));
-
-	t.checkSignals(QString("*#18*%1*777##").arg(where), 0);
-	client_command->flush();
-
-	QCOMPARE(server->frameCommand(), QString("*18*58#9*20##*18*59#9*%1##").arg(where));
 }
 
 
