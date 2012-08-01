@@ -192,6 +192,9 @@ public:
 		DIM_AUTOTEST_FREQ = 212
 	};
 
+	static const int SELF_TEST_FREQ_MIN = 1;
+	static const int SELF_TEST_FREQ_MAX = 180;
+
 	/*!
 		\brief Constructor
 
