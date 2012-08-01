@@ -857,9 +857,9 @@ void TestEnergyDevice::doSendUpdateStop(int mode, QString frame)
 
 void TestEnergyDevice::receiveUpdateInterval()
 {
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+	DeviceTester t(dev, EnergyDevice::DIM_ADVANCED_DEVICE);
 
-	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(upd->mode), 0);
+	t.checkSignals(QString("*#18*%1*1200#%2*2##").arg(where).arg(upd->mode), 1);
 	QCOMPARE(dev->has_new_frames, true);
 	QCOMPARE(upd->has_new_frames, true);
 	QCOMPARE(upd->update_timer, (QTimer *)NULL);
@@ -867,9 +867,9 @@ void TestEnergyDevice::receiveUpdateInterval()
 
 void TestEnergyDevice::receiveUpdateStop()
 {
-	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR); // the dim doesn't matter
+	DeviceTester t(dev, EnergyDevice::DIM_ADVANCED_DEVICE);
 
-	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(upd->mode), 0);
+	t.checkSignals(QString("*#18*%1*1200#%2*0##").arg(where).arg(upd->mode), 1);
 	QCOMPARE(dev->has_new_frames, true);
 	QCOMPARE(upd->has_new_frames, true);
 	QCOMPARE(upd->update_timer, (QTimer *)NULL);

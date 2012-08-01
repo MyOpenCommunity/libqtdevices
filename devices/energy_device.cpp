@@ -684,6 +684,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	{
 		current_updates->handleAutomaticUpdate(msg);
 		setHasNewFrames();
+		values_list[DIM_ADVANCED_DEVICE] = true;
 		managed = true;
 	}
 

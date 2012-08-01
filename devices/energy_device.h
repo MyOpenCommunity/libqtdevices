@@ -151,6 +151,7 @@ private:
 	\dim{DIM_CUMULATIVE_MONTH_GRAPH,GraphData,,Total consumption for each day in a month.}
 	\dim{DIM_CUMULATIVE_YEAR_GRAPH,GraphData,,Total consumption for each month in the last year (current month and the previous 11 months)}
 	\dim{DIM_MONTLY_AVERAGE,::EnergyValue,,Average consumption value for the days in a month.}
+	\dim{DIM_ADVANCED_DEVICE,bool,,Whether device is advanced (supports thresholds and stores more than one year of data).}
 	\enddim
 
 	After requesting a status update for a specific measure, it is not unusual that
@@ -286,6 +287,7 @@ public:
 		DIM_CUMULATIVE_MONTH_GRAPH   = 510,   // read graph data for cumulative month
 		DIM_CUMULATIVE_YEAR_GRAPH,  // read graph data for comulative year (as DIM_CURRENT, the value doesn't matter)
 		DIM_MONTLY_AVERAGE, // as DIM_CURRENT, the value doesn't matter
+		DIM_ADVANCED_DEVICE, // whether the device is advanced
 	};
 
 	/*!
