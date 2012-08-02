@@ -211,10 +211,14 @@ friend class BtMain;
 Q_OBJECT
 
 public:
-	/*!
-		\brief default timeout value for compressed frames.
-	*/
-	static const int COMPRESSION_TIMEOUT = 1000;
+
+	enum
+	{
+		/*!
+			\brief default timeout value for compressed frames.
+		*/
+		COMPRESSION_TIMEOUT = 1000
+	};
 
 	/*!
 		\brief Send messages to initialize data.

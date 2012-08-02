@@ -217,7 +217,10 @@ private:
 
 	void requestStatus();
 
-	static const int TIMEOUT_TIME = 10000;
+	enum
+	{
+		TIMEOUT_TIME = 10000
+	};
 };
 
 #endif // PROBE_DEVICE_H
