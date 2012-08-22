@@ -193,8 +193,11 @@ QTime parseMPlayerTime(const QString &time)
 	int v = time.toInt(&ok);
 
 	QTime res;
-	if (ok) // int case
+	if (ok)
+	{
+		// int case
 		res = res.addSecs(v);
+	}
 	else
 	{
 		// not an int, tries to read h:mm:ss format
