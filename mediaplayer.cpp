@@ -186,11 +186,25 @@ namespace
 QTime parseMPlayerTime(const QString &time)
 {
 	QString s = removeDot(time);
-	QTime res = QTime::fromString(s, "h:mm:ss");
-	if (!res.isValid())
-		res = QTime::fromString(s, "ss");
-	if (!res.isValid())
-		res = QTime::fromString(s, "mm:ss");
+
+	// time format may be h:mm:ss (and derivatives) or ss (may be greater then 59)
+	// firstly, tries to convert as integer
+	bool ok;
+	int v = time.toInt(&ok);
+
+	QTime res;
+	if (ok) // int case
+		res = res.addSecs(v);
+	else
+	{
+		// not an int, tries to read h:mm:ss format
+		res = QTime::fromString(s, "h:mm:ss");
+		if (!res.isValid())
+			res = QTime::fromString(s, "ss");
+		if (!res.isValid())
+			res = QTime::fromString(s, "mm:ss");
+	}
+
 	return res;
 }
 
