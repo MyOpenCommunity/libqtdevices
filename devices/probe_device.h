@@ -167,10 +167,10 @@ public:
 		\brief Set fancoil speed.
 
 		Speeds:
+		- 0: automatic
 		- 1: minimum
 		- 2: medium
 		- 3: maximum
-		- 4: automatic
 	 */
 	void setFancoilSpeed(int speed);
 	void requestFancoilStatus();
