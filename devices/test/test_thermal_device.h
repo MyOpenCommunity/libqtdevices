@@ -67,6 +67,10 @@ private slots:
 	void receiveWinterProgram();
 	void receiveWinterScenario();
 
+	void receiveWeekendEndDate();
+	void receiveHolidayEndTime();
+	void receiveManualTimedDuration();
+
 protected:
 	void setTestDevice(ThermalDevice *d);
 	void checkStatusSeason(int what, int status, int season);

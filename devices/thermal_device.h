@@ -65,6 +65,9 @@ public:
 		DIM_PROGRAM = 2,
 		DIM_SCENARIO = 3,
 		DIM_TEMPERATURE = 4,
+		DIM_DATE = 5,
+		DIM_TIME = 6,
+		DIM_DURATION = 7,
 	};
 
 	enum Status

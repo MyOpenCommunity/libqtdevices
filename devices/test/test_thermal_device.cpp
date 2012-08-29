@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -224,6 +224,24 @@ void TestThermalDevice::receiveWinterScenario()
 
 	QString frame = QString("*#4*%1*%2##").arg(dev->where).arg(1200 + 9);
 	t.check(frame);
+}
+
+void TestThermalDevice::receiveWeekendEndDate()
+{
+	DeviceTester t(dev, ThermalDevice::DIM_DATE);
+	t.check(QString("*#4*%1*30*29*08*2012##").arg(dev->where), QDate(2012, 8, 29));
+}
+
+void TestThermalDevice::receiveHolidayEndTime()
+{
+	DeviceTester t(dev, ThermalDevice::DIM_TIME);
+	t.check(QString("*#4*%1*31*23*08##").arg(dev->where), QTime(23, 8));
+}
+
+void TestThermalDevice::receiveManualTimedDuration()
+{
+	DeviceTester t(dev, ThermalDevice::DIM_DURATION);
+	t.check(QString("*#4*%1*32*24*59##").arg(dev->where), BtTime(24, 59, 0));
 }
 
 void TestThermalDevice::checkStatusSeason(int what, int status, int season)

@@ -209,8 +209,6 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	int command = commandRange(what);
 	int program = what - command;
 
-	qDebug() << "ThermalDevice command" << command << "program" << program;
-
 	switch (command)
 	{
 	case REMOTE_CONTROL:
@@ -230,11 +228,11 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	case SUM_MANUAL:
 	case SUM_MANUAL_TIMED:
-		{
-			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
-			int sp = msg.whatArgN(0);
-			values_list[DIM_TEMPERATURE] = sp;
-		}
+	{
+		Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
+		int sp = msg.whatArgN(0);
+		values_list[DIM_TEMPERATURE] = sp;
+	}
 		values_list[DIM_STATUS] = command == SUM_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
 		values_list[DIM_SEASON] = SE_SUMMER;
 		break;
@@ -275,11 +273,11 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	case WIN_MANUAL:
 	case WIN_MANUAL_TIMED:
-		{
-			Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
-			int sp = msg.whatArgN(0);
-			values_list[DIM_TEMPERATURE] = sp;
-		}
+	{
+		Q_ASSERT_X(msg.whatArgCnt() > 0, "ThermalDevice::parseFrame", "Manual setting frame with no arguments received");
+		int sp = msg.whatArgN(0);
+		values_list[DIM_TEMPERATURE] = sp;
+	}
 		values_list[DIM_STATUS] = command == WIN_MANUAL ? ST_MANUAL : ST_MANUAL_TIMED;
 		values_list[DIM_SEASON] = SE_WINTER;
 		break;
@@ -307,6 +305,31 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		values_list[DIM_STATUS] = ST_HOLIDAY;
 		values_list[DIM_SEASON] = SE_WINTER;
 		break;
+
+	default:
+		break;
+	}
+
+	switch(what)
+	{
+	case HOLIDAY_DATE_END:
+		Q_ASSERT_X(msg.whatArgCnt() == 3, "ThermalDevice::parseFrame", "Received end date of holiday/weekend mode with wrong number of arguments");
+		values_list[DIM_DATE] = QDate(msg.whatArgN(2), msg.whatArgN(1), msg.whatArgN(0));
+		break;
+
+	case HOLIDAY_TIME_END:
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received end time of holiday/weekend mode with wrong number of arguments");
+		values_list[DIM_TIME] = QTime(msg.whatArgN(0), msg.whatArgN(1));
+		break;
+
+	case MANUAL_TIMED_END:
+	{
+		Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received duration of timed manual mode with wrong number of arguments");
+		QVariant v;
+		v.setValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), 0));
+		values_list[DIM_DURATION] = v;
+		break;
+	}
 
 	default:
 		break;
