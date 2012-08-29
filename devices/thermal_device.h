@@ -46,6 +46,9 @@ enum ThermoType
 	\dim{DIM_PROGRAM,int,,Program number; sent when DIM_STATUS is ST_PROGRAM or ST_WEEKEND; not available for ST_HOLIDAY.}
 	\dim{DIM_SCENARIO,int,,%Scenario number (99-zone); sent when DIM_STATUS is ST_SCENARIO.}
 	\dim{DIM_TEMPERATURE,int,,Temperature for manual modes in BTicino 4-digit format.}
+	\dim{DIM_DATE,QDate,,End date for weekend/holiday mode.}
+	\dim{DIM_TIME,QTime,,End time for weekend/holiday mode.}
+	\dim{DIM_DURATION,BtTime,,Duration for timed manual mode (can be any value between 0 and 24 hours, 59 minutes).}
 	\enddim
  */
 class ThermalDevice : public device
