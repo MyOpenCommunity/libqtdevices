@@ -64,6 +64,17 @@ BtTime::BtTime(const QTime &t)
 	init(t.hour(), t.minute(), t.second(), 0);
 }
 
+BtTime::BtTime(const BtTime &other)
+{
+	_hour = other._hour;
+	_minute = other._minute;
+	_second = other._second;
+	_tsecond = other._tsecond;
+	max_hours = other.max_hours;
+	max_minutes = other.max_minutes;
+	max_seconds = other.max_seconds;
+}
+
 void BtTime::init(int h, int m, int s, int ts)
 {
 	_hour = h;

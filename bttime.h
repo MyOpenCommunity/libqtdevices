@@ -59,6 +59,20 @@ public:
 	BtTime(const QTime &t);
 
 	/*!
+		\brief Copy constructor.
+
+		Needed for (un)marshalling to/from QVariant.
+	*/
+	BtTime(const BtTime &other);
+
+	/*!
+		\brief Destructor.
+
+		Needed for (un)marshalling to/from QVariant.
+	*/
+	~BtTime() {}
+
+	/*!
 		\brief Set the maximum value for hours.
 
 		The range of values allowed are then [0..\a max-1]. Default value is 24.
