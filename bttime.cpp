@@ -23,6 +23,7 @@
 
 #include <QDateTime>
 #include <QLocale>
+#include <QDebug>
 
 // The language used for the floating point number
 static QLocale loc(QLocale::Italian);
@@ -93,96 +94,62 @@ void BtTime::setMaxSeconds(int max)
 BtTime BtTime::addSecond(int s) const
 {
 	BtTime t = *this;
-	if (s == 1)
-	{
-		if (t._second == max_seconds - 1)
-		{
-			t._second = 0;
-			t = t.addMinute(s);
-		}
-		else
-			++t._second;
-	}
-	else if (s == -1)
-	{
-		if (t._second == 0)
-		{
-			t._second = max_seconds - 1;
-			t = t.addMinute(s);
-		}
-		else
-			--t._second;
-	}
-	else
-		qFatal("BtTime::addSecond(): _second != +-1");
+
+	// adds seconds
+	t._second += s;
+
+	// computes quotient and adds minutes
+	int quot = t._second / max_seconds;
+	t = t.addMinute(quot);
+
+	// computes seconds value using modulus operation
+	int mod = t._second % max_seconds;
+	mod = mod >= 0 ? mod : max_seconds + mod;
+
+	// minutes must be corrected by -1 if seconds are negative and multiple of max_seconds
+	t = ((t._second < 0) && (mod != 0)) ? t.addMinute(-1) : t;
+
+	// now, that we have used t._second sets it to final value
+	t._second = mod;
+
 	return t;
 }
 
 BtTime BtTime::addMinute(int m) const
 {
-	if (-m > max_minutes)
-		qFatal("You can't subtract more than max_minutes.");
-
 	BtTime t = *this;
-	if (m == 1)
-	{
-		if (t._minute == max_minutes - 1)
-		{
-			t._minute = 0;
-			t = t.addHour(m);
-		}
-		else
-			++t._minute;
-	}
-	else if (m == -1)
-	{
-		if (t._minute == 0)
-		{
-			t._minute = max_minutes - 1;
-			t = t.addHour(m);
-		}
-		else
-			--t._minute;
-	}
-	else
-	{
-		int tmp = t._minute + m;
-		t._minute = (tmp + max_minutes) % max_minutes;
-		int div = 0;
-		if (m < 0 && tmp < 0)
-		{
-			div = -((max_minutes - m) / max_minutes);
-		}
-		else
-			div = tmp / max_minutes;
-		t = t.addHour(div);
-	}
+
+	// adds minutes
+	t._minute += m;
+
+	// computes quotient and adds hours
+	int quot = t._minute / max_minutes;
+	t = t.addHour(quot);
+
+	// computes minutes value using modulus operation
+	int mod = t._minute % max_minutes;
+	mod = mod >= 0 ? mod : max_minutes + mod;
+
+	// hours must be corrected by -1 if minutes are negative and multiple of max_minutes
+	t = ((t._minute < 0) && (mod != 0)) ? t.addHour(-1) : t;
+
+	// now, that we have used t._minute sets it to final value
+	t._minute = mod;
+
 	return t;
 }
 
 BtTime BtTime::addHour(int h) const
 {
 	BtTime t = *this;
-	if (h == 1)
-	{
-		if (t._hour == max_hours - 1)
-		{
-			t._hour = 0;
-		}
-		else
-			++t._hour;
-	}
-	else if (h == -1)
-	{
-		if (t._hour == 0)
-		{
-			t._hour = max_hours - 1;
-		}
-		else
-			--t._hour;
-	}
-	else
-		t._hour = (t._hour + h + max_hours) % max_hours;
+
+	// adds hours modulo max_hours
+	t._hour = (t._hour + h) % max_hours;
+
+	// if hours are negative we must shift them by max_hours
+	if (t._hour < 0)
+		t._hour += max_hours;
+
 	return t;
 }
 

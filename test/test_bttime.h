@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -34,6 +34,7 @@ namespace QTest
 class TestBtTime : public QObject
 {
 Q_OBJECT
+
 private slots:
 	void testDefaultTime();
 	void testSubtractOneMinute();
@@ -43,6 +44,46 @@ private slots:
 	void testAddLessThanMaxMinutes();
 	void testAddMoreThanMaxMinutes();
 	void testAddMinutesWrapHour();
+
+	void testAdd1Hour();
+	void testAdd24Hours();
+	void testAdd25Hours();
+	void testAdd49Hours();
+	void testSub1Hour();
+	void testSub24Hours();
+	void testSub25Hours();
+	void testSub49Hours();
+
+	void testAdd1Minute();
+	void testAdd59Minutes();
+	void testAdd60Minutes();
+	void testAdd120Minutes();
+	void testSub1Minute();
+	void testSub59Minutes();
+	void testSub60Minutes();
+	void testSub120Minutes();
+
+	void testAdd1Second();
+	void testAdd59Seconds();
+	void testAdd60Seconds();
+	void testAdd61Seconds();
+	void testAdd120Seconds();
+	void testAdd3599Seconds();
+	void testAdd3600Seconds();
+	void testAdd7200Seconds();
+	void testSub1Second();
+	void testSub59Seconds();
+	void testSub60Seconds();
+	void testSub61Seconds();
+	void testSub120Seconds();
+	void testSub3599Seconds();
+	void testSub3600Seconds();
+	void testSub7200Seconds();
+
+private:
+	void testHourWithDelta(int delta, int h0, int h24);
+	void testMinuteWithDelta(int delta, int h0, int m0, int h24, int m24);
+	void testSecondWithDelta(int delta, int h0, int m0, int s0, int h24, int m24, int s24);
 };
 
 #endif // TEST_BTTIME_H

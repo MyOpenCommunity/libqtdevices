@@ -104,3 +104,199 @@ void TestBtTime::testAddMinutesWrapHour()
 	BtTime comp(0, 1, 0);
 	QCOMPARE(time, comp);
 }
+
+void TestBtTime::testAdd1Hour()
+{
+	testHourWithDelta(1, 1, 0);
+}
+
+void TestBtTime::testAdd24Hours()
+{
+	testHourWithDelta(24, 24, 23);
+}
+
+void TestBtTime::testAdd25Hours()
+{
+	testHourWithDelta(25, 0, 24);
+}
+
+void TestBtTime::testAdd49Hours()
+{
+	testHourWithDelta(49, 24, 23);
+}
+
+void TestBtTime::testSub1Hour()
+{
+	testHourWithDelta(-1, 24, 23);
+}
+
+void TestBtTime::testSub24Hours()
+{
+	testHourWithDelta(-24, 1, 0);
+}
+
+void TestBtTime::testSub25Hours()
+{
+	testHourWithDelta(-25, 0, 24);
+}
+
+void TestBtTime::testSub49Hours()
+{
+	testHourWithDelta(-49, 1, 0);
+}
+
+void TestBtTime::testAdd1Minute()
+{
+	testMinuteWithDelta(1, 0, 1, 0, 0);
+}
+
+void TestBtTime::testAdd59Minutes()
+{
+	testMinuteWithDelta(59, 0, 59, 0, 58);
+}
+
+void TestBtTime::testAdd60Minutes()
+{
+	testMinuteWithDelta(60, 1, 0, 0, 59);
+}
+
+void TestBtTime::testAdd120Minutes()
+{
+	testMinuteWithDelta(120, 2, 0, 1, 59);
+}
+
+void TestBtTime::testSub1Minute()
+{
+	testMinuteWithDelta(-1, 24, 59, 24, 58);
+}
+
+void TestBtTime::testSub59Minutes()
+{
+	testMinuteWithDelta(-59, 24, 1, 24, 0);
+}
+
+void TestBtTime::testSub60Minutes()
+{
+	testMinuteWithDelta(-60, 24, 0, 23, 59);
+}
+
+void TestBtTime::testSub120Minutes()
+{
+	testMinuteWithDelta(-120, 23, 0, 22, 59);
+}
+
+void TestBtTime::testAdd1Second()
+{
+	testSecondWithDelta(1, 0, 0, 1, 0, 0, 0);
+}
+
+void TestBtTime::testAdd59Seconds()
+{
+	testSecondWithDelta(59, 0, 0, 59, 0, 0, 58);
+}
+
+void TestBtTime::testAdd60Seconds()
+{
+	testSecondWithDelta(60, 0, 1, 0, 0, 0, 59);
+}
+
+void TestBtTime::testAdd61Seconds()
+{
+	testSecondWithDelta(61, 0, 1, 1, 0, 1, 0);
+}
+
+void TestBtTime::testAdd120Seconds()
+{
+	testSecondWithDelta(120, 0, 2, 0, 0, 1, 59);
+}
+
+void TestBtTime::testAdd3599Seconds()
+{
+	testSecondWithDelta(3599, 0, 59, 59, 0, 59, 58);
+}
+
+void TestBtTime::testAdd3600Seconds()
+{
+	testSecondWithDelta(3600, 1, 0, 0, 0, 59, 59);
+}
+
+void TestBtTime::testAdd7200Seconds()
+{
+	testSecondWithDelta(7200, 2, 0, 0, 1, 59, 59);
+}
+
+void TestBtTime::testSub1Second()
+{
+	testSecondWithDelta(-1, 24, 59, 59, 24, 59, 58);
+}
+
+void TestBtTime::testSub59Seconds()
+{
+	testSecondWithDelta(-59, 24, 59, 1, 24, 59, 0);
+}
+
+void TestBtTime::testSub60Seconds()
+{
+	testSecondWithDelta(-60, 24, 59, 0, 24, 58, 59);
+}
+
+void TestBtTime::testSub61Seconds()
+{
+	testSecondWithDelta(-61, 24, 58, 59, 24, 58, 58);
+}
+
+void TestBtTime::testSub120Seconds()
+{
+	testSecondWithDelta(-120, 24, 58, 0, 24, 57, 59);
+}
+
+void TestBtTime::testSub3599Seconds()
+{
+	testSecondWithDelta(-3599, 24, 0, 1, 24, 0, 0);
+}
+
+void TestBtTime::testSub3600Seconds()
+{
+	testSecondWithDelta(-3600, 24, 0, 0, 23, 59, 59);
+}
+
+void TestBtTime::testSub7200Seconds()
+{
+	testSecondWithDelta(-7200, 23, 0, 0, 22, 59, 59);
+}
+
+void TestBtTime::testHourWithDelta(int delta, int h0, int h24)
+{
+	BtTime t0(0, 0, 0), t24(24, 59, 59);
+	t0.setMaxHours(25);
+	t24.setMaxHours(25);
+	BtTime t;
+	t = t0.addHour(delta);
+	QCOMPARE(t, BtTime(h0, 0, 0));
+	t = t24.addHour(delta);
+	QCOMPARE(t, BtTime(h24, 59, 59));
+}
+
+void TestBtTime::testMinuteWithDelta(int delta, int h0, int m0, int h24, int m24)
+{
+	BtTime t0(0, 0, 0), t24(24, 59, 59);
+	t0.setMaxHours(25);
+	t24.setMaxHours(25);
+	BtTime t;
+	t = t0.addMinute(delta);
+	QCOMPARE(t, BtTime(h0, m0, 0));
+	t = t24.addMinute(delta);
+	QCOMPARE(t, BtTime(h24, m24, 59));
+}
+
+void TestBtTime::testSecondWithDelta(int delta, int h0, int m0, int s0, int h24, int m24, int s24)
+{
+	BtTime t0(0, 0, 0), t24(24, 59, 59);
+	t0.setMaxHours(25);
+	t24.setMaxHours(25);
+	BtTime t;
+	t = t0.addSecond(delta);
+	QCOMPARE(t, BtTime(h0, m0, s0));
+	t = t24.addSecond(delta);
+	QCOMPARE(t, BtTime(h24, m24, s24));
+}
