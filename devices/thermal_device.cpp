@@ -310,29 +310,34 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		break;
 	}
 
-	switch(what)
+	if (isDimensionFrame(msg))
 	{
-	case HOLIDAY_DATE_END:
-		Q_ASSERT_X(msg.whatArgCnt() == 3, "ThermalDevice::parseFrame", "Received end date of holiday/weekend mode with wrong number of arguments");
-		values_list[DIM_DATE] = QDate(msg.whatArgN(2), msg.whatArgN(1), msg.whatArgN(0));
-		break;
+		switch(what)
+		{
+		case HOLIDAY_DATE_END:
+		{
+			Q_ASSERT_X(msg.whatArgCnt() == 3, "ThermalDevice::parseFrame", "Received end date of holiday/weekend mode with wrong number of arguments");
+			values_list[DIM_DATE] = QDate(msg.whatArgN(2), msg.whatArgN(1), msg.whatArgN(0));
+			break;
+		}
 
-	case HOLIDAY_TIME_END:
-		Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received end time of holiday/weekend mode with wrong number of arguments");
-		values_list[DIM_TIME] = QTime(msg.whatArgN(0), msg.whatArgN(1));
-		break;
+		case HOLIDAY_TIME_END:
+			Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received end time of holiday/weekend mode with wrong number of arguments");
+			values_list[DIM_TIME] = QTime(msg.whatArgN(0), msg.whatArgN(1));
+			break;
 
-	case MANUAL_TIMED_END:
-	{
-		Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received duration of timed manual mode with wrong number of arguments");
-		QVariant v;
-		v.setValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), 0));
-		values_list[DIM_DURATION] = v;
-		break;
-	}
+		case MANUAL_TIMED_END:
+		{
+			Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received duration of timed manual mode with wrong number of arguments");
+			QVariant v;
+			v.setValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), 0));
+			values_list[DIM_DURATION] = v;
+			break;
+		}
 
-	default:
-		break;
+		default:
+			break;
+		}
 	}
 
 	if (values_list.count() > 0)

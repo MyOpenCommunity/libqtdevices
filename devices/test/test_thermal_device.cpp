@@ -230,6 +230,7 @@ void TestThermalDevice::receiveWeekendEndDate()
 {
 	DeviceTester t(dev, ThermalDevice::DIM_DATE);
 	t.check(QString("*#4*%1*30*29*08*2012##").arg(dev->where), QDate(2012, 8, 29));
+	t.checkSignals(QString("*4*30*%1##").arg(dev->where), 0);
 }
 
 void TestThermalDevice::receiveHolidayEndTime()
