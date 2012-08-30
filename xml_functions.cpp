@@ -56,13 +56,7 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
 {
 	QDomNode attribute = n.attributes().namedItem(attr);
 	if (attribute.isNull())
-	{
-		if (def.isEmpty())
-			qWarning() << "Attribute" << attr << "not present for node" << n.nodeName();
-		else
-			qWarning() << "Using default value" << def << "for node" << n.nodeName();
 		return def;
-	}
 
 	if (!attribute.isAttr())
 	{
@@ -83,8 +77,6 @@ int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 		if (def == -1)
 			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() <<
 				"at line" << n.lineNumber() << "to int";
-		else
-			qWarning() << "Using default value" << def << "for node" << n.nodeName();
 		return def;
 	}
 	return val;
@@ -94,11 +86,7 @@ QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def)
 {
 	QString a = getAttribute(n, attr);
 	if (a.isEmpty())
-	{
-		// def.toString() is required when compiling with -DQT_NO_DEBUG_OUTPUT
-		qWarning() << "Using default value" << def.toString() << "for node" << n.nodeName();
 		return def;
-	}
 	QStringList hms = a.split(":");
 	int hours, minutes, seconds;
 	bool ok;
