@@ -48,7 +48,7 @@ enum ThermoType
 	\dim{DIM_TEMPERATURE,int,,Temperature for manual modes in BTicino 4-digit format.}
 	\dim{DIM_DATE,QDate,,End date for weekend/holiday mode.}
 	\dim{DIM_TIME,QTime,,End time for weekend/holiday mode.}
-	\dim{DIM_DURATION,BtTime,,Duration for timed manual mode (can be any value between 0 and 24 hours, 59 minutes).}
+	\dim{DIM_DURATION,BtTime,,Duration for timed manual mode (client may set setMax* values, device uses default values).}
 	\enddim
  */
 class ThermalDevice : public device

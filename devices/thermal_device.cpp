@@ -330,7 +330,7 @@ bool ThermalDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() == 2, "ThermalDevice::parseFrame", "Received duration of timed manual mode with wrong number of arguments");
 			QVariant v;
-			// please note that setMax* calls must be done in BtObject's valueReceived
+			// please note that setMax* calls must be done in client's valueReceived
 			v.setValue(BtTime(msg.whatArgN(0), msg.whatArgN(1), 0));
 			values_list[DIM_DURATION] = v;
 			break;
