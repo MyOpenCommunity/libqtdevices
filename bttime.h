@@ -41,6 +41,12 @@ public:
 		\brief Constructs a BtTime with given hour, minutes, seconds and tenths of seconds.
 
 		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+		The constructor doesn't make any checks about values passed in.
+		If you want to use a BtTime with a value of max hours equal to 30, for example,
+		you have to build the BtTime passing the desired values for hour, minute
+		and second. Immediatly after the constructor, call appropriate setMax*
+		methods otherwise subsequent operations may lead to unpredictable
+		behavior.
 	*/
 	BtTime(int h, int m, int s, int ts = 0);
 
@@ -48,6 +54,7 @@ public:
 		\brief Constructs a BtTime with hour, minutes and seconds equal to 0.
 
 		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+		See notes on first constructor about setMax* usage.
 	*/
 	BtTime();
 
@@ -55,6 +62,7 @@ public:
 		\brief Constructs a BtBtime taking hour, minutes and seconds from the given \a t.
 
 		The default value for max_minutes and max_seconds is 60, 24 for max_hours.
+		See notes on first constructor about setMax* usage.
 	*/
 	BtTime(const QTime &t);
 
@@ -62,6 +70,7 @@ public:
 		\brief Set the maximum value for hours.
 
 		The range of values allowed are then [0..\a max-1]. Default value is 24.
+		See notes on first constructor about setMax* usage.
 	*/
 	void setMaxHours(int max);
 
@@ -69,6 +78,7 @@ public:
 		\brief Set the maximum value for minutes.
 
 		The range of values allowed are [0..\a max-1]. Default value is 60.
+		See notes on first constructor about setMax* usage.
 	*/
 	void setMaxMinutes(int max);
 
@@ -76,6 +86,7 @@ public:
 		\brief Set the maximum value for seconds.
 
 		The range of values allowed are [0..\a max-1]. Default value is 60.
+		See notes on first constructor about setMax* usage.
 	*/
 	void setMaxSeconds(int max);
 
@@ -84,25 +95,38 @@ public:
 	*/
 	QString toString() const;
 
-	/* TODO: it should allow to add an arbitrary number of seconds.
-	 * Adds or subtracts a second to the current time and returns a new BtTime instance.
-	 * \param second Must be either 1 or -1
-	 * \return A new BtTime that is one second earlier or later.
-	 */
+	/*!
+		\brief Returns a BtTime object equal to this, but with second seconds added in.
+
+		The value passed can be any integer, even negative.
+		Hours are updated considering max minutes value.
+		Minutes are updated considering max seconds value.
+		For example, if max seconds is set to 100 and you add 250 seconds, the
+		returned object is equal to this with 2 minutes and 50 seconds added in.
+		The same hold true for max minutes.
+		This may be or may not be the desired behavior.
+	*/
 	BtTime addSecond(int second) const;
 
-	/* TODO: it should allow to add an arbitrary number of minutes.
-	 * Adds or subtracts a minute to the current time and returns a new BtTime instance.
-	 * \param minute Must be either 1 or -1
-	 * \return A new BtTime that is one minute earlier or later.
-	 */
+	/*!
+		\brief Returns a BtTime object equal to this, but with minute minutes added in.
+
+		The value passed can be any integer, even negative.
+		Seconds are not taken into consideration.
+		Hours are updated considering max minutes value.
+		For example, if max minutes is set to 100 and you add 250 minutes, the
+		returned object is equal to this with 2 hours and 50 minutes added in.
+		This may be or may not be the desired behavior.
+	*/
 	BtTime addMinute(int minute) const;
 
-	/* TODO: it should allow to add an arbitrary number of hours.
-	 * Adds or subtracts a hour to the current time and returns a new BtTime instance.
-	 * \param hour Must be either 1 or -1
-	 * \return A new BtTime that is one hour earlier or later.
-	 */
+	/*!
+		\brief Returns a BtTime object equal to this, but with hour hours added in.
+
+		The value passed can be any integer, even negative.
+		Seconds and minutes are not taken into consideration.
+		This may be or may not be the desired behavior.
+	*/
 	BtTime addHour(int hour) const;
 
 	/*!
