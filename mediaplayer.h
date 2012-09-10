@@ -81,6 +81,8 @@ public:
 	 */
 	MediaPlayer(QObject *parent = 0);
 
+	~MediaPlayer();
+
 	/*!
 		\brief Start playing an audio file.
 
@@ -311,6 +313,7 @@ private:
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
 	static QStringList audio_cmdline, video_cmdline, fullscreen_video_cmdline;
 #endif
+	QProcess *mplayer_proc;
 
 private slots:
 	void mplayerFinished(int exit_code, QProcess::ExitStatus exit_status);
