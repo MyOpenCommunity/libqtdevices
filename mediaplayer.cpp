@@ -244,11 +244,11 @@ Q_GLOBAL_STATIC(QProcess, mplayer_process)
 #endif
 
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
-QString MediaPlayer::player_executable;
-QStringList MediaPlayer::audio_cmdline;
-QStringList MediaPlayer::video_cmdline;
+QString MediaPlayer::global_player_executable;
+QStringList MediaPlayer::global_audio_cmdline;
+QStringList MediaPlayer::global_video_cmdline;
 #else
-QString MediaPlayer::player_executable = MPLAYER_FILENAME;
+QString MediaPlayer::global_player_executable = MPLAYER_FILENAME;
 #endif
 
 MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
@@ -270,6 +270,10 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	connect(this, SIGNAL(mplayerResumed()), SLOT(playbackStarted()));
 	connect(this, SIGNAL(mplayerStarted()), SLOT(playbackStarted()));
 #endif
+#ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
+	audio_cmdline = global_audio_cmdline;
+	video_cmdline = global_video_cmdline;
+#endif
 }
 
 MediaPlayer::~MediaPlayer()
@@ -290,7 +294,7 @@ bool MediaPlayer::checkVideoResolution(QString track)
 	args << "-identify" << "-vo" << "/dev/null" << "-frames" << "1" << track;
 	QMap<QString, QString> data_search;
 	data_search["resolution"] = "VIDEO:\\s+[^\\n\\r]+\\s+(\\d+x\\d+)";
-	QMap<QString, QString> info = extractMPlayerInfo(player_executable, args, data_search, QSet<QString>() << "resolution");
+	QMap<QString, QString> info = extractMPlayerInfo(global_player_executable, args, data_search, QSet<QString>() << "resolution");
 
 	if (!info.contains("resolution"))
 	{
@@ -326,9 +330,15 @@ bool MediaPlayer::playVideoFullScreen(QString track, int start_time, OutputMode 
 	return runMPlayer(mplayer_args, write_output);
 }
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
-void MediaPlayer::setCommandLineArguments(QString executable, QStringList audio, QStringList video)
+void MediaPlayer::setGlobalCommandLineArguments(QString executable, QStringList audio, QStringList video)
 {
-	player_executable = executable;
+	global_player_executable = executable;
+	global_audio_cmdline = audio;
+	global_video_cmdline = video;
+}
+
+void MediaPlayer::setCommandLineArguments(QStringList audio, QStringList video)
+{
 	audio_cmdline = audio;
 	video_cmdline = video;
 }
@@ -394,8 +404,8 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, OutputMode write_output
 	if (!(write_output & OutputStderr))
 		mplayer_proc->setStandardErrorFile("/dev/null");
 
-	qDebug() << "About to start mplayer exec (" << player_executable << ") with args: " << args;
-	mplayer_proc->start(player_executable, args);
+	qDebug() << "About to start mplayer exec (" << global_player_executable << ") with args: " << args;
+	mplayer_proc->start(global_player_executable, args);
 	paused = really_paused = false;
 
 	bool started = mplayer_proc->waitForStarted(300);
@@ -500,7 +510,7 @@ void MediaPlayer::requestInitialPlayingInfo(const QString &track)
 	info_watcher = new QFutureWatcher<QMap<QString, QString> >(this);
 	connect(info_watcher, SIGNAL(finished()), SLOT(infoReceived()));
 
-	QFuture<QMap<QString,QString> > future = QtConcurrent::run(startFakePlayer, player_executable, track, getAudioDataSearchMap());
+	QFuture<QMap<QString,QString> > future = QtConcurrent::run(startFakePlayer, global_player_executable, track, getAudioDataSearchMap());
 	info_watcher->setFuture(future);
 }
 
@@ -737,7 +747,7 @@ void SoundPlayer::stop()
 	sox_process()->terminate();
 }
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
-void SoundPlayer::setCommandLineArguments(QString executable, QStringList arguments)
+void SoundPlayer::setGlobalCommandLineArguments(QString executable, QStringList arguments)
 {
 	player_executable = executable;
 	audio_cmdline = arguments;

@@ -277,11 +277,18 @@ public:
 
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
 	/*!
+		\brief Set the global template for command line arguments
+
+		The special values "<FILE_NAME>" and "<SEEK_TIME>" are replaced with file name and seek time (in seconds).
+	*/
+	static void setGlobalCommandLineArguments(QString executable, QStringList audio, QStringList video);
+
+	/*!
 		\brief Set the template for command line arguments
 
 		The special values "<FILE_NAME>" and "<SEEK_TIME>" are replaced with file name and seek time (in seconds).
 	*/
-	static void setCommandLineArguments(QString executable, QStringList audio, QStringList video);
+	void setCommandLineArguments(QStringList audio, QStringList video);
 #endif
 
 private:
@@ -309,9 +316,10 @@ private:
 
 	bool paused, really_paused;
 
-	static QString player_executable;
+	static QString global_player_executable;
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
-	static QStringList audio_cmdline, video_cmdline, fullscreen_video_cmdline;
+	static QStringList global_audio_cmdline, global_video_cmdline;
+	QStringList audio_cmdline, video_cmdline;
 #endif
 	QProcess *mplayer_proc;
 
@@ -399,7 +407,7 @@ public:
 
 		The special value "<FILE_NAME>" is replaced with file name.
 	*/
-	static void setCommandLineArguments(QString executable, QStringList arguments);
+	static void setGlobalCommandLineArguments(QString executable, QStringList arguments);
 #endif
 
 signals:
