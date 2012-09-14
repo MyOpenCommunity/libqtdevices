@@ -138,7 +138,7 @@ protected:
 	\dim{INTERCOM_CALL,VctType,,An incoming intercom call.}
 	\dim{ANSWER_CALL,,,Used only in the intercom calls\, when the other side of the communication answer to the call.}
 	\dim{END_OF_CALL,,,The other side has closed the call.}
-	\dim{RINGTONE,Ringtones::Type,,The type of the ringtone to play.}
+	\dim{RINGTONE,Ringtone,,The type of the ringtone to play.}
 	\dim{MOVING_CAMERA,bool,,True if the camera support movements. }
 	\dim{CALLER_ADDRESS,QString,,The address of the caller. An address prepended by the symbol @ means that it comes from an autoswitch call. }
 	\dim{STOP_VIDEO,bool,,Stop the reproduction of the video.}
@@ -183,6 +183,24 @@ public:
 		VCT_TYPE,  // the value doesn't matter
 		RESTORE_MM_AMPLI = 64,
 		SILENCE_MM_AMPLI = 63,
+	};
+
+	/*!
+		\brief The types of ringtones.
+
+		A ringtone type defines a list of logical event for which a ringtone should
+		be played.
+	*/
+	enum Ringtone
+	{
+		// for old TS 3.5/TS 10 code, this must match the values in ringtonesmanager.h
+		PE1 = 1,
+		PE2,
+		PE3,
+		PE4,
+		PI_INTERCOM,
+		PE_INTERCOM,
+		FLOORCALL
 	};
 
 	/*!

@@ -21,7 +21,6 @@
 
 #include "videodoorentry_device.h"
 #include "frame_functions.h" // createCommandFrame
-#include "ringtonesmanager.h"
 #include "openclient.h" // MAIN_OPENSERVER
 #include "devices_cache.h"
 
@@ -272,33 +271,33 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		{
 		case 1:
 			what = VCT_CALL;
-			ringtone = Ringtones::PE1;
+			ringtone = PE1;
 			break;
 		case 2:
 			what = VCT_CALL;
-			ringtone = Ringtones::PE2;
+			ringtone = PE2;
 			break;
 		case 3:
 			what = VCT_CALL;
-			ringtone = Ringtones::PE3;
+			ringtone = PE3;
 			break;
 		case 4:
 			what = VCT_CALL;
-			ringtone = Ringtones::PE4;
+			ringtone = PE4;
 			break;
 		case 5:
 			what = AUTO_VCT_CALL;
 			break;
 		case 6:
 			what = INTERCOM_CALL;
-			ringtone = Ringtones::PI_INTERCOM;
+			ringtone = PI_INTERCOM;
 			break;
 		case 7:
 			what = INTERCOM_CALL;
-			ringtone = Ringtones::PE_INTERCOM;
+			ringtone = PE_INTERCOM;
 			break;
 		case 13:
-			values_list[RINGTONE] = Ringtones::FLOORCALL;
+			values_list[RINGTONE] = FLOORCALL;
 			return true;
 		default:
 			qWarning() << "Kind" << msg.whatArgN(0) << "not supported by VideoDoorEntryDevice, skip frame";
