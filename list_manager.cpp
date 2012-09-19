@@ -72,6 +72,7 @@ void FileListManager::setCurrentIndex(int i)
 {
 	Q_ASSERT_X(index != -1 && total_files != -1, "FileListManager", "file list not initialized");
 	Q_ASSERT_X(index >= 0 && index < total_files, "FileListManager::setCurrentIndex", "index out of range");
+	Q_ASSERT_X(i >= 0 && i < total_files, "FileListManager::setCurrentIndex", "i out of range");
 	index = i;
 }
 
