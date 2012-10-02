@@ -124,7 +124,7 @@ QDomElement getConfElement(QString path);
 #define MY_FILE_CFG_FONT "cfg/extra/3/font_%1.xml"
 
 // The file name to create for software watchdog
-#define FILE_WDT "/var/tmp/bticino/bt_wd/BTouch_qws"
+#define FILE_WDT "/var/tmp/bticino/bt_wd/BtExperience_qws"
 
 // The template path to find the language file.
 #define LANGUAGE_FILE_TMPL "cfg/extra/2/btouch_%s.qm"
