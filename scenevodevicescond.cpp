@@ -43,6 +43,16 @@ DeviceCondition::DeviceCondition(DeviceConditionDisplayInterface *cond_display, 
 	dev = 0;
 }
 
+device::SupportedInitMode DeviceCondition::getSupportedInitMode()
+{
+	return dev->getSupportedInitMode();
+}
+
+void DeviceCondition::setSupportedInitMode(device::SupportedInitMode mode)
+{
+	dev->setSupportedInitMode(mode);
+}
+
 void DeviceCondition::updateText(int min_condition_value, int max_condition_value)
 {
 	condition_display->updateText(min_condition_value, max_condition_value);

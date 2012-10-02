@@ -143,6 +143,9 @@ public:
 	*/
 	virtual ConditionState getOffState();
 
+	device::SupportedInitMode getSupportedInitMode();
+	void setSupportedInitMode(device::SupportedInitMode mode);
+
 public slots:
 	// Invoked when UP button is pressed
 	virtual void Up();
