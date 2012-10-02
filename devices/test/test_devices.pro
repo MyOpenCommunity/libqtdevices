@@ -31,6 +31,7 @@ HEADERS += device_tester.h \
 	test_scenario_device.h \
 	test_thermal_device.h \
 	test_device.h \
+	test_devicescache.h \
 	test_lighting_device.h \
 	test_platform_device.h \
 	test_loads_device.h \
@@ -61,6 +62,7 @@ SOURCES += test_main.cpp \
 	test_scenario_device.cpp \
 	test_thermal_device.cpp \
 	test_device.cpp \
+	test_devicescache.cpp \
 	test_platform_device.cpp \
 	test_loads_device.cpp \
 	test_media_device.cpp \

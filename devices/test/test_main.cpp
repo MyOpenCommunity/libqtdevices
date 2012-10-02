@@ -42,6 +42,7 @@
 #include "test_message_device.h"
 #include "test_stopandgo_device.h"
 #include "test_antintrusion_device.h"
+#include "test_devicescache.h"
 #include "main.h" // bt_global::config
 
 logger *app_logger;
@@ -150,6 +151,9 @@ int main(int argc, char *argv[])
 
 	TestAntintrusionDevice test_antintrusion_device;
 	test_list << &test_antintrusion_device;
+
+	TestDevicesCache test_devicescache;
+	test_list << &test_devicescache;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))

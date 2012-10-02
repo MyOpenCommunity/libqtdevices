@@ -60,6 +60,7 @@ friend class TestVideoDoorEntryDevice;
 friend class BtMain;
 friend class TestDevice;
 friend class TestBtObject;
+friend class TestDevicesCache;
 public:
 	DevicesCache();
 	~DevicesCache();
