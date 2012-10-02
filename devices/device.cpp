@@ -229,6 +229,9 @@ bool device::smartInit(SupportedInitMode cur_init_mode)
 {
 	bool retCode=true;
 
+	if (supported_init_mode == DISABLED_INIT)
+		return true;
+
 	if(cur_init_mode == DEFERRED_INIT)
 	{
 		if(!init_request_done)

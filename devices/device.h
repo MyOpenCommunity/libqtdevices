@@ -216,7 +216,8 @@ public:
 	enum SupportedInitMode
 	{
 		DEFERRED_INIT = 0,
-		NORMAL_INIT
+		NORMAL_INIT,
+		DISABLED_INIT
 	};
 
 	enum
