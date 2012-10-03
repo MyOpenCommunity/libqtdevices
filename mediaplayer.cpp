@@ -75,8 +75,8 @@ namespace
 		data_search["meta_title"]   = "Title: ([^\\n]*)\\n";
 		data_search["meta_artist"]  = "Artist: ([^\\n]*)\\n";
 		data_search["meta_album"]   = "Album: ([^\\n]*)\\n";
-		data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(]((?:\\d+:)?\\d+\\.\\d+)[)]";
-		data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(]((?:\\d+:)?\\d+\\.\\d+)[)]";
+		data_search["total_time"]   = "of\\s+\\d+\\.\\d+\\s+[(]\\s*((?:\\d+:)*\\d+\\.\\d+)[)]";
+		data_search["current_time"] = "A:\\s+\\d+\\.\\d+\\s+[(]\\s*((?:\\d+:)*\\d+\\.\\d+)[)]";
 		data_search["current_time_only"] = "A:\\s+(\\d+)";
 		// shoutcast info
 		// MPlayer does not quote "'" inside titles, so parsing the shoutcast info
