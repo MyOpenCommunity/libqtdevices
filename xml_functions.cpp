@@ -217,3 +217,16 @@ QString getTextChild(const QDomNode &parent, const QString &name)
 	return n.toElement().text();
 }
 
+void setTextChild(const QDomNode &parent, const QString &name, const QString &value)
+{
+	QDomNode n = parent.namedItem(name);
+	if (n.isNull())
+		return;
+	QDomNode text = parent.ownerDocument().createTextNode(value);
+	QDomNodeList childs = n.childNodes();
+
+	for (int i = 0; i < childs.count(); ++i)
+		n.removeChild(childs.at(i));
+
+	n.appendChild(text);
+}

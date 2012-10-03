@@ -114,6 +114,15 @@ QString getTextChild(const QDomNode &parent, const QString &name);
 
 /*!
 	\ingroup Core
+	\brief Set a new value for a text node child of \a root.
+
+	This function is a wrapper around getChildWithName().
+	Sets the text of child if present, does nothing otherwise.
+*/
+void setTextChild(const QDomNode &parent, const QString &name, const QString &value);
+
+/*!
+	\ingroup Core
 	\brief Return a list of children of node \a parent whose name start with \a name.
 */
 QList<QDomNode> getChildren(const QDomNode &parent, const QString &name);
