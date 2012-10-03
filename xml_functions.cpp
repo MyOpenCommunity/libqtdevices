@@ -22,24 +22,30 @@
 #include "xml_functions.h"
 
 #include <QFile>
+#include <QFileInfo>
+#include <QDir>
 #include <QStringList>
 #include <QDebug>
 
 
 bool saveXml(const QDomDocument &document, const QString &filename)
 {
-	// TODO: write in a temporary file and move it at the end replacing the
-	// old configuration file.
-	QFile fh(filename);
-	if (!fh.open(QIODevice::WriteOnly))
+	QFile tmp_file(QFileInfo(filename).dir().absoluteFilePath("appoggio.xml"));
+
+	if (tmp_file.exists())
+		tmp_file.remove();
+
+	if (!tmp_file.open(QIODevice::WriteOnly))
 		return false;
 
-	QTextStream stream(&fh);
+	QTextStream stream(&tmp_file);
 	stream.setCodec("UTF-8");
 	stream << document.toString(4);
 	stream.flush();
-	fh.close();
-	return true;
+	tmp_file.close();
+
+	// QDir::rename fails if destination file exists so we use rename system call
+	return !::rename(qPrintable(tmp_file.fileName()), qPrintable(filename));
 }
 
 bool setAttribute(QDomNode &n, const QString &attr, const QString &value)
