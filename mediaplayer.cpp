@@ -711,7 +711,13 @@ void SoundPlayer::play(const QString &path)
 		bt_global::audio_states->setDirectAudioAccess(true);
 #endif
 		start();
+		emit soundStarted();
 	}
+}
+
+bool SoundPlayer::isActive() const
+{
+	return active;
 }
 
 void SoundPlayer::start()

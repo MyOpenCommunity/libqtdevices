@@ -410,7 +410,16 @@ public:
 	static void setGlobalCommandLineArguments(QString executable, QStringList arguments);
 #endif
 
+	/// Return active state
+	bool isActive() const;
+
 signals:
+	/*!
+		This signal is not emitted when the currently-playing sound is stopped
+		by a call to play().
+	 */
+	void soundStarted();
+
 	/*!
 		This signal is not emitted when the currently-playing sound is stopped
 		by a call to play().
