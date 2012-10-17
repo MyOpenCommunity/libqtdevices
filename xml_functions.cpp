@@ -48,14 +48,16 @@ bool saveXml(const QDomDocument &document, const QString &filename)
 	return !::rename(qPrintable(tmp_file.fileName()), qPrintable(filename));
 }
 
-bool setAttribute(QDomNode &n, const QString &attr, const QString &value)
+void setAttribute(QDomNode &n, const QString &attr, const QString &value)
 {
 	QDomAttr a = n.toElement().attributeNode(attr);
 	if (a.isNull())
-		return false;
+	{
+		a = n.ownerDocument().createAttribute(attr);
+		n.toElement().setAttributeNode(a);
+	}
 
 	a.setValue(value);
-	return true;
 }
 
 QString getAttribute(const QDomNode &n, const QString &attr, const QString &def)
@@ -223,11 +225,15 @@ QString getTextChild(const QDomNode &parent, const QString &name)
 	return n.toElement().text();
 }
 
-void setTextChild(const QDomNode &parent, const QString &name, const QString &value)
+void setTextChild(QDomNode &parent, const QString &name, const QString &value)
 {
 	QDomNode n = parent.namedItem(name);
 	if (n.isNull())
-		return;
+	{
+		n = parent.ownerDocument().createElement(name);
+		parent.appendChild(n);
+	}
+
 	QDomNode text = parent.ownerDocument().createTextNode(value);
 	QDomNodeList childs = n.childNodes();
 

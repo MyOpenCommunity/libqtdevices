@@ -35,7 +35,7 @@ bool saveXml(const QDomDocument &document, const QString &filename);
 
 	If \a attr is not present, return false.
 */
-bool setAttribute(QDomNode &n, const QString &attr, const QString &value);
+void setAttribute(QDomNode &n, const QString &attr, const QString &value);
 
 /*!
 	Return the value of the attribute \a attr in node \a n.
@@ -119,7 +119,7 @@ QString getTextChild(const QDomNode &parent, const QString &name);
 	This function is a wrapper around getChildWithName().
 	Sets the text of child if present, does nothing otherwise.
 */
-void setTextChild(const QDomNode &parent, const QString &name, const QString &value);
+void setTextChild(QDomNode &parent, const QString &name, const QString &value);
 
 /*!
 	\ingroup Core
