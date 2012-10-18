@@ -105,6 +105,15 @@ private slots:
 	void testUpdateStartAutomatic();
 	void testUpdateStop();
 
+	// restarted before stopping timeout
+	void testUpdateRestartAutomatic1();
+	// restarted after stopping timeout
+	void testUpdateRestartAutomatic2();
+	// restarted before stopping timeout, after another touch stopped updates
+	void testUpdateRestartAutomatic3();
+	// restarted after stopping timeout, after another touch stopped updates
+	void testUpdateRestartAutomatic4();
+
 	void testSetThresholdValue();
 
 	// pic

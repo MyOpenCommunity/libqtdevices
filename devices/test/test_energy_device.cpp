@@ -962,6 +962,156 @@ void TestEnergyDevice::testUpdateStop()
 	QCOMPARE(upd->update_count, 0);
 }
 
+void TestEnergyDevice::testUpdateRestartAutomatic1()
+{
+	upd->setHasNewFrames();
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+
+	QString req = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
+	QCOMPARE(server->frameCommand(), req);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// request stop
+	upd->requestCurrentUpdateStop();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_STOPPING);
+
+	// request restart before stop timeout
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// stopping timer expires some time later, nothing happens
+	upd->stoppingTimeout();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+}
+
+void TestEnergyDevice::testUpdateRestartAutomatic2()
+{
+	upd->setHasNewFrames();
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+
+	QString req_start = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
+	QString req_stop = QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode);
+	QCOMPARE(server->frameCommand(), req_start);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// request stop
+	upd->requestCurrentUpdateStop();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_STOPPING);
+
+	// stopping timer expires some time later, stop frame sent
+	upd->stoppingTimeout();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), req_stop);
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_IDLE);
+
+	// request restart after stop timeout
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), req_start);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+}
+
+void TestEnergyDevice::testUpdateRestartAutomatic3()
+{
+	upd->setHasNewFrames();
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+
+	QString req = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
+	QCOMPARE(server->frameCommand(), req);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// request stop
+	upd->requestCurrentUpdateStop();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_STOPPING);
+
+	// updates stopped by another touch
+	OpenMsg stop(QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode).toAscii().data());
+	upd->handleAutomaticUpdate(stop);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_IDLE);
+
+	// request restart before stop timeout
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), req);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// stopping timer expires some time later, nothing happens
+	upd->stoppingTimeout();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+}
+
+void TestEnergyDevice::testUpdateRestartAutomatic4()
+{
+	upd->setHasNewFrames();
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+
+	QString req_start = QString("*#18*%1*#1200#%2*255##").arg(where).arg(upd->mode);
+	QString req_stop = QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode);
+	QCOMPARE(server->frameCommand(), req_start);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+
+	// request stop
+	upd->requestCurrentUpdateStop();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_STOPPING);
+
+	// updates stopped by another touch
+	OpenMsg stop(QString("*#18*%1*#1200#%2*0##").arg(where).arg(upd->mode).toAscii().data());
+	upd->handleAutomaticUpdate(stop);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_IDLE);
+
+	// stopping timer expires some time later, nothing happens
+	upd->stoppingTimeout();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString());
+	QCOMPARE(upd->update_count, 0);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_IDLE);
+
+	// request restart after stop timeout
+	upd->requestCurrentUpdateStart();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), req_start);
+	QCOMPARE(upd->update_count, 1);
+	QCOMPARE(upd->update_state, AutomaticUpdates::UPDATE_AUTO);
+}
+
 void TestEnergyDevice::testSetThresholdValue()
 {
        dev->setThresholdValue(0, 1234);
