@@ -90,6 +90,21 @@ int getIntAttribute(const QDomNode &n, const QString &attr, int def)
 	return val;
 }
 
+double getDoubleAttribute(const QDomNode &n, const QString &attr, double def)
+{
+	QString a = getAttribute(n, attr);
+	bool ok;
+	double val = a.toDouble(&ok);
+	if (!ok)
+	{
+		if (def == -1)
+			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() <<
+				"at line" << n.lineNumber() << "to int";
+		return def;
+	}
+	return val;
+}
+
 QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def)
 {
 	QString a = getAttribute(n, attr);

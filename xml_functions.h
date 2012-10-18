@@ -51,6 +51,12 @@ QString getAttribute(const QDomNode &n, const QString &attr, const QString &def=
 int getIntAttribute(const QDomNode &n, const QString &attr, int def = -1);
 
 /*!
+	Return the int value of the attribute \a attr.
+	A warning is printed if the attribute is not an integer number.
+*/
+double getDoubleAttribute(const QDomNode &n, const QString &attr, double def = -1);
+
+/*!
 	Return the time value of the attribute \a attr.
 	The expected format is something like 05:09:32 with hours, minutes and seconds
 	always specified.
