@@ -30,7 +30,17 @@
 
 bool saveXml(const QDomDocument &document, const QString &filename)
 {
-	QFile tmp_file(QFileInfo(filename).dir().absoluteFilePath("appoggio.xml"));
+	QString real_path = filename;
+#if defined(BT_HARDWARE_X11)
+	// write to symlink destination
+	while (QFileInfo(real_path).isSymLink())
+	{
+		Q_ASSERT_X(QFileInfo(real_path).exists(), "saveXml", "Dangling symlink");
+		real_path = QFileInfo(real_path).symLinkTarget();
+	}
+#endif
+
+	QFile tmp_file(QFileInfo(real_path).dir().absoluteFilePath("appoggio.xml"));
 
 	if (tmp_file.exists())
 		tmp_file.remove();
@@ -45,7 +55,7 @@ bool saveXml(const QDomDocument &document, const QString &filename)
 	tmp_file.close();
 
 	// QDir::rename fails if destination file exists so we use rename system call
-	return !::rename(qPrintable(tmp_file.fileName()), qPrintable(filename));
+	return !::rename(qPrintable(tmp_file.fileName()), qPrintable(real_path));
 }
 
 void setAttribute(QDomNode &n, const QString &attr, const QString &value)
