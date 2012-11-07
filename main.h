@@ -45,6 +45,7 @@ enum GlobalField
 	SOURCE_ADDRESS,
 	TS_NUMBER,
 	INIT_COMPLETE,
+	DEFAULT_PE
 };
 
 namespace bt_global { extern QHash<GlobalField, QString> *config; }
