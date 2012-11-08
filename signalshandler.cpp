@@ -35,11 +35,29 @@ SignalsHandler::SignalsHandler()
 	sn_signal = new QSocketNotifier(signalfd[1], QSocketNotifier::Read, this);
 	sn_signal->setEnabled(true);
 	connect(sn_signal, SIGNAL(activated(int)), SLOT(handleSignal()));
+	connect(this, SIGNAL(signalReceived(int)), SLOT(handleSignal2(int)));
 }
 
 SignalsHandler::~SignalsHandler()
 {
 	delete sn_signal;
+}
+
+#include <iostream>
+void SignalsHandler::handleSignal2(int signal_number)
+{
+	if (signal_number == SIGUSR2)
+	{
+		qDebug("Received signal SIGUSR2");
+		std::cerr << "Received signal SIGUSR2";
+//		emit systemTimeChanged();
+	}
+	else if (signal_number == SIGTERM)
+	{
+		qDebug("Terminating on SIGTERM");
+		std::cerr << "Received signal SIGTERM";
+		abort();
+	}
 }
 
 void SignalsHandler::handleSignal()

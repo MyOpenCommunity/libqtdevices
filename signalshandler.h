@@ -28,6 +28,7 @@ signals:
 
 private slots:
 	void handleSignal();
+	void handleSignal2(int signal_number);
 
 private:
 	SignalsHandler();
