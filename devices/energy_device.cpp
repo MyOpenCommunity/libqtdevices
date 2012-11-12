@@ -595,7 +595,7 @@ bool EnergyDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 		// In some cases (when more than a ts is present in the system)
 		// a status request frame or a command frame can arrive from the socket monitor.
-		if (!msg.whatArgCnt() || isStatusRequestFrame(msg) || isCommandFrame(msg))
+		if (!msg.whatArgCnt() || isCommandFrame(msg))
 			return false;
 
 		qDebug("EnergyDevice::parseFrame -> frame read:%s", msg.frame_open);

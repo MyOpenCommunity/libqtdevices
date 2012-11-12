@@ -374,8 +374,6 @@ void SourceDevice::requestActiveAreas() const
 
 bool SourceDevice::parseFrameAmplifiers(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (isStatusRequestFrame(msg))
-		return false;
 	// only process general frames
 	if (msg.where() != 5)
 		return false;
@@ -398,8 +396,6 @@ bool SourceDevice::parseFrameAmplifiers(OpenMsg &msg, DeviceValues &values_list)
 
 bool SourceDevice::parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (isStatusRequestFrame(msg))
-		return false;
 	// skip frames destined to amplifiers
 	if (msg.where() == 3)
 		return false;
@@ -441,8 +437,6 @@ bool SourceDevice::parseFrameOtherSources(OpenMsg &msg, DeviceValues &values_lis
 
 bool SourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (isStatusRequestFrame(msg))
-		return false;
 	QString msg_where = QString::fromStdString(msg.whereFull());
 
 	if (msg_where != where && msg_where != QString("5#%1").arg(where))
@@ -682,8 +676,6 @@ void VirtualSourceDevice::turnOn(QString area)
 
 bool VirtualSourceDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (isStatusRequestFrame(msg))
-		return false;
 	int what = msg.what();
 
 	if (SourceDevice::parseFrame(msg, values_list) && what != DIM_STATUS && what != SOURCE_TURNED_ON)
@@ -1008,7 +1000,7 @@ bool VirtualAmplifierDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (AmplifierDevice::parseFrame(msg, values_list))
 		return true;
 
-	if (isDimensionFrame(msg) || isStatusRequestFrame(msg))
+	if (isDimensionFrame(msg))
 		return false;
 
 	// here we interpret the "turn source off" with where 6 (all sources)

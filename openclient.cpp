@@ -23,6 +23,7 @@
 #include "frame_classes.h"
 
 #include <openmsg.h>
+#include <frame_functions.h>
 
 #include <QDebug>
 #include <QMetaEnum>
@@ -244,6 +245,15 @@ void ClientReader::manageFrame(QByteArray frame)
 
 		OpenMsg msg;
 		msg.CreateMsgOpen(frame.data(), frame.length());
+		// In some cases (when more than a ts is present in the system)
+		// a request frame can arrive from the monitor socket. We have to manage this
+		// situation.
+		if (isStatusRequestFrame(msg))
+		{
+			qWarning() << "ClientReader::manageFrame(), ignoring STATUS REQUEST frame on" << qPrintable(description);
+			return;
+		}
+
 		if (subscribe_list.contains(msg.who()))
 		{
 			QList<FrameReceiver*> &l = subscribe_list[msg.who()];

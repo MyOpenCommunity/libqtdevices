@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -101,12 +101,6 @@ void PPTStatDevice::requestStatus() const
 bool PPTStatDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	if (where.toInt() != msg.where())
-		return false;
-
-	// In some cases (when more than a ts is present in the system)
-	// a request frame can arrive from the monitor socket. We have to manage this
-	// situation.
-	if (isStatusRequestFrame(msg))
 		return false;
 
 	int what = msg.what();
