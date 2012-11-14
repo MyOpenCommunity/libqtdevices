@@ -29,6 +29,7 @@
 #include <QList>
 #include <QTimer>
 #include <QSignalMapper>
+#include <QSet>
 
 class Client;
 class OpenMsg;
@@ -294,6 +295,19 @@ public:
 	*/
 	virtual void manageFrame(OpenMsg &msg);
 
+	/*!
+		\brief Check if a device has been initialized.
+
+		This service has to be redefined by every device
+		that support lazy update and wants to avoid its
+		lazy initialization since it has alredy loaded its
+		status due to unsolicited events coming from fields
+
+		Default implementation always return false, always
+		forcing the lazy initialization procedure
+	*/
+	virtual bool isInitialized(void);
+
 signals:
 	/*!
 		\brief Signal used to notify that a dimension of device has changed or a
@@ -353,6 +367,11 @@ protected:
 	int openserver_id;
 
 	/*!
+		\brief Used to keep trac of the initialized attrId for lazy update support.
+	*/
+	QSet<int> initialized_attrid;
+
+	/*!
 		\brief Sends only one frame of the same "what" into a time interval on
 		Client::COMMAND socket.
 
@@ -407,9 +426,22 @@ protected:
 	*/
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list) { Q_UNUSED(msg); Q_UNUSED(values_list); return false; }
 
+	/*!
+		\brief Hihglight the received attribute
+
+		This service simply highlight the received attribute starting
+		from the related value list.
+		The isIinizialized service could start from the highlited attribute
+		set to decide if the device has been initialized or not
+	*/
+	virtual void setReceivedAttributes(const DeviceValues& values_list );
+
 private slots:
 	void slotSendFrame(QString frame) const;
 	void slotSendInit(QString frame) const;
+
+	void handleConnectionDown();
+	void handleConnectionUp();
 
 private:
 	static OpenServerManager *getManager(int openserver_id);

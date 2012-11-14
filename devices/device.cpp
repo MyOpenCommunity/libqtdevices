@@ -182,10 +182,14 @@ device::device(QString _who, QString _where, int oid) : FrameReceiver(oid), Fram
 
 	OpenServerManager *manager = getManager(openserver_id);
 
-	connect(manager, SIGNAL(connectionUp()), SIGNAL(connectionUp()));
-	connect(manager, SIGNAL(connectionDown()), SIGNAL(connectionDown()));
+	connect(manager, SIGNAL(connectionDown()), this, SLOT(handleConnectionDown(void)));
+	connect(manager, SIGNAL(connectionUp()), this, SLOT(handleConnectionUp(void)));
+
 	connect(&frame_compressor, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));
 	connect(&request_compressor, SIGNAL(sendFrame(QString)), SLOT(slotSendInit(QString)));
+
+	// Clear the attribut indicator set
+	initialized_attrid.clear();
 }
 
 OpenServerManager *device::getManager(int openserver_id)
@@ -234,7 +238,7 @@ bool device::smartInit(SupportedInitMode cur_init_mode)
 
 	if(cur_init_mode == DEFERRED_INIT)
 	{
-		if(!init_request_done)
+		if((!init_request_done) && !isInitialized())
 		{
 			init();
 			init_request_done = true;
@@ -245,8 +249,17 @@ bool device::smartInit(SupportedInitMode cur_init_mode)
 		switch(supported_init_mode)
 		{
 		case  DEFERRED_INIT:
-			init_request_done = false;
-			retCode = false;
+			if(!isInitialized())
+			{
+				init_request_done = false;
+				retCode = false;
+			}
+			else
+			{
+				qDebug() << "device["<<get_key()<<"] already initialized ... deferred init skipped ";
+				init_request_done = true;
+				retCode = true;
+			}
 			break;
 
 		case  NORMAL_INIT:
@@ -340,4 +353,40 @@ void RawDevice::sendCommand(QString frame)
 void RawDevice::sendRequest(QString frame)
 {
 	sendInit(frame);
+}
+
+bool device::isInitialized(void)
+{
+	return(false);
+}
+
+void device::setReceivedAttributes(const DeviceValues& values_list )
+{
+	// Look for keys into the received attribute list
+	QList<int> the_keys = values_list.keys();
+
+	// Set the received attribute ID
+	initialized_attrid |= (QSet<int>::fromList(the_keys));
+
+	qDebug() << "Received attribute list for device ["<<get_key()<<"] values: "<<values_list;
+}
+
+void device::handleConnectionDown()
+{
+	// reset the attribute set indicator
+	qDebug() << "Connection down for device ["<<get_key()<<"]";
+	initialized_attrid.clear();
+
+	// forward the signal
+	emit connectionDown();
+}
+
+void device::handleConnectionUp()
+{
+	// reset the attribute set indicator
+	qDebug() << "Connection up for device ["<<get_key()<<"]";
+	initialized_attrid.clear();
+
+	// forward the signal
+	emit connectionUp();
 }

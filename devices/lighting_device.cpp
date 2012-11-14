@@ -201,6 +201,13 @@ bool LightingDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	return !values_list.isEmpty();
 }
 
+bool LightingDevice::isInitialized(void)
+{
+	if(initialized_attrid.contains(DIM_DEVICE_ON))
+		return(true);
+	else
+		return(false);
+}
 
 DimmerDevice::DimmerDevice(QString where, PullMode pull, int openserver_id, int pull_delay, AdvancedMode adv, PullStateManager::FrameChecker checker) :
 	LightingDevice(where, pull, openserver_id, pull_delay, adv, checker)

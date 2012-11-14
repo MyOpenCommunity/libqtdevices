@@ -264,5 +264,10 @@ void PullDevice::manageFrame(OpenMsg &msg)
 
 	// DeviceValues may be empty, avoid emitting a signal in such cases
 	if (values_list.size() > 0)
+	{
+		// update the received attribute set indicator
+		setReceivedAttributes(values_list);
+
 		emit valueReceived(values_list);
+	}
 }

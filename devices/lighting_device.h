@@ -132,6 +132,15 @@ public:
 	*/
 	static FrameHandled isFrameHandled(OpenMsg &msg);
 
+	/*!
+		\brief check if the device has been initialized.
+
+		This service has to be overwritten to cover the
+		device specific meaning of initialized based on
+		the received attribute set indicator
+	*/
+	bool isInitialized(void);
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 	virtual void requestPullStatus();
