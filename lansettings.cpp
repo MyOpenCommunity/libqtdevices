@@ -29,19 +29,12 @@
 #include "skinmanager.h" // bt_global::skin, SkinContext
 #include "generic_functions.h" // setCfgValue
 #include "navigation_bar.h"
+#include "connectiontester.h"
 
-#include <QDebug>
 #include <QLabel>
 #include <QDomNode>
 #include <QBoxLayout>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QTimer>
-#include <QHash>
 
-
-#define TIMEOUT_CONNECTION 5
 
 namespace
 {
@@ -55,78 +48,6 @@ namespace
 		dev->requestDNS1();
 		dev->requestDNS2();
 	}
-}
-
-
-using namespace LanSettingsPrivate;
-
-ConnectionTester::ConnectionTester(QObject *parent) : QObject(parent)
-{
-	urls = QStringList() << "http://www.google.it" << "http://www.bticino.it";
-	current_reply = NULL;
-	manager = new QNetworkAccessManager(this);
-	timeout_timer = new QTimer(this);
-	timeout_timer->setSingleShot(true);
-	timeout_timer->setInterval(TIMEOUT_CONNECTION * 1000);
-	connect(timeout_timer, SIGNAL(timeout()), SLOT(downloadFailed()));
-}
-
-bool ConnectionTester::isTesting() const
-{
-	return current_reply != NULL;
-}
-
-void ConnectionTester::test()
-{
-	current_url = 0;
-	startTest();
-}
-
-void ConnectionTester::cancel()
-{
-	current_reply->disconnect();
-	current_reply->deleteLater();
-	current_reply = NULL;
-	timeout_timer->stop();
-}
-
-void ConnectionTester::startTest()
-{
-	QString url = urls.at(current_url);
-	qDebug() << "start testing the connection with" << url;
-	current_reply = manager->get(QNetworkRequest(QUrl(url)));
-	connect(current_reply, SIGNAL(finished()), SLOT(downloadFinished()));
-	timeout_timer->start();
-}
-
-void ConnectionTester::downloadFailed()
-{
-	qDebug() << "connection failed for" <<  urls.at(current_url);
-	current_reply->disconnect();
-	current_reply->deleteLater();
-	if (current_url + 1 >= urls.size())
-	{
-		current_reply = NULL;
-		emit testFailed();
-		return;
-	}
-	++current_url;
-	startTest();
-}
-
-void ConnectionTester::downloadFinished()
-{
-	timeout_timer->stop();
-	if (current_reply->error() != QNetworkReply::NoError)
-	{
-		downloadFailed();
-		return;
-	}
-	qDebug() << "connection established for" <<  urls.at(current_url);
-	current_reply->disconnect();
-	current_reply->deleteLater();
-	current_reply = NULL;
-	emit testPassed();
 }
 
 

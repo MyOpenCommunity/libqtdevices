@@ -44,6 +44,7 @@ HEADERS += actuators.h \
 	bttime.h \
 	changedatetime.h \
 	cleanscreen.h \
+	connectiontester.h \
 	contrast.h \
 	datetime.h \
 	delayedslotcaller.h \
@@ -154,6 +155,7 @@ SOURCES += actuators.cpp \
 	bttime.cpp \
 	changedatetime.cpp \
 	cleanscreen.cpp \
+	connectiontester.cpp \
 	contrast.cpp \
 	datetime.cpp \
 	definitions.cpp \
