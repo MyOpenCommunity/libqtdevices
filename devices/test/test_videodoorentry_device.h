@@ -46,6 +46,7 @@ private slots:
 	void sendCycleExternalUnits();
 	void sendInternalIntercomCall();
 	void sendExternalIntercomCall();
+	void sendPagerCall();
 	void sendMoveUpPress();
 	void sendMoveUpRelease();
 	void sendMoveDownPress();
@@ -71,6 +72,7 @@ private slots:
 	void receiveAnswer();
 	void receiveUnconnectedAnswer();
 	void receiveFloorCall();
+	void receivePagerCall();
 
 private:
 	// init frame must be sent at constuction time

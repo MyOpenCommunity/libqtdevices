@@ -174,6 +174,7 @@ public:
 		VCT_CALL = 1,
 		AUTO_VCT_CALL = 99, // the value doesn't matter
 		INTERCOM_CALL = 100, // the value doesn't matter
+		PAGER_CALL = 101, // the value doesn't matter
 		ANSWER_CALL = 2,
 		END_OF_CALL = 3,
 		RINGTONE = 200, // the value doesn't matter
@@ -325,6 +326,11 @@ public slots:
 		\brief If the camera support movements, stop moving right the camera.
 	*/
 	void moveRightRelease() const;
+
+	/*!
+		\brief Starts a pager call.
+	*/
+	void pagerCall();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

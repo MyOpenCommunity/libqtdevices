@@ -140,6 +140,16 @@ void VideoDoorEntryDevice::externalIntercomCall(QString _where)
 	sendCommand(what, _where);
 }
 
+void VideoDoorEntryDevice::pagerCall()
+{
+	kind = 14;
+	mmtype = 2;
+	is_calling = true;
+
+	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(CALL).arg(kind).arg(mmtype).arg(where);
+	sendFrame(cmd);
+}
+
 void VideoDoorEntryDevice::cameraOn(QString _where) const
 {
 	QString what = QString("%1#%2").arg(AUTOSWITCHING).arg(where);
@@ -250,9 +260,15 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 
 	// We want parse all frames if we are in connected state, and only the CALL
 	// frame if we are in unconnected state.
-	if (!is_calling && (QString::fromStdString(msg.whereFull()) != where || what != CALL))
+	bool is_call = (what == CALL);
+	bool is_my_where = (QString::fromStdString(msg.whereFull()) == where);
+	if (!is_calling)
+	{
+		if (!is_call)
 			return false;
-
+		if (!is_my_where)
+			return false;
+	}
 
 	switch (what)
 	{
@@ -299,6 +315,10 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		case 13:
 			values_list[RINGTONE] = FLOORCALL;
 			return true;
+		case 14:
+			what = PAGER_CALL;
+			ringtone = PI_INTERCOM;
+			break;
 		default:
 			qWarning() << "Kind" << msg.whatArgN(0) << "not supported by VideoDoorEntryDevice, skip frame";
 			return false;

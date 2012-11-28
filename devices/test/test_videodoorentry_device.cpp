@@ -423,6 +423,33 @@ void TestVideoDoorEntryDevice::sendExternalIntercomCall()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
+void TestVideoDoorEntryDevice::sendPagerCall()
+{
+	QCOMPARE(dev->is_calling, false);
+	dev->pagerCall();
+	QCOMPARE(dev->is_calling, true);
+	client_command->flush();
+	QString frame = QString("*8*1#14#2#11*4##");
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestVideoDoorEntryDevice::receivePagerCall()
+{
+	int kind = 14;
+	int mmtype = 2;
+
+	// receiving an answer to a pager call, but I didn't initiate it
+	DeviceTester t(dev, VideoDoorEntryDevice::ANSWER_CALL);
+	QString frame = QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg(16);
+	t.checkSignals(frame, 0);
+
+	// making a pager call and receiving the response
+	sendPagerCall();
+	DeviceTester t2(dev, VideoDoorEntryDevice::ANSWER_CALL);
+	QString frame2 = QString("*8*2#%1#%2*%3*4##").arg(kind).arg(mmtype).arg(16);
+	t2.check(frame2, true);
+}
+
 void TestVideoDoorEntryDevice::sendMoveUpPress()
 {
 	int kind = 101;
