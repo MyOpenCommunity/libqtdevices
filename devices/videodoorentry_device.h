@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -234,6 +234,16 @@ public:
 	*/
 	bool ipCall() const { return ip_call; }
 
+	/*!
+		\brief Accept an incoming pager call.
+	*/
+	void answerPagerCall() const;
+
+	/*!
+		\brief Starts a pager call.
+	*/
+	void pagerCall();
+
 public slots:
 	/*!
 		\brief Close a call.
@@ -326,11 +336,6 @@ public slots:
 		\brief If the camera support movements, stop moving right the camera.
 	*/
 	void moveRightRelease() const;
-
-	/*!
-		\brief Starts a pager call.
-	*/
-	void pagerCall();
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);

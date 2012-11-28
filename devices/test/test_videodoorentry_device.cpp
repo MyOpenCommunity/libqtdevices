@@ -438,16 +438,14 @@ void TestVideoDoorEntryDevice::receivePagerCall()
 	int kind = 14;
 	int mmtype = 2;
 
-	// receiving an answer to a pager call, but I didn't initiate it
-	DeviceTester t(dev, VideoDoorEntryDevice::ANSWER_CALL);
-	QString frame = QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg(16);
-	t.checkSignals(frame, 0);
-
-	// making a pager call and receiving the response
-	sendPagerCall();
-	DeviceTester t2(dev, VideoDoorEntryDevice::ANSWER_CALL);
-	QString frame2 = QString("*8*2#%1#%2*%3*4##").arg(kind).arg(mmtype).arg(16);
-	t2.check(frame2, true);
+	MultiDeviceTester t(dev);
+	t << makePair(VideoDoorEntryDevice::PAGER_CALL, (int)VideoDoorEntryDevice::ONLY_AUDIO);
+	t << makePair(VideoDoorEntryDevice::RINGTONE, (int)Ringtones::PI_INTERCOM);
+	QString frame = QString("*8*1#%1#%2#%3*4##").arg(kind).arg(mmtype).arg(16);
+	t.check(frame);
+	QCOMPARE(dev->kind, 14);
+	QCOMPARE(dev->mmtype, 2);
+	QCOMPARE(dev->caller_address, QString("16"));
 }
 
 void TestVideoDoorEntryDevice::sendMoveUpPress()

@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -118,6 +118,12 @@ void VideoDoorEntryDevice::answerCall() const
 {
 	QString what = QString("%1#%2#%3").arg(ANSWER_CALL).arg(kind).arg(mmtype);
 	sendCommand(what);
+}
+
+void VideoDoorEntryDevice::answerPagerCall() const
+{
+	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(ANSWER_CALL).arg(kind).arg(mmtype).arg(where);
+	sendFrame(cmd);
 }
 
 void VideoDoorEntryDevice::internalIntercomCall(QString _where)
@@ -262,11 +268,12 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	// frame if we are in unconnected state.
 	bool is_call = (what == CALL);
 	bool is_my_where = (QString::fromStdString(msg.whereFull()) == where);
+	bool is_pager_call = (msg.whatArgN(0) % 100 == 14);
 	if (!is_calling)
 	{
 		if (!is_call)
 			return false;
-		if (!is_my_where)
+		if (!is_my_where && !is_pager_call)
 			return false;
 	}
 
@@ -318,6 +325,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		case 14:
 			what = PAGER_CALL;
 			ringtone = PI_INTERCOM;
+			caller_address = QString::fromStdString(msg.whatArg(3));
 			break;
 		default:
 			qWarning() << "Kind" << msg.whatArgN(0) << "not supported by VideoDoorEntryDevice, skip frame";

@@ -47,6 +47,7 @@ private slots:
 	void sendInternalIntercomCall();
 	void sendExternalIntercomCall();
 	void sendPagerCall();
+	void sendPagerCall();
 	void sendMoveUpPress();
 	void sendMoveUpRelease();
 	void sendMoveDownPress();
