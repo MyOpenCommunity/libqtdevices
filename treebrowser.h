@@ -168,6 +168,11 @@ signals:
 		\brief Emitted when we try to change the current directory but the new dir is empty.
 	*/
 	void emptyDirectory();
+
+	/*!
+		\brief Emitted when we change the actual path.
+	*/
+	void isRootChanged();
 };
 
 

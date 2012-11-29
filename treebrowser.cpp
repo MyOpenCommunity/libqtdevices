@@ -77,12 +77,14 @@ void DirectoryTreeBrowser::setRootPath(const QStringList &path)
 	root_path = "/" + path.join("/");
 	current_dir.setPath(root_path);
 	level = 0;
+	emit isRootChanged();
 }
 
 void DirectoryTreeBrowser::reset()
 {
 	level = 0;
 	current_dir.setPath(root_path);
+	emit isRootChanged();
 }
 
 DirectoryBrowserMemento *DirectoryTreeBrowser::clone()
@@ -121,6 +123,7 @@ void DirectoryTreeBrowser::enterDirectory(const QString &name)
 
 	++level;
 	emit directoryChanged();
+	emit isRootChanged();
 }
 
 void DirectoryTreeBrowser::exitDirectory()
@@ -136,6 +139,7 @@ void DirectoryTreeBrowser::exitDirectory()
 
 	--level;
 	emit directoryChanged();
+	emit isRootChanged();
 }
 
 void DirectoryTreeBrowser::getFileList()
@@ -178,6 +182,7 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 	}
 
 	emit directoryChanged();
+	emit isRootChanged();
 }
 
 
@@ -195,6 +200,7 @@ void UPnpClientBrowser::reset()
 {
 	level = 0;
 	starting_element = 1;
+	emit isRootChanged();
 }
 
 void UPnpClientBrowser::enterDirectory(const QString &name)
@@ -297,6 +303,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 
 			num_elements = cached_elements.size();
 			level = 0;
+			emit isRootChanged();
 			EntryInfoList entry_list;
 
 			if (num_elements > 0)
@@ -308,12 +315,14 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		case XmlResponses::CHDIR:
 			++level;
 			emit directoryChanged();
+			emit isRootChanged();
 			break;
 		case XmlResponses::TRACK_SELECTION:
 			break;
 		case XmlResponses::BROWSE_UP:
 			--level;
 			emit directoryChanged();
+			emit isRootChanged();
 			break;
 		case XmlResponses::LIST_ITEMS:
 		{
@@ -332,6 +341,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 		case XmlResponses::SET_CONTEXT:
 			level = context_new_level;
 			emit directoryChanged();
+			emit isRootChanged();
 			break;
 		default:
 			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled response.");
@@ -376,6 +386,7 @@ void UPnpClientBrowser::handleError(int response, int code)
 		{
 			--level;
 			emit directoryChanged();
+			emit isRootChanged();
 		}
 		else
 			emit directoryChangeError();
