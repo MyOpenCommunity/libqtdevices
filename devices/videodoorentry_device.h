@@ -337,6 +337,11 @@ public slots:
 	*/
 	void moveRightRelease() const;
 
+	/*!
+		\brief Whether there is a call in progress
+	*/
+	bool isCalling() const { return is_calling; }
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
