@@ -495,6 +495,7 @@ void TestVideoDoorEntryDevice::receivePagerAnswer()
 
 	// receives the pager answer it is waiting for
 	t << makePair(VideoDoorEntryDevice::ANSWER_CALL, true);
+	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, "16");
 	t.check(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"));
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
