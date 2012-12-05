@@ -406,7 +406,7 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			Q_ASSERT_X(msg.whatSubArgCnt() < 3, __PRETTY_FUNCTION__, "Incomplete open frame received");
 			kind = msg.whatArgN(0);
 			mmtype = msg.whatArgN(1);
-			caller_address = QString::fromStdString(msg.whatArg(2));
+			values_list[CALLER_ADDRESS] = caller_address = QString::fromStdString(msg.whatArg(2));
 		}
 
 		values_list[ANSWER_CALL] = true;
