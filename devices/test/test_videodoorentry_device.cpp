@@ -465,7 +465,8 @@ void TestVideoDoorEntryDevice::receivePagerAnswer()
 	int kind = 14;
 	int mmtype = 2;
 
-	DeviceTester t0(dev, VideoDoorEntryDevice::ANSWER_CALL);
+	MultiDeviceTester t0(dev);
+	t0 << makePair(VideoDoorEntryDevice::END_OF_CALL, true);
 
 	// arrives an answer without having made a call, ignores it
 	QCOMPARE(dev->is_waiting_pager_answer, false);
@@ -475,7 +476,7 @@ void TestVideoDoorEntryDevice::receivePagerAnswer()
 	QCOMPARE(dev->master_caller_address, QString());
 	QCOMPARE(dev->kind, -1);
 	QCOMPARE(dev->mmtype, -1);
-	t0.checkSignals(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"), 0);
+	t0.check(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"));
 	QCOMPARE(dev->is_waiting_pager_answer, false);
 	QCOMPARE(dev->is_calling, false);
 	QCOMPARE(dev->ip_call, false);

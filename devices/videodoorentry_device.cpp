@@ -282,6 +282,18 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	bool is_my_where = (QString::fromStdString(msg.whereFull()) == where);
 	bool is_broadcast_where = (QString::fromStdString(msg.whereFull()) == QString("4"));
 	bool is_pager_call = (msg.whatArgN(0) % 100 == 14);
+	bool is_answer_call = (what == ANSWER_CALL);
+
+	// if someone else answers to a pager call, I send an END_OF_CALL frame
+	if (!is_waiting_pager_answer && is_pager_call && is_answer_call && is_broadcast_where)
+	{
+		if (QString::fromStdString(msg.whatArg(2)) != where) // probably redundant
+		{
+			resetCallState();
+			values_list[END_OF_CALL] = true;
+			return true;
+		}
+	}
 
 	if (!is_calling)
 	{
