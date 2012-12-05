@@ -164,6 +164,7 @@ protected:
 class VideoDoorEntryDevice : public BasicVideoDoorEntryDevice
 {
 friend class TestVideoDoorEntryDevice;
+friend class TestVideoDoorEntry;
 Q_OBJECT
 public:
 	/*!
