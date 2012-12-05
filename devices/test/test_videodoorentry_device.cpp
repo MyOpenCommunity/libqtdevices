@@ -1,4 +1,4 @@
-/* 
+/*
  * BTouch - Graphical User Interface to control MyHome System
  *
  * Copyright (C) 2010 BTicino S.p.A.
@@ -426,10 +426,22 @@ void TestVideoDoorEntryDevice::sendExternalIntercomCall()
 void TestVideoDoorEntryDevice::sendPagerCall()
 {
 	QCOMPARE(dev->is_calling, false);
+	QCOMPARE(dev->is_waiting_pager_answer, false);
 	dev->pagerCall();
 	QCOMPARE(dev->is_calling, true);
+	QCOMPARE(dev->is_waiting_pager_answer, true);
 	client_command->flush();
 	QString frame = QString("*8*1#14#2#11*4##");
+	QCOMPARE(server->frameCommand(), frame);
+}
+
+void TestVideoDoorEntryDevice::sendPagerAnswer()
+{
+	QCOMPARE(dev->is_calling, false);
+	dev->pagerAnswer();
+	QCOMPARE(dev->is_calling, true);
+	client_command->flush();
+	QString frame = QString("*8*2#14#2#11*4##");
 	QCOMPARE(server->frameCommand(), frame);
 }
 
@@ -441,8 +453,49 @@ void TestVideoDoorEntryDevice::receivePagerCall()
 	MultiDeviceTester t(dev);
 	t << makePair(VideoDoorEntryDevice::PAGER_CALL, (int)VideoDoorEntryDevice::ONLY_AUDIO);
 	t << makePair(VideoDoorEntryDevice::RINGTONE, (int)Ringtones::PI_INTERCOM);
-	QString frame = QString("*8*1#%1#%2#%3*4##").arg(kind).arg(mmtype).arg(16);
+	QString frame = QString("*8*1#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16");
 	t.check(frame);
+	QCOMPARE(dev->kind, 14);
+	QCOMPARE(dev->mmtype, 2);
+	QCOMPARE(dev->caller_address, QString("16"));
+}
+
+void TestVideoDoorEntryDevice::receivePagerAnswer()
+{
+	int kind = 14;
+	int mmtype = 2;
+
+	DeviceTester t0(dev, VideoDoorEntryDevice::ANSWER_CALL);
+
+	// arrives an answer without having made a call, ignores it
+	QCOMPARE(dev->is_waiting_pager_answer, false);
+	QCOMPARE(dev->is_calling, false);
+	QCOMPARE(dev->ip_call, false);
+	QCOMPARE(dev->caller_address, QString());
+	QCOMPARE(dev->master_caller_address, QString());
+	QCOMPARE(dev->kind, -1);
+	QCOMPARE(dev->mmtype, -1);
+	t0.checkSignals(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"), 0);
+	QCOMPARE(dev->is_waiting_pager_answer, false);
+	QCOMPARE(dev->is_calling, false);
+	QCOMPARE(dev->ip_call, false);
+	QCOMPARE(dev->caller_address, QString());
+	QCOMPARE(dev->master_caller_address, QString());
+	QCOMPARE(dev->kind, -1);
+	QCOMPARE(dev->mmtype, -1);
+
+	// sends a pager call
+	QCOMPARE(dev->is_waiting_pager_answer, false);
+	dev->pagerCall();
+	QCOMPARE(dev->is_waiting_pager_answer, true);
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*1#14#2#11*4##"));
+
+	MultiDeviceTester t(dev);
+
+	// receives the pager answer it is waiting for
+	t << makePair(VideoDoorEntryDevice::ANSWER_CALL, true);
+	t.check(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"));
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
 	QCOMPARE(dev->caller_address, QString("16"));

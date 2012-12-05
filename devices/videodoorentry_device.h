@@ -244,6 +244,11 @@ public:
 	*/
 	void pagerCall();
 
+	/*!
+		\brief Answers a pager call.
+	*/
+	void pagerAnswer();
+
 public slots:
 	/*!
 		\brief Close a call.
@@ -342,6 +347,11 @@ public slots:
 	*/
 	bool isCalling() const { return is_calling; }
 
+	/*!
+		\brief Whether there is a pager call pending
+	*/
+	bool isWaitingPagerCall() const { return is_waiting_pager_answer; }
+
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
 
@@ -356,6 +366,7 @@ private:
 	QString master_caller_address;
 	bool is_calling;
 	bool ip_call;
+	bool is_waiting_pager_answer;
 };
 
 #endif //VIDEODOOR_ENTRY_DEVICE_H

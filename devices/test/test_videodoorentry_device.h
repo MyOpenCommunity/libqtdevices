@@ -47,7 +47,7 @@ private slots:
 	void sendInternalIntercomCall();
 	void sendExternalIntercomCall();
 	void sendPagerCall();
-	void sendPagerCall();
+	void sendPagerAnswer();
 	void sendMoveUpPress();
 	void sendMoveUpRelease();
 	void sendMoveDownPress();
@@ -74,6 +74,7 @@ private slots:
 	void receiveUnconnectedAnswer();
 	void receiveFloorCall();
 	void receivePagerCall();
+	void receivePagerAnswer();
 
 private:
 	// init frame must be sent at constuction time
