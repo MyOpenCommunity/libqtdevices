@@ -250,6 +250,16 @@ public:
 	*/
 	void pagerAnswer();
 
+	/*!
+		\brief Whether there is a pager call pending
+	*/
+	bool isWaitingPagerCall() const { return is_waiting_pager_answer; }
+
+	/*!
+		\brief Returns the caller address (used in pager calls)
+	*/
+	QString callerAddress() const { return caller_address; }
+
 public slots:
 	/*!
 		\brief Close a call.
@@ -347,11 +357,6 @@ public slots:
 		\brief Whether there is a call in progress
 	*/
 	bool isCalling() const { return is_calling; }
-
-	/*!
-		\brief Whether there is a pager call pending
-	*/
-	bool isWaitingPagerCall() const { return is_waiting_pager_answer; }
 
 protected:
 	virtual bool parseFrame(OpenMsg &msg, DeviceValues &values_list);
