@@ -295,6 +295,7 @@ namespace DateConversions
 	\brief A wrapper around the QProcess::execute that shows the time elapsed in DEBUG mode.
 */
 bool smartExecute(const QString &program, QStringList args = QStringList());
+bool smartExecute_synch(const QString &program, QStringList args = QStringList());
 
 /*!
 	\ingroup Core
