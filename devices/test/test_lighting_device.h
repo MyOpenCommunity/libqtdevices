@@ -74,6 +74,8 @@ private slots:
 
 	void testAdvancedDetection2();
 
+	void testInvalidDimensionFrame();
+
 private:
 	void checkPullUnknown();
 

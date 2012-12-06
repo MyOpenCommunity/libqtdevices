@@ -322,6 +322,13 @@ void TestLightingDevice::testAdvancedDetection2()
 	QCOMPARE(dev->delayed_request.isActive(), false);
 }
 
+void TestLightingDevice::testInvalidDimensionFrame()
+{
+	DeviceTester t(dev, LightingDevice::DIM_DEVICE_ON); // dimension does not matter
+
+	t.simulateIncomingFrames(QStringList() << QString("*#1*%1*1##").arg(dev->where));
+}
+
 
 void TestDimmerDevice::init()
 {

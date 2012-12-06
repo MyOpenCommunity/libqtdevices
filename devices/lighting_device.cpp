@@ -341,11 +341,9 @@ bool DimmerDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	}
 
 	// dimmer 100 set status, for advanced dimmers
-	if (what == DIMMER100_STATUS && (isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && isAdvanced())
+	if (what == DIMMER100_STATUS && (isDimensionFrame(msg) || isWriteDimensionFrame(msg)) && isAdvanced() &&
+			msg.whatArgCnt() == 2)
 	{
-		Q_ASSERT_X(msg.whatArgCnt() == 2, "DimmerDevice::parseFrame",
-			"Dimmer 100 status frame must have 2 what args");
-
 		int new_level = msg.whatArgN(0) - 100;
 
 		// if level == 0 device is off
@@ -426,11 +424,8 @@ bool Dimmer100Device::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	if (isCommandFrame(msg) && (what == DIM_DEVICE_ON || what == DIM_DEVICE_OFF) && msg.whatArgCnt() == 1)
 		values_list[DIM_DEVICE_ON] = (what == DIM_DEVICE_ON);
 
-	if (what == DIMMER100_STATUS && isDimensionFrame(msg))
+	if (what == DIMMER100_STATUS && isDimensionFrame(msg) && msg.whatArgCnt() == 2)
 	{
-		Q_ASSERT_X(msg.whatArgCnt() == 2, "Dimmer100Device::parseFrame",
-			"Dimmer 100 status frame must have 2 what args");
-
 		// status/level handling performed in DimmerDevice
 		if (status)
 			values_list[DIM_DIMMER100_SPEED] = msg.whatArgN(1);
