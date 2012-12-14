@@ -22,6 +22,8 @@ SignalsHandler *installSignalsHandler()
 		qWarning() << "Error on installing the handler for the SIGUSR2 signal";
 	if (sigaction(SIGTERM, &sa, 0) != 0)
 		qWarning() << "Error on installing the handler for the SIGTERM signal";
+	if (sigaction(SIGSEGV, &sa, 0) != 0)
+		qWarning() << "Error on installing the handler for the SIGSEGV signal";
 
 	return new SignalsHandler;
 }
@@ -61,6 +63,11 @@ void SignalsHandler::signalHandler(int signal_number)
 	if (getpid() != parent_pid)
 		return;
 
+	// Workaround for Qt 4.8.0, infinite loop if the application gets a segfault
+	// during quit.
+	// We don't have much else to do anyway...
+	if (signal_number == SIGSEGV)
+		_exit(-1);
 	char tmp = signal_number;
 	::write(signalfd[0], &tmp, sizeof(tmp)); // write something, in order to "activate" the notifier
 }
