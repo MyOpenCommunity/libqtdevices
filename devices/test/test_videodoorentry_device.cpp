@@ -580,6 +580,17 @@ void TestVideoDoorEntryDevice::receivePagerCallAndInitiatesConversation()
 	}
 
 	{
+		MultiDeviceTester t2(dev);
+		t2 << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, 13);
+		t2 << makePair(VideoDoorEntryDevice::MOVING_CAMERA, false);
+		QString frame2 = QString("*8*9#%1#%2*%3##").arg(kind).arg(mmtype).arg("13");
+		t2.check(frame2);
+		QCOMPARE(dev->kind, 14);
+		QCOMPARE(dev->mmtype, 2);
+		QCOMPARE(dev->caller_address, QString("13"));
+	}
+
+	{
 		QCOMPARE(dev->is_calling, true);
 		QCOMPARE(dev->is_waiting_pager_answer, false);
 		dev->pagerAnswer();
