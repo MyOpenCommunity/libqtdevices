@@ -209,6 +209,7 @@ class device : public QObject, public FrameReceiver, public FrameSender
 friend class TestDevice;
 friend class TestBtObject;
 friend class BtMain;
+friend class TestDisplayControl;
 Q_OBJECT
 
 public:

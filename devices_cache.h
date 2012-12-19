@@ -61,6 +61,7 @@ friend class BtMain;
 friend class TestDevice;
 friend class TestBtObject;
 friend class TestDevicesCache;
+friend class TestDisplayControl;
 public:
 	DevicesCache();
 	~DevicesCache();

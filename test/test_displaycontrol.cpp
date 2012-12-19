@@ -29,6 +29,8 @@
 #include "audiostatemachine.h"
 #include "btmain.h"
 #include "pagestack.h"
+#include "device.h"
+#include "devices_cache.h"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -149,11 +151,31 @@ void TestDisplayControl::testScreensaver()
 	QSignalSpy spy(display, SIGNAL(startscreensaver(Page*)));
 	display->startTime();
 
+	// Testing lazy update with a fake device creation
+	// After the creation we check that by defaul the lazy update
+	// mechanism is disabled since its mode is set to NORMAL_INIT
+	device* the_testdevice = new device("WHO", "WHERE");
+	QCOMPARE(the_testdevice->getSupportedInitMode(), device::NORMAL_INIT);
+
+	// Change the device setting enabling the DEFERRED_INIT mode
+	the_testdevice->setSupportedInitMode(device::DEFERRED_INIT);
+	QCOMPARE(the_testdevice->getSupportedInitMode(), device::DEFERRED_INIT);
+
+	// Put the fake device into the lazy update queue
+	bt_global::devices_cache.lazy_update_list<<the_testdevice;
+	QCOMPARE(bt_global::devices_cache.lazy_update_list.isEmpty(), false);
+
 	sleepSecs(display->freeze_time);
 	display->checkScreensaver(target_page, target_window, exit_page);
 	QCOMPARE(display->current_state, DISPLAY_FREEZED);
 	QVERIFY(display->screensaver == 0);
 	QCOMPARE(spy.count(), 0);
+
+	// After the second invocation of "checkScreensaver" the device shall
+	// disappear from the queue since it has been aligned, so the lazy_update_list
+	// should be empty
+	display->checkScreensaver(target_page, target_window, exit_page);
+	QCOMPARE(bt_global::devices_cache.lazy_update_list.isEmpty(), true);
 
 	sleepSecs(display->screensaver_time - display->freeze_time);
 	display->checkScreensaver(target_page, target_window, exit_page);
