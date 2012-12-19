@@ -163,6 +163,7 @@ void VideoDoorEntryDevice::pagerAnswer()
 	kind = 14;
 	mmtype = 2;
 	is_calling = true;
+	is_waiting_pager_answer = true; // waits for ANSWER_CALL frame to confirm call
 
 	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(ANSWER_CALL).arg(kind).arg(mmtype).arg(where);
 	sendFrame(cmd);
@@ -347,10 +348,6 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 		case 14:
 			what = PAGER_CALL;
 			ringtone = PI_INTERCOM;
-			if (msg.whatArgCnt() >= 3)
-				caller_address = QString::fromStdString(msg.whatArg(2));
-			else // where is not 4, but the caller address
-				caller_address = QString::fromStdString(msg.whereFull());
 			break;
 		default:
 			qWarning() << "Kind" << msg.whatArgN(0) << "not supported by VideoDoorEntryDevice, skip frame";
@@ -406,10 +403,6 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 			Q_ASSERT_X(msg.whatArgCnt() >= 2, __PRETTY_FUNCTION__, "Incomplete open frame received");
 			kind = msg.whatArgN(0);
 			mmtype = msg.whatArgN(1);
-			if (msg.whatArgCnt() >= 3)
-				values_list[CALLER_ADDRESS] = caller_address = QString::fromStdString(msg.whatArg(2));
-			else // where is not 4, but the caller address
-				values_list[CALLER_ADDRESS] = caller_address = QString::fromStdString(msg.whereFull());
 		}
 
 		values_list[ANSWER_CALL] = true;

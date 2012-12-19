@@ -78,6 +78,7 @@ private slots:
 	void receivePagerCallWithWrongWhere();
 	void receivePagerAnswer();
 	void receivePagerAnswerWithWhere();
+	void receivePagerCallAndInitiatesConversation();
 
 private:
 	// init frame must be sent at constuction time

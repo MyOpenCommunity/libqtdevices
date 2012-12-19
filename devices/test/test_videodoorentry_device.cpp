@@ -457,7 +457,6 @@ void TestVideoDoorEntryDevice::receivePagerCall()
 	t.check(frame);
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
-	QCOMPARE(dev->caller_address, QString("16"));
 }
 
 void TestVideoDoorEntryDevice::receivePagerCallWithWhere()
@@ -472,7 +471,6 @@ void TestVideoDoorEntryDevice::receivePagerCallWithWhere()
 	t2.check(frame2);
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
-	QCOMPARE(dev->caller_address, QString("15"));
 }
 
 void TestVideoDoorEntryDevice::receivePagerCallWithWrongWhere()
@@ -521,11 +519,9 @@ void TestVideoDoorEntryDevice::receivePagerAnswer()
 
 	// receives the pager answer it is waiting for
 	t << makePair(VideoDoorEntryDevice::ANSWER_CALL, true);
-	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, "16");
 	t.check(QString("*8*2#%1#%2#%3*4##").arg(kind).arg(mmtype).arg("16"));
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
-	QCOMPARE(dev->caller_address, QString("16"));
 }
 
 void TestVideoDoorEntryDevice::receivePagerAnswerWithWhere()
@@ -561,14 +557,49 @@ void TestVideoDoorEntryDevice::receivePagerAnswerWithWhere()
 	QCOMPARE(server->frameCommand(), QString("*8*1#14#2#11*4##"));
 
 	MultiDeviceTester t(dev);
-
 	// receives the pager answer it is waiting for, where is not 4, but the PI where
 	t << makePair(VideoDoorEntryDevice::ANSWER_CALL, true);
-	t << makePair(VideoDoorEntryDevice::CALLER_ADDRESS, "16");
 	t.check(QString("*8*2#%1#%2*%3##").arg(kind).arg(mmtype).arg("16"));
 	QCOMPARE(dev->kind, 14);
 	QCOMPARE(dev->mmtype, 2);
-	QCOMPARE(dev->caller_address, QString("16"));
+}
+
+void TestVideoDoorEntryDevice::receivePagerCallAndInitiatesConversation()
+{
+	int kind = 14;
+	int mmtype = 2;
+
+	{
+		MultiDeviceTester t2(dev);
+		t2 << makePair(VideoDoorEntryDevice::PAGER_CALL, (int)VideoDoorEntryDevice::ONLY_AUDIO);
+		t2 << makePair(VideoDoorEntryDevice::RINGTONE, (int)Ringtones::PI_INTERCOM);
+		QString frame2 = QString("*8*1#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg("21").arg("11");
+		t2.check(frame2);
+		QCOMPARE(dev->kind, 14);
+		QCOMPARE(dev->mmtype, 2);
+	}
+
+	{
+		QCOMPARE(dev->is_calling, true);
+		QCOMPARE(dev->is_waiting_pager_answer, false);
+		dev->pagerAnswer();
+		QCOMPARE(dev->is_calling, true);
+		QCOMPARE(dev->is_waiting_pager_answer, true);
+		client_command->flush();
+		QString frame = QString("*8*2#14#2#11*4##");
+		QCOMPARE(server->frameCommand(), frame);
+	}
+
+	{
+		MultiDeviceTester t(dev);
+		// receives the pager answer it is waiting for
+		t << makePair(VideoDoorEntryDevice::ANSWER_CALL, true);
+		QCOMPARE(dev->is_waiting_pager_answer, true);
+		t.check(QString("*8*2#14#2#11*4##"));
+		QCOMPARE(dev->is_waiting_pager_answer, true);
+		QCOMPARE(dev->kind, 14);
+		QCOMPARE(dev->mmtype, 2);
+	}
 }
 
 void TestVideoDoorEntryDevice::sendMoveUpPress()
