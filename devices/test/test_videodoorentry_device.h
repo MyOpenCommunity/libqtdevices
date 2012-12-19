@@ -74,7 +74,10 @@ private slots:
 	void receiveUnconnectedAnswer();
 	void receiveFloorCall();
 	void receivePagerCall();
+	void receivePagerCallWithWhere();
+	void receivePagerCallWithWrongWhere();
 	void receivePagerAnswer();
+	void receivePagerAnswerWithWhere();
 
 private:
 	// init frame must be sent at constuction time
