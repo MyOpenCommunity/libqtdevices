@@ -270,7 +270,9 @@ void VideoDoorEntryDevice::moveRightRelease() const
 
 bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
+	qWarning() << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
 	int what = msg.what();
+	qWarning() << what;
 	if (what == SILENCE_MM_AMPLI || what == RESTORE_MM_AMPLI)
 	{
 		values_list[what] = true;
@@ -284,14 +286,18 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	bool is_broadcast_where = (QString::fromStdString(msg.whereFull()) == QString("4"));
 	bool is_pager_call = (msg.whatArgN(0) % 100 == 14);
 	bool is_answer_call = (what == ANSWER_CALL);
+	qWarning() << is_call << is_my_where << is_broadcast_where << is_pager_call << is_answer_call << is_waiting_pager_answer;
 
 	// if someone else answers to a pager call, I send an END_OF_CALL frame
 	if (!is_waiting_pager_answer && is_pager_call && is_answer_call)
 	{
+		qWarning() << "sending end of call";
 		resetCallState();
 		values_list[END_OF_CALL] = true;
 		return true;
 	}
+
+	qWarning() << is_calling;
 
 	if (!is_calling)
 	{
@@ -395,15 +401,18 @@ bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 	case ANSWER_CALL:
 	{
 		ip_call = msg.whatArgN(0) > 1000;
+		qWarning() << ip_call << vct_mode;
 		if ((ip_call && vct_mode != IP_MODE) || (!ip_call && vct_mode != SCS_MODE))
 			qWarning() << "The incoming call has a different mode than the configured one";
 
+		qWarning() << is_waiting_pager_answer;
 		if (is_waiting_pager_answer)
 		{
 			Q_ASSERT_X(msg.whatArgCnt() >= 2, __PRETTY_FUNCTION__, "Incomplete open frame received");
 			kind = msg.whatArgN(0);
 			mmtype = msg.whatArgN(1);
 		}
+		qWarning() << kind << mmtype;
 
 		values_list[ANSWER_CALL] = true;
 		break;
