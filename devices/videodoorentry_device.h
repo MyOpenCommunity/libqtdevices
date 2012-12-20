@@ -238,17 +238,12 @@ public:
 	/*!
 		\brief Accept an incoming pager call.
 	*/
-	void answerPagerCall() const;
+	void answerPagerCall();
 
 	/*!
 		\brief Starts a pager call.
 	*/
 	void pagerCall();
-
-	/*!
-		\brief Answers a pager call.
-	*/
-	void pagerAnswer();
 
 	/*!
 		\brief Whether there is a pager call pending

@@ -438,7 +438,7 @@ void TestVideoDoorEntryDevice::sendPagerCall()
 void TestVideoDoorEntryDevice::sendPagerAnswer()
 {
 	QCOMPARE(dev->is_calling, false);
-	dev->pagerAnswer();
+	dev->answerPagerCall();
 	QCOMPARE(dev->is_calling, true);
 	client_command->flush();
 	QString frame = QString("*8*2#14#2#11*4##");
@@ -593,7 +593,7 @@ void TestVideoDoorEntryDevice::receivePagerCallAndInitiatesConversation()
 	{
 		QCOMPARE(dev->is_calling, true);
 		QCOMPARE(dev->is_waiting_pager_answer, false);
-		dev->pagerAnswer();
+		dev->answerPagerCall();
 		QCOMPARE(dev->is_calling, true);
 		QCOMPARE(dev->is_waiting_pager_answer, true);
 		client_command->flush();

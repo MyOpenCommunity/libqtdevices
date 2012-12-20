@@ -121,8 +121,13 @@ void VideoDoorEntryDevice::answerCall() const
 	sendCommand(what);
 }
 
-void VideoDoorEntryDevice::answerPagerCall() const
+void VideoDoorEntryDevice::answerPagerCall()
 {
+	kind = 14;
+	mmtype = 2;
+	is_calling = true;
+	is_waiting_pager_answer = true;
+
 	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(ANSWER_CALL).arg(kind).arg(mmtype).arg(where);
 	sendFrame(cmd);
 }
@@ -155,17 +160,6 @@ void VideoDoorEntryDevice::pagerCall()
 	is_waiting_pager_answer = true;
 
 	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(CALL).arg(kind).arg(mmtype).arg(where);
-	sendFrame(cmd);
-}
-
-void VideoDoorEntryDevice::pagerAnswer()
-{
-	kind = 14;
-	mmtype = 2;
-	is_calling = true;
-	is_waiting_pager_answer = true; // waits for ANSWER_CALL frame to confirm call
-
-	QString cmd = QString("*8*%1#%2#%3#%4*4##").arg(ANSWER_CALL).arg(kind).arg(mmtype).arg(where);
 	sendFrame(cmd);
 }
 
