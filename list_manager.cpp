@@ -84,7 +84,7 @@ int FileListManager::totalFiles()
 
 EntryInfo::Metadata FileListManager::currentMeta()
 {
-	return EntryInfo::Metadata();
+	return files_list[index].metadata;
 }
 
 
