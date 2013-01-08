@@ -138,6 +138,8 @@ void DirectoryTreeBrowser::exitDirectory()
 	}
 
 	--level;
+	if (level == 0)
+		emit rootDirectoryEntered();
 	emit directoryChanged();
 	emit isRootChanged();
 }
@@ -219,6 +221,7 @@ void UPnpClientBrowser::exitDirectory()
 	if (level == 1)
 	{
 		starting_element = 1;
+		emit rootDirectoryEntered();
 		dev->requestUPnPServers();
 	}
 	else

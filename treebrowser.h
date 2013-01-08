@@ -173,6 +173,11 @@ signals:
 		\brief Emitted when we change the actual path.
 	*/
 	void isRootChanged();
+
+	/*!
+		\brief Emitted when entering the navigation root, ie. isRoot() == true.
+	*/
+	void rootDirectoryEntered();
 };
 
 
