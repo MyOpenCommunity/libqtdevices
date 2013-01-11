@@ -46,6 +46,7 @@ enum
 	MOVE_DOWN = 60,
 	MOVE_LEFT = 61,
 	MOVE_RIGHT = 62,
+	VDE_WHAT_MAX = 9000
 };
 
 BasicVideoDoorEntryDevice::BasicVideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
@@ -95,7 +96,11 @@ void BasicVideoDoorEntryDevice::initVctProcess()
 
 bool BasicVideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
-	if (static_cast<int>(msg.what()) == CALLER_ADDRESS)
+	int what = msg.what();
+	// ignore message system frames
+	if (what > VDE_WHAT_MAX)
+		return false;
+	if (what == CALLER_ADDRESS)
 	{
 		values_list[CALLER_ADDRESS] = QString::fromStdString(msg.whereFull());
 		return true;
@@ -265,6 +270,9 @@ void VideoDoorEntryDevice::moveRightRelease() const
 bool VideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_list)
 {
 	int what = msg.what();
+	// ignore message system frames
+	if (what > VDE_WHAT_MAX)
+		return false;
 	if (what == SILENCE_MM_AMPLI || what == RESTORE_MM_AMPLI)
 	{
 		values_list[what] = true;
