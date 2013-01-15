@@ -725,3 +725,32 @@ void TestVideoDoorEntryDevice::sendMoveRightRelease()
 	QCOMPARE(server->frameCommand(), frame);
 }
 
+void TestVideoDoorEntryDevice::receiveTeleloopAnswer()
+{
+	int teleloop = 5;
+	DeviceTester t(dev, VideoDoorEntryDevice::TELE_ANSWER);
+	QString answer = QString("*8*77#%1*%2##").arg(teleloop).arg(dev->where);
+
+	t.check(answer, teleloop);
+}
+
+void TestVideoDoorEntryDevice::receiveTeleloopTimeout()
+{
+	DeviceTester t(dev, VideoDoorEntryDevice::TELE_TIMEOUT);
+	QString timeout = QString("*8*78*%1##").arg(dev->where);
+
+	t.check(timeout, true);
+}
+
+void TestVideoDoorEntryDevice::receiveTeleloopSession()
+{
+	int kind = 1;
+	int mmtype = 4;
+	int teleloop = 5;
+	DeviceTester t(dev, VideoDoorEntryDevice::TELE_SESSION);
+	QString session = QString("*8*79#%1#%2#%3*%4##").arg(kind).arg(mmtype).arg(teleloop).arg(dev->where);
+
+	simulateIncomingCall(kind, mmtype);
+
+	t.check(session, true);
+}

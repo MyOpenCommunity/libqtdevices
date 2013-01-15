@@ -79,6 +79,9 @@ private slots:
 	void receivePagerAnswer();
 	void receivePagerAnswerWithWhere();
 	void receivePagerCallAndInitiatesConversation();
+	void receiveTeleloopAnswer();
+	void receiveTeleloopTimeout();
+	void receiveTeleloopSession();
 
 private:
 	// init frame must be sent at constuction time
