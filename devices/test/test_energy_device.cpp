@@ -356,7 +356,7 @@ void TestEnergyDevice::receiveCumulativeYear()
 
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR, DeviceTester::MULTIPLE_VALUES);
 	QStringList frames;
-	int month = 1;
+	int month = QDate::currentDate().month() == 1 ? 12 : 1;
 	int invalid_month = 3;
 	frames << QString("*#18*%1*52#9#%2*106##").arg(where).arg(month);
 	frames << QString("*#18*%1*52#9#%2*4294967295##").arg(where).arg(invalid_month);
@@ -617,6 +617,7 @@ void TestEnergyDevice::receiveCumulativeMonthGraph2()
 void TestEnergyDevice::receiveCumulativeMonthGraph3()
 {
 	int month = 2;
+	int year = QDate::currentDate().month() > 2 ? QDate::currentDate().year() : QDate::currentDate().year() - 1;
 	dev->buffer_frame.clear();
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH);
 	QString tmp(QString("*#18*%1*%2#%3").arg(where).arg(EnergyDevice::DIM_CUMULATIVE_MONTH_GRAPH).arg(month));
@@ -629,7 +630,7 @@ void TestEnergyDevice::receiveCumulativeMonthGraph3()
 	QVariant result = t.getResult();
 	QVERIFY(result.canConvert<GraphData>());
 	GraphData d = result.value<GraphData>();
-	QVERIFY(d.graph.size() == QDate(QDate::currentDate().year(), month, 1).daysInMonth());
+	QVERIFY(d.graph.size() == QDate(year, month, 1).daysInMonth());
 }
 
 void TestEnergyDevice::receiveCumulativeMonthGraph32Bit()
@@ -700,7 +701,7 @@ void TestEnergyDevice::receiveCumulativeYearGraph()
 
 	DeviceTester t(dev, EnergyDevice::DIM_CUMULATIVE_YEAR_GRAPH, DeviceTester::MULTIPLE_VALUES);
 	QStringList frames;
-	int month = 1;
+	int month = QDate::currentDate().month() == 1 ? 12 : 1;
 	int invalid_month = 3;
 	frames << QString("*#18*%1*52#9#%2*106##").arg(where).arg(month);
 	frames << QString("*#18*%1*52#9#%2*4294967295##").arg(where).arg(invalid_month);
