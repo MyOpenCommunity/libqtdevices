@@ -114,11 +114,30 @@ bool BasicVideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_li
 VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
 	BasicVideoDoorEntryDevice(where, mode, openserver_id)
 {
+	setSupportedInitMode(device::NORMAL_INIT);
+
 	// invalid values
 	kind = mmtype = -1;
 	is_calling = false;
 	ip_call = false;
 	is_waiting_pager_answer = false;
+	teleloop_id = 0;
+}
+
+void VideoDoorEntryDevice::init()
+{
+	if (teleloop_id)
+		linkTeleLoop(teleloop_id, where);
+}
+
+void VideoDoorEntryDevice::setTeleloopId(int id)
+{
+	teleloop_id = id;
+}
+
+int VideoDoorEntryDevice::getTeleloopId() const
+{
+	return teleloop_id;
 }
 
 void VideoDoorEntryDevice::answerCall() const

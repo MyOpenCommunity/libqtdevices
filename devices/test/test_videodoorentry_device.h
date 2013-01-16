@@ -35,6 +35,7 @@ private slots:
 	void initTestCase();
 	void cleanupTestCase();
 	void init();
+	void sendTeleloopLinkOnInit();
 	void sendAnswerCall();
 	void sendEndCall();
 	void sendInitVctProcess();

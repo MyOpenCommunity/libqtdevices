@@ -61,6 +61,16 @@ void TestVideoDoorEntryDevice::simulateCallerAddress(int kind, int mmtype, QStri
 	dev->manageFrame(msg);
 }
 
+void TestVideoDoorEntryDevice::sendTeleloopLinkOnInit()
+{
+	int teleloop = 7;
+
+	dev->setTeleloopId(teleloop);
+	dev->init();
+	client_command->flush();
+	QCOMPARE(server->frameCommand(), QString("*8*77#%1*%2##").arg(teleloop).arg(dev->where));
+}
+
 void TestVideoDoorEntryDevice::sendAnswerCall()
 {
 	// ringtone 1

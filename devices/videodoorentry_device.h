@@ -227,6 +227,9 @@ public:
 	*/
 	VideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
+	// associate with teleloop
+	virtual void init();
+
 	/*!
 		\brief Accept an incoming call.
 	*/
@@ -257,6 +260,16 @@ public:
 		\brief Returns the caller address (used in pager calls)
 	*/
 	QString callerAddress() const { return caller_address; }
+
+	/*!
+		\brief Set id of associated teleloop, used to send init frame on connect
+	*/
+	void setTeleloopId(int id);
+
+	/*!
+		\brief Return the id of associated teleloop
+	*/
+	int getTeleloopId() const;
 
 public slots:
 	/*!
@@ -382,6 +395,9 @@ private:
 	bool ip_call;
 	bool is_waiting_pager_answer;
 	bool is_associate;
+
+	// associated teleloop
+	int teleloop_id;
 };
 
 #endif //VIDEODOOR_ENTRY_DEVICE_H
