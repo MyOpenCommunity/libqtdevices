@@ -358,21 +358,6 @@ void TestSourceDevice::testMonochannelArea()
 	QCOMPARE(dev->active_areas.count(), 1);
 }
 
-void TestSourceDevice::testCrash()
-{
-	OpenMsg frame_request_freq(qPrintable(QString("*#22*2#%1*5##").arg(source_id)));
-	dev->manageFrame(frame_request_freq);
-
-	OpenMsg frame_request_track(qPrintable(QString("*#22*2#%1*6##").arg(source_id)));
-	dev->manageFrame(frame_request_track);
-
-	OpenMsg frame_request_status(qPrintable(QString("*#22*2#%1##").arg(source_id)));
-	dev->manageFrame(frame_request_status);
-
-	OpenMsg frame_request_high(qPrintable(QString("*#22*3#1#8*2##")));
-	dev->manageFrame(frame_request_high);
-}
-
 
 void TestRadioSourceDevice::initTestCase()
 {
@@ -657,12 +642,6 @@ void TestAmplifierDevice::receiveVolume()
 	DeviceTester t(dev, AmplifierDevice::DIM_VOLUME);
 	t.check(QString("*#22*3#%1#%2*1*20##").arg(area).arg(point), 20);
 	t.checkSignals(QString("*#22*3#%1#%2*1##").arg(area).arg(point), 0);
-}
-
-void TestAmplifierDevice::receiveStatusRequest()
-{
-	DeviceTester t(dev, AmplifierDevice::DIM_VOLUME); // the dim doesn't matter
-	t.checkSignals(QString("*#22*3#%1#%2##").arg(area).arg(point), 0);
 }
 
 void TestAmplifierDevice::testCrash()

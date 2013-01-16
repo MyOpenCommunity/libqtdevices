@@ -92,8 +92,6 @@ private slots:
 	void testActiveAreas2();
 	void testMonochannelArea();
 
-	void testCrash();
-
 private:
 	SourceDevice *dev;
 };
@@ -170,7 +168,6 @@ private slots:
 
 	void receiveStatus();
 	void receiveVolume();
-	void receiveStatusRequest();
 
 	void testCrash();
 
