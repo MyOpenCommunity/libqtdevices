@@ -367,14 +367,11 @@ void device::setReceivedAttributes(const DeviceValues& values_list )
 
 	// Set the received attribute ID
 	initialized_attrid |= (QSet<int>::fromList(the_keys));
-
-	qDebug() << "Received attribute list for device ["<<get_key()<<"] values: "<<values_list;
 }
 
 void device::handleConnectionDown()
 {
 	// reset the attribute set indicator
-	qDebug() << "Connection down for device ["<<get_key()<<"]";
 	initialized_attrid.clear();
 
 	// forward the signal
@@ -384,7 +381,6 @@ void device::handleConnectionDown()
 void device::handleConnectionUp()
 {
 	// reset the attribute set indicator
-	qDebug() << "Connection up for device ["<<get_key()<<"]";
 	initialized_attrid.clear();
 
 	// forward the signal
