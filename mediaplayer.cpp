@@ -264,6 +264,7 @@ MediaPlayer::MediaPlayer(QObject *parent) : QObject(parent)
 	mplayer_proc = new QProcess(this);
 #endif
 	connect(mplayer_proc, SIGNAL(readyReadStandardError()), SLOT(readStandardError()));
+	connect(mplayer_proc, SIGNAL(readyReadStandardOutput()), SIGNAL(outputAvailable()));
 	connect(mplayer_proc, SIGNAL(finished(int, QProcess::ExitStatus)), SLOT(mplayerFinished(int, QProcess::ExitStatus)));
 	connect(mplayer_proc, SIGNAL(error(QProcess::ProcessError)), SLOT(mplayerError(QProcess::ProcessError)));
 #ifdef LAYOUT_TS_10

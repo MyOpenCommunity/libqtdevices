@@ -366,6 +366,11 @@ signals:
 		\a info contains the same data returned by getPlayingInfo() and getVideoInfo().
 	 */
 	void playingInfoUpdated(const QMap<QString,QString> &info);
+
+	/*!
+		\brief Emitted when there is new player output to parse
+	*/
+	void outputAvailable();
 };
 
 
