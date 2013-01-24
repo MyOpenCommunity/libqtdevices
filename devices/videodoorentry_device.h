@@ -227,9 +227,6 @@ public:
 	*/
 	VideoDoorEntryDevice(const QString &where, QString mode = QString(), int openserver_id = 0);
 
-	// associate with teleloop
-	virtual void init();
-
 	/*!
 		\brief Accept an incoming call.
 	*/
@@ -386,6 +383,7 @@ private:
 	void resetCallState();
 	void cameraMovePress(int move_type) const;
 	void cameraMoveRelease(int move_type) const;
+	QString createLinkTeleloopFrame(int mode, QString where) const;
 
 	// call parameters
 	int kind, mmtype;

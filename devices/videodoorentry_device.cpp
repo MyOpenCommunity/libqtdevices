@@ -114,8 +114,6 @@ bool BasicVideoDoorEntryDevice::parseFrame(OpenMsg &msg, DeviceValues &values_li
 VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, int openserver_id) :
 	BasicVideoDoorEntryDevice(where, mode, openserver_id)
 {
-	setSupportedInitMode(device::NORMAL_INIT);
-
 	// invalid values
 	kind = mmtype = -1;
 	is_calling = false;
@@ -124,15 +122,13 @@ VideoDoorEntryDevice::VideoDoorEntryDevice(const QString &where, QString mode, i
 	teleloop_id = 0;
 }
 
-void VideoDoorEntryDevice::init()
-{
-	if (teleloop_id)
-		linkTeleLoop(teleloop_id, where);
-}
-
 void VideoDoorEntryDevice::setTeleloopId(int id)
 {
+	if (teleloop_id)
+		bt_global::devices_cache.removeInitCommandFrame(openserver_id, createLinkTeleloopFrame(teleloop_id, where));
 	teleloop_id = id;
+	if (teleloop_id)
+		bt_global::devices_cache.addInitCommandFrame(openserver_id, createLinkTeleloopFrame(teleloop_id, where));
 }
 
 int VideoDoorEntryDevice::getTeleloopId() const
@@ -219,9 +215,14 @@ void VideoDoorEntryDevice::startTeleLoop(QString pi_address) const
 	sendCommand(QString::number(TELE_START), pi_address);
 }
 
+QString VideoDoorEntryDevice::createLinkTeleloopFrame(int mode, QString address) const
+{
+	return createCommandFrame(who, QString("%1#%2").arg(TELE_ANSWER).arg(mode), address);
+}
+
 void VideoDoorEntryDevice::linkTeleLoop(int _mod, QString pi_address) const
 {
-	sendCommand(QString("%1#%2").arg(TELE_ANSWER).arg(_mod), pi_address);
+	sendFrame(createLinkTeleloopFrame(_mod, pi_address));
 }
 
 void VideoDoorEntryDevice::cycleExternalUnits() const
