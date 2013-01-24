@@ -69,6 +69,7 @@ public:
 	void initOpenserverDevices(int openserver_id);
 
 	void addInitCommandFrame(int openserver_id, const QString &frame);
+	void removeInitCommandFrame(int openserver_id, const QString &frame);
 
 	// call this after all devices have been created
 	void devicesCreated();

@@ -92,6 +92,11 @@ void DevicesCache::addInitCommandFrame(int openserver_id, const QString &frame)
 	init_frames[openserver_id].append(frame);
 }
 
+void DevicesCache::removeInitCommandFrame(int openserver_id, const QString &frame)
+{
+	init_frames[openserver_id].removeOne(frame);
+}
+
 DevicesCache::DevicesCache()
 {
 	devices_created = false;
