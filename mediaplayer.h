@@ -92,7 +92,7 @@ public:
 
 		\see getPlayingInfo()
 	 */
-	bool play(QString track, OutputMode write_output = OutputAll);
+	bool play(QString track, int start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Start playing a video file.

@@ -236,7 +236,7 @@ void AudioPlayerPage::startMPlayer(QString filename)
 		description_bottom->setText(tr("Loading..."));
 	}
 
-	player->play(filename);
+	player->play(filename, 0);
 	refresh_data->start(MPLAYER_POLLING);
 }
 

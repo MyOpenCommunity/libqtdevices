@@ -374,9 +374,9 @@ QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 #endif
 }
 
-bool MediaPlayer::play(QString track, OutputMode write_output)
+bool MediaPlayer::play(QString track, int start_time, OutputMode write_output)
 {
-	QList<QString> mplayer_args = getAudioArgs(0);
+	QList<QString> mplayer_args = getAudioArgs(start_time);
 
 	if ((track.endsWith(".m3u", Qt::CaseInsensitive)) || (track.endsWith(".asx", Qt::CaseInsensitive)) || (track.contains(".pls", Qt::CaseInsensitive)))
 	{
