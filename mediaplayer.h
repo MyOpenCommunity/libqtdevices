@@ -92,7 +92,7 @@ public:
 
 		\see getPlayingInfo()
 	 */
-	bool play(QString track, int start_time, OutputMode write_output = OutputAll);
+	bool play(QString track, float start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Start playing a video file.
@@ -109,7 +109,7 @@ public:
 		\see getVideoInfo()
 		\see playVideoFullScreen()
 	 */
-	bool playVideo(QString track, QRect geometry, int start_time, OutputMode write_output = OutputAll);
+	bool playVideo(QString track, QRect geometry, float start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Start playing a video file full screen.
@@ -117,7 +117,7 @@ public:
 		\see getVideoInfo()
 		\see playVideo()
 	 */
-	bool playVideoFullScreen(QString track, int start_time, OutputMode write_output = OutputAll);
+	bool playVideoFullScreen(QString track, float start_time, OutputMode write_output = OutputAll);
 
 	/*!
 		\brief Pause playback.
@@ -307,8 +307,8 @@ private:
 
 	bool runMPlayer(const QList<QString> &args, OutputMode write_output);
 	QList<QString> getStandardArgs();
-	QList<QString> getVideoArgs(int seek_time);
-	QList<QString> getAudioArgs(int seek_time);
+	QList<QString> getVideoArgs(float seek_time);
+	QList<QString> getAudioArgs(float seek_time);
 
 	QMap<QString, QString> getMediaInfo(const QMap<QString, QString> &data_search, int msecs_timeout = 0);
 

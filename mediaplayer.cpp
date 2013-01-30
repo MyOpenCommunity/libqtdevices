@@ -158,18 +158,18 @@ namespace
 		return extractMPlayerInfo(executable, args, data_search, QSet<QString>() << "current_time");
 	}
 
-	QString removeDot(const QString &time)
+	QString addDot(const QString &time)
 	{
 		QString res = time;
 		int dot = res.indexOf('.');
 
-		// strip decimal point
-		if (dot > 0)
-			res = res.left(dot);
+		// add zero decimal part if not present
+		if (dot < 0)
+			res += ".0";
 		return res;
 	}
 
-	QStringList replaceArguments(QStringList tmpl, QString file_name, int seconds)
+	QStringList replaceArguments(QStringList tmpl, QString file_name, float seconds)
 	{
 		for (int i = 0; i < tmpl.size(); ++i)
 		{
@@ -185,8 +185,6 @@ namespace
 
 QTime parseMPlayerTime(const QString &time)
 {
-	QString s = removeDot(time);
-
 	// time format may be h:mm:ss (and derivatives) or ss (may be greater then 59)
 	// firstly, tries to convert as integer
 	bool ok;
@@ -200,12 +198,14 @@ QTime parseMPlayerTime(const QString &time)
 	}
 	else
 	{
+		QString s = addDot(time);
+
 		// not an int, tries to read h:mm:ss format
-		res = QTime::fromString(s, "h:mm:ss");
+		res = QTime::fromString(s, "h:mm:ss.z");
 		if (!res.isValid())
-			res = QTime::fromString(s, "ss");
+			res = QTime::fromString(s, "ss.z");
 		if (!res.isValid())
-			res = QTime::fromString(s, "mm:ss");
+			res = QTime::fromString(s, "mm:ss.z");
 	}
 
 	return res;
@@ -310,7 +310,7 @@ bool MediaPlayer::checkVideoResolution(QString track)
 	return width <= MAX_VIDEO_WIDTH && height <= MAX_VIDEO_HEIGHT;
 }
 
-bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, OutputMode write_output)
+bool MediaPlayer::playVideo(QString track, QRect geometry, float start_time, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getVideoArgs(start_time);
 
@@ -322,7 +322,7 @@ bool MediaPlayer::playVideo(QString track, QRect geometry, int start_time, Outpu
 	return runMPlayer(mplayer_args, write_output);
 }
 
-bool MediaPlayer::playVideoFullScreen(QString track, int start_time, OutputMode write_output)
+bool MediaPlayer::playVideoFullScreen(QString track, float start_time, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getVideoArgs(start_time);
 	mplayer_args << "-fs" << track;
@@ -349,7 +349,7 @@ QList<QString> MediaPlayer::getStandardArgs()
 	return QList<QString>() << "-nolirc" << "-slave";
 }
 
-QList<QString> MediaPlayer::getVideoArgs(int seek_time)
+QList<QString> MediaPlayer::getVideoArgs(float seek_time)
 {
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
 	return getStandardArgs() + replaceArguments(video_cmdline, QString(), seek_time);
@@ -362,7 +362,7 @@ QList<QString> MediaPlayer::getVideoArgs(int seek_time)
 #endif
 }
 
-QList<QString> MediaPlayer::getAudioArgs(int seek_time)
+QList<QString> MediaPlayer::getAudioArgs(float seek_time)
 {
 #ifdef MEDIAPLAYER_DISABLE_HARDWARE_FUNCTIONS
 	return getStandardArgs() + replaceArguments(audio_cmdline, QString(), seek_time);
@@ -374,7 +374,7 @@ QList<QString> MediaPlayer::getAudioArgs(int seek_time)
 #endif
 }
 
-bool MediaPlayer::play(QString track, int start_time, OutputMode write_output)
+bool MediaPlayer::play(QString track, float start_time, OutputMode write_output)
 {
 	QList<QString> mplayer_args = getAudioArgs(start_time);
 
