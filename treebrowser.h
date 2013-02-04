@@ -30,6 +30,7 @@
 class DirectoryBrowserMemento
 {
 friend class DirectoryTreeBrowser;
+friend class UPnpClientBrowser;
 private:
 	QStringList context;
 	int mask;
@@ -124,6 +125,14 @@ public:
 		This command can ben used to re-start the navigation from the beginning.
 	*/
 	virtual void reset() = 0;
+
+	/*!
+		\brief Clone the internal state of the TreeBrowser
+
+		Returned object must be destroyed by caller.
+	*/
+	virtual DirectoryBrowserMemento *clone() = 0;
+	virtual void restore(DirectoryBrowserMemento *m) = 0;
 
 protected:
 	/*!
@@ -246,13 +255,9 @@ public:
 	virtual QString pathKey();
 	virtual void setContext(const QStringList &context);
 	virtual void reset();
-	/*!
-		\brief Clone the internal state of the TreeBrowser
 
-		Returned object must be destroyed by caller.
-	*/
-	DirectoryBrowserMemento *clone();
-	void restore(DirectoryBrowserMemento *m);
+	virtual DirectoryBrowserMemento *clone();
+	virtual void restore(DirectoryBrowserMemento *m);
 
 private:
 	int level;
@@ -285,6 +290,9 @@ public:
 	virtual int getNumElements();
 	virtual int getStartingElement();
 	virtual void getFileList(int starting_element);
+
+	virtual DirectoryBrowserMemento *clone();
+	virtual void restore(DirectoryBrowserMemento *m);
 
 private slots:
 	void handleResponse(const XmlResponse &response);

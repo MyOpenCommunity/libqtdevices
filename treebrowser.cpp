@@ -236,6 +236,10 @@ void UPnpClientBrowser::getFileList()
 
 void UPnpClientBrowser::getFileList(int s)
 {
+	// ignore requests for new files issued while a status update is pending; mainly
+	// useful during context restore
+	if (new_context.size())
+		return;
 	starting_element = s;
 
 	if (level == 0)
@@ -288,6 +292,22 @@ bool UPnpClientBrowser::isRoot()
 QString UPnpClientBrowser::pathKey()
 {
 	return QString::number(level);
+}
+
+DirectoryBrowserMemento *UPnpClientBrowser::clone()
+{
+	DirectoryBrowserMemento *m = new DirectoryBrowserMemento;
+	m->root_path = getRootPath();
+	m->mask = filter_mask;
+	m->context = context;
+	return m;
+}
+
+void UPnpClientBrowser::restore(DirectoryBrowserMemento *m)
+{
+	setRootPath(m->root_path);
+	setFilter(m->mask);
+	setContext(m->context);
 }
 
 void UPnpClientBrowser::handleResponse(const XmlResponse &response)
