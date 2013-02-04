@@ -207,6 +207,7 @@ void UPnpClientBrowser::reset()
 
 void UPnpClientBrowser::enterDirectory(const QString &name)
 {
+	context.append(name);
 	if (level == 0)
 		dev->selectServer(name);
 	else
@@ -306,6 +307,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 
 			num_elements = cached_elements.size();
 			level = 0;
+			context.clear();
 			emit isRootChanged();
 			EntryInfoList entry_list;
 
@@ -342,7 +344,9 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		}
 		case XmlResponses::SET_CONTEXT:
-			level = context_new_level;
+			level = new_context.size();
+			context = new_context;
+			new_context.clear();
 			emit directoryChanged();
 			emit isRootChanged();
 			break;
@@ -350,6 +354,9 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled response.");
 		}
 	}
+
+	while (level > context.size())
+		context.removeLast();
 }
 
 void UPnpClientBrowser::handleError(int response, int code)
@@ -404,11 +411,14 @@ void UPnpClientBrowser::handleError(int response, int code)
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleError", "Unhandled response.");
 	}
+
+	while (level > context.size())
+		context.removeLast();
 }
 
 void UPnpClientBrowser::setContext(const QStringList &context)
 {
-	context_new_level = context.size();
+	new_context = context;
 	dev->setContext(context[0], context.mid(1));
 }
 

@@ -288,7 +288,7 @@ private slots:
 private:
 	XmlDevice *dev;
 	int level;
-	int context_new_level;
+	QStringList context, new_context;
 
 	// To manage the 'lazy' loading of the elements
 	int starting_element;
