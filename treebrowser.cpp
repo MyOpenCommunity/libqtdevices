@@ -183,7 +183,7 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 		++level;
 	}
 
-	emit directoryChanged();
+	emit contextChanged();
 	emit isRootChanged();
 }
 
@@ -347,7 +347,7 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			level = new_context.size();
 			context = new_context;
 			new_context.clear();
-			emit directoryChanged();
+			emit contextChanged();
 			emit isRootChanged();
 			break;
 		default:

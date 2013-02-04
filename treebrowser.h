@@ -143,6 +143,11 @@ signals:
 	void directoryChanged();
 
 	/*!
+		\brief Emitted after a successful context change.
+	*/
+	void contextChanged();
+
+	/*!
 		\brief Emitted when an error occours changing directory.
 	*/
 	void directoryChangeError();

@@ -43,6 +43,7 @@ FileSelector::FileSelector(TreeBrowser *_browser)
 	working = NULL;
 
 	connect(browser, SIGNAL(directoryChanged()), SLOT(directoryChanged()));
+	connect(browser, SIGNAL(contextChanged()), SLOT(directoryChanged()));
 	connect(this, SIGNAL(Closed()), this, SLOT(cleanUp()));
 	connect(bt_global::display, SIGNAL(startscreensaver(Page*)), SLOT(screenSaverStarted(Page*)));
 
