@@ -386,6 +386,14 @@ void TestDimmerDevice::sendDimmerIncreaseLevel()
 	QCOMPARE(server->frameCommand(), cmd);
 }
 
+void TestDimmerDevice::sendSetLevel100()
+{
+	dimmer->setLevel100(75, 9);
+	client_command->flush();
+	QString cmd = QString("*1*9*%1##").arg(dimmer->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
 void TestDimmerDevice::receiveLightOnRequestLevel()
 {
 	DeviceTester t(dimmer, LightingDevice::DIM_DEVICE_ON);
@@ -705,6 +713,14 @@ void TestDimmer100Device::sendDimmer100IncreaseLevel()
 	dimmer100->increaseLevel100(10, 150);
 	client_command->flush();
 	QString cmd = QString("*1*30#%1#%2*%3##").arg(10).arg(150).arg(dimmer100->where);
+	QCOMPARE(server->frameCommand(), cmd);
+}
+
+void TestDimmer100Device::sendSetLevel100()
+{
+	dimmer100->setLevel100(75, 9);
+	client_command->flush();
+	QString cmd = QString("*#1*%1*#1*175*9##").arg(dimmer100->where);
 	QCOMPARE(server->frameCommand(), cmd);
 }
 

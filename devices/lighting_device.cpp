@@ -235,6 +235,13 @@ void DimmerDevice::decreaseLevel()
 	sendCommand(DIMMER_DEC);
 }
 
+void DimmerDevice::setLevel100(int level, int speed)
+{
+	Q_UNUSED(speed);
+
+	sendCommand(dimmer100LevelTo10(level));
+}
+
 FrameHandled DimmerDevice::isFrameHandled(OpenMsg &msg)
 {
 	if (LightingDevice::isFrameHandled(msg) == FRAME_HANDLED)
@@ -405,6 +412,11 @@ void Dimmer100Device::increaseLevel100(int delta, int speed)
 void Dimmer100Device::decreaseLevel100(int delta, int speed)
 {
 	sendCommand(QString("%1#%2#%3").arg(DIMMER_DEC).arg(delta).arg(speed));
+}
+
+void Dimmer100Device::setLevel100(int level, int speed)
+{
+	sendFrame(createWriteDimensionFrame(who, QString("1*%1*%2").arg(100 + level).arg(speed), where));
 }
 
 void Dimmer100Device::requestDimmer100Status()

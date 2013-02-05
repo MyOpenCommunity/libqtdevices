@@ -98,6 +98,7 @@ private slots:
 
 	void sendDimmerIncreaseLevel();
 	void sendDimmerDecreaseLevel();
+	virtual void sendSetLevel100();
 
 	void receiveLightOnRequestLevel();
 	void receiveDimmerLevel();
@@ -160,6 +161,8 @@ private slots:
 	void receiveGlobalDimmer100IncDecNonPullBase();
 
 private:
+	virtual void sendSetLevel100();
+
 	Dimmer100Device *dimmer100;
 };
 #endif // TEST_LIGHTING_DEVICE_H

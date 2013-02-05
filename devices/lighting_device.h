@@ -186,6 +186,8 @@ public:
 	*/
 	void decreaseLevel();
 
+	virtual void setLevel100(int level, int speed);
+
 	/*!
 		\brief Used by the basic/advanced actuator detection.
 
@@ -251,6 +253,8 @@ public:
 		\brief Decrease the dimmer level of the given \a delta and \a speed.
 	*/
 	void decreaseLevel100(int delta, int speed);
+
+	virtual void setLevel100(int level, int speed);
 
 	/*!
 		\brief Requests a status update.
