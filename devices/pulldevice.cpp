@@ -140,7 +140,7 @@ PullStateManager::CheckResult PullStateManager::moreFrameNeeded(OpenMsg &msg, bo
 	if (measure_frame)
 	{
 		// dimmer 100 status
-		if (msg.what() == 1)
+		if (msg.what() == 1 && msg.whatArgCnt() > 0)
 			new_state = msg.whatArgN(0) - 100;
 		// variable temporization
 		// this is the trickiest one. Remember that devices don't send status updates if they are light on
