@@ -324,6 +324,12 @@ void ClientWriter::manageFrame(QByteArray frame)
 	{
 		bool ack = frame == ACK_FRAME;
 		Q_ASSERT_X(ack_source_list.size() > 0, "ClientWriter::manageFrame", "Empty ack source list!");
+		// this is not supposed to ever happen, but it seems to happen anyway
+		if (ack_source_list.size() == 0)
+		{
+			qWarning() << "*** Received unexpected" << (ack ? "ACK" : "NAK") << "***";
+			return;
+		}
 		QByteArray actual_frame = ack_source_list.takeFirst();
 		if (actual_frame != __NONE__)
 		{
