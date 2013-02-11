@@ -738,14 +738,14 @@ public:
 	void bassDown() const;
 
 	/*!
-		\brief Move balance to the right.
-	 */
-	void balanceUp() const;
-
-	/*!
 		\brief Move balance to the left.
 	 */
-	void balanceDown() const;
+	void balanceLeft() const;
+
+	/*!
+		\brief Move balance to the right.
+	 */
+	void balanceRight() const;
 
 	/*!
 		\brief Switch to next preset equalization.

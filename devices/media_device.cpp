@@ -1256,12 +1256,12 @@ void PowerAmplifierDevice::bassDown() const
 	sendCommand(QString("%1#1").arg(REQ_BASS_DOWN));
 }
 
-void PowerAmplifierDevice::balanceUp() const
+void PowerAmplifierDevice::balanceLeft() const
 {
 	sendCommand(QString("%1#1").arg(REQ_BALANCE_UP));
 }
 
-void PowerAmplifierDevice::balanceDown() const
+void PowerAmplifierDevice::balanceRight() const
 {
 	sendCommand(QString("%1#1").arg(REQ_BALANCE_DOWN));
 }

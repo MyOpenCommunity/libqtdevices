@@ -859,7 +859,7 @@ void TestPowerAmplifierDevice::sendBassDown()
 
 void TestPowerAmplifierDevice::sendBalanceUp()
 {
-	dev->balanceUp();
+	dev->balanceLeft();
 	client_command->flush();
 	QString cmd(QString("*22*42#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);
@@ -867,7 +867,7 @@ void TestPowerAmplifierDevice::sendBalanceUp()
 
 void TestPowerAmplifierDevice::sendBalanceDown()
 {
-	dev->balanceDown();
+	dev->balanceRight();
 	client_command->flush();
 	QString cmd(QString("*22*43#1*3#%1#%2##").arg(area).arg(point));
 	QCOMPARE(server->frameCommand(), cmd);

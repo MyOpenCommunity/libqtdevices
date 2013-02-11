@@ -374,12 +374,12 @@ void PowerAmplifierBalance::valueReceived(const DeviceValues &values_list)
 
 void PowerAmplifierBalance::sx()
 {
-	dev->balanceUp();
+	dev->balanceLeft();
 }
 
 void PowerAmplifierBalance::dx()
 {
-	dev->balanceDown();
+	dev->balanceRight();
 }
 
 void PowerAmplifierBalance::showBalance(int balance)
