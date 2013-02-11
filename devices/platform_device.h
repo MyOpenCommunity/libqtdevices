@@ -83,6 +83,14 @@ public:
 	void setDate(const QDate &d);
 
 	/*!
+		\brief Sets the date and time
+
+		Sets the date and the time locally and syncronizes the other devices on the bus to the
+		same date and time. Useful when both date and time need updating.
+	*/
+	void setDateTime(const QDate &d, const BtTime &t);
+
+	/*!
 		\brief Enables or disables the LAN settings.
 	*/
 	void enableLan(bool enable);

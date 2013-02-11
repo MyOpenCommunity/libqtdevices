@@ -66,6 +66,13 @@ void PlatformDevice::setDate(const QDate &d)
 	sendFrameNow(f);
 }
 
+void PlatformDevice::setDateTime(const QDate &d, const BtTime &t)
+{
+	QString f;
+	f.sprintf("*#13**#%d*%02u*%02u*%02u**00*%02d*%02d*%04d##", DIM_DATETIME, t.hour(), t.minute(), t.second(), d.day(), d.month(), d.year());
+	sendFrameNow(f);
+}
+
 void PlatformDevice::enableLan(bool enable)
 {
 	int val = enable ? 1 : 0;
