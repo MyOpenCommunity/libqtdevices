@@ -741,11 +741,13 @@ public:
 		\brief Move balance to the left.
 	 */
 	void balanceLeft() const;
+	void balanceUp() const { balanceLeft(); }
 
 	/*!
 		\brief Move balance to the right.
 	 */
 	void balanceRight() const;
+	void balanceDown() const { balanceRight(); }
 
 	/*!
 		\brief Switch to next preset equalization.
