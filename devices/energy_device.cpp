@@ -339,6 +339,13 @@ EnergyDevice::EnergyDevice(QString where, int mode, int openserver_id) : device(
 		buffer_year_data[i] = 0;
 }
 
+void EnergyDevice::init()
+{
+	requestThresholdValue(0);
+	requestThresholdValue(1);
+	requestThresholdState();
+}
+
 int EnergyDevice::getEnergyType() const
 {
 	return current_updates->getEnergyType();

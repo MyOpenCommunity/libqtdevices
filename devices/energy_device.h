@@ -187,6 +187,8 @@ public:
 
 	~EnergyDevice();
 
+	virtual void init();
+
 	/*!
 		\brief Request total consumption over a day (DIM_CUMULATIVE_DAY).
 	*/
