@@ -229,6 +229,9 @@ public:
 	*/
 	void setContext(const QString &server, const QStringList &path);
 
+	int lastQueuedCommand() const;
+	int lastAnsweredCommand() const;
+
 signals:
 	/*!
 		\brief Emitted when a new response is received.
@@ -249,7 +252,22 @@ private slots:
 	void cleanSessionInfo();
 
 private:
+	struct QueuedCommand
+	{
+		QString command;
+		XmlArguments arguments;
+		int ordinal;
+
+		QueuedCommand(QString _command, XmlArguments _arguments, int _ordinal)
+		{
+			command = _command;
+			arguments = _arguments;
+			ordinal = _ordinal;
+		}
+	};
+
 	void sendCommand(const QString &command, const XmlArguments &arguments = XmlArguments());
+	void sendCommand(const QString &command, const XmlArguments &arguments, int ordinal);
 	void select(const QString &name);
 	XmlResponse parseXml(const QString &xml);
 	bool parseHeader(const QDomNode &header_node);
@@ -259,11 +277,12 @@ private:
 	XmlClient *xml_client;
 	QHash<QString, xmlHandler_ptr> xml_handlers;
 
-	QList<QPair<QString, XmlArguments> > message_queue;
+	QList<QueuedCommand> message_queue;
 
 	bool welcome_received;
 	QString sid;
 	int pid;
+	int command_ordinal, last_sent, last_response;
 	QString local_addr;
 	QString server_addr;
 };

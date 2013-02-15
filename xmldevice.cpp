@@ -370,6 +370,7 @@ XmlDevice::XmlDevice()
 	connect(xml_client, SIGNAL(connectionDown()), SLOT(handleClientError()));
 
 	welcome_received = false;
+	command_ordinal = last_sent = last_response = 0;
 
 	xml_handlers["WMsg"] = handle_welcome_message;
 	xml_handlers["AW26C1"] = handle_upnp_server_list;
@@ -459,6 +460,7 @@ void XmlDevice::handleData(const QString &data)
 void XmlDevice::handleClientError()
 {
 	qWarning() << "XmlDevice::handleClientError: connection lost";
+	last_response = last_sent;
 	emit error(XmlResponses::INVALID, XmlError::CLIENT);
 }
 
@@ -469,8 +471,8 @@ void XmlDevice::sendFirstQueuedMessage()
 
 	if (!message_queue.isEmpty())
 	{
-		QPair<QString,XmlArguments> command = message_queue.takeFirst();
-		sendCommand(command.first, command.second);
+		QueuedCommand command = message_queue.takeFirst();
+		sendCommand(command.command, command.arguments, command.ordinal);
 	}
 }
 
@@ -485,6 +487,11 @@ void XmlDevice::cleanSessionInfo()
 
 void XmlDevice::sendCommand(const QString &message, const XmlArguments &arguments)
 {
+	sendCommand(message, arguments, ++command_ordinal);
+}
+
+void XmlDevice::sendCommand(const QString &message, const XmlArguments &arguments, int ordinal)
+{
 	if (!xml_client->isConnected() || !sid.isEmpty())
 	{
 		// Saves the message and the argument.
@@ -492,13 +499,14 @@ void XmlDevice::sendCommand(const QString &message, const XmlArguments &argument
 		// body, and save it. Then when the connection comes up prepend the
 		// generated header. For that implementation the problem is the PID
 		// which changes with the responses.
-		message_queue << qMakePair<QString, XmlArguments>(message, arguments);
+		message_queue << QueuedCommand(message, arguments, ordinal);
 		if (!xml_client->isConnected())
 			xml_client->connectToHost();
 	}
 	else
 	{
 		++pid;
+		last_sent = ordinal;
 		xml_client->sendCommand(buildCommand(message, arguments));
 	}
 }
@@ -538,6 +546,8 @@ XmlResponse XmlDevice::parseXml(const QString &xml)
 
 			if (!command_name.isEmpty())
 			{
+				last_response = last_sent;
+
 				if (command_name == "ACK" && parseAck(command))
 				{
 					response[XmlResponses::ACK] = true;
@@ -648,4 +658,14 @@ QString XmlDevice::buildCommand(const QString &command, const XmlArguments &argu
 	dump_xml(xml, sid, pid, true);
 #endif
 	return xml;
+}
+
+int XmlDevice::lastQueuedCommand() const
+{
+	return command_ordinal;
+}
+
+int XmlDevice::lastAnsweredCommand() const
+{
+	return last_response;
 }

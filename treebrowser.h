@@ -234,6 +234,16 @@ public:
 		Emits listReceived() on success, listRetrieveError() on failure.
 	*/
 	virtual void getFileList(int starting_element) = 0;
+
+	/*!
+		\brief Return a progressive integer for the last issued operation
+	 */
+	virtual int lastQueuedCommand() const = 0;
+
+	/*!
+		\brief Return a progressive integer for operation currently being processed
+	 */
+	virtual int lastAnsweredCommand() const = 0;
 };
 
 
@@ -290,6 +300,9 @@ public:
 	virtual int getNumElements();
 	virtual int getStartingElement();
 	virtual void getFileList(int starting_element);
+
+	virtual int lastQueuedCommand() const;
+	virtual int lastAnsweredCommand() const;
 
 	virtual DirectoryBrowserMemento *clone();
 	virtual void restore(DirectoryBrowserMemento *m);

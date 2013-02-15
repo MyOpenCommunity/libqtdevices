@@ -280,6 +280,16 @@ int UPnpClientBrowser::getStartingElement()
 	return starting_element;
 }
 
+int UPnpClientBrowser::lastQueuedCommand() const
+{
+	return dev->lastQueuedCommand();
+}
+
+int UPnpClientBrowser::lastAnsweredCommand() const
+{
+	return dev->lastAnsweredCommand();
+}
+
 bool UPnpClientBrowser::isRoot()
 {
 	return level == 0;
