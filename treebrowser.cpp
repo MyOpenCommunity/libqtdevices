@@ -236,10 +236,6 @@ void UPnpClientBrowser::getFileList()
 
 void UPnpClientBrowser::getFileList(int s)
 {
-	// ignore requests for new files issued while a status update is pending; mainly
-	// useful during context restore
-	if (new_context.size())
-		return;
 	starting_element = s;
 
 	if (level == 0)
@@ -326,8 +322,6 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 				cached_elements << EntryInfo(server, EntryInfo::DIRECTORY, QString());
 
 			num_elements = cached_elements.size();
-			level = 0;
-			context.clear();
 			emit isRootChanged();
 			EntryInfoList entry_list;
 
@@ -346,6 +340,8 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			break;
 		case XmlResponses::BROWSE_UP:
 			--level;
+			while (level < context.size())
+				context.removeLast();
 			emit directoryChanged();
 			emit isRootChanged();
 			break;
@@ -374,9 +370,6 @@ void UPnpClientBrowser::handleResponse(const XmlResponse &response)
 			Q_ASSERT_X(false, "UPnpClientBrowser::handleResponse", "Unhandled response.");
 		}
 	}
-
-	while (level > context.size())
-		context.removeLast();
 }
 
 void UPnpClientBrowser::handleError(int response, int code)
@@ -415,6 +408,8 @@ void UPnpClientBrowser::handleError(int response, int code)
 		else if (level == 1)
 		{
 			--level;
+			while (level < context.size())
+				context.removeLast();
 			emit directoryChanged();
 			emit isRootChanged();
 		}
@@ -431,9 +426,6 @@ void UPnpClientBrowser::handleError(int response, int code)
 	default:
 		Q_ASSERT_X(false, "UPnpClientBrowser::handleError", "Unhandled response.");
 	}
-
-	while (level > context.size())
-		context.removeLast();
 }
 
 void UPnpClientBrowser::setContext(const QStringList &context)
