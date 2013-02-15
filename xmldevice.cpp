@@ -348,7 +348,7 @@ namespace
 			dump_dir.mkpath(DUMP_DIR);
 
 
-		QString filename(QTime::currentTime().toString("hh.mm.ss.z_") + sid.left(7) +
+		QString filename(QTime::currentTime().toString("hh.mm.ss.zzz_") + sid.left(7).toUpper() +
 			(is_request ? "_REQ_": "_RESP_") + QString::number(pid) + ".xml");
 		QFile file(QString(DUMP_DIR) + "/" + filename);
 		file.open(QIODevice::WriteOnly);
