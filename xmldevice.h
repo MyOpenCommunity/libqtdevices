@@ -245,7 +245,7 @@ signals:
 private slots:
 	void handleData(const QString &data);
 	void handleClientError();
-	void sendMessageQueue();
+	void sendFirstQueuedMessage();
 	void cleanSessionInfo();
 
 private:

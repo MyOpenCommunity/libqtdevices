@@ -365,7 +365,7 @@ XmlDevice::XmlDevice()
 {
 	xml_client = new XmlClient;
 	connect(xml_client, SIGNAL(dataReceived(QString)), SLOT(handleData(QString)));
-	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendMessageQueue()));
+	connect(xml_client, SIGNAL(connectionUp()), SLOT(sendFirstQueuedMessage()));
 	connect(xml_client, SIGNAL(connectionDown()), SLOT(cleanSessionInfo()));
 	connect(xml_client, SIGNAL(connectionDown()), SLOT(handleClientError()));
 
@@ -462,12 +462,12 @@ void XmlDevice::handleClientError()
 	emit error(XmlResponses::INVALID, XmlError::CLIENT);
 }
 
-void XmlDevice::sendMessageQueue()
+void XmlDevice::sendFirstQueuedMessage()
 {
 	if (!welcome_received)
 		return;
 
-	while (!message_queue.isEmpty())
+	if (!message_queue.isEmpty())
 	{
 		QPair<QString,XmlArguments> command = message_queue.takeFirst();
 		sendCommand(command.first, command.second);
@@ -485,7 +485,7 @@ void XmlDevice::cleanSessionInfo()
 
 void XmlDevice::sendCommand(const QString &message, const XmlArguments &arguments)
 {
-	if (!xml_client->isConnected())
+	if (!xml_client->isConnected() || !sid.isEmpty())
 	{
 		// Saves the message and the argument.
 		// An alternative implementation could be to generate only the command
@@ -493,7 +493,8 @@ void XmlDevice::sendCommand(const QString &message, const XmlArguments &argument
 		// generated header. For that implementation the problem is the PID
 		// which changes with the responses.
 		message_queue << qMakePair<QString, XmlArguments>(message, arguments);
-		xml_client->connectToHost();
+		if (!xml_client->isConnected())
+			xml_client->connectToHost();
 	}
 	else
 	{
@@ -596,7 +597,7 @@ bool XmlDevice::parseHeader(const QDomNode &header_node)
 	if (!welcome_received)
 	{
 		welcome_received = true;
-		sendMessageQueue();
+		sendFirstQueuedMessage();
 	}
 
 	return true;
@@ -615,7 +616,8 @@ bool XmlDevice::parseAck(const QDomNode &ack)
 	if (rc == "200")
 	{
 		pid = 0;
-		sid = uuid2str(QUuid::createUuid());
+		sid.clear();
+		sendFirstQueuedMessage();
 	}
 
 	return true;
@@ -625,6 +627,7 @@ QString XmlDevice::buildCommand(const QString &command, const XmlArguments &argu
 {
 	QString cmd;
 
+	sid = uuid2str(QUuid::createUuid());
 	if (!arguments.isEmpty())
 	{
 		cmd = QString("		<%1>\n").arg(command);
