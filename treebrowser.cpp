@@ -236,6 +236,7 @@ void UPnpClientBrowser::getFileList()
 
 void UPnpClientBrowser::getFileList(int s)
 {
+	Q_ASSERT_X(s > 0, "UPnpClientBrowser::getFileList", "Invalid starting element");
 	starting_element = s;
 
 	if (level == 0)
