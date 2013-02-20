@@ -221,6 +221,7 @@ void UPnpClientBrowser::exitDirectory()
 
 	if (level == 1)
 	{
+		--level;
 		starting_element = 1;
 		emit rootDirectoryEntered();
 		dev->requestUPnPServers();
