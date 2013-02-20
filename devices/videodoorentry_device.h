@@ -167,6 +167,9 @@ friend class TestVideoDoorEntryDevice;
 friend class TestVideoDoorEntry;
 Q_OBJECT
 public:
+	using BasicVideoDoorEntryDevice::openLock;
+	using BasicVideoDoorEntryDevice::releaseLock;
+
 	/*!
 		\refdim{VideoDoorEntryDevice}
 	*/
