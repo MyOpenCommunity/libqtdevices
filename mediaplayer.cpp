@@ -394,7 +394,7 @@ bool MediaPlayer::runMPlayer(const QList<QString> &args, OutputMode write_output
 {
 	if (mplayer_proc->state() != QProcess::NotRunning)
 	{
-		mplayer_proc->terminate();
+		mplayer_proc->kill();
 		mplayer_proc->waitForFinished();
 	}
 
