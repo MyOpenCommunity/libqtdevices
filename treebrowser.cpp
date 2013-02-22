@@ -173,13 +173,18 @@ void DirectoryTreeBrowser::setContext(const QStringList &context)
 {
 	level = 0;
 	current_dir.setPath(root_path);
+
 	foreach (const QString &dir, context)
 	{
+		if (dir == ".") // cd-ing to itself leads to bugs on level value, skips
+			continue;
+
 		if (!current_dir.cd(dir))
 		{
 			emit genericError();
 			return;
 		}
+
 		++level;
 	}
 
