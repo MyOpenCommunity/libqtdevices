@@ -92,7 +92,7 @@ namespace
 	#define ARRAY_SIZE(x) int(sizeof(x) / sizeof((x)[0]))
 	const char *audio_files[] = {"m3u", "mp3", "wav", "ogg", "wma", 0};
 	const char *video_files[] = {"mpg", "avi", "mp4", 0};
-	const char *image_files[] = {"png", "gif", "jpg", "jpeg", 0};
+	const char *image_files[] = {"png", "gif", "jpg", "jpeg", "tif", "tiff", 0};
 #ifdef BUILD_EXAMPLES
 	const char *pdf_files[]   = {"pdf", 0};
 #endif
