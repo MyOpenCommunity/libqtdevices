@@ -95,7 +95,7 @@ public:
 	enum
 	{
 		/*!
-			\brief Force duration values in minutes change with this step
+			\brief Force duration change step in minutes
 		*/
 		FORCE_DURATION_STEP = 10,
 
@@ -105,9 +105,14 @@ public:
 		FORCE_DURATION_MIN = 10,
 
 		/*!
-			\brief Force duration maximal values in minutes
+			\brief Force duration maximal value in minutes
 		*/
-		FORCE_DURATION_MAX = 240
+		FORCE_DURATION_MAX = 254 * 10,
+
+		/*!
+			\brief Force duration default value in minutes
+		*/
+		FORCE_DURATION_DEFAULT = 150
 	};
 
 	/*!
