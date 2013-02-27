@@ -449,6 +449,8 @@ Q_OBJECT
 public:
 	DeviceConditionAux(DeviceConditionDisplayInterface* cond_display, QString trigger, QString where);
 
+	virtual ConditionState getDefaultState();
+
 protected:
 	virtual void Draw();
 	virtual int get_max();

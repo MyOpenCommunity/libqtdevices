@@ -1129,4 +1129,7 @@ void DeviceConditionAux::set_condition_value(QString s)
 	DeviceCondition::set_condition_value(v);
 }
 
-
+DeviceCondition::ConditionState DeviceConditionAux::getDefaultState()
+{
+	return qMakePair(get_max(), get_max());
+}
