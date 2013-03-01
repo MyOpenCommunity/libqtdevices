@@ -151,6 +151,10 @@ public slots:
 	virtual void Up();
 	// Invoked when DOWN button is pressed
 	virtual void Down();
+	// Invoked when UP button is held
+	virtual void UpHeld();
+	// Invoked when DOWN button is held
+	virtual void DownHeld();
 
 signals:
 	/*!
@@ -181,6 +185,7 @@ protected:
 	virtual int get_min();
 	virtual int get_max();
 	virtual int get_step();
+	virtual int get_step_held();
 	// Sets condition value
 	void set_condition_value(int);
 	// Translates trigger condition from open encoding to int and sets val

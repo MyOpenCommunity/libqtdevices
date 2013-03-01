@@ -73,6 +73,11 @@ int DeviceCondition::get_step()
 	return 1;
 }
 
+int DeviceCondition::get_step_held()
+{
+	return 10;
+}
+
 int DeviceCondition::get_condition_value()
 {
 	return cond_value;
@@ -123,7 +128,6 @@ void DeviceCondition::Up()
 	int val = get_current_value();
 	val += get_step();
 	set_current_value(val);
-	qDebug("val = %d", get_current_value());
 	Draw();
 }
 
@@ -131,6 +135,22 @@ void DeviceCondition::Down()
 {
 	int val = get_current_value();
 	val -= get_step();
+	set_current_value(val);
+	Draw();
+}
+
+void DeviceCondition::UpHeld()
+{
+	int val = get_current_value();
+	val += get_step_held();
+	set_current_value(val);
+	Draw();
+}
+
+void DeviceCondition::DownHeld()
+{
+	int val = get_current_value();
+	val -= get_step_held();
 	set_current_value(val);
 	Draw();
 }
