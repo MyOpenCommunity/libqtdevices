@@ -27,6 +27,14 @@
 #include <QStringList>
 #include <QDebug>
 
+#include <sys/file.h>
+#include <errno.h>
+#include <unistd.h>
+
+#include <lock_file.h>
+
+#define LOCK_RETRY 100
+#define LOCK_TIMEOUT 22000 /* micro seconds */
 
 bool saveXml(const QDomDocument &document, const QString &filename)
 {
@@ -42,20 +50,77 @@ bool saveXml(const QDomDocument &document, const QString &filename)
 
 	QFile tmp_file(QFileInfo(real_path).dir().absoluteFilePath("appoggio.xml"));
 
-	if (tmp_file.exists())
-		tmp_file.remove();
-
 	if (!tmp_file.open(QIODevice::WriteOnly))
 		return false;
+
+	int fd = tmp_file.handle();
+	qDebug() << "Xml_Functions === MY file descriptor: " << fd;
+
+	Lock_File lock_tmpFile(fd);
+	int lock = lock_tmpFile.lockFile();
+	int count = 0;
+    while((lock < 0) && (count < LOCK_RETRY))
+    {
+		lock = lock_tmpFile.lockFile();
+        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
+		count++;
+        usleep(LOCK_TIMEOUT);
+	}
+    if (lock == 0)
+    {
+        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is free";
+		int err = ftruncate(fd, 0);
+		if (err < 0)
+             qDebug() << "Xml_Functions === Error file closed: " << strerror(errno);
+    }
+    else
+    {
+        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
+		tmp_file.close();
+		return false;
+	}
 
 	QTextStream stream(&tmp_file);
 	stream.setCodec("UTF-8");
 	stream << document.toString(4);
 	stream.flush();
+	lock_tmpFile.unlockFile();
 	tmp_file.close();
 
-	// QDir::rename fails if destination file exists so we use rename system call
-	return !::rename(qPrintable(tmp_file.fileName()), qPrintable(real_path));
+	QFile xmlFile(real_path);
+	if (!xmlFile.open(QIODevice::ReadOnly))
+		return false;
+	int realFD = xmlFile.handle();
+	qDebug() << "Xml_Functions === MY file descriptor: " << fd;
+
+	Lock_File lock_realFile(realFD);
+	lock = lock_realFile.lockFile();
+	count = 0;
+    while((lock < 0) && (count < LOCK_RETRY))
+    {
+		lock = lock_realFile.lockFile();
+        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
+		count++;
+        usleep(LOCK_TIMEOUT);
+	}
+    if (lock == 0)
+    {
+        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is free";
+    }
+    else
+    {
+        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
+		return false;
+	}
+
+
+	bool rtn = ::rename(qPrintable(tmp_file.fileName()), qPrintable(real_path)) == 0;
+	if (!rtn)
+		perror("");
+
+	lock_realFile.lockFile();
+	xmlFile.close();
+	return rtn;
 }
 
 void setAttribute(QDomNode &n, const QString &attr, const QString &value)
@@ -135,7 +200,7 @@ QTime getTimeAttribute(const QDomNode &n, const QString &attr, QTime def)
 		qWarning() << "Attribute" << attr << "not in right format, minutes missing";
 		minutes = 0;
 	}
-	else
+    else
 		minutes = hms[1].toInt(&ok);
 	if (hms.length() <= 2)
 	{
