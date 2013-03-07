@@ -447,6 +447,7 @@ void UPnpClientBrowser::handleError(int response, int code)
 
 void UPnpClientBrowser::setContext(const QStringList &context)
 {
+	level = context.size() - 1;
 	new_context = context;
 	dev->setContext(context[0], context.mid(1));
 }
