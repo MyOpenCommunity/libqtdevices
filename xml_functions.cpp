@@ -59,23 +59,23 @@ bool saveXml(const QDomDocument &document, const QString &filename)
 	Lock_File lock_tmpFile(fd);
 	int lock = lock_tmpFile.lockFile();
 	int count = 0;
-    while((lock < 0) && (count < LOCK_RETRY))
-    {
+	while((lock < 0) && (count < LOCK_RETRY))
+	{
 		lock = lock_tmpFile.lockFile();
-        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
+		qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
 		count++;
-        usleep(LOCK_TIMEOUT);
+		usleep(LOCK_TIMEOUT);
 	}
-    if (lock == 0)
-    {
-        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is free";
+	if (lock == 0)
+	{
+		qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is free";
 		int err = ftruncate(fd, 0);
 		if (err < 0)
-             qDebug() << "Xml_Functions === Error file closed: " << strerror(errno);
-    }
-    else
-    {
-        qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
+		qDebug() << "Xml_Functions === Error file closed: " << strerror(errno);
+	}
+	else
+	{
+		qDebug() << "Xml_Functions === il file " << tmp_file.fileName() << " is locked, error: " << strerror(errno);
 		tmp_file.close();
 		return false;
 	}
@@ -89,27 +89,30 @@ bool saveXml(const QDomDocument &document, const QString &filename)
 
 	QFile xmlFile(real_path);
 	if (!xmlFile.open(QIODevice::ReadOnly))
-		return false;
+	{
+		if (!xmlFile.open(QIODevice::ReadWrite))
+			return false;
+	}
 	int realFD = xmlFile.handle();
 	qDebug() << "Xml_Functions === MY file descriptor: " << fd;
 
 	Lock_File lock_realFile(realFD);
 	lock = lock_realFile.lockFile();
 	count = 0;
-    while((lock < 0) && (count < LOCK_RETRY))
-    {
+	while((lock < 0) && (count < LOCK_RETRY))
+	{
 		lock = lock_realFile.lockFile();
-        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
+		qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
 		count++;
-        usleep(LOCK_TIMEOUT);
+		usleep(LOCK_TIMEOUT);
 	}
-    if (lock == 0)
-    {
-        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is free";
-    }
-    else
-    {
-        qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
+	if (lock == 0)
+	{
+		qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is free";
+	}
+	else
+	{
+		qDebug() << "Xml_Functions === il file " << xmlFile.fileName() << " is locked, error: " << strerror(errno);
 		return false;
 	}
 
