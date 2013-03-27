@@ -166,12 +166,24 @@ private:
 	\a requestCumulativeMonthGraph() must be the last in a sequence of request frames,
 	otherwise the physical device might not send back all the requested data (depending
 	on the device model).
+	The problem is that if we send command frames (eg. current consumption update)
+	while the device is answering to a graph command, the graph frames will bail
+	out and contain invalid data.
+	This can be fixed by either avoiding sending command frames during a graph
+	"stream" or by using the (slower) status request frames. This behaviour can
+	be selected passing FORCE_REQUEST_FRAMES to EnergyDevice ctor.
 */
 class EnergyDevice : public device
 {
 friend class TestEnergyDevice;
 Q_OBJECT
 public:
+	enum GraphRequestMode
+	{
+		AUTO_DETECT,             ///< Choose the best graph request mode depending on the hardware
+		FORCE_REQUEST_FRAMES     ///< Only use request frames to ask the device for graphs
+	};
+
 	/*!
 		\brief Constructor
 
@@ -182,8 +194,11 @@ public:
 		- 3: gas
 		- 4: hot water
 		- 5: heating/conditioning
+		\a req_mode determines wheter the graph frames are requested using
+		status request frames (FORCE_REQUEST_FRAMES, slower but reliable) or
+		command frames (AUTO_DETECT, the default).
 	*/
-	EnergyDevice(QString where, int mode, int openserver_id = 0);
+	EnergyDevice(QString where, int mode, GraphRequestMode req_mode = AUTO_DETECT, int openserver_id = 0);
 
 	~EnergyDevice();
 

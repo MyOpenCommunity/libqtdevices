@@ -322,18 +322,24 @@ void AutomaticUpdates::handleAutomaticUpdate(OpenMsg &msg)
 }
 
 
-EnergyDevice::EnergyDevice(QString where, int mode, int openserver_id) : device(QString("18"), where, openserver_id)
+EnergyDevice::EnergyDevice(QString where, int mode, GraphRequestMode req_mode, int openserver_id) :
+	device(QString("18"), where, openserver_id)
 {
 	current_updates = new AutomaticUpdates(where, mode);
 	connect(current_updates, SIGNAL(sendFrame(QString)), SLOT(slotSendFrame(QString)));
 
-	platform_dev = bt_global::add_device_to_cache(new PlatformDevice);
-	connect(platform_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(platformValueReceived(DeviceValues)));
+	if (req_mode == AUTO_DETECT)
+	{
+		platform_dev = bt_global::add_device_to_cache(new PlatformDevice);
+		connect(platform_dev, SIGNAL(valueReceived(DeviceValues)), SLOT(platformValueReceived(DeviceValues)));
+	}
+	else
+		platform_dev = 0;
 
 	scaling_factor_old_frames = mode == 1 ? 100 : 1;
 	pending_graph_request = 0;
 	has_new_frames = false;
-	has_old_pic = false;
+	has_old_pic = req_mode == AUTO_DETECT ? false : true;
 
 	for (int i = 1; i <= 12; ++i)
 		buffer_year_data[i] = 0;
