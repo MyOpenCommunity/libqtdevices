@@ -541,7 +541,7 @@ QMap<QString, QString> MediaPlayer::getMediaInfo(const QMap<QString, QString> &d
 		mplayer_proc->waitForReadyRead(msecs_timeout);
 
 	/// READ RAW output from MPlayer
-	QString raw_data = mplayer_proc->readAll();
+	QString raw_data = QString::fromUtf8(mplayer_proc->readAll().constData());
 
 	/// Create output Map
 	QMap<QString, QString> info_data = parsePlayerOutput(raw_data, data_search);
