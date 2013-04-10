@@ -19,8 +19,7 @@
  */
 
 
-#include "main.h"
-#include <stdio.h>
+#include "definitions.h"
 
 #include <stdio.h>
 

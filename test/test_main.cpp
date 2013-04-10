@@ -22,81 +22,138 @@
 #include <QtTest/QtTest>
 #include <QList>
 #include <QRegExp>
-#include <QApplication>
 
 #include <iostream>
 #include <logger.h>
 
-#include "test_scenevodevicescond.h"
-#include "test_bttime.h"
-#include "test_imageselection.h"
-#include "test_xmlclient.h"
-#include "test_xmldevice.h"
-#include "test_clientwriter.h"
-#include "test_delayedslotcaller.h"
-#include "test_displaycontrol.h"
-#include "btmain.h"
-#include "main.h"
+#include "test_platform_device.h"
+#include "test_energy_device.h"
+#include "test_lighting_device.h"
+#include "test_automation_device.h"
+#include "test_checkaddress.h"
+#include "test_scenario_device.h"
+#include "test_thermal_device.h"
+#include "test_pull_manager.h"
+#include "test_videodoorentry_device.h"
+#include "test_probe_device.h"
+#include "test_air_conditioning_device.h"
+#include "test_loads_device.h"
+#include "test_media_device.h"
+#include "test_message_device.h"
+#include "test_stopandgo_device.h"
+#include "test_antintrusion_device.h"
+#include "test_devicescache.h"
+#include "definitions.h"
 
-
-BtStatus bt_global::status;
 logger *app_logger;
-
-// Objects required to replace the real objects and link successfully
-class VCTCallPage  : public QObject
-{
-	Q_OBJECT
-public:
-	void closeCall();
-};
-
-void VCTCallPage::closeCall() { }
-
-class IntercomCallPage  : public QObject
-{
-	Q_OBJECT
-public:
-	void closeCall();
-};
-
-void IntercomCallPage::closeCall() { }
-
-#include "test_main.moc"
 
 
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
-	QList<QObject *> test_list;
+	QCoreApplication app(argc, argv);
+	QList<TestDevice *> test_list;
 
-	// Initialize the config object for tests.
 	bt_global::config = new QHash<GlobalField, QString>();
-	(*bt_global::config)[TEMPERATURE_SCALE] = CELSIUS;
 	(*bt_global::config)[TS_NUMBER] = "0";
 
-	TestScenEvoDevicesCond test_scenevo_devices_cond;
-	test_list << &test_scenevo_devices_cond;
+	TestPlatformDevice test_platform_device;
+	test_list << &test_platform_device;
 
-	TestBtTime test_bttime;
-	test_list << &test_bttime;
+	TestEnergyDevice test_energy_device;
+	test_list << &test_energy_device;
 
-	TestImageSelection test_imageselection;
-	test_list << &test_imageselection;
+	TestPPTStatDevice test_pptstat_device;
+	test_list << &test_pptstat_device;
 
-	TestXmlClient test_xmlclient;
-	test_list << &test_xmlclient;
+	TestCheckAddress test_checkaddress;
+	test_list << &test_checkaddress;
 
-	TestXmlDevice test_xmldevice;
-	test_list << &test_xmldevice;
+	TestPullManager test_pull_manager;
+	test_list << &test_pull_manager;
 
-	TestClientWriter test_clientwriter;
-	test_list << &test_clientwriter;
+	TestLightingDevice test_lighting_device;
+	test_list << &test_lighting_device;
 
-	TestDelayedSlotCaller test_delayedslotcaller;
-	test_list << &test_delayedslotcaller;
+	TestDimmerDevice test_dimmer;
+	test_list << &test_dimmer;
 
-	TestDisplayControl test_displaycontrol;
-	test_list << &test_displaycontrol;
+	TestDimmer100Device test_dimmer100;
+	test_list << &test_dimmer100;
+
+	TestAutomationDevice test_automation_device;
+	test_list << &test_automation_device;
+
+	TestScenarioDevice test_scenario_device;
+	test_list << &test_scenario_device;
+
+	TestThermalDevice4Zones test_thermal_regulator_4zones_device;
+	test_list << &test_thermal_regulator_4zones_device;
+
+	TestThermalDevice99Zones test_thermal_regulator_99zones_device;
+	test_list << &test_thermal_regulator_99zones_device;
+
+	TestVideoDoorEntryDevice test_videodoorentry_device;
+	test_list << &test_videodoorentry_device;
+
+	TestNonControlledProbeDevice test_non_controlled_probe_device;
+	test_list << &test_non_controlled_probe_device;
+
+	TestExternalProbeDevice test_external_probe_device;
+	test_list << &test_external_probe_device;
+
+	TestControlledProbeDevice test_controlled_probe_device;
+	test_list << &test_controlled_probe_device;
+
+	TestAirConditioningDevice test_air_conditioning_device;
+	test_list << &test_air_conditioning_device;
+
+	TestAdvancedAirConditioningDevice test_advanced_air_conditioning_device;
+	test_list << &test_advanced_air_conditioning_device;
+
+	TestLoadsDevice test_loads_device;
+	test_list << &test_loads_device;
+
+	TestSourceDevice test_source_device;
+	test_list << &test_source_device;
+
+	TestRadioSourceDevice test_radio_source_device;
+	test_list << &test_radio_source_device;
+
+	TestVirtualSourceDevice test_virtual_source_device;
+	test_list << &test_virtual_source_device;
+
+	TestVirtualAmplifierDevice test_virtual_amplifier_device;
+	test_list << &test_virtual_amplifier_device;
+
+	TestAmplifierDevice test_amplifier_device;
+	test_list << &test_amplifier_device;
+
+	TestPowerAmplifierDevice test_poweramplifier_device;
+	test_list << &test_poweramplifier_device;
+
+	TestAlarmSoundDiffDevice test_alarm_sound_diff_device;
+	test_list << &test_alarm_sound_diff_device;
+
+	TestAuxDevice test_aux_device;
+	test_list << &test_aux_device;
+
+	TestMessageDevice test_message_device;
+	test_list << &test_message_device;
+
+	TestStopAndGoDevice test_stopandgo_device;
+	test_list << &test_stopandgo_device;
+
+	TestStopAndGoPlusDevice test_stopandgoplus_device;
+	test_list << &test_stopandgoplus_device;
+
+	TestStopAndGoBTestDevice test_stopandgobtest_device;
+	test_list << &test_stopandgobtest_device;
+
+	TestAntintrusionDevice test_antintrusion_device;
+	test_list << &test_antintrusion_device;
+
+	TestDevicesCache test_devicescache;
+	test_list << &test_devicescache;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
@@ -106,7 +163,7 @@ int main(int argc, char *argv[])
 		std::cout << " --help\t\t\tprint this help" << std::endl;
 		std::cout << std::endl;
 		std::cout << "Class List:" << std::endl;
-		foreach (QObject *dev, test_list)
+		foreach (TestDevice *dev, test_list)
 			std::cout << " " << dev->metaObject()->className() << std::endl;
 		return 0;
 	}
@@ -122,11 +179,14 @@ int main(int argc, char *argv[])
 
 	// use regular expressions to avoid writing the full class name each time
 	QRegExp re(testingClass, Qt::CaseInsensitive);
-	foreach (QObject *tester, test_list)
+	foreach (TestDevice *tester, test_list)
 	{
 		QString class_name = tester->metaObject()->className();
 		if (testingClass.isEmpty() || class_name.contains(re))
+		{
+			tester->initTestDevice();
 			QTest::qExec(tester, arglist);
+		}
 	}
 }
 
