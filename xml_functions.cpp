@@ -172,12 +172,12 @@ double getDoubleAttribute(const QDomNode &n, const QString &attr, double def)
 {
 	QString a = getAttribute(n, attr);
 	bool ok;
-	double val = a.toDouble(&ok);
+	double val = a.replace(",", ".").toDouble(&ok);
 	if (!ok)
 	{
 		if (def == -1)
 			qWarning() << "Error converting attribute" << attr << "of node" << n.nodeName() <<
-				"at line" << n.lineNumber() << "to int";
+				"at line" << n.lineNumber() << "to double";
 		return def;
 	}
 	return val;
