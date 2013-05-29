@@ -112,6 +112,8 @@ void LightingDevice::fixedTiming(int value)
 	int v = FIXED_TIMING_MIN + value;
 	if (v >= FIXED_TIMING_MIN && v <= FIXED_TIMING_MAX)
 		sendCommand(v);
+	else
+		qWarning() << "LightingDevice::fixedTiming(int), value is outside allowed range, ignoring";
 }
 
 void LightingDevice::variableTiming(int h, int m, int s)
