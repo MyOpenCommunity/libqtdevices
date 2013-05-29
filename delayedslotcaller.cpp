@@ -51,8 +51,13 @@ void DelayedSlotCaller::reset()
 
 void DelayedSlotCaller::setSlot(QObject *receiver, const char *slot, int msecs)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	Q_ASSERT_X(timer_id == -1, "DelayedSlotCaller::setSlot",
+		qPrintable(QString("Call with an already defined slot %1").arg(method_to_call.methodSignature().constData())));
+#else
 	Q_ASSERT_X(timer_id == -1, "DelayedSlotCaller::setSlot",
 		qPrintable(QString("Call with an already defined slot %1").arg(method_to_call.signature())));
+#endif
 	const QMetaObject *mo = receiver->metaObject();
 
 	QByteArray signature = QMetaObject::normalizedSignature(slot + 1);
@@ -118,8 +123,13 @@ void DelayedSlotCaller::callSlot()
 
 		if (arguments.size() != types.size())
 		{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 			qWarning() << "DelayedSlotCaller::callSlot -> the arguments number does not"
-					<< "match the signature of the slot" << method_to_call.signature();
+					   << "match the signature of the slot" << method_to_call.methodSignature().constData();
+#else
+			qWarning() << "DelayedSlotCaller::callSlot -> the arguments number does not"
+					   << "match the signature of the slot" << method_to_call.signature();
+#endif
 			return;
 		}
 
@@ -129,9 +139,15 @@ void DelayedSlotCaller::callSlot()
 			// has the same typeName of QVariant(type), so we exclude QVariant from the test.
 			if (arguments[i]->getTypeName() != types[i] && types[i] != "QVariant")
 			{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 				qWarning() << "DelayedSlotCaller::callSlot -> the argument number"
-					<< i + 1 << "of type" << QString(arguments[i]->getTypeName())
-					<< "does not match the signature of the slot" << method_to_call.signature();
+						   << i + 1 << "of type" << QString(arguments[i]->getTypeName())
+						   << "does not match the signature of the slot" << method_to_call.methodSignature().constData();
+#else
+				qWarning() << "DelayedSlotCaller::callSlot -> the argument number"
+						   << i + 1 << "of type" << QString(arguments[i]->getTypeName())
+						   << "does not match the signature of the slot" << method_to_call.signature();
+#endif
 
 				return;
 			}

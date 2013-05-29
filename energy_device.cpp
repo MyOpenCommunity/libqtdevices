@@ -983,10 +983,17 @@ void EnergyDevice::parseCumulativeMonthGraph32Bit(const QStringList &buffer_fram
 	QDate d = getDateFromFrame(tmp);
 	data.type = CUMULATIVE_MONTH;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	if (prev_year)
+		data.date.setDate(d.year() - 1, d.month(), d.day());
+	else
+		data.date = d;
+#else
 	if (prev_year)
 		data.date.setYMD(d.year() - 1, d.month(), d.day());
 	else
 		data.date = d;
+#endif
 
 	for (int i = 0; i < buffer_frame.size() && i < data.date.daysInMonth(); ++i)
 	{

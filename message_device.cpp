@@ -74,7 +74,15 @@ Message MessageDevicePrivate::parseMessage(const QString &raw_message)
 	QRegExp regexp("^\016(\\d{2}/\\d{2}/\\d{2} \\d{2}:\\d{2})\017(.*)$");
 
 	regexp.indexIn(raw_message);
-	if (regexp.numCaptures() == 2)
+	int counts;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	counts = regexp.captureCount();
+#else
+	counts = regexp.numCaptures();
+#endif
+
+	if (counts == 2)
 	{
 		message.datetime = QDateTime::fromString(regexp.cap(1), "dd/MM/yy hh:mm").addYears(100);
 		message.text = regexp.cap(2);
