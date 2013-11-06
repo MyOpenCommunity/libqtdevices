@@ -195,14 +195,21 @@ int main(int argc, char *argv[])
 
 	// use regular expressions to avoid writing the full class name each time
 	QRegExp re(testingClass, Qt::CaseInsensitive);
+	int r = 0; // test result
 	foreach (TestDevice *tester, test_list)
 	{
 		QString class_name = tester->metaObject()->className();
 		if (testingClass.isEmpty() || class_name.contains(re))
 		{
 			tester->initTestDevice();
-			QTest::qExec(tester, arglist);
+			r += QTest::qExec(tester, arglist);
 		}
 	}
-}
 
+	// a summary output message to outline if tests passed or not (to avoid to
+	// scroll all the tests output to look for eventually failed ones)
+	if (r > 0)
+		std::cout << "\nSome tests FAILED!!! qExec return value: " << r << "\n\n";
+	else
+		std::cout << "\nAll tests are OK. Well done!\n\n";
+}
