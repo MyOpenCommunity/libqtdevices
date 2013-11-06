@@ -43,9 +43,13 @@
 #include "test_stopandgo_device.h"
 #include "test_antintrusion_device.h"
 #include "test_devicescache.h"
+#include "test_bacnet_device.h"
 #include "definitions.h"
 
 logger *app_logger;
+
+using namespace Bacnet;
+
 
 
 int main(int argc, char *argv[])
@@ -154,6 +158,18 @@ int main(int argc, char *argv[])
 
 	TestDevicesCache test_devicescache;
 	test_list << &test_devicescache;
+
+	TestACSplitWithFanCoilDevice test_acsplitwithfancoil_device;
+	test_list << &test_acsplitwithfancoil_device;
+
+	TestAirHandlingDevice test_airhandling_device;
+	test_list << &test_airhandling_device;
+
+	TestVariableAirVolumeDevice test_vav_device;
+	test_list << &test_vav_device;
+
+	TestUnderfloorHeatingDevice test_uh_device;
+	test_list << &test_uh_device;
 
 	QStringList arglist = app.arguments();
 	if (arglist.contains("--help"))
