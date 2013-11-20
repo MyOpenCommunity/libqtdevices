@@ -78,6 +78,12 @@ enum DateFormat
 	YEAR_FIRST = 2,      // yy.mm.dd
 };
 
+enum TemperatureScale
+{
+	CELSIUS = 0,
+	FAHRENHEIT,
+};
+
 namespace bt_global {
 	/// a global object to store global configuration parameters
 	extern QHash<GlobalField, QString> *config;
